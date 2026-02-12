@@ -1,5 +1,5 @@
 /**
- * Site-wide content and links (mirrors sandstonerealestateteam.com).
+ * Site-wide content and links. Production domain: sandstone.home
  * Single source of truth for nav, contact, and address.
  */
 import type { AgentProfile } from "@/types";
