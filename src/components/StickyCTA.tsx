@@ -16,7 +16,10 @@ export function StickyCTA() {
   useEffect(() => {
     const onScroll = () => {
       const threshold = 420;
-      setVisible(window.scrollY > threshold);
+      const footer = document.getElementById("footer");
+      const footerTop = footer ? footer.getBoundingClientRect().top + window.scrollY : Infinity;
+      const shouldShow = window.scrollY > threshold && window.scrollY + window.innerHeight < footerTop - 80;
+      setVisible(shouldShow);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -38,7 +41,7 @@ export function StickyCTA() {
             className="badge-sandstone-chip gap-2 px-4 py-2 text-sm font-semibold normal-case hover:-translate-y-0.5 hover:shadow-xl"
             aria-label={`Call ${SITE_CONTACT.phone}`}
           >
-            <PhoneCall className="h-4 w-4 text-sandstone-bronze" aria-hidden />
+            <PhoneCall className="h-4 w-4 text-sandstone-gold" aria-hidden />
             Call {SITE_CONTACT.phone}
           </Link>
           <Link

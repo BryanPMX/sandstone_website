@@ -1,20 +1,6 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import type React from "react";
 import "./globals.css";
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const montserratBold = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat-bold",
-  weight: ["700"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Home - Sandstone Real Estate Team",
@@ -32,10 +18,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const fontVars = {
+    "--font-montserrat": "Montserrat, system-ui, sans-serif",
+    "--font-montserrat-bold": "Montserrat, system-ui, sans-serif",
+  } as React.CSSProperties;
+
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} ${montserratBold.variable}`}
+      style={fontVars}
     >
       <body suppressHydrationWarning className="min-h-screen font-sans antialiased">
         {children}

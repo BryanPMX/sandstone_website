@@ -24,33 +24,33 @@ export function AgentsSection({ agents = AGENTS }: AgentsSectionProps) {
   return (
     <section
       id="agents"
-      className="py-12 md:py-16 scroll-mt-20"
+      className="py-[56px] md:py-[70px] scroll-mt-20"
       aria-label="Agents"
     >
       <div className="container mx-auto max-w-5xl px-4">
-        <div className="section-frame p-6 md:p-8">
+        <div className="section-frame p-[28px] md:p-[35px]">
           <motion.h2
-            className="font-heading text-2xl font-bold text-sandstone-navy mb-8 text-center md:text-3xl"
+            className="font-heading text-2xl font-bold text-sandstone-gold mb-8 text-center md:text-3xl"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
             Agents
           </motion.h2>
-          <p className="mb-6 text-center text-sm text-sandstone-text/70">
+          <p className="mb-[28px] text-center text-sm text-sandstone-text/70">
             Meet the team behind every showing, negotiation, and closing, available by phone or video.
           </p>
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-[28px] sm:grid-cols-2">
             {agents.map((agent, i) => (
               <motion.div
                 key={agent.name}
-                className="rounded-2xl border border-white/70 bg-white/70 p-5 shadow-[0_16px_35px_-28px_rgba(75,31,47,0.45)] backdrop-blur-md"
+                className="rounded-2xl border border-white/70 bg-white/70 p-[28px] shadow-[0_16px_35px_-28px_rgba(37,52,113,0.42)] backdrop-blur-md"
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06 }}
               >
-                <div className="flex gap-4">
+                <div className="flex gap-[21px]">
                   <div className="light-sweep image-structure relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-sandstone-base/30">
                     <Image
                       src={agent.image}
@@ -65,7 +65,7 @@ export function AgentsSection({ agents = AGENTS }: AgentsSectionProps) {
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-heading text-xl font-bold text-sandstone-navy">{agent.name}</p>
+                    <p className="font-heading text-xl font-bold text-sandstone-gold">{agent.name}</p>
                     {agent.title && (
                       <p className="text-xs font-semibold uppercase tracking-wide text-sandstone-text/70">
                         {agent.title}
@@ -90,19 +90,19 @@ export function AgentsSection({ agents = AGENTS }: AgentsSectionProps) {
                   <div className="mt-4 grid gap-2 text-sm text-sandstone-text/85">
                     {agent.phone && (
                       <a
-                        className="inline-flex items-center gap-2 hover:text-sandstone-bronze"
+                        className="inline-flex items-center gap-2 hover:text-sandstone-gold"
                         href={`tel:${agent.phone.replace(/[^0-9]/g, "")}`}
                       >
-                        <Phone className="h-4 w-4 text-sandstone-bronze" aria-hidden />
+                        <Phone className="h-4 w-4 text-sandstone-gold" aria-hidden />
                         {agent.phone}
                       </a>
                     )}
                     {agent.email && (
                       <a
-                        className="inline-flex items-center gap-2 break-all hover:text-sandstone-bronze"
+                        className="inline-flex items-center gap-2 break-all hover:text-sandstone-gold"
                         href={`mailto:${agent.email}`}
                       >
-                        <Mail className="h-4 w-4 text-sandstone-bronze" aria-hidden />
+                        <Mail className="h-4 w-4 text-sandstone-gold" aria-hidden />
                         {agent.email}
                       </a>
                     )}

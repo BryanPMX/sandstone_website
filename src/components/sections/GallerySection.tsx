@@ -18,23 +18,26 @@ export function GallerySection({ images }: GallerySectionProps) {
   return (
     <section
       id="gallery"
-      className="py-16 md:py-20 scroll-mt-20"
+      className="relative overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/80 py-[70px] md:py-[84px] scroll-mt-20"
       aria-label="Gallery"
     >
-      <div className="container mx-auto max-w-6xl px-4">
-        <div className="section-frame mb-8 p-6 text-center md:p-8">
+      <div className="pointer-events-none absolute inset-0 bg-black/35" aria-hidden />
+      <div className="pointer-events-none absolute -top-24 right-8 h-64 w-64 rounded-full bg-sandstone-bronze/28 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 left-8 h-56 w-56 rounded-full bg-white/14 blur-3xl" />
+      <div className="container relative z-10 mx-auto max-w-6xl px-4">
+        <div className="section-frame mb-[35px] p-[28px] text-center md:p-[35px]">
           <p className="badge-sandstone mx-auto">Fresh this week</p>
-          <h2 className="font-heading text-3xl font-bold text-sandstone-navy md:text-4xl">
+          <h2 className="font-heading text-3xl font-bold text-sandstone-gold md:text-4xl">
             {GALLERY_TITLE}
           </h2>
-          <p className="mt-2 text-sandstone-text/70">{GALLERY_SUBTITLE}</p>
+          <p className="mt-[14px] text-sandstone-gold">{GALLERY_SUBTITLE}</p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-[21px] sm:grid-cols-2 lg:grid-cols-3">
           {(hasImages ? images : new Array(6).fill(null)).map((img, i) => (
             <motion.figure
               key={img?.src ?? i}
-              className={`group relative overflow-hidden rounded-xl border border-white/65 bg-white/70 shadow-[0_20px_45px_-26px_rgba(75,31,47,0.36)] backdrop-blur-md ${
+              className={`group relative overflow-hidden rounded-xl border border-white/65 bg-white/70 shadow-[0_20px_45px_-26px_rgba(37,52,113,0.33)] backdrop-blur-md ${
                 i % 5 === 0 ? "sm:col-span-2" : ""
               }`}
               initial={{ opacity: 0, y: 16, filter: "blur(6px)" }}

@@ -79,7 +79,7 @@ export function HeroSection() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               href="/#contact"
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-sandstone-maroon via-sandstone-navy to-sandstone-bronze px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-black/25 transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-[0_28px_46px_-18px_rgba(75,31,47,0.9)] focus-visible:-translate-y-[3px] focus-visible:outline-none"
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-sandstone-maroon via-sandstone-navy to-[#70543c] px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-black/25 transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-[0_28px_46px_-18px_rgba(37,52,113,0.8)] focus-visible:-translate-y-[3px] focus-visible:outline-none"
             >
               <span
                 aria-hidden

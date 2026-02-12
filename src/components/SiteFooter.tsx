@@ -2,12 +2,7 @@
 
 import Image from "next/image";
 import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react";
-import {
-  SITE_CONTACT,
-  FOOTER_CREDIT,
-  FOOTER_BRAND,
-  SOCIAL_LINKS,
-} from "@/constants/site";
+import { SITE_CONTACT, FOOTER_BRAND, SOCIAL_LINKS, SITE_NAV } from "@/constants/site";
 
 const iconMap = {
   facebook: Facebook,
@@ -19,33 +14,50 @@ export function SiteFooter() {
   return (
     <footer
       id="footer"
-      className="bg-sandstone-navy text-white/90 py-8 md:py-10 scroll-mt-20"
+      className="bg-gradient-to-r from-sandstone-maroon via-sandstone-navy to-sandstone-gold text-white/90 py-[35px] md:py-[42px] scroll-mt-20"
     >
-      <div className="container mx-auto max-w-6xl px-4">
-        <div className="grid gap-8 grid-cols-1 md:grid-cols-4 items-start">
+      <div className="w-full pl-[28px] pr-[35px] md:pl-[35px] md:pr-[42px] lg:pl-[42px] lg:pr-[56px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[auto_1fr_auto_auto] gap-y-[21px] lg:gap-y-[28px] gap-x-[28px] lg:gap-x-[35px] items-start">
           {/* Logo + ethos */}
-          <div className="space-y-3 md:col-span-2">
-            <div className="relative h-12 w-40">
+          <div className="justify-self-start">
+            <div className="flex items-center gap-[7px]">
               <Image
                 src="/logo.jpg"
                 alt="Sandstone Real Estate Team logo"
-                fill
-                className="object-contain"
-                sizes="160px"
+                width={140}
+                height={48}
+                className="h-12 w-auto object-contain"
                 priority
               />
+              <div className="text-base text-white/85 leading-snug">
+                <p className="font-heading text-lg text-sandstone-base">Sandstone Real Estate</p>
+                <p className="text-sm text-white/80">Luxury · Lifestyle · Legacy</p>
+              </div>
             </div>
-            <p className="text-sm text-white/75 leading-relaxed">
-              Luxury. Lifestyle. Legacy. Every showing, story, and closing is crafted to feel cinematic and effortless.
-            </p>
           </div>
 
-          {/* Social media links */}
-          <div>
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-sandstone-base mb-1.5">
+          {/* Center navigation */}
+          <div className="justify-self-center text-center w-full">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-sandstone-base mb-[7px]">
+              Navigation
+            </h3>
+            <ul className="flex flex-wrap justify-center gap-[14px] text-lg text-white/90">
+              {SITE_NAV.map((item) => (
+                <li key={item.href}>
+                  <a href={item.href} className="hover:text-sandstone-base transition-colors">
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Social */}
+          <div className="justify-self-center lg:justify-self-start text-center w-full">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-sandstone-base">
               Social Media
             </h3>
-            <ul className="flex gap-3">
+            <ul className="mt-[7px] flex flex-wrap gap-[14px] justify-center text-base">
               {SOCIAL_LINKS.map((link) => {
                 const Icon = iconMap[link.icon];
                 return (
@@ -65,40 +77,32 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Phone */}
-          <div>
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-sandstone-base mb-1.5">
-              Phone
+          {/* Contact */}
+          <div className="justify-self-center lg:justify-self-start text-center w-full space-y-[7px]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-sandstone-base">
+              Contact
             </h3>
-            <a
-              href={`tel:${SITE_CONTACT.phoneRaw}`}
-              className="flex items-center gap-1.5 text-xs hover:text-sandstone-base transition-colors"
-            >
-              <Phone className="h-3.5 w-3.5 shrink-0" />
-              {SITE_CONTACT.phone}
-            </a>
-          </div>
-
-          {/* Email */}
-          <div>
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-sandstone-base mb-1.5">
-              Email
-            </h3>
-            <a
-              href={`mailto:${SITE_CONTACT.email}`}
-              className="flex items-center gap-1.5 text-xs hover:text-sandstone-base transition-colors break-all"
-            >
-              <Mail className="h-3.5 w-3.5 shrink-0" />
-              {SITE_CONTACT.email}
-            </a>
+            <div className="flex flex-col items-center gap-[7px]">
+              <a
+                href={`tel:${SITE_CONTACT.phoneRaw}`}
+                className="inline-flex items-center gap-[7px] text-sm hover:text-sandstone-base transition-colors"
+              >
+                <Phone className="h-3.5 w-3.5 shrink-0" />
+                {SITE_CONTACT.phone}
+              </a>
+              <a
+                href={`mailto:${SITE_CONTACT.email}`}
+                className="inline-flex items-center gap-[7px] text-sm hover:text-sandstone-base transition-colors break-all"
+              >
+                <Mail className="h-3.5 w-3.5 shrink-0" />
+                {SITE_CONTACT.email}
+              </a>
+            </div>
           </div>
         </div>
 
-        <div className="mt-8 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/70">
-          <span>
-            © {new Date().getFullYear()} {FOOTER_BRAND}
-          </span>
-          <span>{FOOTER_CREDIT}</span>
+        <div className="mt-[21px] pt-[14px] border-t border-white/15 flex flex-col items-center justify-center gap-[7px] text-sm text-white/80 text-center">
+          <span>© {new Date().getFullYear()} {FOOTER_BRAND}</span>
         </div>
       </div>
     </footer>

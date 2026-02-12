@@ -5,48 +5,48 @@
 @layer base {
   :root {
     /* Sandstone brand mapped to HSL for Shadcn components */
-    --background: 31 39% 94%; /* sandstone-bg #f6efe7 */
-    --foreground: 21 22% 19%; /* sandstone-text #3a2b25 */
-    --card: 31 39% 94%;
-    --card-foreground: 21 22% 19%;
-    --popover: 31 39% 94%;
-    --popover-foreground: 21 22% 19%;
-    --primary: 34 45% 50%; /* gold #b88746 */
-    --primary-foreground: 31 39% 94%;
-    --secondary: 29 38% 83%; /* beige #e7d6c3 */
-    --secondary-foreground: 341 42% 21%; /* maroon foreground */
-    --muted: 29 30% 88%;
-    --muted-foreground: 21 18% 34%;
-    --accent: 29 30% 88%;
-    --accent-foreground: 21 22% 19%;
+    --background: 225 33% 98%; /* light gray canvas #f7f8fb */
+    --foreground: 227 9% 19%; /* text gray #2d2f36 */
+    --card: 225 33% 98%;
+    --card-foreground: 227 9% 19%;
+    --popover: 225 33% 98%;
+    --popover-foreground: 227 9% 19%;
+    --primary: 29 30% 59%; /* sand gold #b79678 */
+    --primary-foreground: 225 33% 98%;
+    --secondary: 240 13% 96%; /* base highlight #f2f2f5 */
+    --secondary-foreground: 228 51% 29%; /* navy foreground */
+    --muted: 228 12% 90%;
+    --muted-foreground: 227 9% 32%;
+    --accent: 228 12% 90%;
+    --accent-foreground: 227 9% 19%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 29 28% 80%;
-    --input: 29 28% 80%;
-    --ring: 34 45% 50%;
+    --border: 228 12% 82%;
+    --input: 228 12% 82%;
+    --ring: 29 30% 59%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 340 37% 16%;
-    --foreground: 31 39% 94%;
-    --card: 340 37% 16%;
-    --card-foreground: 31 39% 94%;
-    --popover: 340 37% 16%;
-    --popover-foreground: 31 39% 94%;
-    --primary: 34 45% 50%;
-    --primary-foreground: 31 39% 94%;
-    --secondary: 23 24% 30%;
-    --secondary-foreground: 31 39% 94%;
-    --muted: 23 24% 24%;
-    --muted-foreground: 30 27% 76%;
-    --accent: 23 24% 30%;
-    --accent-foreground: 31 39% 94%;
-    --destructive: 0 62% 50%;
+    --background: 228 46% 12%;
+    --foreground: 225 33% 98%;
+    --card: 228 46% 12%;
+    --card-foreground: 225 33% 98%;
+    --popover: 228 46% 12%;
+    --popover-foreground: 225 33% 98%;
+    --primary: 29 30% 59%;
+    --primary-foreground: 228 46% 12%;
+    --secondary: 227 30% 18%;
+    --secondary-foreground: 225 33% 98%;
+    --muted: 227 22% 24%;
+    --muted-foreground: 227 9% 68%;
+    --accent: 227 22% 24%;
+    --accent-foreground: 225 33% 98%;
+    --destructive: 0 72% 56%;
     --destructive-foreground: 0 0% 98%;
-    --border: 23 24% 35%;
-    --input: 23 24% 35%;
-    --ring: 34 45% 50%;
+    --border: 228 24% 28%;
+    --input: 228 24% 28%;
+    --ring: 29 30% 59%;
   }
 }
 
@@ -56,9 +56,9 @@
   }
   body {
     background:
-      radial-gradient(1200px 520px at 80% -10%, rgba(184, 135, 70, 0.28), transparent 55%),
-      radial-gradient(900px 420px at 10% 12%, rgba(90, 34, 50, 0.16), transparent 58%),
-      linear-gradient(180deg, #fbf6ef 0%, #f3e8dc 100%);
+      radial-gradient(1200px 520px at 80% -10%, rgba(37, 52, 113, 0.18), transparent 55%),
+      radial-gradient(900px 420px at 10% 12%, rgba(183, 150, 120, 0.16), transparent 58%),
+      linear-gradient(180deg, #f7f8fb 0%, #f2f2f5 100%);
     @apply text-sandstone-text antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
@@ -125,59 +125,59 @@
     @apply backdrop-blur-md border border-sandstone-base/30;
   }
   .section-frame {
-    @apply relative overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-[0_20px_45px_-25px_rgba(75,31,47,0.38)] backdrop-blur-xl;
+    @apply relative overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-[0_20px_45px_-25px_rgba(37,52,113,0.35)] backdrop-blur-xl;
   }
   .panel-glass {
-    @apply rounded-2xl border border-white/60 bg-white/65 shadow-[0_16px_35px_-20px_rgba(58,43,37,0.4)] backdrop-blur-lg;
+    @apply rounded-2xl border border-white/60 bg-white/65 shadow-[0_16px_35px_-20px_rgba(37,52,113,0.32)] backdrop-blur-lg;
   }
   .badge-sandstone {
     @apply inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase backdrop-blur-sm;
-    border-color: rgba(184, 135, 70, 0.48);
+    border-color: rgba(183, 150, 120, 0.55);
     background: linear-gradient(
       102deg,
-      rgba(75, 31, 47, 0.94) 0%,
-      rgba(90, 34, 50, 0.88) 52%,
-      rgba(184, 135, 70, 0.9) 100%
+      rgba(29, 40, 88, 0.98) 0%,
+      rgba(37, 52, 113, 0.96) 52%,
+      rgba(138, 111, 86, 0.98) 100%
     );
-    color: rgba(251, 246, 239, 0.98);
+    color: rgba(247, 248, 251, 0.98);
     letter-spacing: 0.2em;
-    box-shadow: 0 14px 28px -20px rgba(75, 31, 47, 0.7);
+    box-shadow: 0 14px 28px -20px rgba(37, 52, 113, 0.6);
   }
   .badge-sandstone-dark {
     @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase backdrop-blur-md;
-    border-color: rgba(231, 214, 195, 0.4);
+    border-color: rgba(183, 150, 120, 0.4);
     background: linear-gradient(
       110deg,
-      rgba(75, 31, 47, 0.68) 0%,
-      rgba(58, 43, 37, 0.52) 55%,
-      rgba(184, 135, 70, 0.42) 100%
+      rgba(29, 40, 88, 0.95) 0%,
+      rgba(37, 52, 113, 0.9) 55%,
+      rgba(138, 111, 86, 0.92) 100%
     );
-    color: rgba(246, 239, 231, 0.98);
+    color: rgba(247, 248, 251, 0.98);
     letter-spacing: 0.16em;
-    box-shadow: 0 12px 28px -20px rgba(0, 0, 0, 0.72);
+    box-shadow: 0 12px 28px -20px rgba(37, 52, 113, 0.48);
   }
   .badge-sandstone-accent {
     @apply inline-flex items-center rounded-full border px-4 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm;
-    border-color: rgba(255, 255, 255, 0.72);
+    border-color: rgba(183, 150, 120, 0.72);
     background: linear-gradient(
       96deg,
-      rgba(75, 31, 47, 0.92) 0%,
-      rgba(90, 34, 50, 0.86) 50%,
-      rgba(184, 135, 70, 0.88) 100%
+      rgba(29, 40, 88, 0.98) 0%,
+      rgba(37, 52, 113, 0.94) 50%,
+      rgba(138, 111, 86, 0.96) 100%
     );
     letter-spacing: 0.1em;
-    box-shadow: 0 14px 26px -18px rgba(0, 0, 0, 0.88);
+    box-shadow: 0 14px 26px -18px rgba(37, 52, 113, 0.6);
   }
   .badge-sandstone-chip {
     @apply inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition;
-    border-color: rgba(184, 135, 70, 0.42);
+    border-color: rgba(183, 150, 120, 0.42);
     background: linear-gradient(
       110deg,
-      rgba(184, 135, 70, 0.2) 0%,
-      rgba(255, 255, 255, 0.74) 45%,
-      rgba(90, 34, 50, 0.16) 100%
+      rgba(183, 150, 120, 0.2) 0%,
+      rgba(255, 255, 255, 0.78) 45%,
+      rgba(37, 52, 113, 0.18) 100%
     );
-    color: rgba(75, 31, 47, 0.9);
+    color: rgba(37, 52, 113, 0.9);
     box-shadow: 0 12px 24px -20px rgba(75, 31, 47, 0.56);
   }
   .badge-sandstone-chip:hover {

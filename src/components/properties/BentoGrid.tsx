@@ -48,7 +48,7 @@ export function BentoGrid({
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="font-heading text-3xl font-bold text-sandstone-navy md:text-4xl">
+          <h2 className="font-heading text-3xl font-bold text-sandstone-gold md:text-4xl">
             {title}
           </h2>
           <p className="mt-2 text-sandstone-text/80">{subtitle}</p>

@@ -9,15 +9,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-sandstone-bronze text-sandstone-bg hover:bg-sandstone-bronze/90",
+          "bg-sandstone-bronze text-sandstone-text hover:bg-sandstone-bronze/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-sandstone-bronze bg-transparent hover:bg-sandstone-base/30 text-sandstone-navy",
+          "border border-sandstone-bronze bg-transparent hover:bg-sandstone-base/30 text-sandstone-gold",
         secondary:
-          "bg-sandstone-base text-sandstone-navy hover:bg-sandstone-base/80",
-        ghost: "hover:bg-sandstone-base/40 hover:text-sandstone-navy",
-        link: "text-sandstone-bronze underline-offset-4 hover:underline",
+          "bg-sandstone-base text-sandstone-gold hover:bg-sandstone-base/80",
+        ghost: "hover:bg-sandstone-base/40 hover:text-sandstone-gold",
+        link: "text-sandstone-gold underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",

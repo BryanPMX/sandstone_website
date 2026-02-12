@@ -11,12 +11,12 @@ export function PropertyShowcaseSection({ properties }: PropertyShowcaseSectionP
   const hasFeed = properties.length > 0;
 
   return (
-    <section className="pt-10 pb-16 md:pt-12 md:pb-20" id="listings">
+    <section className="pt-[49px] pb-[70px] md:pt-[63px] md:pb-[84px]" id="listings">
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="section-frame flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between md:p-7">
+        <div className="section-frame flex flex-col gap-[21px] p-[28px] md:flex-row md:items-center md:justify-between md:p-[35px]">
           <div>
             <p className="badge-sandstone">Featured listings</p>
-            <h2 className="font-heading text-3xl font-bold text-sandstone-navy md:text-4xl">
+            <h2 className="font-heading text-3xl font-bold text-sandstone-gold md:text-4xl">
               Featured Properties
             </h2>
             <p className="mt-2 max-w-2xl text-sandstone-text/75">
@@ -26,7 +26,7 @@ export function PropertyShowcaseSection({ properties }: PropertyShowcaseSectionP
         </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-[35px]">
         <BentoGrid properties={properties} showHeader={false} />
       </div>
 

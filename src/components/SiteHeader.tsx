@@ -78,7 +78,7 @@ export function SiteHeader() {
           asChild
           variant="outline"
           size="sm"
-          className="group relative hidden overflow-hidden border-sandstone-bronze/85 text-sandstone-base shadow-[0_8px_20px_-14px_rgba(0,0,0,0.65)] transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-sandstone-base hover:bg-sandstone-bronze/25 hover:text-white hover:shadow-[0_20px_34px_-18px_rgba(184,135,70,0.82)] sm:inline-flex"
+          className="group relative hidden overflow-hidden border-sandstone-bronze/85 text-sandstone-base shadow-[0_8px_20px_-14px_rgba(0,0,0,0.65)] transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-sandstone-base hover:bg-sandstone-bronze/25 hover:text-white hover:shadow-[0_20px_34px_-18px_rgba(183,150,120,0.82)] sm:inline-flex"
         >
           <Link href="/#contact">
             <span

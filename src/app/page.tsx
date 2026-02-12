@@ -32,11 +32,11 @@ export default async function Home() {
         <HeroSection />
         <AboutSection />
         <ExperienceStrip />
+        <OurSuccessesSection />
         <PropertyShowcaseSection properties={properties} />
         <GallerySection images={gallery} />
-        <OurSuccessesSection />
-        <NewsSection />
         <AgentsSection />
+        <NewsSection />
         <ContactForm />
         <SiteFooter />
       </main>

@@ -31,14 +31,15 @@ export function OurSuccessesSection() {
   return (
     <section
       id="our-successes"
-      className="relative overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/80 py-10 md:py-12 scroll-mt-20"
+      className="relative overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/80 py-[49px] md:py-[63px] scroll-mt-20"
     >
+      <div className="pointer-events-none absolute inset-0 bg-black/35" aria-hidden />
       <div className="pointer-events-none absolute -top-24 right-10 h-64 w-64 rounded-full bg-sandstone-bronze/30 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 left-6 h-56 w-56 rounded-full bg-white/12 blur-3xl" />
-      <div className="container mx-auto max-w-5xl px-4">
+      <div className="container relative z-10 mx-auto max-w-5xl px-4">
         {/* Stats row */}
         <motion.h2
-          className="font-heading text-xl font-bold text-sandstone-base mb-6 text-center md:text-2xl"
+          className="font-heading text-xl font-bold text-white mb-[28px] text-center md:text-2xl"
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -46,7 +47,7 @@ export function OurSuccessesSection() {
           Our Successes
         </motion.h2>
         <motion.ul
-          className="mb-10 grid gap-3 rounded-2xl border border-white/15 bg-white/5 p-4 backdrop-blur-md sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 md:gap-4 md:p-5"
+          className="mb-[49px] grid gap-[14px] rounded-2xl border border-white/15 bg-white/5 p-[21px] backdrop-blur-md sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 md:gap-[21px] md:p-[28px]"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
@@ -55,13 +56,13 @@ export function OurSuccessesSection() {
           {STATS.map((stat, i) => (
             <motion.li
               key={stat.label}
-              className="rounded-xl border border-white/15 bg-black/10 px-4 py-3 text-center"
+              className="rounded-xl border border-white/15 bg-black/10 px-[21px] py-[14px] text-center"
               initial={{ opacity: 0, y: 6 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.04, duration: 0.35 }}
             >
-              <span className="block font-heading text-xl font-bold text-sandstone-base md:text-2xl">
+              <span className="block font-heading text-xl font-bold text-white md:text-2xl">
                 <RollingStatValue
                   rollDigits={stat.rollDigits}
                   commaAfterIndex={stat.commaAfterIndex}
@@ -79,10 +80,10 @@ export function OurSuccessesSection() {
 
         {/* Gallery slideshow (under stats) */}
         <div id="gallery" className="scroll-mt-20">
-          <h3 className="font-heading text-lg font-bold text-sandstone-base mb-4 text-center">
+          <h3 className="font-heading text-lg font-bold text-white mb-[21px] text-center">
             Our Community
           </h3>
-          <div className="relative max-w-2xl mx-auto aspect-[4/3] overflow-hidden rounded-xl bg-sandstone-base/20">
+          <div className="relative max-w-2xl mx-auto aspect-[4/3] overflow-hidden rounded-xl bg-black/25">
             {GALLERY_IMAGES.length > 0 ? (
               <>
                 <AnimatePresence mode="wait" initial={false}>

@@ -11,13 +11,14 @@ const config: Config = {
     extend: {
       colors: {
         // Sandstone Real Estate brand palette (strict adherence)
-        "sandstone-base": "#e7d6c3",
-        "sandstone-bronze": "#b88746",
-        "sandstone-navy": "#4b1f2f",
-        "sandstone-bg": "#f6efe7",
-        "sandstone-text": "#3a2b25",
-        "sandstone-brown": "#6a4632",
-        "sandstone-maroon": "#5a2232",
+        "sandstone-base": "#f2f2f5", // light neutral for highlights on dark backdrops
+        "sandstone-bronze": "#b79678", // sand gold accent
+        "sandstone-navy": "#253471", // primary navy
+        "sandstone-gold": "#70543c", // deeper sand gold for stronger contrast on light backgrounds
+        "sandstone-bg": "#f7f8fb", // soft page background
+        "sandstone-text": "#2d2f36", // primary body text (gray)
+        "sandstone-brown": "#4a4f5c", // deeper gray accent
+        "sandstone-maroon": "#1d2858", // deeper navy for gradients
         // Shadcn/UI semantic mapping
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -54,8 +55,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-montserrat)", "system-ui", "sans-serif"],
-        heading: ["var(--font-montserrat-bold)", "var(--font-montserrat)", "system-ui", "sans-serif"],
+        sans: ["var(--font-montserrat)", "Minerva Modern", "Montserrat", "system-ui", "sans-serif"],
+        heading: ["var(--font-montserrat-bold)", "var(--font-montserrat)", "Montserrat", "Minerva Modern", "system-ui", "sans-serif"],
       },
       backgroundImage: {
         "glass-gradient":

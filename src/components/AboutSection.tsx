@@ -13,21 +13,21 @@ import {
 export function AboutSection() {
   const [founderImgError, setFounderImgError] = useState(false);
   return (
-    <section id="about-us" className="relative scroll-mt-24 pt-14 pb-10 md:pt-16 md:pb-12">
+    <section id="about-us" className="relative scroll-mt-24 pt-14 pb-[49px] md:pt-[70px] md:pb-[56px]">
       <div className="pointer-events-none absolute inset-x-0 top-8 mx-auto h-44 max-w-5xl rounded-full bg-sandstone-bronze/15 blur-[90px]" />
       <div className="pointer-events-none absolute -left-16 bottom-8 h-36 w-36 rounded-full bg-sandstone-navy/15 blur-3xl" />
       <div className="container mx-auto max-w-6xl px-4">
         <motion.div
-          className="section-frame relative overflow-hidden p-5 md:p-9"
+          className="section-frame relative overflow-hidden p-[28px] md:p-[56px]"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5 }}
         >
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_25%,rgba(184,135,70,0.16),transparent_45%),radial-gradient(circle_at_82%_80%,rgba(75,31,47,0.14),transparent_44%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_25%,rgba(183,150,120,0.16),transparent_45%),radial-gradient(circle_at_82%_80%,rgba(37,52,113,0.14),transparent_44%)]" />
 
-          <div className="relative grid items-start gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-stretch">
-            <div className="panel-glass relative overflow-hidden rounded-[1.35rem] border border-white/75 p-4 shadow-[0_24px_45px_-32px_rgba(75,31,47,0.55)] md:p-6">
+          <div className="relative grid items-start gap-[28px] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-stretch">
+            <div className="panel-glass relative overflow-hidden rounded-[1.35rem] border border-white/75 p-[28px] shadow-[0_24px_45px_-32px_rgba(37,52,113,0.5)] md:p-[35px]">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/35 via-white/5 to-sandstone-navy/10" />
 
               <div className="relative">
@@ -36,7 +36,7 @@ export function AboutSection() {
                 </p>
               </div>
 
-              <div className="relative mt-4 rounded-[1.05rem] bg-gradient-to-br from-white/90 via-sandstone-base/45 to-sandstone-navy/25 p-[1.6px] shadow-[0_20px_38px_-26px_rgba(75,31,47,0.65)]">
+              <div className="relative mt-[21px] rounded-[1.05rem] bg-gradient-to-br from-white/90 via-sandstone-base/45 to-sandstone-navy/25 p-[1.6px] shadow-[0_20px_38px_-26px_rgba(37,52,113,0.55)]">
                 <div className="relative overflow-hidden rounded-[0.95rem] border border-white/80 bg-white/30 p-3">
                   {!founderImgError ? (
                     <>
@@ -52,7 +52,7 @@ export function AboutSection() {
                       />
                     </>
                   ) : (
-                    <span className="flex min-h-[340px] items-center justify-center text-sm text-sandstone-navy/60">
+                    <span className="flex min-h-[340px] items-center justify-center text-sm text-sandstone-gold">
                       Founder image
                     </span>
                   )}
@@ -60,23 +60,23 @@ export function AboutSection() {
                 </div>
               </div>
 
-              <div className="relative mt-4">
+              <div className="relative mt-[21px]">
                 <p className="badge-sandstone-accent">
                   Founder Alejandro Gamboa
                 </p>
               </div>
 
-              <p className="relative mt-4 text-xs uppercase tracking-[0.18em] text-sandstone-navy/60">
+              <p className="relative mt-[21px] text-xs uppercase tracking-[0.18em] text-sandstone-gold">
                 Luxury and relocation advisory
               </p>
             </div>
 
-            <div className="panel-glass relative flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/75 p-6 shadow-[0_26px_44px_-32px_rgba(75,31,47,0.5)] md:p-7">
+            <div className="panel-glass relative flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/75 p-[35px] shadow-[0_26px_44px_-32px_rgba(37,52,113,0.45)] md:p-[42px]">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/50 via-white/10 to-sandstone-base/30" />
 
-              <div className="relative space-y-5">
+              <div className="relative space-y-[35px]">
                 <p className="badge-sandstone-accent">About Me</p>
-                <h2 className="text-3xl font-bold leading-tight text-sandstone-navy md:text-4xl">
+                <h2 className="text-3xl font-bold leading-tight text-sandstone-gold md:text-4xl">
                   {ABOUT_HEADLINE}
                 </h2>
                 <p className="max-w-2xl text-base leading-relaxed text-sandstone-text/90 md:text-lg">
@@ -84,8 +84,8 @@ export function AboutSection() {
                 </p>
               </div>
 
-              <div className="relative mt-4 space-y-2.5">
-                <div className="grid gap-3 sm:grid-cols-2">
+              <div className="relative mt-[21px] space-y-[14px]">
+                <div className="grid gap-[14px] sm:grid-cols-2">
                   <a
                     href={`tel:${SITE_CONTACT.phoneRaw}`}
                     className="badge-sandstone-accent justify-center px-4 py-3 text-sm normal-case tracking-[0.06em] sm:justify-start"
@@ -100,7 +100,7 @@ export function AboutSection() {
                   </a>
                 </div>
 
-                <p className="badge-sandstone-chip w-full justify-center px-4 py-2 text-[11px] uppercase tracking-[0.14em] text-sandstone-navy">
+                <p className="badge-sandstone-chip w-full justify-center px-4 py-[14px] text-[11px] uppercase tracking-[0.14em] text-sandstone-gold">
                   El Paso - Fort Bliss - Trust - Excellence
                 </p>
               </div>

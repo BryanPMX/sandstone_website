@@ -23,15 +23,15 @@ const items = [
 
 export function ExperienceStrip() {
   return (
-    <section className="pt-6 pb-10 md:pt-8 md:pb-12">
+    <section className="pt-[28px] pb-[49px] md:pt-[35px] md:pb-[56px]">
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="section-frame grid gap-4 p-5 md:grid-cols-3 md:p-6">
+        <div className="section-frame grid gap-[21px] p-[28px] md:grid-cols-3 md:p-[35px]">
           {items.map((item, i) => {
             const Icon = item.icon;
             return (
               <motion.div
                 key={item.title}
-                className="group relative overflow-hidden rounded-2xl border border-white/70 bg-white/65 p-5 shadow-[0_18px_30px_-25px_rgba(75,31,47,0.34)] backdrop-blur-md"
+                className="group relative overflow-hidden rounded-2xl border border-white/70 bg-white/65 p-[28px] shadow-[0_18px_30px_-25px_rgba(37,52,113,0.32)] backdrop-blur-md"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
@@ -40,11 +40,11 @@ export function ExperienceStrip() {
                 <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100">
                   <div className="absolute inset-0 bg-gradient-to-br from-sandstone-bronze/12 via-white/0 to-sandstone-navy/12" />
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sandstone-bronze shadow-sm">
+                <div className="flex items-center gap-[14px]">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sandstone-gold shadow-sm">
                     <Icon className="h-5 w-5" aria-hidden />
                   </span>
-                  <p className="font-heading text-lg font-semibold text-sandstone-navy">
+                  <p className="font-heading text-lg font-semibold text-sandstone-gold">
                     {item.title}
                   </p>
                 </div>

@@ -184,7 +184,7 @@ export const CONTACT_SUBHEADLINE =
   "We'd be happy to help you find your dream home.";
 export const CONTACT_CTA = "SCHEDULE A VISIT";
 
-export const FOOTER_CREDIT = "Site created by Rolu";
+export const FOOTER_CREDIT = "";
 export const FOOTER_BRAND = "Sandstone Real Estate Team - by Keller Williams";
 
 /** Social links for footer (add URLs when available) */
