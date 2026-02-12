@@ -14,7 +14,7 @@ export function OurSuccessesSection() {
   const [galleryIndex, setGalleryIndex] = useState(0);
   const galleryTotal = GALLERY_IMAGES.length;
   const statsRef = useRef<HTMLUListElement>(null);
-  const statsInView = useInView(statsRef, { once: true, margin: "-40px", amount: 0.2 });
+  const statsInView = useInView(statsRef, { once: false, margin: "-40px", amount: 0.2 });
 
   const galleryNext = useCallback(() => {
     setGalleryIndex((i) => (i + 1) % galleryTotal);

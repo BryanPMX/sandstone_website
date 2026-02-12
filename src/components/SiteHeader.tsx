@@ -41,14 +41,17 @@ export function SiteHeader() {
         </div>
       </Link>
 
-      {/* Nav + CTA */}
-      <nav className="flex items-center gap-4 md:gap-6" aria-label="Main">
-        <ul className="hidden items-center gap-6 md:flex">
+      {/* Nav links – centered */}
+      <nav
+        className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-6 md:flex"
+        aria-label="Main"
+      >
+        <ul className="flex items-center gap-6">
           {SITE_NAV.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="group relative isolate inline-flex items-center px-1 py-1 text-sm font-medium text-white/90 transition-all duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-px hover:text-sandstone-base focus-visible:-translate-y-px focus-visible:text-sandstone-base focus-visible:outline-none"
+                className="group relative isolate inline-flex items-center px-1 py-1 text-base font-medium text-white/90 transition-all duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-px hover:text-sandstone-base focus-visible:-translate-y-px focus-visible:text-sandstone-base focus-visible:outline-none"
               >
                 <span
                   aria-hidden
@@ -65,7 +68,7 @@ export function SiteHeader() {
         </ul>
         <Link
           href="/#contact"
-          className="group hidden items-center gap-1.5 text-sm text-white/90 transition-all duration-500 hover:-translate-y-px hover:text-sandstone-base lg:flex"
+          className="group flex items-center gap-1.5 text-base text-white/90 transition-all duration-500 hover:-translate-y-px hover:text-sandstone-base"
           aria-label="Contact us"
         >
           <Mail
@@ -74,6 +77,10 @@ export function SiteHeader() {
           />
           <span>Contact Us</span>
         </Link>
+      </nav>
+
+      {/* CTA + mobile menu – far right */}
+      <div className="ml-auto flex items-center gap-2">
         <Button
           asChild
           variant="outline"
@@ -95,7 +102,7 @@ export function SiteHeader() {
         >
           <Menu className="h-6 w-6" />
         </button>
-      </nav>
+      </div>
     </header>
   );
 }
