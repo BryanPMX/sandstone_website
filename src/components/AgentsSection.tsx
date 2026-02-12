@@ -1,0 +1,151 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { Mail, Phone, Facebook, Instagram, Linkedin } from "lucide-react";
+import type { ComponentType } from "react";
+import { AGENTS } from "@/constants/site";
+import type { AgentProfile, AgentSocialPlatform } from "@/types";
+
+interface AgentsSectionProps {
+  agents?: AgentProfile[];
+}
+
+const socialIconByPlatform: Record<
+  AgentSocialPlatform,
+  ComponentType<{ className?: string }>
+> = {
+  facebook: Facebook,
+  instagram: Instagram,
+  linkedin: Linkedin,
+};
+
+export function AgentsSection({ agents = AGENTS }: AgentsSectionProps) {
+  return (
+    <section
+      id="agents"
+      className="py-12 md:py-16 scroll-mt-20"
+      aria-label="Agents"
+    >
+      <div className="container mx-auto max-w-5xl px-4">
+        <div className="section-frame p-6 md:p-8">
+          <motion.h2
+            className="font-heading text-2xl font-bold text-sandstone-navy mb-8 text-center md:text-3xl"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            Agents
+          </motion.h2>
+          <p className="mb-6 text-center text-sm text-sandstone-text/70">
+            Meet the team behind every showing, negotiation, and closing, available by phone or video.
+          </p>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {agents.map((agent, i) => (
+              <motion.div
+                key={agent.name}
+                className="rounded-2xl border border-white/70 bg-white/70 p-5 shadow-[0_16px_35px_-28px_rgba(75,31,47,0.45)] backdrop-blur-md"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+              >
+                <div className="flex gap-4">
+                  <div className="light-sweep image-structure relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-sandstone-base/30">
+                    <Image
+                      src={agent.image}
+                      alt={agent.name}
+                      fill
+                      className="object-cover"
+                      sizes="112px"
+                      unoptimized
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-heading text-xl font-bold text-sandstone-navy">{agent.name}</p>
+                    {agent.title && (
+                      <p className="text-xs font-semibold uppercase tracking-wide text-sandstone-text/70">
+                        {agent.title}
+                      </p>
+                    )}
+                    {agent.tagline && (
+                      <p className="mt-2 text-sm text-sandstone-text/80 leading-snug">{agent.tagline}</p>
+                    )}
+                  </div>
+                </div>
+
+                {agent.about && (
+                  <div className="mt-4 rounded-xl border border-sandstone-base/40 bg-white/55 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-sandstone-navy/70">
+                      About Me
+                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-sandstone-text/85">{agent.about}</p>
+                  </div>
+                )}
+
+                {(agent.phone || agent.email) && (
+                  <div className="mt-4 grid gap-2 text-sm text-sandstone-text/85">
+                    {agent.phone && (
+                      <a
+                        className="inline-flex items-center gap-2 hover:text-sandstone-bronze"
+                        href={`tel:${agent.phone.replace(/[^0-9]/g, "")}`}
+                      >
+                        <Phone className="h-4 w-4 text-sandstone-bronze" aria-hidden />
+                        {agent.phone}
+                      </a>
+                    )}
+                    {agent.email && (
+                      <a
+                        className="inline-flex items-center gap-2 break-all hover:text-sandstone-bronze"
+                        href={`mailto:${agent.email}`}
+                      >
+                        <Mail className="h-4 w-4 text-sandstone-bronze" aria-hidden />
+                        {agent.email}
+                      </a>
+                    )}
+                  </div>
+                )}
+
+                {agent.specialties && agent.specialties.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {agent.specialties.map((item) => (
+                      <span
+                        key={`${agent.name}-${item}`}
+                        className="rounded-full border border-sandstone-base/50 bg-sandstone-base/35 px-2.5 py-1 text-xs font-medium text-sandstone-navy"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {agent.socials && agent.socials.length > 0 && (
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                    {agent.socials.map((social) => {
+                      const Icon = socialIconByPlatform[social.platform];
+                      return (
+                        <a
+                          key={`${agent.name}-${social.platform}`}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-full border border-sandstone-base/50 bg-white/65 px-3 py-1.5 text-xs text-sandstone-text/80 transition hover:border-sandstone-bronze hover:text-sandstone-bronze"
+                        >
+                          <Icon className="h-3.5 w-3.5" aria-hidden />
+                          {social.handle ?? social.platform}
+                        </a>
+                      );
+                    })}
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

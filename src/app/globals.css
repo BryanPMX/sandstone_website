@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Sandstone brand mapped to HSL for Shadcn components */
+    --background: 31 39% 94%; /* sandstone-bg #f6efe7 */
+    --foreground: 21 22% 19%; /* sandstone-text #3a2b25 */
+    --card: 31 39% 94%;
+    --card-foreground: 21 22% 19%;
+    --popover: 31 39% 94%;
+    --popover-foreground: 21 22% 19%;
+    --primary: 34 45% 50%; /* gold #b88746 */
+    --primary-foreground: 31 39% 94%;
+    --secondary: 29 38% 83%; /* beige #e7d6c3 */
+    --secondary-foreground: 341 42% 21%; /* maroon foreground */
+    --muted: 29 30% 88%;
+    --muted-foreground: 21 18% 34%;
+    --accent: 29 30% 88%;
+    --accent-foreground: 21 22% 19%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 29 28% 80%;
+    --input: 29 28% 80%;
+    --ring: 34 45% 50%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 340 37% 16%;
+    --foreground: 31 39% 94%;
+    --card: 340 37% 16%;
+    --card-foreground: 31 39% 94%;
+    --popover: 340 37% 16%;
+    --popover-foreground: 31 39% 94%;
+    --primary: 34 45% 50%;
+    --primary-foreground: 31 39% 94%;
+    --secondary: 23 24% 30%;
+    --secondary-foreground: 31 39% 94%;
+    --muted: 23 24% 24%;
+    --muted-foreground: 30 27% 76%;
+    --accent: 23 24% 30%;
+    --accent-foreground: 31 39% 94%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 23 24% 35%;
+    --input: 23 24% 35%;
+    --ring: 34 45% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background:
+      radial-gradient(1200px 520px at 80% -10%, rgba(184, 135, 70, 0.28), transparent 55%),
+      radial-gradient(900px 420px at 10% 12%, rgba(90, 34, 50, 0.16), transparent 58%),
+      linear-gradient(180deg, #fbf6ef 0%, #f3e8dc 100%);
+    @apply text-sandstone-text antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading font-bold;
+  }
+}
+
+@keyframes sandstone-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes sandstone-light-sweep {
+  0% {
+    transform: translateX(-130%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 0.22;
+  }
+  100% {
+    transform: translateX(130%);
+    opacity: 0;
+  }
+}
+
+@keyframes sandstone-orb-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(14px, -10px, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Glassmorphism utility */
+@layer utilities {
+  .glass {
+    @apply bg-white/80 dark:bg-sandstone-navy/80 backdrop-blur-md border border-white/20;
+  }
+  .glass-warm {
+    background: linear-gradient(
+      135deg,
+      rgba(251, 246, 239, 0.9) 0%,
+      rgba(184, 135, 70, 0.34) 100%
+    );
+    @apply backdrop-blur-md border border-sandstone-base/30;
+  }
+  .section-frame {
+    @apply relative overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-[0_20px_45px_-25px_rgba(75,31,47,0.38)] backdrop-blur-xl;
+  }
+  .panel-glass {
+    @apply rounded-2xl border border-white/60 bg-white/65 shadow-[0_16px_35px_-20px_rgba(58,43,37,0.4)] backdrop-blur-lg;
+  }
+  .fade-up-soft {
+    animation: sandstone-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .orb-drift {
+    animation: sandstone-orb-drift 13s ease-in-out infinite;
+  }
+  .light-sweep {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .light-sweep::after {
+    content: "";
+    position: absolute;
+    inset: -20% -60%;
+    pointer-events: none;
+    background: linear-gradient(
+      110deg,
+      transparent 42%,
+      rgba(255, 234, 205, 0.5) 50%,
+      transparent 58%
+    );
+    mix-blend-mode: screen;
+    transform: translateX(-130%);
+    animation: sandstone-light-sweep 8.2s ease-in-out infinite;
+    z-index: 2;
+  }
+  .image-structure {
+    position: relative;
+    isolation: isolate;
+  }
+  .image-structure::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 0.65rem;
+    border: 1px solid rgba(255, 250, 245, 0.45);
+    pointer-events: none;
+    z-index: 2;
+  }
+}
