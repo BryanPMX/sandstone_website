@@ -37,7 +37,8 @@ export const HERO_CTA = "Schedule a Private Tour";
 export const ABOUT_HEADLINE = "Boutique Real Estate, Built on Trust";
 export const ABOUT_WHAT_WE_DO =
   "We guide buyers, sellers, and military families with concierge-level service—from pricing to staging to negotiation—so every move is clear, confident, and stress-free. Every detail should feel cinematic, warm, and intentional.";
-export const ABOUT_FOUNDER_ALT = "Sandstone Real Estate Team founder";
+export const ABOUT_FOUNDER_ALT =
+  "Alejandro Gamboa, founder of Sandstone Real Estate Team";
 
 /**
  * Single stat type supporting any rolling value (e.g. 0+, 1,500, 10,000).
