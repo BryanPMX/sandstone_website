@@ -19,11 +19,17 @@ export function ContactForm() {
   );
 
   return (
-    <section id="contact" className="py-16 md:py-24 scroll-mt-20">
+    <section
+      id="contact"
+      className="relative overflow-hidden py-16 md:py-24 scroll-mt-20 bg-gradient-to-br from-sandstone-bg/90 via-sandstone-base/80 to-sandstone-bronze/28"
+    >
+      <div className="pointer-events-none absolute -left-14 top-4 h-56 w-56 rounded-full bg-sandstone-bronze/22 blur-3xl" />
+      <div className="pointer-events-none absolute right-0 bottom-8 h-64 w-64 rounded-full bg-sandstone-navy/18 blur-[110px]" />
       <div className="container mx-auto max-w-3xl px-4">
-        <div className="section-frame p-6 sm:p-8 md:p-10">
+        <div className="section-frame relative overflow-hidden border border-white/55 bg-gradient-to-br from-white/82 via-sandstone-base/55 to-sandstone-bronze/32 p-6 sm:p-8 md:p-10">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/18 via-white/10 to-sandstone-navy/12" />
           <motion.div
-            className="text-center"
+            className="relative text-center"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -32,19 +38,20 @@ export function ContactForm() {
             <h2 className="font-heading text-3xl font-bold text-sandstone-navy md:text-4xl">
               {CONTACT_HEADLINE}
             </h2>
-            <p className="mt-2 text-sandstone-text/80">
+            <p className="mt-2 text-sandstone-text/85">
               {CONTACT_SUBHEADLINE}
             </p>
           </motion.div>
 
           <motion.div
-            className="panel-glass mt-8 p-6 sm:p-8"
+            className="relative mt-8 overflow-hidden rounded-2xl border border-sandstone-bronze/60 bg-gradient-to-br from-white/92 via-sandstone-base/70 to-sandstone-bronze/38 p-6 shadow-[0_18px_36px_-26px_rgba(75,31,47,0.55)] backdrop-blur-xl sm:p-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <form action={formAction} className="space-y-6">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/25 via-sandstone-base/14 to-sandstone-navy/12" />
+            <form action={formAction} className="relative space-y-6">
             {state?.success === true && (
               <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
                 {state.message}
@@ -147,7 +154,7 @@ export function ContactForm() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full sm:w-auto uppercase tracking-wider"
+                className="w-full sm:w-auto bg-gradient-to-r from-sandstone-maroon via-sandstone-navy to-sandstone-bronze text-white shadow-[0_18px_32px_-18px_rgba(75,31,47,0.7)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-18px_rgba(75,31,47,0.85)] focus-visible:-translate-y-0.5 uppercase tracking-wider"
                 disabled={isPending}
               >
                 {isPending ? "Sending..." : CONTACT_CTA}

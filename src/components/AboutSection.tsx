@@ -13,7 +13,7 @@ import {
 export function AboutSection() {
   const [founderImgError, setFounderImgError] = useState(false);
   return (
-    <section id="about-us" className="relative scroll-mt-24 py-14 md:py-20">
+    <section id="about-us" className="relative scroll-mt-24 pt-14 pb-10 md:pt-16 md:pb-12">
       <div className="pointer-events-none absolute inset-x-0 top-8 mx-auto h-44 max-w-5xl rounded-full bg-sandstone-bronze/15 blur-[90px]" />
       <div className="pointer-events-none absolute -left-16 bottom-8 h-36 w-36 rounded-full bg-sandstone-navy/15 blur-3xl" />
       <div className="container mx-auto max-w-6xl px-4">
@@ -27,11 +27,11 @@ export function AboutSection() {
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_25%,rgba(184,135,70,0.16),transparent_45%),radial-gradient(circle_at_82%_80%,rgba(75,31,47,0.14),transparent_44%)]" />
 
           <div className="relative grid items-start gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-stretch">
-            <div className="panel-glass light-sweep relative overflow-hidden rounded-[1.35rem] border border-white/75 p-4 shadow-[0_24px_45px_-32px_rgba(75,31,47,0.55)] md:p-6">
+            <div className="panel-glass relative overflow-hidden rounded-[1.35rem] border border-white/75 p-4 shadow-[0_24px_45px_-32px_rgba(75,31,47,0.55)] md:p-6">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/35 via-white/5 to-sandstone-navy/10" />
 
               <div className="relative">
-                <p className="badge-sandstone text-[10px]">
+                <p className="badge-sandstone-accent text-[10px] tracking-[0.16em]">
                   Founder
                 </p>
               </div>
@@ -50,7 +50,6 @@ export function AboutSection() {
                         unoptimized
                         onError={() => setFounderImgError(true)}
                       />
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-sandstone-navy/28 via-transparent to-transparent" />
                     </>
                   ) : (
                     <span className="flex min-h-[340px] items-center justify-center text-sm text-sandstone-navy/60">
@@ -76,7 +75,7 @@ export function AboutSection() {
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/50 via-white/10 to-sandstone-base/30" />
 
               <div className="relative space-y-5">
-                <p className="badge-sandstone">About Me</p>
+                <p className="badge-sandstone-accent">About Me</p>
                 <h2 className="text-3xl font-bold leading-tight text-sandstone-navy md:text-4xl">
                   {ABOUT_HEADLINE}
                 </h2>
@@ -85,23 +84,23 @@ export function AboutSection() {
                 </p>
               </div>
 
-              <div className="relative mt-6 space-y-3 lg:mt-auto">
+              <div className="relative mt-4 space-y-2.5">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <a
                     href={`tel:${SITE_CONTACT.phoneRaw}`}
-                    className="badge-sandstone-chip justify-center px-4 py-3 text-sm sm:justify-start hover:-translate-y-0.5"
+                    className="badge-sandstone-accent justify-center px-4 py-3 text-sm normal-case tracking-[0.06em] sm:justify-start"
                   >
                     <span className="font-medium">{SITE_CONTACT.phone}</span>
                   </a>
                   <a
                     href={`mailto:${SITE_CONTACT.email}`}
-                    className="badge-sandstone-chip justify-center px-4 py-3 text-sm sm:justify-start hover:-translate-y-0.5"
+                    className="badge-sandstone-dark justify-center px-4 py-3 text-sm normal-case tracking-[0.05em] text-white sm:justify-start"
                   >
                     <span className="break-all font-medium">{SITE_CONTACT.email}</span>
                   </a>
                 </div>
 
-                <p className="text-[11px] uppercase tracking-[0.18em] text-sandstone-navy/65">
+                <p className="badge-sandstone-chip w-full justify-center px-4 py-2 text-[11px] uppercase tracking-[0.14em] text-sandstone-navy">
                   El Paso - Fort Bliss - Trust - Excellence
                 </p>
               </div>

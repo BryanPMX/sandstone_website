@@ -79,7 +79,7 @@ export function AgentsSection({ agents = AGENTS }: AgentsSectionProps) {
 
                 {agent.about && (
                   <div className="mt-4 rounded-xl border border-sandstone-base/40 bg-white/55 p-3">
-                    <p className="badge-sandstone text-[10px]">
+                    <p className="badge-sandstone-accent px-3 py-1 text-[10px] tracking-[0.14em]">
                       About Me
                     </p>
                     <p className="mt-1 text-sm leading-relaxed text-sandstone-text/85">{agent.about}</p>
@@ -110,20 +110,28 @@ export function AgentsSection({ agents = AGENTS }: AgentsSectionProps) {
                 )}
 
                 {agent.specialties && agent.specialties.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {agent.specialties.map((item) => (
-                      <span
-                        key={`${agent.name}-${item}`}
-                        className="badge-sandstone-chip"
-                      >
-                        {item}
-                      </span>
-                    ))}
+                  <div className="mt-5 space-y-2">
+                    <p className="badge-sandstone-dark w-fit px-3 py-1 text-[10px] tracking-[0.14em]">
+                      Skills
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {agent.specialties.map((item) => (
+                        <span
+                          key={`${agent.name}-${item}`}
+                          className="badge-sandstone-chip"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 {agent.socials && agent.socials.length > 0 && (
-                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <div className="mt-6 border-t border-sandstone-base/35 pt-4 flex flex-wrap items-center gap-2">
+                    <p className="badge-sandstone-dark w-fit px-3 py-1 text-[10px] tracking-[0.14em]">
+                      Social
+                    </p>
                     {agent.socials.map((social) => {
                       const Icon = socialIconByPlatform[social.platform];
                       return (

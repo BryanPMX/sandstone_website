@@ -42,9 +42,9 @@ export function HeroSection() {
         </video>
         <div className="absolute inset-0 bg-gradient-to-br from-sandstone-navy/85 via-sandstone-navy/80 to-black/40" />
       </div>
-      <div className="pointer-events-none absolute -left-32 top-20 h-64 w-64 rounded-full bg-sandstone-bronze/20 blur-3xl orb-drift" />
-      <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-white/10 blur-3xl orb-drift [animation-delay:-5.5s]" />
-      <div className="pointer-events-none absolute left-1/2 top-[-8rem] h-64 w-[38rem] -translate-x-1/2 rounded-full bg-sandstone-bronze/12 blur-[90px]" />
+      <div className="pointer-events-none absolute -left-32 top-20 h-64 w-64 rounded-full bg-sandstone-bronze/26 blur-3xl orb-drift" />
+      <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-sandstone-navy/22 blur-3xl orb-drift [animation-delay:-5.5s]" />
+      <div className="pointer-events-none absolute left-1/2 top-[-8rem] h-64 w-[38rem] -translate-x-1/2 rounded-full bg-sandstone-bronze/18 blur-[90px]" />
 
       <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-center px-4 py-20 lg:flex-row lg:items-center lg:gap-12">
         <motion.div
@@ -53,7 +53,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="badge-sandstone-dark w-fit text-white/90">
+          <p className="badge-sandstone-accent w-fit text-white">
             El Paso · Fort Bliss · Luxury · Relocation
           </p>
           <h1 className="font-heading text-4xl font-bold leading-tight text-sandstone-base sm:text-5xl lg:text-6xl">
@@ -79,7 +79,7 @@ export function HeroSection() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               href="/#contact"
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-sandstone-bronze px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-black/20 transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-[0_26px_42px_-18px_rgba(184,135,70,0.95)] focus-visible:-translate-y-[3px] focus-visible:outline-none"
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-sandstone-maroon via-sandstone-navy to-sandstone-bronze px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-black/25 transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-[0_28px_46px_-18px_rgba(75,31,47,0.9)] focus-visible:-translate-y-[3px] focus-visible:outline-none"
             >
               <span
                 aria-hidden
@@ -93,7 +93,7 @@ export function HeroSection() {
             </Link>
             <Link
               href="/#gallery"
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/30 px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white/90 backdrop-blur-sm transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[2px] hover:border-white hover:text-white hover:shadow-[0_24px_38px_-24px_rgba(255,255,255,0.95)] focus-visible:-translate-y-[2px] focus-visible:border-white focus-visible:text-white focus-visible:outline-none"
+              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/35 px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white/90 backdrop-blur-sm transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[2px] hover:border-sandstone-base hover:text-white hover:shadow-[0_24px_38px_-24px_rgba(255,255,255,0.95)] focus-visible:-translate-y-[2px] focus-visible:border-sandstone-base focus-visible:text-white focus-visible:outline-none"
             >
               <span
                 aria-hidden

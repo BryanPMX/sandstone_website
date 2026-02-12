@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { STATS, GALLERY_TITLE, GALLERY_IMAGES } from "@/constants/site";
+import { STATS, GALLERY_IMAGES } from "@/constants/site";
 import { RollingStatValue } from "@/components/ui/rolling-number";
 import { Button } from "@/components/ui/button";
 
@@ -31,10 +31,10 @@ export function OurSuccessesSection() {
   return (
     <section
       id="our-successes"
-      className="relative overflow-hidden bg-sandstone-navy py-10 md:py-12 scroll-mt-20"
+      className="relative overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/80 py-10 md:py-12 scroll-mt-20"
     >
-      <div className="pointer-events-none absolute -top-20 right-12 h-56 w-56 rounded-full bg-sandstone-bronze/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 left-10 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+      <div className="pointer-events-none absolute -top-24 right-10 h-64 w-64 rounded-full bg-sandstone-bronze/30 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 left-6 h-56 w-56 rounded-full bg-white/12 blur-3xl" />
       <div className="container mx-auto max-w-5xl px-4">
         {/* Stats row */}
         <motion.h2
@@ -46,7 +46,7 @@ export function OurSuccessesSection() {
           Our Successes
         </motion.h2>
         <motion.ul
-          className="mb-10 flex gap-3 overflow-x-auto rounded-2xl border border-white/15 bg-white/5 p-4 backdrop-blur-md md:gap-4 md:p-5 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
+          className="mb-10 grid gap-3 rounded-2xl border border-white/15 bg-white/5 p-4 backdrop-blur-md sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 md:gap-4 md:p-5"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
@@ -55,7 +55,7 @@ export function OurSuccessesSection() {
           {STATS.map((stat, i) => (
             <motion.li
               key={stat.label}
-              className="min-w-[190px] flex-1 rounded-xl border border-white/15 bg-black/10 px-4 py-3 text-center"
+              className="rounded-xl border border-white/15 bg-black/10 px-4 py-3 text-center"
               initial={{ opacity: 0, y: 6 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -80,7 +80,7 @@ export function OurSuccessesSection() {
         {/* Gallery slideshow (under stats) */}
         <div id="gallery" className="scroll-mt-20">
           <h3 className="font-heading text-lg font-bold text-sandstone-base mb-4 text-center">
-            {GALLERY_TITLE}
+            Our Community
           </h3>
           <div className="relative max-w-2xl mx-auto aspect-[4/3] overflow-hidden rounded-xl bg-sandstone-base/20">
             {GALLERY_IMAGES.length > 0 ? (

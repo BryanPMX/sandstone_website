@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Menu } from "lucide-react";
+import { Menu, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SITE_NAV, SITE_CONTACT, HERO_CTA } from "@/constants/site";
+import { SITE_NAV, HERO_CTA } from "@/constants/site";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
@@ -63,24 +63,24 @@ export function SiteHeader() {
             </li>
           ))}
         </ul>
-        <a
-          href={`tel:${SITE_CONTACT.phoneRaw}`}
+        <Link
+          href="/#contact"
           className="group hidden items-center gap-1.5 text-sm text-white/90 transition-all duration-500 hover:-translate-y-px hover:text-sandstone-base lg:flex"
-          aria-label={`Call ${SITE_CONTACT.phone}`}
+          aria-label="Contact us"
         >
-          <Phone
-            className="h-4 w-4 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-[1.03]"
+          <Mail
+            className="h-4 w-4 transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-[1.05]"
             aria-hidden
           />
-          <span>{SITE_CONTACT.phone}</span>
-        </a>
+          <span>Contact Us</span>
+        </Link>
         <Button
           asChild
           variant="outline"
           size="sm"
           className="group relative hidden overflow-hidden border-sandstone-bronze/85 text-sandstone-base shadow-[0_8px_20px_-14px_rgba(0,0,0,0.65)] transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-sandstone-base hover:bg-sandstone-bronze/25 hover:text-white hover:shadow-[0_20px_34px_-18px_rgba(184,135,70,0.82)] sm:inline-flex"
         >
-          <Link href="/#about-us">
+          <Link href="/#contact">
             <span
               aria-hidden
               className="pointer-events-none absolute inset-y-0 -left-2/3 w-[55%] -skew-x-12 bg-gradient-to-r from-white/0 via-white/45 to-white/0 opacity-0 transition-all duration-700 group-hover:left-[130%] group-hover:opacity-100"

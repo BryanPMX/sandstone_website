@@ -35,7 +35,7 @@ export function StickyCTA() {
         >
           <Link
             href={`tel:${SITE_CONTACT.phoneRaw}`}
-            className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/85 px-4 py-2 text-sm font-semibold text-sandstone-navy shadow-lg shadow-black/10 backdrop-blur-md transition hover:-translate-y-0.5 hover:shadow-xl"
+            className="badge-sandstone-chip gap-2 px-4 py-2 text-sm font-semibold normal-case hover:-translate-y-0.5 hover:shadow-xl"
             aria-label={`Call ${SITE_CONTACT.phone}`}
           >
             <PhoneCall className="h-4 w-4 text-sandstone-bronze" aria-hidden />
@@ -43,7 +43,7 @@ export function StickyCTA() {
           </Link>
           <Link
             href="/#contact"
-            className="inline-flex items-center gap-2 rounded-full bg-sandstone-bronze px-4 py-2 text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-black/15 transition hover:-translate-y-0.5 hover:shadow-xl"
+            className="badge-sandstone-accent gap-2 px-4 py-2 text-sm tracking-[0.12em] hover:-translate-y-0.5 hover:shadow-xl"
             aria-label={HERO_CTA}
           >
             <CalendarDays className="h-4 w-4" aria-hidden />

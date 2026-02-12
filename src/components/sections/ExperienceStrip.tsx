@@ -23,7 +23,7 @@ const items = [
 
 export function ExperienceStrip() {
   return (
-    <section className="py-12 md:py-14">
+    <section className="pt-6 pb-10 md:pt-8 md:pb-12">
       <div className="container mx-auto max-w-6xl px-4">
         <div className="section-frame grid gap-4 p-5 md:grid-cols-3 md:p-6">
           {items.map((item, i) => {

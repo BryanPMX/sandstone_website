@@ -7,8 +7,8 @@ import type { AgentProfile } from "@/types";
 export const SITE_NAV = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/#about-us" },
-  { label: "Agents", href: "/#agents" },
   { label: "Gallery", href: "/#gallery" },
+  { label: "Agents", href: "/#agents" },
 ] as const;
 
 export const SITE_CONTACT = {
