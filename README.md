@@ -242,7 +242,19 @@ Open [http://localhost:3000](http://localhost:3000). Dev runs with **Turbopack**
 
 ### Deploy (e.g. Vercel)
 
-- Set **`ROLU_WEBHOOK_URL`** (and optionally **`MSL_FEED_URL`**) in the hosting environment.
+The contact form submits leads via a server action that reads **`ROLU_WEBHOOK_URL`** at runtime. On Vercel, that value comes from **Environment Variables**, not from a local `.env` file. If it’s missing in Vercel, the form will show: *"Lead submission is not configured. Please try again later."*
+
+**Set the webhook URL in Vercel:**
+
+1. In the [Vercel dashboard](https://vercel.com/dashboard), open your project.
+2. Go to **Settings → Environment Variables**.
+3. Add **`ROLU_WEBHOOK_URL`** with your Go High Level (or other CRM) inbound webhook URL, e.g.  
+   `https://services.leadconnectorhq.com/hooks/.../webhook-trigger/...`
+4. Choose **Production** (and **Preview** if you want it on branch deployments), then Save.
+5. **Redeploy** the project (Deployments → ⋮ on latest → Redeploy) so the new variable is applied.
+
+Optionally add **`MSL_FEED_URL`** the same way if you use the MSL listings feed.
+
 - Images and fonts are tuned for edge; no extra config required. Next config already allows remote images and optimizes the listed packages.
 
 ---
