@@ -44,7 +44,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-sandstone-navy/55 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
-      <CardContent className="p-[28px]">
+      <CardContent className="p-5 sm:p-[28px]">
         <h3 className="font-heading text-lg font-bold text-sandstone-gold">
           {title}
         </h3>

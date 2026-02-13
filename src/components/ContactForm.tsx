@@ -30,7 +30,7 @@ export function ContactForm() {
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-sandstone-navy/15 to-transparent" aria-hidden />
       <div className="pointer-events-none absolute inset-0 backdrop-blur-[2px]" aria-hidden />
       <div className="container relative mx-auto max-w-3xl px-4">
-        <div className="relative overflow-hidden rounded-3xl border border-white/50 bg-gradient-to-br from-white/55 via-sandstone-base/40 to-sandstone-bronze/28 p-[28px] shadow-[0_8px_32px_-16px_rgba(37,52,113,0.25)] ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:p-[35px] md:p-[42px]">
+        <div className="relative overflow-hidden rounded-3xl border border-white/50 bg-gradient-to-br from-white/55 via-sandstone-base/40 to-sandstone-bronze/28 p-5 shadow-[0_8px_32px_-16px_rgba(37,52,113,0.25)] ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:p-[35px] md:p-[42px]">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-white/8 to-sandstone-navy/10" />
           <motion.div
             className="relative text-center"
@@ -48,7 +48,7 @@ export function ContactForm() {
           </motion.div>
 
           <motion.div
-            className="relative mt-[35px] overflow-hidden rounded-2xl border border-white/45 bg-gradient-to-br from-white/70 via-sandstone-base/50 to-sandstone-bronze/35 p-[28px] shadow-[0_18px_40px_-24px_rgba(37,52,113,0.4)] ring-1 ring-white/25 ring-inset backdrop-blur-xl sm:p-[35px]"
+            className="relative mt-6 overflow-hidden rounded-2xl border border-white/45 bg-gradient-to-br from-white/70 via-sandstone-base/50 to-sandstone-bronze/35 p-5 shadow-[0_18px_40px_-24px_rgba(37,52,113,0.4)] ring-1 ring-white/25 ring-inset backdrop-blur-xl sm:mt-[35px] sm:p-[35px]"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

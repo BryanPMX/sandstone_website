@@ -25,7 +25,7 @@ export function GallerySection({ images }: GallerySectionProps) {
       <div className="pointer-events-none absolute -top-24 right-8 h-64 w-64 rounded-full bg-sandstone-bronze/28 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 left-8 h-56 w-56 rounded-full bg-white/14 blur-3xl" />
       <div className="container relative z-10 mx-auto max-w-6xl px-4">
-        <div className="section-frame mb-[35px] p-[28px] text-center md:p-[35px]">
+        <div className="section-frame mb-[35px] p-5 text-center sm:p-[28px] md:p-[35px]">
           <p className="badge-sandstone mx-auto mb-4">Fresh this week</p>
           <h2 className="font-heading text-3xl font-bold text-sandstone-gold md:text-4xl">
             {GALLERY_TITLE}

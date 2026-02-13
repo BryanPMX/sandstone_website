@@ -28,7 +28,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative isolate overflow-hidden bg-sandstone-navy text-white">
+    <section className="relative isolate overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/70 text-white">
       <div className="absolute inset-0 z-0">
         <video
           autoPlay
@@ -46,7 +46,7 @@ export function HeroSection() {
       <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-sandstone-navy/22 blur-3xl orb-drift [animation-delay:-5.5s]" />
       <div className="pointer-events-none absolute left-1/2 top-[-8rem] h-64 w-[38rem] -translate-x-1/2 rounded-full bg-sandstone-bronze/18 blur-[90px]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-center px-4 py-20 lg:flex-row lg:items-center lg:gap-12">
+      <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-center px-4 py-16 sm:py-20 lg:flex-row lg:items-center lg:gap-12">
         <motion.div
           className="max-w-2xl space-y-4"
           initial={{ opacity: 0, y: 18 }}

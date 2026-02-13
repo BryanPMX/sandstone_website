@@ -18,7 +18,7 @@ export function AboutSection() {
       <div className="pointer-events-none absolute -left-16 bottom-8 h-36 w-36 rounded-full bg-sandstone-navy/15 blur-3xl" />
       <div className="container mx-auto max-w-6xl px-4">
         <motion.div
-          className="section-frame relative overflow-hidden p-[28px] md:p-[56px]"
+          className="section-frame relative overflow-hidden p-5 sm:p-[28px] md:p-[56px]"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
@@ -27,7 +27,7 @@ export function AboutSection() {
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_25%,rgba(183,150,120,0.16),transparent_45%),radial-gradient(circle_at_82%_80%,rgba(37,52,113,0.14),transparent_44%)]" />
 
           <div className="relative grid items-start gap-[28px] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-stretch">
-            <div className="panel-glass relative overflow-hidden rounded-[1.35rem] border border-white/75 p-[28px] shadow-[0_24px_45px_-32px_rgba(37,52,113,0.5)] md:p-[35px]">
+            <div className="panel-glass relative overflow-hidden rounded-[1.35rem] border border-white/75 p-5 shadow-[0_24px_45px_-32px_rgba(37,52,113,0.5)] sm:p-[28px] md:p-[35px]">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/35 via-white/5 to-sandstone-navy/10" />
 
               <div className="relative">
@@ -71,7 +71,7 @@ export function AboutSection() {
               </p>
             </div>
 
-            <div className="panel-glass relative flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/75 p-[35px] shadow-[0_26px_44px_-32px_rgba(37,52,113,0.45)] md:p-[42px]">
+            <div className="panel-glass relative flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-white/75 p-5 shadow-[0_26px_44px_-32px_rgba(37,52,113,0.45)] sm:p-[35px] md:p-[42px]">
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/50 via-white/10 to-sandstone-base/30" />
 
               <div className="relative space-y-[35px]">

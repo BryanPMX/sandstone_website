@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -11,29 +11,80 @@ import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mobileMenuTop, setMobileMenuTop] = useState(0);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    if (!isMenuOpen) return;
     const { style } = document.body;
     const originalOverflow = style.overflow;
-
-    if (isMenuOpen) {
-      style.overflow = "hidden";
-    } else {
-      style.overflow = "";
-    }
-
+    const originalTouchAction = style.touchAction;
+    style.overflow = "hidden";
+    style.touchAction = "none";
     return () => {
       style.overflow = originalOverflow;
+      style.touchAction = originalTouchAction;
     };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    const updateMenuTop = () => {
+      const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
+      setMobileMenuTop(headerHeight);
+    };
+
+    updateMenuTop();
+    window.addEventListener("resize", updateMenuTop);
+    return () => window.removeEventListener("resize", updateMenuTop);
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const closeOnDesktop = () => {
+      if (window.innerWidth >= 768) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("resize", closeOnDesktop);
+
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("resize", closeOnDesktop);
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    const closeOnHashChange = () => setIsMenuOpen(false);
+    window.addEventListener("hashchange", closeOnHashChange);
+    return () => window.removeEventListener("hashchange", closeOnHashChange);
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
+      if (headerHeight > 0) {
+        setMobileMenuTop(headerHeight);
+      }
+    }
   }, [isMenuOpen]);
 
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <header
+      ref={headerRef}
       className={cn(
-        "fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-3 py-4 sm:px-4 md:px-8",
-        "bg-sandstone-navy/72 backdrop-blur-xl border-b border-white/15 shadow-[0_10px_30px_-24px_rgba(0,0,0,0.9)]"
+        "fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-3 py-3 sm:px-4 sm:py-4 md:px-8",
+        "bg-gradient-to-r from-sandstone-maroon/80 to-sandstone-navy/80 backdrop-blur-xl border-b border-white/15 shadow-[0_10px_30px_-24px_rgba(0,0,0,0.9)]"
       )}
     >
       {/* Logo */}
@@ -106,7 +157,7 @@ export function SiteHeader() {
           asChild
           variant="outline"
           size="sm"
-          className="group relative hidden overflow-hidden border-sandstone-bronze/85 text-sandstone-base shadow-[0_8px_20px_-14px_rgba(0,0,0,0.65)] transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-sandstone-base hover:bg-sandstone-bronze/25 hover:text-white hover:shadow-[0_20px_34px_-18px_rgba(183,150,120,0.82)] sm:inline-flex"
+          className="group relative hidden overflow-hidden border-sandstone-bronze/85 text-sandstone-base shadow-[0_8px_20px_-14px_rgba(0,0,0,0.65)] transition-all duration-[460ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-sandstone-base hover:bg-sandstone-bronze/25 hover:text-white hover:shadow-[0_20px_34px_-18px_rgba(183,150,120,0.82)] lg:inline-flex"
         >
           <Link href="/#contact">
             <span
@@ -136,7 +187,8 @@ export function SiteHeader() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-0 z-40 bg-gradient-to-b from-sandstone-navy via-sandstone-navy/95 to-sandstone-navy/90 backdrop-blur-xl md:hidden"
+            className="fixed inset-x-0 bottom-0 z-40 bg-gradient-to-b from-sandstone-navy via-sandstone-navy/95 to-sandstone-navy/90 backdrop-blur-xl md:hidden"
+            style={{ top: `${mobileMenuTop}px` }}
             onClick={closeMenu}
           >
             <motion.div
@@ -145,9 +197,10 @@ export function SiteHeader() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -12, opacity: 0 }}
               transition={{ type: "spring", stiffness: 360, damping: 32, mass: 0.7 }}
-              className="flex h-full flex-col gap-6 px-4 pb-10 pt-24"
+              className="flex h-full flex-col gap-5 overflow-y-auto px-3 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-5 sm:gap-6 sm:px-4 sm:pt-6"
               id="mobile-nav"
               role="dialog"
+              aria-modal="true"
               aria-label="Mobile navigation"
               onClick={(event) => event.stopPropagation()}
             >
@@ -157,7 +210,7 @@ export function SiteHeader() {
                     key={item.href}
                     href={item.href}
                     onClick={closeMenu}
-                    className="group flex items-center justify-between rounded-xl border border-white/5 bg-white/5 px-4 py-3 text-base font-semibold text-white/90 shadow-[0_10px_30px_-24px_rgba(0,0,0,0.9)] transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-sandstone-base/60 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base/70 focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy/90"
+                    className="group flex items-center justify-between rounded-xl border border-white/5 bg-white/5 px-3.5 py-2.5 text-[15px] font-semibold text-white/90 shadow-[0_10px_30px_-24px_rgba(0,0,0,0.9)] transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-sandstone-base/60 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base/70 focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy/90 sm:px-4 sm:py-3 sm:text-base"
                   >
                     <span className="tracking-wide">{item.label}</span>
                     <span

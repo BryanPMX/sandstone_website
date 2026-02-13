@@ -6,10 +6,15 @@ import { RollingStatValue } from "@/components/ui/rolling-number";
 
 export function StatsSection() {
   return (
-    <section className="bg-sandstone-navy py-16 md:py-20">
+    <section className="relative overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/70 py-16 md:py-20">
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(183,150,120,0.28),transparent_44%),radial-gradient(circle_at_84%_82%,rgba(37,52,113,0.24),transparent_46%)]"
+        aria-hidden
+      />
+      <div className="pointer-events-none absolute inset-0 bg-black/18" aria-hidden />
       <div className="container mx-auto max-w-6xl px-4">
         <motion.div
-          className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6"
+          className="relative z-10 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}

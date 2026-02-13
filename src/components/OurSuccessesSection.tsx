@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { STATS, GALLERY_IMAGES } from "@/constants/site";
@@ -12,9 +12,10 @@ const GALLERY_SLIDE_DURATION_MS = 4500;
 
 export function OurSuccessesSection() {
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const [rollCycle, setRollCycle] = useState(0);
+  const [shouldRollStats, setShouldRollStats] = useState(false);
   const galleryTotal = GALLERY_IMAGES.length;
-  const statsRef = useRef<HTMLUListElement>(null);
-  const statsInView = useInView(statsRef, { once: false, margin: "-40px", amount: 0.2 });
+  const canRestartRollRef = useRef(true);
 
   const galleryNext = useCallback(() => {
     setGalleryIndex((i) => (i + 1) % galleryTotal);
@@ -30,12 +31,25 @@ export function OurSuccessesSection() {
     return () => clearInterval(t);
   }, [galleryNext, galleryTotal]);
 
+  const handleStatsEnter = useCallback(() => {
+    if (!canRestartRollRef.current) return;
+    setRollCycle((cycle) => cycle + 1);
+    setShouldRollStats(true);
+    canRestartRollRef.current = false;
+  }, []);
+
+  const handleStatsLeave = useCallback(() => {
+    setShouldRollStats(false);
+    canRestartRollRef.current = true;
+  }, []);
+
   return (
     <section
       id="our-successes"
-      className="relative overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/80 py-[49px] md:py-[63px] scroll-mt-20"
+      className="relative overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/75 py-[49px] md:py-[63px] scroll-mt-20"
     >
-      <div className="pointer-events-none absolute inset-0 bg-black/35" aria-hidden />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_12%,rgba(183,150,120,0.32),transparent_38%),radial-gradient(circle_at_84%_78%,rgba(37,52,113,0.26),transparent_46%)]" aria-hidden />
+      <div className="pointer-events-none absolute inset-0 bg-black/28" aria-hidden />
       <div className="pointer-events-none absolute -top-24 right-10 h-64 w-64 rounded-full bg-sandstone-bronze/30 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 left-6 h-56 w-56 rounded-full bg-white/12 blur-3xl" />
       <div className="container relative z-10 mx-auto max-w-5xl px-4">
@@ -49,17 +63,18 @@ export function OurSuccessesSection() {
           Our Successes
         </motion.h2>
         <motion.ul
-          ref={statsRef}
-          className="mb-[49px] grid gap-[14px] rounded-2xl border border-white/15 bg-white/5 p-[21px] backdrop-blur-md sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 md:gap-[21px] md:p-[28px]"
+          className="mb-[49px] grid gap-[12px] rounded-2xl border border-white/15 bg-white/5 p-4 backdrop-blur-md sm:grid-cols-2 sm:gap-[14px] sm:p-[21px] md:grid-cols-3 lg:grid-cols-5 md:gap-[21px] md:p-[28px]"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
+          viewport={{ once: false, margin: "-72px", amount: 0.35 }}
           transition={{ duration: 0.4, staggerChildren: 0.04 }}
+          onViewportEnter={handleStatsEnter}
+          onViewportLeave={handleStatsLeave}
         >
           {STATS.map((stat, i) => (
             <motion.li
-              key={stat.label}
-              className="rounded-xl border border-white/15 bg-black/10 px-[21px] py-[14px] text-center"
+              key={`${stat.label}-${rollCycle}`}
+              className="rounded-xl border border-white/15 bg-black/10 px-4 py-3 text-center sm:px-[21px] sm:py-[14px]"
               initial={{ opacity: 0, y: 6 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -72,7 +87,7 @@ export function OurSuccessesSection() {
                   suffix={stat.suffix}
                   delay={i * 0.04}
                   duration={0.6}
-                  triggerRoll={statsInView}
+                  triggerRoll={shouldRollStats}
                 />
               </span>
               <span className="mt-1 block text-[11px] font-medium uppercase tracking-wider text-white/80 md:text-xs">

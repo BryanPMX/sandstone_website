@@ -28,7 +28,7 @@ export function AgentsSection({ agents = AGENTS }: AgentsSectionProps) {
       aria-label="Agents"
     >
       <div className="container mx-auto max-w-5xl px-4">
-        <div className="section-frame p-[28px] md:p-[35px]">
+        <div className="section-frame p-5 sm:p-[28px] md:p-[35px]">
           <motion.h2
             className="font-heading text-2xl font-bold text-sandstone-gold mb-8 text-center md:text-3xl"
             initial={{ opacity: 0, y: 12 }}
@@ -40,18 +40,18 @@ export function AgentsSection({ agents = AGENTS }: AgentsSectionProps) {
           <p className="mb-[28px] text-center text-sm text-sandstone-text/70">
             Meet the team behind every showing, negotiation, and closing, available by phone or video.
           </p>
-          <div className="grid gap-[28px] sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2 sm:gap-[28px]">
             {agents.map((agent, i) => (
               <motion.div
                 key={agent.name}
-                className="rounded-2xl border border-white/70 bg-white/70 p-[28px] shadow-[0_16px_35px_-28px_rgba(37,52,113,0.42)] backdrop-blur-md"
+                className="rounded-2xl border border-white/70 bg-white/70 p-5 shadow-[0_16px_35px_-28px_rgba(37,52,113,0.42)] backdrop-blur-md sm:p-[28px]"
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06 }}
               >
-                <div className="flex gap-[21px]">
-                  <div className="light-sweep image-structure relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-sandstone-base/30">
+                <div className="flex items-start gap-4 sm:gap-[21px]">
+                  <div className="light-sweep image-structure relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-sandstone-base/30 sm:h-28 sm:w-28">
                     <Image
                       src={agent.image}
                       alt={agent.name}

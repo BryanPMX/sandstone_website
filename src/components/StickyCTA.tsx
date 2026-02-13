@@ -34,11 +34,11 @@ export function StickyCTA() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
           transition={{ type: "spring", stiffness: 380, damping: 28 }}
-          className="fixed bottom-4 right-4 z-[60] flex flex-col gap-2"
+          className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 right-4 z-[60] flex flex-col gap-2 sm:bottom-4 sm:left-auto sm:right-4"
         >
           <Link
             href={`tel:${SITE_CONTACT.phoneRaw}`}
-            className="badge-sandstone-chip gap-2 px-4 py-2 text-sm font-semibold normal-case hover:-translate-y-0.5 hover:shadow-xl"
+            className="badge-sandstone-chip justify-center gap-2 px-4 py-2 text-sm font-semibold normal-case hover:-translate-y-0.5 hover:shadow-xl sm:justify-start"
             aria-label={`Call ${SITE_CONTACT.phone}`}
           >
             <PhoneCall className="h-4 w-4 text-sandstone-gold" aria-hidden />
@@ -46,7 +46,7 @@ export function StickyCTA() {
           </Link>
           <Link
             href="/#contact"
-            className="badge-sandstone-accent gap-2 px-4 py-2 text-sm tracking-[0.12em] hover:-translate-y-0.5 hover:shadow-xl"
+            className="badge-sandstone-accent justify-center gap-2 px-4 py-2 text-sm tracking-[0.12em] hover:-translate-y-0.5 hover:shadow-xl sm:justify-start"
             aria-label={HERO_CTA}
           >
             <CalendarDays className="h-4 w-4" aria-hidden />

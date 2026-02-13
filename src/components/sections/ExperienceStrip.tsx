@@ -25,13 +25,13 @@ export function ExperienceStrip() {
   return (
     <section className="pt-[28px] pb-[49px] md:pt-[35px] md:pb-[56px]">
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="section-frame grid gap-[21px] p-[28px] md:grid-cols-3 md:p-[35px]">
+        <div className="section-frame grid gap-4 p-5 sm:gap-[21px] sm:p-[28px] md:grid-cols-3 md:p-[35px]">
           {items.map((item, i) => {
             const Icon = item.icon;
             return (
               <motion.div
                 key={item.title}
-                className="group relative overflow-hidden rounded-2xl border border-white/70 bg-white/65 p-[28px] shadow-[0_18px_30px_-25px_rgba(37,52,113,0.32)] backdrop-blur-md"
+                className="group relative overflow-hidden rounded-2xl border border-white/70 bg-white/65 p-5 shadow-[0_18px_30px_-25px_rgba(37,52,113,0.32)] backdrop-blur-md sm:p-[28px]"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}

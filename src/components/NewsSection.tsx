@@ -14,7 +14,7 @@ export function NewsSection() {
       <div className="pointer-events-none absolute -top-24 right-8 h-64 w-64 rounded-full bg-sandstone-bronze/28 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 left-8 h-56 w-56 rounded-full bg-white/14 blur-3xl" />
       <div className="container relative z-10 mx-auto max-w-5xl px-4">
-        <div className="section-frame p-[28px] md:p-[35px]">
+        <div className="section-frame p-5 sm:p-[28px] md:p-[35px]">
           <div className="flex justify-center mb-[35px]">
             <motion.h2
               className="font-heading text-2xl font-bold text-sandstone-gold md:text-3xl"
