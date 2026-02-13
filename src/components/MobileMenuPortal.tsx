@@ -102,9 +102,13 @@ export function MobileMenuPortal({
                 <Link
                   href={item.href}
                   onClick={onClose}
-                  className="block rounded-xl border border-white/20 bg-white/15 py-3 px-4 text-[15px] font-semibold text-white no-underline transition-colors hover:border-sandstone-base/80 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy"
+                  className="group relative isolate block overflow-hidden rounded-xl border border-sandstone-base/45 bg-gradient-to-r from-sandstone-maroon/92 via-sandstone-navy/95 to-[#70543c]/92 px-4 py-3 text-[15px] font-semibold tracking-[0.06em] text-white no-underline shadow-[0_16px_30px_-22px_rgba(37,52,113,0.85)] transition-all duration-300 hover:-translate-y-px hover:border-sandstone-base/80 hover:shadow-[0_20px_36px_-20px_rgba(183,150,120,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy"
                 >
-                  {item.label}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-y-0 -left-2/3 w-[58%] -skew-x-12 bg-gradient-to-r from-white/0 via-white/45 to-white/0 opacity-0 transition-all duration-700 group-hover:left-[132%] group-hover:opacity-100 group-focus-visible:left-[132%] group-focus-visible:opacity-100"
+                  />
+                  <span className="relative z-10">{item.label}</span>
                 </Link>
               </li>
             ))}
