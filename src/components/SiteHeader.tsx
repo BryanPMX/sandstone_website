@@ -1,17 +1,38 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, Mail } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, Mail, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SITE_NAV, HERO_CTA } from "@/constants/site";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const { style } = document.body;
+    const originalOverflow = style.overflow;
+
+    if (isMenuOpen) {
+      style.overflow = "hidden";
+    } else {
+      style.overflow = "";
+    }
+
+    return () => {
+      style.overflow = originalOverflow;
+    };
+  }, [isMenuOpen]);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
     <header
       className={cn(
-        "fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-4 py-4 md:px-8",
+        "fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-3 py-4 sm:px-4 md:px-8",
         "bg-sandstone-navy/72 backdrop-blur-xl border-b border-white/15 shadow-[0_10px_30px_-24px_rgba(0,0,0,0.9)]"
       )}
     >
@@ -97,12 +118,89 @@ export function SiteHeader() {
         </Button>
         <button
           type="button"
-          className="p-2 text-white/90 transition-colors duration-300 hover:text-white md:hidden"
-          aria-label="Open menu"
+          className="p-2 text-white/90 transition-colors duration-300 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy/80 md:hidden"
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-nav"
+          onClick={() => setIsMenuOpen((open) => !open)}
         >
-          <Menu className="h-6 w-6" />
+          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
+
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            key="mobile-menu-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-40 bg-gradient-to-b from-sandstone-navy via-sandstone-navy/95 to-sandstone-navy/90 backdrop-blur-xl md:hidden"
+            onClick={closeMenu}
+          >
+            <motion.div
+              key="mobile-menu-panel"
+              initial={{ y: -16, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -12, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 360, damping: 32, mass: 0.7 }}
+              className="flex h-full flex-col gap-6 px-4 pb-10 pt-24"
+              id="mobile-nav"
+              role="dialog"
+              aria-label="Mobile navigation"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="space-y-2">
+                {SITE_NAV.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={closeMenu}
+                    className="group flex items-center justify-between rounded-xl border border-white/5 bg-white/5 px-4 py-3 text-base font-semibold text-white/90 shadow-[0_10px_30px_-24px_rgba(0,0,0,0.9)] transition-all duration-300 ease-out hover:-translate-y-[2px] hover:border-sandstone-base/60 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base/70 focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy/90"
+                  >
+                    <span className="tracking-wide">{item.label}</span>
+                    <span
+                      aria-hidden
+                      className="text-sm text-sandstone-base/80 transition-transform duration-300 group-hover:translate-x-1"
+                    >
+                      ↗
+                    </span>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full justify-center bg-sandstone-base text-sandstone-navy shadow-[0_18px_48px_-22px_rgba(255,210,175,0.95)] hover:-translate-y-[3px] hover:bg-sandstone-base/90"
+                >
+                  <Link href="/#contact" onClick={closeMenu}>
+                    {HERO_CTA}
+                  </Link>
+                </Button>
+
+                <Link
+                  href="/#contact"
+                  onClick={closeMenu}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-white/8 bg-white/5 px-4 py-3 text-base font-medium text-white/90 transition-all duration-300 hover:-translate-y-[2px] hover:border-sandstone-base/60 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base/70 focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy/90"
+                >
+                  <Mail className="h-4 w-4" aria-hidden />
+                  <span>Contact Us</span>
+                </Link>
+              </div>
+
+              <div className="mt-auto space-y-1 text-sm text-white/60">
+                <p className="font-semibold text-white/80">Sandstone Real Estate Team</p>
+                <p className="leading-relaxed text-white/60">
+                  Luxury guidance, relocation expertise, and concierge support — now one tap away.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
