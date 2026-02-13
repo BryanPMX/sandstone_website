@@ -11,41 +11,37 @@ import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [mobileMenuTop, setMobileMenuTop] = useState(0);
-  const headerRef = useRef<HTMLElement>(null);
-
-  const updateMenuTop = () => {
-    const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
-    setMobileMenuTop(headerHeight);
-  };
+  const scrollPositionRef = useRef(0);
 
   useEffect(() => {
     if (!isMenuOpen) return;
+
+    scrollPositionRef.current = window.scrollY;
     const { style } = document.body;
     const originalOverflow = style.overflow;
+    const originalPosition = style.position;
+    const originalTop = style.top;
+    const originalLeft = style.left;
+    const originalRight = style.right;
+    const originalWidth = style.width;
+
     style.overflow = "hidden";
+    style.position = "fixed";
+    style.top = `-${scrollPositionRef.current}px`;
+    style.left = "0";
+    style.right = "0";
+    style.width = "100%";
+
     return () => {
       style.overflow = originalOverflow;
+      style.position = originalPosition;
+      style.top = originalTop;
+      style.left = originalLeft;
+      style.right = originalRight;
+      style.width = originalWidth;
+      window.scrollTo(0, scrollPositionRef.current);
     };
   }, [isMenuOpen]);
-
-  useEffect(() => {
-    updateMenuTop();
-
-    const headerElement = headerRef.current;
-    if (!headerElement) return;
-
-    const resizeObserver = new ResizeObserver(updateMenuTop);
-    resizeObserver.observe(headerElement);
-    window.addEventListener("resize", updateMenuTop);
-    window.addEventListener("orientationchange", updateMenuTop);
-
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", updateMenuTop);
-      window.removeEventListener("orientationchange", updateMenuTop);
-    };
-  }, []);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -77,26 +73,13 @@ export function SiteHeader() {
     return () => window.removeEventListener("hashchange", closeOnHashChange);
   }, []);
 
-  useEffect(() => {
-    if (!isMenuOpen) {
-      const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
-      if (headerHeight > 0) {
-        setMobileMenuTop(headerHeight);
-      }
-    }
-  }, [isMenuOpen]);
-
   const closeMenu = () => setIsMenuOpen(false);
-  const toggleMenu = () => {
-    updateMenuTop();
-    setIsMenuOpen((open) => !open);
-  };
+  const toggleMenu = () => setIsMenuOpen((open) => !open);
 
   return (
     <header
-      ref={headerRef}
       className={cn(
-        "fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-3 py-3 sm:px-4 sm:py-4 md:px-8",
+        "fixed left-0 right-0 top-0 z-[80] flex h-16 items-center justify-between px-3 sm:px-4 md:h-[72px] md:px-8",
         "bg-gradient-to-r from-sandstone-maroon/80 to-sandstone-navy/80 backdrop-blur-xl border-b border-white/15 shadow-[0_10px_30px_-24px_rgba(0,0,0,0.9)]"
       )}
     >
@@ -200,8 +183,7 @@ export function SiteHeader() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-x-0 bottom-0 z-40 bg-gradient-to-b from-sandstone-navy via-sandstone-navy/95 to-sandstone-navy/90 backdrop-blur-xl md:hidden"
-            style={{ top: `${mobileMenuTop}px` }}
+            className="fixed inset-x-0 bottom-0 top-16 z-[70] bg-gradient-to-b from-sandstone-navy via-sandstone-navy/95 to-sandstone-navy/90 backdrop-blur-xl md:hidden"
             onClick={closeMenu}
           >
             <motion.div
@@ -210,7 +192,7 @@ export function SiteHeader() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -12, opacity: 0 }}
               transition={{ type: "spring", stiffness: 360, damping: 32, mass: 0.7 }}
-              className="flex h-full flex-col gap-5 overflow-y-auto px-3 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-5 sm:gap-6 sm:px-4 sm:pt-6"
+              className="flex h-full flex-col gap-5 overflow-y-auto overscroll-contain px-3 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-5 sm:gap-6 sm:px-4 sm:pt-6"
               id="mobile-nav"
               role="dialog"
               aria-modal="true"
