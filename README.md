@@ -231,6 +231,13 @@ Open [http://localhost:3000](http://localhost:3000). Dev runs with **Turbopack**
 - Add **`public/hero-poster.jpg`** as poster when video is loading.
 - If the video is missing, the hero still renders with a gradient overlay.
 
+### Static images (community, news, hero)
+
+- **Our Community** (slideshow in Our Successes): images are driven by `GALLERY_IMAGES` in `src/constants/site.ts`. Place files in **`public/community/`** (e.g. `1.jpg` … `5.jpg`) and keep the array in sync.
+- **News section**: each of the three news cards uses **`public/news/1.jpg`**, **`public/news/2.jpg`**, **`public/news/3.jpg`**. Add or rename files there and add matching entries to `NEWS_ITEMS` in `site.ts` if you add more cards.
+- **Hero poster**: **`public/hero-poster.jpg`** is used as the cinematic hero/video poster; replace this file to change the hero still.
+- **Extra marketing assets**: **`public/marketing/`** holds additional marketing images (e.g. `4.jpg`, `5.jpg`) for future use (e.g. more news items or alternate hero imagery).
+
 ### Scripts
 
 | Script | Command | Purpose |
@@ -288,7 +295,10 @@ standstone_website/
 │   ├── agents-1.jpg … agents-4.jpg
 │   ├── logo.jpg
 │   ├── hero-video.mp4        # optional
-│   └── hero-poster.jpg       # optional
+│   ├── hero-poster.jpg       # optional (cinematic hero poster)
+│   ├── community/            # Our Community slideshow (1.jpg … 5.jpg)
+│   ├── news/                 # News section cards (1.jpg, 2.jpg, 3.jpg)
+│   └── marketing/            # Extra marketing images for future use
 ├── src/
 │   ├── actions/              # Server Actions (orchestration)
 │   │   └── submit-lead.ts

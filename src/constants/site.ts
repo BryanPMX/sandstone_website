@@ -97,11 +97,13 @@ export const STATS: Stat[] = [
 export const GALLERY_TITLE = "Gallery";
 export const GALLERY_SUBTITLE = "Curated listings refreshed weekly";
 
-/** Gallery slide images (place in /public/gallery/ or use URLs) */
+/** Our Community slideshow images (place in /public/community/) */
 export const GALLERY_IMAGES = [
-  { src: "/gallery/1.jpg", alt: "Property 1" },
-  { src: "/gallery/2.jpg", alt: "Property 2" },
-  { src: "/gallery/3.jpg", alt: "Property 3" },
+  { src: "/community/1.jpg", alt: "Our community" },
+  { src: "/community/2.jpg", alt: "Our community" },
+  { src: "/community/3.jpg", alt: "Our community" },
+  { src: "/community/4.jpg", alt: "Our community" },
+  { src: "/community/5.jpg", alt: "Our community" },
 ];
 
 /** News items: title, description, image for each box */
