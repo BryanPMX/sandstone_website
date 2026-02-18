@@ -12,10 +12,14 @@ export const LeadSchema = z.object({
   message: z.string().max(2000).optional().default(""),
   acceptPrivacyPolicy: z
     .string()
-    .refine((v) => v === "on", { message: "You must accept the Privacy Policy." }),
+    .refine((v) => v === "on", {
+      message: "Please check the box to confirm you accept the Privacy Policy before submitting.",
+    }),
   acceptTermsConditions: z
     .string()
-    .refine((v) => v === "on", { message: "You must accept the Terms and Conditions." }),
+    .refine((v) => v === "on", {
+      message: "Please check the box to confirm you accept the Terms and Conditions before submitting.",
+    }),
 });
 
 export type LeadSchemaType = z.infer<typeof LeadSchema>;

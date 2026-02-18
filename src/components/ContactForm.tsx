@@ -163,6 +163,20 @@ export function ContactForm() {
             </div>
 
             <div className="space-y-4 rounded-lg border border-white/30 bg-white/10 p-4">
+              {(state?.success === false &&
+                (state.fieldErrors?.acceptPrivacyPolicy ?? state.fieldErrors?.acceptTermsConditions)) && (
+                <div
+                  role="alert"
+                  className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800"
+                >
+                  <p className="font-medium">
+                    Please accept both documents below before submitting your message.
+                  </p>
+                  <p className="mt-1 text-red-700/90">
+                    We need your consent to process your request and stay compliant with our policies.
+                  </p>
+                </div>
+              )}
               <p className="text-sm font-medium text-sandstone-text/90">
                 Before submitting, please accept:
               </p>
