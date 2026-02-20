@@ -23,14 +23,14 @@ const TILES = [
 
 export function PrimaryActionTiles() {
   return (
-    <section className="bg-gradient-to-b from-white to-[#f8f5ef] py-10 md:py-0">
+    <section className="bg-[var(--sandstone-beige)] py-10 md:py-0">
       <div className="container mx-auto max-w-6xl px-4">
         <div className="grid grid-cols-1 gap-4 md:hidden">
           {TILES.map((tile) => (
             <Link
               key={tile.href}
               href={tile.href}
-              className="group flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/65 bg-white/72 p-8 shadow-[0_16px_32px_-24px_rgba(37,52,113,0.42)] backdrop-blur-sm transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
+              className="group flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/65 bg-white/88 p-8 shadow-[0_16px_32px_-24px_rgba(37,52,113,0.42)] backdrop-blur-sm transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-beige)]"
             >
               <div className="relative h-14 w-14 shrink-0">
                 <Image
@@ -48,7 +48,7 @@ export function PrimaryActionTiles() {
         </div>
       </div>
 
-      <div className="mt-2 hidden border-y border-[var(--sandstone-navy)]/15 bg-[var(--sandstone-sand-gold)]/45 md:block">
+      <div className="hidden border-y border-[var(--sandstone-navy)]/15 md:block">
         <div className="container mx-auto max-w-6xl px-6">
           <ul className="grid grid-cols-3">
             {TILES.map((tile, index) => (
@@ -61,7 +61,7 @@ export function PrimaryActionTiles() {
                 )}
                 <Link
                   href={tile.href}
-                  className="group flex flex-col items-center justify-center gap-2 py-4 text-[var(--sandstone-charcoal)] transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-navy)]"
+                  className="group flex flex-col items-center justify-center gap-2 py-4 text-[var(--sandstone-charcoal)] transition hover:bg-white/18 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-navy)]"
                 >
                   <div className="relative h-10 w-10 shrink-0">
                     <Image

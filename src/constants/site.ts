@@ -6,7 +6,6 @@ export const SITE_NAV = [
   { label: "Sell a property", href: "/sell" },
   { label: "Rent a property", href: "/rent" },
   { label: "Join the Team", href: "/join" },
-  { label: "About Us", href: "/#about" },
   { label: "Contact Us", href: "/#contact" },
 ] as const;
 
@@ -32,11 +31,6 @@ export const SITE_HOURS = {
 export const HERO_TITLE = "Sandstone Real Estate Team";
 export const HERO_SLOGAN = "Luxury. Lifestyle. Legacy.";
 export const HERO_CTA = "Schedule a Private Tour";
-
-export const ABOUT_HEADLINE =
-  "Helping families find their place in El Paso & Fort Bliss";
-export const ABOUT_WHAT_WE_DO =
-  "We guide buyers, sellers, and military families with a clear, professional, and stress-free real estate experience designed around trust and excellence.";
 
 export const CONTACT_HEADLINE = "Want to learn more about us?";
 export const CONTACT_SUBHEADLINE =

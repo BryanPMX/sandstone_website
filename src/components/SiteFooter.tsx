@@ -23,7 +23,7 @@ export function SiteFooter() {
           <div className="text-center md:text-left">
             <div className="mx-auto flex w-fit items-center gap-3 md:mx-0">
               <Image
-                src="/logo-mark.webp"
+                src="/mobile-header-logo.webp"
                 alt="Sandstone logo"
                 width={48}
                 height={48}

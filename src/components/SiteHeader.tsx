@@ -87,7 +87,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
           >
             <div className="relative h-9 w-9 shrink-0">
               <Image
-                src="/logo-mark.webp"
+                src="/mobile-header-logo.webp"
                 alt="Sandstone Real Estate Group"
                 fill
                 className="object-contain brightness-110 contrast-110"
@@ -134,13 +134,13 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
             className="flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
             aria-label="Sandstone Real Estate Group - Home"
           >
-            <div className="relative h-[72px] w-[250px] shrink-0">
+            <div className="relative h-[88px] w-[119px] shrink-0">
               <Image
-                src="/logo-hero.webp"
+                src="/desktop-hero-logo.webp"
                 alt="Sandstone Real Estate Group"
                 fill
                 className="object-contain"
-                sizes="250px"
+                sizes="119px"
                 priority
               />
             </div>
