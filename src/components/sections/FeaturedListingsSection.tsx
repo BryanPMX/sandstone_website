@@ -19,7 +19,7 @@ export function FeaturedListingsSection({
   return (
     <section
       id="listings"
-      className="bg-[var(--sandstone-off-white)] py-12 md:py-16 scroll-mt-20"
+      className="scroll-mt-20 bg-gradient-to-b from-[#f1ece4] via-[#f8f6f3] to-white py-12 md:py-16"
     >
       <div className="container mx-auto max-w-6xl px-4">
         <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-[2rem]">

@@ -16,7 +16,7 @@ export function SiteFooter() {
   return (
     <footer
       id="footer"
-      className="scroll-mt-20 bg-[var(--sandstone-navy)] py-10 text-[var(--sandstone-off-white)]"
+      className="scroll-mt-20 bg-gradient-to-b from-[var(--sandstone-navy)] to-[var(--sandstone-navy-deep)] py-10 text-[var(--sandstone-off-white)]"
     >
       <div className="container mx-auto max-w-6xl px-4">
         <div className="grid gap-8 md:grid-cols-[1.1fr_0.8fr_0.9fr] md:items-start">

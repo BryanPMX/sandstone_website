@@ -23,14 +23,14 @@ const TILES = [
 
 export function PrimaryActionTiles() {
   return (
-    <section className="bg-white py-10 md:py-0">
+    <section className="bg-gradient-to-b from-white to-[#f8f5ef] py-10 md:py-0">
       <div className="container mx-auto max-w-6xl px-4">
         <div className="grid grid-cols-1 gap-4 md:hidden">
           {TILES.map((tile) => (
             <Link
               key={tile.href}
               href={tile.href}
-              className="group flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/50 p-8 transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
+              className="group flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/65 bg-white/72 p-8 shadow-[0_16px_32px_-24px_rgba(37,52,113,0.42)] backdrop-blur-sm transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
             >
               <div className="relative h-14 w-14 shrink-0">
                 <Image

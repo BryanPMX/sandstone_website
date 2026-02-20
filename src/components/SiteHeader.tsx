@@ -46,7 +46,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
   useEffect(() => {
     if (!isMenuOpen) return;
     const closeOnDesktop = () => {
-      if (window.innerWidth >= 768) setIsMenuOpen(false);
+      if (window.innerWidth >= 1024) setIsMenuOpen(false);
     };
     window.addEventListener("resize", closeOnDesktop);
     return () => window.removeEventListener("resize", closeOnDesktop);
@@ -78,20 +78,26 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
           : "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]"
       )}
     >
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:h-24 lg:px-6">
+      <div
+        className={cn(
+          "mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:h-24 lg:px-6",
+          overlayDesktop &&
+            "lg:mt-4 lg:h-20 lg:rounded-full lg:border lg:border-white/25 lg:bg-[var(--sandstone-navy)]/32 lg:backdrop-blur-md"
+        )}
+      >
         <div className="flex w-full items-center justify-between lg:hidden">
           <Link
             href="/"
             className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
             aria-label="Sandstone Real Estate Group - Home"
           >
-            <div className="relative h-9 w-9 shrink-0">
+            <div className="relative h-7 w-28 shrink-0">
               <Image
-                src="/logo-mark.webp"
-                alt=""
+                src="/logo-hero.webp"
+                alt="Sandstone Real Estate Group"
                 fill
                 className="object-contain"
-                sizes="36px"
+                sizes="112px"
                 priority
               />
             </div>
@@ -100,7 +106,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
           <button
             ref={menuButtonRef}
             type="button"
-            className="p-2 text-[var(--sandstone-off-white)]/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+            className="p-2 text-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-nav"
@@ -118,7 +124,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "text-sm font-medium tracking-wide text-white/90 transition hover:text-[var(--sandstone-sand-gold)]",
+                      "text-sm font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                     )}
                   >
@@ -134,23 +140,15 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
             className="flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
             aria-label="Sandstone Real Estate Group - Home"
           >
-            <div className="relative h-12 w-12 shrink-0">
+            <div className="relative h-16 w-[190px] shrink-0">
               <Image
-                src="/logo-mark.webp"
-                alt=""
+                src="/logo-hero.webp"
+                alt="Sandstone Real Estate Group"
                 fill
                 className="object-contain"
-                sizes="48px"
+                sizes="190px"
                 priority
               />
-            </div>
-            <div className="leading-tight text-center">
-              <p className="font-heading text-sm font-semibold tracking-[0.16em] text-white">
-                SANDSTONE
-              </p>
-              <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/85">
-                REAL ESTATE TEAM
-              </p>
             </div>
           </Link>
 
@@ -161,7 +159,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "text-sm font-medium tracking-wide text-white/90 transition hover:text-[var(--sandstone-sand-gold)]",
+                      "text-sm font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                     )}
                   >

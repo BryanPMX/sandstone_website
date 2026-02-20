@@ -30,7 +30,7 @@ export function ContactForm() {
   return (
     <section
       id="contact"
-      className="relative scroll-mt-20 bg-white py-14 md:py-16"
+      className="relative scroll-mt-20 bg-gradient-to-b from-[#f6f2ec] to-white py-14 md:py-16"
     >
       <div className="container mx-auto max-w-6xl px-4">
         <div className="text-center">
@@ -43,7 +43,7 @@ export function ContactForm() {
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch">
-          <div className="rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/40 p-5 shadow-md sm:p-6">
+          <div className="rounded-2xl border border-white/65 bg-white/72 p-5 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.5)] backdrop-blur-sm sm:p-6">
             <form action={formAction} className="space-y-5">
               {state?.success === true && (
                 <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
@@ -168,7 +168,7 @@ export function ContactForm() {
                 )}
               </div>
 
-              <div className="space-y-3 rounded-xl border border-[var(--sandstone-navy)]/12 bg-white/80 p-4">
+              <div className="space-y-3 rounded-xl border border-[var(--sandstone-navy)]/12 bg-white/88 p-4">
                 {hasConsentErrors && (
                   <div
                     role="alert"
