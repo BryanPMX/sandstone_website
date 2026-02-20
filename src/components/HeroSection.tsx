@@ -87,8 +87,8 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
         </div>
       </div>
 
-      <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-6 lg:hidden">
-        <form onSubmit={handleSearch} className="mx-auto mt-5 w-full max-w-sm">
+      <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
+        <form onSubmit={handleSearch} className="mx-auto mt-3 w-full max-w-sm">
           <input
             type="search"
             name="search"
