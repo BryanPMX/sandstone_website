@@ -1,15 +1,23 @@
 import type { Metadata } from "next";
-import type React from "react";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  variable: "--font-montserrat",
+  preload: true,
+});
+
 export const metadata: Metadata = {
-  title: "Home - Sandstone Real Estate Team",
+  title: "Sandstone Real Estate Group | El Paso",
   description:
-    "Sandstone Real Estate Team serves El Paso, Texas & Fort Bliss with commitment and integrity. Live The Difference—modern layouts, premium finishes, timeless comfort.",
+    "Luxury. Lifestyle. Legacy. Redefining real estate in El Paso and the Southwest through trust, lifestyle, and innovation.",
   openGraph: {
-    title: "Home - Sandstone Real Estate Team",
+    title: "Sandstone Real Estate Group",
     description:
-      "Helping families find their place in El Paso & Fort Bliss. Your trusted realtors.",
+      "Luxury. Lifestyle. Legacy. Your trusted real estate partner in El Paso.",
   },
 };
 
@@ -18,16 +26,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const fontVars = {
-    "--font-montserrat": "Montserrat, system-ui, sans-serif",
-    "--font-montserrat-bold": "Montserrat, system-ui, sans-serif",
-  } as React.CSSProperties;
-
   return (
-    <html
-      lang="en"
-      style={fontVars}
-    >
+    <html lang="en" className={montserrat.variable}>
       <body suppressHydrationWarning className="min-h-screen font-sans antialiased">
         {children}
       </body>

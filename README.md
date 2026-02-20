@@ -1,18 +1,19 @@
-# Sandstone Real Estate Team — Official Website
+# Sandstone Real Estate Group — Official Website
 
 **Tagline:** *Luxury. Lifestyle. Legacy.*
 
-Next.js 15 (App Router) marketing site for **Sandstone Real Estate Team**, serving El Paso, Texas & Fort Bliss. Built for performance, maintainability, and seamless integration with **Rolu** for lead capture and listing feeds.
+Next.js 15 (App Router) marketing site for **Sandstone Real Estate Group**, serving El Paso, Texas and the Southwest. The UI is aligned with the brand identity (colors, typography, tone) and built for performance, maintainability, and integration with **Rolu** for lead capture and listing feeds.
 
 ---
 
 ## Table of Contents
 
 - [Purpose & Overview](#purpose--overview)
-- [Design System](#design-system)
+- [Brand Identity & Design System](#brand-identity--design-system)
 - [Tech Stack & Implementation](#tech-stack--implementation)
 - [Architecture & Patterns](#architecture--patterns)
-- [Features & Sections](#features--sections)
+- [Routes & Page Structure](#routes--page-structure)
+- [Home Page Sections](#home-page-sections)
 - [Lead Form & CRM (Rolu)](#lead-form--crm-rolu)
 - [Property Listings & MSL Feed](#property-listings--msl-feed)
 - [Configuration & Environment](#configuration--environment)
@@ -25,122 +26,138 @@ Next.js 15 (App Router) marketing site for **Sandstone Real Estate Team**, servi
 
 ## Purpose & Overview
 
-This site is the primary web presence for Sandstone Real Estate Team. It:
+This site is the primary web presence for Sandstone Real Estate Group. It:
 
-- **Showcases** the team’s brand, expertise, and listings with a premium, cinematic feel.
+- **Showcases** the brand, expertise, and listings with a clean, cinematic, luxury-and-lifestyle feel per the brand guideline.
 - **Captures leads** via a contact form and sends them to Rolu (webhook) for CRM follow-up.
-- **Displays listings** from an optional MSL feed (also Rolu-driven); without a feed, curated demo data is shown.
+- **Displays listings** from an optional MSL feed (Rolu-driven); without a feed, curated demo data is shown.
 - **Stays maintainable** via SOLID-aligned structure, clear separation of config, validation, services, and UI.
 
-The implementation favors **server-side data** (properties fetched in the page), **Server Actions** for form submission, and **presentational components** that receive data from the page—so adding new CRMs or data sources does not require changing existing UI code.
+The implementation favors **server-side data** (properties fetched in the page), **Server Actions** for form submission, and **presentational components** that receive data from the page.
 
 ---
 
-## Design System
+## Brand Identity & Design System
 
-### Brand Identity
+The UI follows the brand identity document (colors, typography, tone, design style).
 
-- **Voice:** Boutique, trust-based, concierge-level service; “cinematic” and intentional.
-- **Audience:** Buyers, sellers, and military/relocation families in El Paso & Fort Bliss.
+### Voice & Tone
 
-### Color Palette (Tailwind)
+- **Voice:** Confident, insightful, and human.
+- **Design style:** Clean, cinematic, warm; luxury and lifestyle. Real architectural and natural-light imagery where used.
 
-| Token | Hex | Usage |
-|-------|-----|--------|
-| `sandstone-base` | `#e7d6c3` | Warm base, accents, secondary surfaces |
-| `sandstone-bronze` | `#b88746` | Primary CTAs, gold highlights |
-| `sandstone-navy` | `#4b1f2f` | Trust, hero background, headings |
-| `sandstone-bg` | `#f6efe7` | Page background base |
-| `sandstone-text` | `#3a2b25` | Body text |
-| `sandstone-brown` | `#6a4632` | Supporting elements |
-| `sandstone-maroon` | `#5a2232` | Dark accents |
+### Design Tokens (CSS Variables)
 
-These are extended in `tailwind.config.ts` and mirrored in `src/app/globals.css` as HSL variables for Shadcn/UI (e.g. `--primary`, `--background`), including a **dark** theme variant.
+All brand colors are defined in **`src/app/globals.css`** under `:root` and used consistently across header, buttons, cards, typography, and backgrounds.
+
+| Token | Value | Usage |
+|-------|--------|--------|
+| `--sandstone-navy` | `#253471` | Primary dark (trust, header, footer, overlays) |
+| `--sandstone-navy-deep` | `#1d2858` | Deep Navy (gradients) |
+| `--sandstone-sand-gold` | `#b79678` | Sand Gold (luxury, warmth, primary accent, CTAs) |
+| `--sandstone-bronze` | `#8b7355` | Bronze accent |
+| `--sandstone-off-white` | `#f8f6f3` | Off-White (backgrounds, light surfaces) |
+| `--sandstone-charcoal` | `#2d2f36` | Charcoal (body text) |
+| `--sandstone-white` | `#ffffff` | White |
+
+These are also exposed in **`tailwind.config.ts`** (e.g. `sandstone-navy`, `sandstone-sand-gold`) and mirrored as HSL variables for Shadcn/UI semantics (`--primary`, `--background`, etc.).
 
 ### Typography
 
-- **Font:** Montserrat (Google Fonts via `next/font`).
-  - **Weights:** 400, 500, 600, 700.
-  - **Headings:** `font-heading` (Montserrat Bold).
-  - **Body:** `font-sans` (Montserrat), `antialiased`.
-- **CSS variables:** `--font-montserrat`, `--font-montserrat-bold` (set in `layout.tsx`).
+- **Font:** Montserrat (Google Fonts via **`next/font/google`** in `src/app/layout.tsx`).
+  - **Weights:** 400 (Regular), 600, 700 (Bold).
+  - **Loading:** `display: "swap"`, `preload: true`, subset `latin`.
+- **Usage:** Headlines use Montserrat Bold; body uses Montserrat Regular. Both are applied via the same `--font-montserrat` variable; Tailwind `font-heading` and `font-sans` reference it.
 
-### Visual Effects
+### Visual Style
 
-- **Background:** Radial and linear gradients (bronze/maroon tints) in `globals.css` for a warm, premium feel.
-- **Glassmorphism:** `.glass`, `.glass-warm`, `.section-frame`, `.panel-glass` for cards and overlays.
-- **Motion:** Framer Motion for section reveal, staggered grids, and hero copy; custom keyframes: `sandstone-fade-up`, `sandstone-light-sweep`, `sandstone-orb-drift`.
-- **Hero:** Full-bleed video with gradient overlay; optional `hero-video.mp4` and `hero-poster.jpg` in `public/`. Fallback gradient if video is missing.
+- **Header:** Sticky top app bar; background Deep Navy; logo and icons in Sand Gold or Off-White.
+- **Hero:** Full-width cinematic image with navy overlay gradient; centered brand lockup; pill-shaped search and primary Search button.
+- **Cards and tiles:** Rounded corners, clear hierarchy, gradient overlays on listing thumbnails where needed.
+- **Footer:** Deep Navy background; centered brand mark and copy; compliance logos row; bottom links (Privacy Policy, Terms & Conditions).
 
 ---
 
 ## Tech Stack & Implementation
 
 | Layer | Choice | Notes |
-|-------|--------|--------|
+|-------|--------|------|
 | **Framework** | Next.js 15 (App Router) | RSC by default, Turbopack in dev |
 | **Language** | TypeScript 5.7 | Strict types, shared contracts in `types/` |
-| **Styling** | Tailwind CSS 3.4 | Brand tokens + Shadcn semantic tokens |
-| **UI Primitives** | Radix (Slot), CVA, clsx, tailwind-merge | Buttons, inputs, cards, labels, textarea in `components/ui/` |
-| **Animation** | Framer Motion 11 | Hero, sections, BentoGrid stagger |
+| **Styling** | Tailwind CSS 3.4 | Brand tokens + design-token CSS vars + Shadcn semantic tokens |
+| **UI Primitives** | Radix (Slot), CVA, clsx, tailwind-merge | Button, input, card, label, textarea in `components/ui/` |
+| **Animation** | Framer Motion 11 | Used where needed (e.g. ContactForm) |
 | **Icons** | Lucide React | Tree-shaken via Next config |
 | **Validation** | Zod 3.24 | Single schema for lead form; reused server-side |
 | **CRM / Data** | Rolu webhooks | Lead webhook + optional MSL feed URL |
 
-**Next.js config:** `next.config.ts` sets `remotePatterns` for images (any https/http host) and `optimizePackageImports` for `lucide-react` and `framer-motion` to optimize bundles (e.g. for Vercel edge).
+**Next.js config:** `next.config.ts` sets `remotePatterns` for images (any https/http host) and `optimizePackageImports` for `lucide-react` and `framer-motion`.
 
 ---
 
 ## Architecture & Patterns
 
-The codebase follows **SOLID** and a **clean, layered structure** so features can be extended without modifying existing code.
+The codebase follows **SOLID** and a **layered structure** so features can be extended without modifying existing code.
 
 ### SOLID Mapping
 
 | Principle | Application |
 |-----------|-------------|
-| **S**ingle Responsibility | One reason to change per module: `schemas/` = validation, `services/` = external I/O, `actions/` = orchestration, `PropertyCard` = one listing, `BentoGrid` = layout only. |
-| **O**pen/Closed | New CRMs: implement `ILeadSubmissionService` and swap in; new property sources: pass different `properties` into `BentoGrid` without changing the component. |
-| **L**iskov Substitution | Any `ILeadSubmissionService` implementation can replace the default; any `PropertyCard[]` from constants, API, or CMS works with `BentoGrid`. |
-| **I**nterface Segregation | Small contracts: `LeadInput`, `SubmitLeadState`, `PropertyCard`, `ILeadSubmissionService`. No fat interfaces. |
-| **D**ependency Inversion | Actions depend on `@/config` and `@/services` (abstractions), not on `process.env` or `fetch` directly. Page injects `properties` into `BentoGrid`. |
+| **S**ingle Responsibility | One reason to change per module: `schemas/` = validation, `services/` = external I/O, `actions/` = orchestration, property card = one listing, grid/section = layout and composition. |
+| **O**pen/Closed | New CRMs: implement `ILeadSubmissionService` and swap in; new property sources: pass different `properties` into listing sections without changing components. |
+| **L**iskov Substitution | Any `ILeadSubmissionService` implementation can replace the default; any `PropertyCard[]` from constants, API, or CMS works with listing sections. |
+| **I**nterface Segregation | Small contracts: `LeadInput`, `SubmitLeadState`, `PropertyCard`, `ILeadSubmissionService`. |
+| **D**ependency Inversion | Actions depend on `@/config` and `@/services`; page injects `properties` into sections. |
 
-### Design Patterns in Use
+### Design Patterns
 
-- **Repository-style data injection** — The home page fetches properties (MSL or fallback) and passes them into `<PropertyShowcaseSection properties={...} />` and thus `BentoGrid`. Data can later come from constants, an API, or a CMS without changing the grid.
-- **Service abstraction** — Lead submission is behind `ILeadSubmissionService`; the Server Action validates and calls the service. Easy to add HubSpot, Salesforce, or a mock for tests.
-- **Single source of truth for validation** — `LeadSchema` in `schemas/lead.ts` is used by the Server Action; the same schema can be reused for client-side validation if needed.
-- **Centralized config** — `config/env.ts` owns environment variables so the rest of the app depends on a stable API, not raw `process.env` keys.
+- **Repository-style data injection** — The home page fetches properties (MSL or fallback) and passes them into `<FeaturedListingsSection properties={...} />`. Data can come from constants, an API, or a CMS without changing the section.
+- **Service abstraction** — Lead submission is behind `ILeadSubmissionService`; the Server Action validates and calls the service.
+- **Single source of truth for validation** — `LeadSchema` in `schemas/lead.ts` is used by the Server Action.
+- **Centralized config** — `config/env.ts` owns environment variables.
 
 ### Dependency Flow
 
-- **App → components → ui** (pages compose sections and UI primitives).
-- **actions → schemas, config, services** (orchestration only; no direct fetch/env in actions).
-- **components → types** (shared contracts).
+- **App to components to ui** (pages compose sections and UI primitives).
+- **actions to schemas, config, services** (orchestration only).
+- **components to types** (shared contracts).
 - Types and schemas stay dependency-free; no circular dependencies.
 
 ---
 
-## Features & Sections
+## Routes & Page Structure
 
-The home page is a single scroll with these sections (order reflected in `src/app/page.tsx`):
+| Route | Type | Purpose |
+|-------|------|---------|
+| `/` | Static | Home: hero, Sandstone Collection, action tiles, about, contact, footer |
+| `/sell` | Static | Stub: Sell My House; CTA to contact |
+| `/rent` | Static | Stub: Rent My House; CTA to contact |
+| `/join` | Static | Stub: Join the Team; CTA to contact |
+| `/listings/[id]` | Dynamic | Listing detail: image, price, title, location, details; CTA to contact |
+| `/privacy-policy` | Static | Privacy policy (view-only doc or fallback link) |
+| `/terms-and-conditions` | Static | Terms and conditions (view-only doc or fallback link) |
+
+**Anchors on home:** `/#about` (About section), `/#contact` (Contact form), `/#listings` (Sandstone Collection).
+
+**Navigation (header and footer):** Sale a property (`/sell`), Rent a property (`/rent`), Join the Team (`/join`), About Us (`/#about`), Contact Us (`/#contact`). Content is driven by **`src/constants/site.ts`** (`SITE_NAV`).
+
+---
+
+## Home Page Sections
+
+The home page is mobile-first and scrolls in this order (see `src/app/page.tsx`):
 
 | Section | Component | Purpose |
 |---------|-----------|---------|
-| Header | `SiteHeader` | Nav (from `SITE_NAV`), branding |
-| Hero | `HeroSection` | Full-bleed video, title, slogan, rotating tagline, CTAs (Schedule Tour, Tour Listings) |
-| About | `AboutSection` | Headline + copy from `constants/site` |
-| Experience strip | `ExperienceStrip` | Horizontal trust/experience strip |
-| Property showcase | `PropertyShowcaseSection` | Bento grid of listings (from MSL or fallback) |
-| Gallery | `GallerySection` | Image gallery (currently derived from first 9 properties) |
-| Our successes | `OurSuccessesSection` | Stats (rolling numbers), social proof |
-| News | `NewsSection` | Content boxes from `NEWS_ITEMS` |
-| Agents | `AgentsSection` | Team profiles from `AGENTS` (name, title, image, contact, tagline, about, specialties, socials) |
-| Contact | `ContactForm` | Lead form → Server Action → Rolu webhook |
-| Footer | `SiteFooter` | Contact, address, hours, credits, social links |
-| Sticky CTA | `StickyCTA` | Persistent call-to-action |
+| Top App Bar | `SiteHeader` | Sticky; Deep Navy; left = Sandstone mark (logo); right = hamburger opening slide-over menu. Desktop: centered nav links. |
+| Hero | `HeroSection` | Full-width cinematic image (`hero.webp`) with navy overlay; centered brand lockup (logo + tagline); pill search input + Sand Gold Search button. Placeholder: "Enter an address, neighborhood in EP". |
+| Featured Listings | `FeaturedListingsSection` | "Sandstone Collection" heading; 2-column grid of listing cards (thumbnail, bottom gradient, price, neighborhood); each card links to `/listings/[id]`. "View More" pill below grid. |
+| Primary Action Tiles | `PrimaryActionTiles` | Three large rounded tiles: Sell My House (`/sell`), Rent My House (`/rent`), Join the Team (`/join`). Each uses a minimal icon and label. |
+| About | `AboutSection` | Short headline and copy from `constants/site.ts` (about the team and market). |
+| Contact | `ContactForm` | Lead form; Server Action to Rolu webhook; success/error and field-level validation. |
+| Footer | `SiteFooter` | Centered brand mark and short brand paragraph; nav list (same as header); compliance logos row (Keller Williams, MLS); Privacy Policy and Terms & Conditions links; copyright. |
 
-Content for nav, hero, about, stats, news, agents, contact, and footer lives in **`src/constants/site.ts`** as the single source of truth for copy and links.
+Content for nav, hero, about, contact, and footer lives in **`src/constants/site.ts`**.
 
 ---
 
@@ -159,9 +176,7 @@ Content for nav, hero, about, stats, news, agents, contact, and footer lives in 
 
 ### Payload Sent to Rolu
 
-JSON body (Zod-validated):
-
-- `firstName`, `lastName`, `email`, `phone` (required), `message` (optional, default `""`).
+JSON body (Zod-validated): `firstName`, `lastName`, `email`, `phone` (required), `message` (optional, default `""`).
 
 ### Validation Rules (LeadSchema)
 
@@ -170,7 +185,7 @@ JSON body (Zod-validated):
 - `phone`: min 1, max 30.
 - `message`: max 2000, optional.
 
-Field errors from Zod are mapped to `Record<string, string[]>` via **`lib/zod.ts`** (`zodIssuesToFieldErrors`) for display next to inputs.
+Field errors from Zod are mapped to `Record<string, string[]>` via **`lib/zod.ts`** for display next to inputs.
 
 ---
 
@@ -179,31 +194,28 @@ Field errors from Zod are mapped to `Record<string, string[]>` via **`lib/zod.ts
 ### Data Flow
 
 1. **Home page** (Server Component) calls **`fetchMslPropertyCards()`** from `services/msl.service.ts`.
-2. **MSL service**:
-   - Reads **`MSL_FEED_URL`** from config. If unset, returns **fallback demo listings** (curated `PropertyCard[]`).
-   - If set: fetches feed with `next: { revalidate: 300 }` (5-minute cache), parses JSON array, and maps each item to **`PropertyCard`** (id, title, location, price, image, beds, baths, sqft, featured). Handles multiple possible field names (e.g. `beds`/`bedrooms`, `image.url`/`photo`).
-3. Page passes **`properties`** into:
-   - **PropertyShowcaseSection** → **BentoGrid** (grid of **PropertyCard** components),
-   - and a **gallery** derived from the first 9 properties (image, title, location, price, stats string).
+2. **MSL service**: Reads **`MSL_FEED_URL`** from config. If unset, returns **fallback demo listings** (`PropertyCard[]`). If set: fetches feed with `next: { revalidate: 300 }` (5-minute cache), parses JSON array, and maps each item to **`PropertyCard`** (id, title, location, price, image, beds, baths, sqft, featured). Handles multiple possible field names (e.g. `beds`/`bedrooms`, `image.url`/`photo`).
+3. Page passes **`properties`** into **`FeaturedListingsSection`**, which renders a 2-column grid of cards; each card links to **`/listings/[id]`**.
+4. **Listing detail page** (`/listings/[id]`) fetches the same list (or could be refactored to a single-property fetch), finds the item by `id`, and renders image, price, title, location, details, and a "Schedule a tour" CTA.
 
-So the **UI never fetches data**; it only receives `PropertyCard[]` from the page. The data source can be swapped (e.g. different API or CMS) by changing how the page gets `properties`.
+The **UI does not fetch data**; it receives `PropertyCard[]` from the page. The data source can be swapped by changing how the page gets `properties`.
 
 ### PropertyCard Contract
 
-Defined in `types/property.ts`: `id`, `title`, `location`, `price`, `image`, optional `beds`, `baths`, `sqft`, `featured`. The MSL service normalizes the feed into this shape; fallback data already matches it.
+Defined in `types/property.ts`: `id`, `title`, `location`, `price`, `image`, optional `beds`, `baths`, `sqft`, `featured`. The MSL service normalizes the feed into this shape.
 
 ---
 
 ## Configuration & Environment
 
-All env access is centralized in **`src/config/env.ts`**:
+All env access is in **`src/config/env.ts`**:
 
 | Variable | Purpose |
 |----------|---------|
-| **`ROLU_WEBHOOK_URL`** | Rolu webhook URL for lead form submissions. If unset, form returns a “not configured” message. |
+| **`ROLU_WEBHOOK_URL`** | Rolu webhook URL for lead form submissions. If unset, form returns a "not configured" message. |
 | **`MSL_FEED_URL`** | Optional. HTTP endpoint returning a JSON array of listing objects. If unset or on error, demo listings are used. |
 
-No other code should read `process.env` directly; use `getRoluWebhookUrl()` and `getMslFeedUrl()`.
+Use `getRoluWebhookUrl()` and `getMslFeedUrl()`; do not read `process.env` elsewhere.
 
 ---
 
@@ -225,18 +237,22 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Dev runs with **Turbopack** (`next dev --turbopack`).
 
-### Hero video (optional)
+### Static Assets (public/)
 
-- Add **`public/hero-video.mp4`** for the full-screen hero background.
-- Add **`public/hero-poster.jpg`** as poster when video is loading.
-- If the video is missing, the hero still renders with a gradient overlay.
+All site images live under **`public/`**. Do not rely on root-level image files; they are not served.
 
-### Static images (community, news, hero)
+| Asset | Purpose |
+|-------|---------|
+| `logo-mark.webp` | Sandstone mark in header and footer |
+| `logo-hero.webp` | Hero lockup (brand + tagline) |
+| `hero.webp` | Full-width hero background image |
+| `house1.webp`, `house2.webp` | Optional listing/feature imagery (e.g. fallbacks or future use) |
+| `icon1.webp`, `icon2.webp`, `icon3.webp` | Icons for Primary Action Tiles (Sell, Rent, Join) |
+| `keller-williams.webp`, `mls.webp` | Footer compliance logos |
+| `agents-1.jpg` … `agents-4.jpg` | Agent photos (referenced in `constants/site.ts` for future use) |
+| `privacy-policy.docx`, `terms-and-conditions.docx` | Source documents for view-only legal pages |
 
-- **Our Community** (slideshow in Our Successes): images are driven by `GALLERY_IMAGES` in `src/constants/site.ts`. Place files in **`public/community/`** (e.g. `1.jpg` … `5.jpg`) and keep the array in sync.
-- **News section**: each of the three news cards uses **`public/news/1.jpg`**, **`public/news/2.jpg`**, **`public/news/3.jpg`**. Add or rename files there and add matching entries to `NEWS_ITEMS` in `site.ts` if you add more cards.
-- **Hero poster**: **`public/hero-poster.jpg`** is used as the cinematic hero/video poster; replace this file to change the hero still.
-- **Extra marketing assets**: **`public/marketing/`** holds additional marketing images (e.g. `4.jpg`, `5.jpg`) for future use (e.g. more news items or alternate hero imagery).
+Replace or add files in `public/` as needed; update any references in `constants/site.ts` or components if paths or names change.
 
 ### Scripts
 
@@ -249,20 +265,13 @@ Open [http://localhost:3000](http://localhost:3000). Dev runs with **Turbopack**
 
 ### Deploy (e.g. Vercel)
 
-The contact form submits leads via a server action that reads **`ROLU_WEBHOOK_URL`** at runtime. On Vercel, that value comes from **Environment Variables**, not from a local `.env` file. If it’s missing in Vercel, the form will show: *"Lead submission is not configured. Please try again later."*
+The contact form submits leads via a Server Action that reads **`ROLU_WEBHOOK_URL`** at runtime. On Vercel, set that in **Environment Variables**. If it is missing, the form shows: *"Lead submission is not configured. Please try again later."*
 
-**Set the webhook URL in Vercel:**
-
-1. In the [Vercel dashboard](https://vercel.com/dashboard), open your project.
+1. In the Vercel dashboard, open your project.
 2. Go to **Settings → Environment Variables**.
-3. Add **`ROLU_WEBHOOK_URL`** with your Go High Level (or other CRM) inbound webhook URL, e.g.  
-   `https://services.leadconnectorhq.com/hooks/.../webhook-trigger/...`
-4. Choose **Production** (and **Preview** if you want it on branch deployments), then Save.
-5. **Redeploy** the project (Deployments → ⋮ on latest → Redeploy) so the new variable is applied.
-
-Optionally add **`MSL_FEED_URL`** the same way if you use the MSL listings feed.
-
-- Images and fonts are tuned for edge; no extra config required. Next config already allows remote images and optimizes the listed packages.
+3. Add **`ROLU_WEBHOOK_URL`** with your webhook URL.
+4. Optionally add **`MSL_FEED_URL`** for the listings feed.
+5. Redeploy so the new variable is applied.
 
 ---
 
@@ -272,13 +281,13 @@ Optionally add **`MSL_FEED_URL`** the same way if you use the MSL listings feed.
 
 1. Add a new file under **`services/`**, e.g. `hubspot.service.ts`.
 2. Implement **`ILeadSubmissionService`**: `submit(payload: LeadInput, webhookUrl: string): Promise<LeadSubmissionResult>`.
-3. In the Server Action (or a small factory in `config`), choose which service to use (e.g. by env var). The rest of the action and the form stay unchanged.
+3. In the Server Action (or a factory in config), choose which service to use. The rest of the action and the form stay unchanged.
 
 ### Adding a New Data Source for Properties
 
-1. Create a function or module that returns **`PropertyCard[]`** (e.g. in `constants/`, or a new `repositories/` or `data/` layer that calls an API).
-2. In the page (or a layout/data wrapper), fetch that array and pass it into `<PropertyShowcaseSection properties={...} />` / `<BentoGrid properties={...} />`.
-3. **BentoGrid** and **PropertyCard** remain unchanged (Open/Closed).
+1. Create a function or module that returns **`PropertyCard[]`** (e.g. in `constants/`, or a new layer that calls an API).
+2. In the page, fetch that array and pass it into `<FeaturedListingsSection properties={...} />`.
+3. Listing section and card components remain unchanged (Open/Closed).
 
 ---
 
@@ -292,41 +301,45 @@ standstone_website/
 │   ├── ARCHITECTURE.md       # SOLID, folder structure, patterns
 │   └── ROLU-WORKFLOW.md      # Rolu MSL feed + webhook workflow
 ├── public/
-│   ├── agents-1.jpg … agents-4.jpg
-│   ├── logo.jpg
-│   ├── hero-video.mp4        # optional
-│   ├── hero-poster.jpg       # optional (cinematic hero poster)
-│   ├── community/            # Our Community slideshow (1.jpg … 5.jpg)
-│   ├── news/                 # News section cards (1.jpg, 2.jpg, 3.jpg)
-│   └── marketing/            # Extra marketing images for future use
+│   ├── logo-mark.webp        # Header/footer brand mark
+│   ├── logo-hero.webp        # Hero lockup
+│   ├── hero.webp             # Hero background
+│   ├── house1.webp, house2.webp
+│   ├── icon.webp, icon1.webp, icon2.webp, icon3.webp  # Action tile icons
+│   ├── keller-williams.webp, mls.webp  # Footer compliance logos
+│   ├── agents-1.jpg … agents-4.jpg     # Agent photos (site.ts)
+│   ├── privacy-policy.docx
+│   └── terms-and-conditions.docx
 ├── src/
-│   ├── actions/              # Server Actions (orchestration)
+│   ├── actions/
 │   │   └── submit-lead.ts
 │   ├── app/
-│   │   ├── globals.css       # Tailwind, brand CSS, utilities
-│   │   ├── layout.tsx        # Root layout, fonts, metadata
-│   │   └── page.tsx          # Home: fetch properties, compose sections
+│   │   ├── globals.css       # Design tokens, Tailwind, base styles
+│   │   ├── layout.tsx        # Root layout, Montserrat font, metadata
+│   │   ├── page.tsx          # Home: fetch properties, compose sections
+│   │   ├── sell/page.tsx     # Sell My House stub
+│   │   ├── rent/page.tsx    # Rent My House stub
+│   │   ├── join/page.tsx    # Join the Team stub
+│   │   ├── listings/[id]/page.tsx  # Listing detail
+│   │   ├── privacy-policy/page.tsx
+│   │   └── terms-and-conditions/page.tsx
 │   ├── components/
-│   │   ├── ui/               # Primitives (button, input, card, label, textarea, rolling-number)
-│   │   ├── properties/      # BentoGrid, PropertyCard (presentational)
-│   │   ├── sections/        # ExperienceStrip, GallerySection, HeroMeta, PropertyShowcaseSection
-│   │   ├── AboutSection.tsx
-│   │   ├── AgentsSection.tsx
+│   │   ├── ui/               # Button, Input, Card, Label, Textarea, rolling-number
+│   │   ├── properties/       # BentoGrid, PropertyCard (presentational)
+│   │   ├── sections/         # FeaturedListingsSection, PrimaryActionTiles, AboutSection
 │   │   ├── ContactForm.tsx
 │   │   ├── HeroSection.tsx
-│   │   ├── NewsSection.tsx
-│   │   ├── OurSuccessesSection.tsx
+│   │   ├── MobileMenuPortal.tsx  # Slide-over nav (mobile)
 │   │   ├── SiteFooter.tsx
 │   │   ├── SiteHeader.tsx
-│   │   ├── StatsSection.tsx
-│   │   └── StickyCTA.tsx
+│   │   └── ViewOnlyDocument.tsx  # Legal doc view-only wrapper
 │   ├── config/
 │   │   ├── env.ts            # getRoluWebhookUrl(), getMslFeedUrl()
 │   │   └── index.ts
 │   ├── constants/
 │   │   ├── index.ts
 │   │   ├── properties.ts     # (if any static property data)
-│   │   └── site.ts           # Nav, contact, address, hero, about, stats, news, agents, footer
+│   │   └── site.ts           # Nav, contact, footer, about, hero CTA, etc.
 │   ├── lib/
 │   │   ├── index.ts
 │   │   ├── utils.ts          # cn(), etc.
@@ -337,7 +350,7 @@ standstone_website/
 │   ├── services/
 │   │   ├── index.ts
 │   │   ├── lead.service.ts   # ILeadSubmissionService, Rolu webhook impl
-│   │   └── msl.service.ts    # fetchMslPropertyCards(), MSL feed + fallback
+│   │   └── msl.service.ts   # fetchMslPropertyCards(), MSL feed + fallback
 │   └── types/
 │       ├── index.ts
 │       ├── agent.ts
@@ -361,4 +374,4 @@ standstone_website/
 
 ---
 
-*Sandstone Real Estate Team — Luxury. Lifestyle. Legacy.*
+*Sandstone Real Estate Group — Luxury. Lifestyle. Legacy.*

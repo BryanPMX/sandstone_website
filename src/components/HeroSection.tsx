@@ -1,145 +1,81 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight, PlayCircle } from "lucide-react";
-import Link from "next/link";
-import { HeroMeta } from "./sections/HeroMeta";
-import {
-  HERO_TITLE,
-  HERO_SLOGAN,
-  HERO_CTA,
-} from "@/constants/site";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { useRef, useState } from "react";
 
-const HERO_ROTATING_POINTS = [
-  "Boutique Advisory",
-  "Cinematic Marketing",
-  "Relocation Expertise",
-];
+const SEARCH_PLACEHOLDER = "Enter an address, neighborhood in EP";
 
 export function HeroSection() {
-  const [activePoint, setActivePoint] = useState(0);
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [query, setQuery] = useState("");
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActivePoint((index) => (index + 1) % HERO_ROTATING_POINTS.length);
-    }, 2600);
-    return () => clearInterval(timer);
-  }, []);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (q) {
+      router.push(`/?search=${encodeURIComponent(q)}#listings`);
+    } else {
+      router.push("/#listings");
+    }
+  };
 
   return (
-    <section className="relative isolate overflow-hidden bg-gradient-to-br from-sandstone-maroon via-sandstone-navy to-sandstone-bronze/70 text-white">
-      <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="h-full w-full object-cover"
-        >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-sandstone-navy/85 via-sandstone-navy/80 to-black/40" />
+    <section className="relative w-full overflow-hidden bg-[var(--sandstone-navy)]">
+      <div className="relative aspect-[16/10] w-full min-h-[70vh] sm:aspect-[16/9] sm:min-h-[75vh]">
+        <Image
+          src="/hero.webp"
+          alt=""
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/90 via-[var(--sandstone-navy)]/50 to-[var(--sandstone-navy)]/30"
+          aria-hidden
+        />
       </div>
-      <div className="pointer-events-none absolute -left-32 top-20 h-64 w-64 rounded-full bg-sandstone-bronze/26 blur-3xl orb-drift" />
-      <div className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-sandstone-navy/22 blur-3xl orb-drift [animation-delay:-5.5s]" />
-      <div className="pointer-events-none absolute left-1/2 top-[-8rem] h-64 w-[38rem] -translate-x-1/2 rounded-full bg-sandstone-bronze/18 blur-[90px]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-6xl flex-col justify-center px-4 pb-16 pt-28 sm:py-20 lg:flex-row lg:items-center lg:gap-12">
-        <motion.div
-          className="max-w-2xl space-y-4"
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <p className="badge-sandstone-accent w-fit text-white">
-            El Paso · Fort Bliss · Luxury · Relocation
-          </p>
-          <h1 className="font-heading text-4xl font-bold leading-tight text-sandstone-base sm:text-5xl lg:text-6xl">
-            {HERO_TITLE}
-          </h1>
-          <p className="text-lg text-white/90 sm:text-xl leading-relaxed">
-            {HERO_SLOGAN}
-          </p>
-          <div className="h-8">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.p
-                key={HERO_ROTATING_POINTS[activePoint]}
-                className="badge-sandstone-dark"
-                initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
-                transition={{ duration: 0.35 }}
-              >
-                {HERO_ROTATING_POINTS[activePoint]}
-              </motion.p>
-            </AnimatePresence>
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-4 py-20 text-center">
+        <div className="relative z-10 w-full max-w-2xl">
+          <div className="mb-6 flex justify-center">
+            <Image
+              src="/logo-hero.webp"
+              alt="Sandstone Real Estate Group"
+              width={280}
+              height={80}
+              className="h-14 w-auto object-contain sm:h-16 md:h-20"
+              priority
+            />
           </div>
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Link
-              href="/#contact"
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-sandstone-maroon via-sandstone-navy to-[#70543c] px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-lg shadow-black/25 transition-all [transition-duration:460ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-[0_28px_46px_-18px_rgba(37,52,113,0.8)] focus-visible:-translate-y-[3px] focus-visible:outline-none"
-            >
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-y-0 -left-2/3 w-[58%] -skew-x-12 bg-gradient-to-r from-white/0 via-white/50 to-white/0 opacity-0 transition-all duration-700 group-hover:left-[132%] group-hover:opacity-100 group-focus-visible:left-[132%] group-focus-visible:opacity-100"
-              />
-              <span className="relative z-10">{HERO_CTA}</span>
-              <ChevronRight
-                className="relative z-10 h-4 w-4 transition-transform [transition-duration:420ms] group-hover:translate-x-1 group-hover:scale-110 group-focus-visible:translate-x-1 group-focus-visible:scale-110"
-                aria-hidden
-              />
-            </Link>
-            <Link
-              href="/#gallery"
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/35 px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white/90 backdrop-blur-sm transition-all [transition-duration:460ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[2px] hover:border-sandstone-base hover:text-white hover:shadow-[0_24px_38px_-24px_rgba(255,255,255,0.95)] focus-visible:-translate-y-[2px] focus-visible:border-sandstone-base focus-visible:text-white focus-visible:outline-none"
-            >
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-full bg-gradient-to-r from-white/0 via-white/20 to-white/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100"
-              />
-              <PlayCircle
-                className="relative z-10 h-4 w-4 transition-transform [transition-duration:420ms] group-hover:scale-125 group-focus-visible:scale-125"
-                aria-hidden
-              />
-              <span className="relative z-10">Tour Listings</span>
-            </Link>
-          </div>
-          <HeroMeta />
-        </motion.div>
+          <p className="mt-2 font-heading text-lg font-bold tracking-wide text-[var(--sandstone-sand-gold)] sm:text-xl">
+            Luxury. Lifestyle. Legacy.
+          </p>
+        </div>
 
-        <motion.div
-          className="mt-10 w-full max-w-xl lg:mt-0"
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.65, delay: 0.1 }}
+        <form
+          onSubmit={handleSearch}
+          className="relative z-10 mt-8 flex w-full max-w-xl flex-col gap-3 sm:flex-row sm:items-center sm:rounded-full sm:bg-white/95 sm:py-1 sm:pr-1 sm:shadow-lg"
         >
-          <div className="glass-dark relative overflow-hidden rounded-2xl border border-white/20 p-4 shadow-2xl fade-up-soft">
-            <div className="rounded-xl bg-black/30 p-2">
-              <div className="light-sweep image-structure relative aspect-[4/3] overflow-hidden rounded-lg">
-                <video
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  className="h-full w-full object-cover"
-                >
-                  <source src="/hero-video.mp4" type="video/mp4" />
-                </video>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white/80">
-                  <div>
-                    <p className="font-semibold">Featured cinematic tour</p>
-                    <p className="text-[11px]">Updated weekly with new releases</p>
-                  </div>
-                  <span className="badge-sandstone-dark gap-1 px-2.5 py-1 text-[11px] normal-case tracking-[0.1em] text-white">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-sandstone-base" aria-hidden /> Now Showing
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          <input
+            ref={inputRef}
+            type="search"
+            name="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={SEARCH_PLACEHOLDER}
+            className="w-full rounded-full border border-white/30 bg-white/90 px-5 py-3.5 text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/60 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/30 sm:border-0 sm:bg-transparent sm:py-3 sm:focus:ring-0"
+            aria-label="Search by address or neighborhood"
+          />
+          <button
+            type="submit"
+            className="shrink-0 rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3.5 font-semibold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)] focus:ring-offset-2 focus:ring-offset-[var(--sandstone-navy)] sm:px-8"
+          >
+            Search
+          </button>
+        </form>
       </div>
     </section>
   );

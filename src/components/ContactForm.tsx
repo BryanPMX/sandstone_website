@@ -34,17 +34,10 @@ export function ContactForm() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden py-[70px] md:py-[98px] scroll-mt-20 bg-gradient-to-br from-sandstone-bg via-sandstone-base/95 to-sandstone-bronze/40"
+      className="relative overflow-hidden py-16 md:py-24 scroll-mt-20 bg-[var(--sandstone-off-white)]"
     >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.03] to-sandstone-navy/10" aria-hidden />
-      <div className="pointer-events-none absolute -left-14 top-4 h-56 w-56 rounded-full bg-sandstone-bronze/22 blur-3xl" />
-      <div className="pointer-events-none absolute right-0 bottom-8 h-64 w-64 rounded-full bg-sandstone-navy/18 blur-[110px]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sandstone-gold/8 blur-[100px]" aria-hidden />
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-sandstone-navy/15 to-transparent" aria-hidden />
-      <div className="pointer-events-none absolute inset-0 backdrop-blur-[2px]" aria-hidden />
       <div className="container relative mx-auto max-w-3xl px-4">
-        <div className="relative overflow-hidden rounded-3xl border border-white/50 bg-gradient-to-br from-white/55 via-sandstone-base/40 to-sandstone-bronze/28 p-5 shadow-[0_8px_32px_-16px_rgba(37,52,113,0.25)] ring-1 ring-white/20 ring-inset backdrop-blur-xl sm:p-[35px] md:p-[42px]">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-white/8 to-sandstone-navy/10" />
+        <div className="relative overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-white p-5 shadow-lg sm:p-8">
           <motion.div
             className="relative text-center"
             initial={{ opacity: 0, y: 16 }}
@@ -52,22 +45,22 @@ export function ContactForm() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="font-heading text-3xl font-bold text-sandstone-gold md:text-4xl">
+            <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
               {CONTACT_HEADLINE}
             </h2>
-            <p className="mt-[14px] text-sandstone-text/85">
+            <p className="mt-[14px] text-[var(--sandstone-charcoal)]/85">
               {CONTACT_SUBHEADLINE}
             </p>
           </motion.div>
 
           <motion.div
-            className="relative mt-6 overflow-hidden rounded-2xl border border-white/45 bg-gradient-to-br from-white/70 via-sandstone-base/50 to-sandstone-bronze/35 p-5 shadow-[0_18px_40px_-24px_rgba(37,52,113,0.4)] ring-1 ring-white/25 ring-inset backdrop-blur-xl sm:mt-[35px] sm:p-[35px]"
+            className="relative mt-6 overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-white p-5 shadow-lg sm:mt-8 sm:p-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/30 via-sandstone-base/12 to-sandstone-navy/10" />
+            <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[var(--sandstone-off-white)]/30" aria-hidden />
             <form action={formAction} className="relative space-y-[28px]">
             {state?.success === true && (
               <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
@@ -249,7 +242,7 @@ export function ContactForm() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full sm:w-auto bg-gradient-to-r from-sandstone-maroon via-sandstone-navy to-[#70543c] text-white shadow-[0_18px_32px_-18px_rgba(37,52,113,0.7)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-18px_rgba(37,52,113,0.85)] focus-visible:-translate-y-0.5 uppercase tracking-wider"
+                className="w-full sm:w-auto rounded-full bg-[var(--sandstone-navy)] px-6 py-3 font-semibold text-white uppercase tracking-wider transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                 disabled={isPending}
               >
                 {isPending ? "Sending..." : CONTACT_CTA}

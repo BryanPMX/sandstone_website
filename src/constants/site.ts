@@ -5,10 +5,11 @@
 import type { AgentProfile } from "@/types";
 
 export const SITE_NAV = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/#about-us" },
-  { label: "Gallery", href: "/#gallery" },
-  { label: "Agents", href: "/#agents" },
+  { label: "Sale a property", href: "/sell" },
+  { label: "Rent a property", href: "/rent" },
+  { label: "Join the Team", href: "/join" },
+  { label: "About Us", href: "/#about" },
+  { label: "Contact Us", href: "/#contact" },
 ] as const;
 
 export const SITE_CONTACT = {
@@ -97,14 +98,8 @@ export const STATS: Stat[] = [
 export const GALLERY_TITLE = "Gallery";
 export const GALLERY_SUBTITLE = "Curated listings refreshed weekly";
 
-/** Our Community slideshow images (place in /public/community/) */
-export const GALLERY_IMAGES = [
-  { src: "/community/1.jpg", alt: "Our community" },
-  { src: "/community/2.jpg", alt: "Our community" },
-  { src: "/community/3.jpg", alt: "Our community" },
-  { src: "/community/4.jpg", alt: "Our community" },
-  { src: "/community/5.jpg", alt: "Our community" },
-];
+/** Gallery images (curated from listings when available) */
+export const GALLERY_IMAGES: { src: string; alt: string }[] = [];
 
 /** News items: title, description, image for each box */
 export const NEWS_ITEMS = [
@@ -118,7 +113,7 @@ export const AGENTS: AgentProfile[] = [
   {
     name: "Alejandro Gamboa",
     title: "Team Leader",
-    image: "/agents-1.jpg",
+    image: "/agents-1.jpg", // keep agent photos per brand
     phone: "+1 (915) 328-9799",
     email: "agamboa@kw.com",
     tagline: "Strategy-first guidance for luxury & relocation.",
@@ -191,7 +186,10 @@ export const PRIVACY_POLICY_HREF = "/privacy-policy";
 export const TERMS_AND_CONDITIONS_HREF = "/terms-and-conditions";
 
 export const FOOTER_CREDIT = "";
-export const FOOTER_BRAND = "Sandstone Real Estate Team - by Keller Williams";
+export const FOOTER_BRAND = "Sandstone Real Estate Group";
+export const FOOTER_TAGLINE = "Luxury. Lifestyle. Legacy.";
+export const FOOTER_ABOUT =
+  "We don't just sell houses — we elevate lifestyles. Trust, innovation, and community in El Paso and the Southwest.";
 
 /** Social links for footer (add URLs when available) */
 export const SOCIAL_LINKS = [
@@ -200,8 +198,8 @@ export const SOCIAL_LINKS = [
   { label: "LinkedIn", href: "#", icon: "linkedin" },
 ] as const;
 
-/** Brand/partner image names for footer (place in /public/brands/) */
+/** Compliance logos for footer (in /public) */
 export const FOOTER_BRAND_IMAGES = [
-  { name: "Keller Williams", src: "/brands/keller-williams.png", alt: "Keller Williams" },
-  { name: "Equal Housing", src: "/brands/equal-housing.png", alt: "Equal Housing Opportunity" },
+  { name: "Keller Williams", src: "/keller-williams.webp", alt: "Keller Williams" },
+  { name: "MLS", src: "/mls.webp", alt: "MLS" },
 ] as const;

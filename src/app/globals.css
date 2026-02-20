@@ -2,46 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========== Sandstone Brand Design Tokens (identity.pdf) ========== */
 @layer base {
   :root {
-    /* Sandstone brand mapped to HSL for Shadcn components */
-    --background: 225 33% 98%; /* light gray canvas #f7f8fb */
-    --foreground: 227 9% 19%; /* text gray #2d2f36 */
-    --card: 225 33% 98%;
-    --card-foreground: 227 9% 19%;
-    --popover: 225 33% 98%;
-    --popover-foreground: 227 9% 19%;
-    --primary: 29 30% 59%; /* sand gold #b79678 */
-    --primary-foreground: 225 33% 98%;
-    --secondary: 240 13% 96%; /* base highlight #f2f2f5 */
-    --secondary-foreground: 228 51% 29%; /* navy foreground */
-    --muted: 228 12% 90%;
-    --muted-foreground: 227 9% 32%;
-    --accent: 228 12% 90%;
-    --accent-foreground: 227 9% 19%;
+    /* Brand palette */
+    --sandstone-navy: #253471;        /* Navy Blue – Trust, primary dark */
+    --sandstone-navy-deep: #1d2858;  /* Deep Navy – gradients/header */
+    --sandstone-sand-gold: #b79678;  /* Sand Gold – Luxury, warmth, primary accent */
+    --sandstone-bronze: #8b7355;     /* Bronze accent – stronger contrast */
+    --sandstone-off-white: #f8f6f3;  /* Off-White – backgrounds */
+    --sandstone-charcoal: #2d2f36;   /* Charcoal – body text */
+    --sandstone-white: #ffffff;
+
+    /* Semantic (HSL for Shadcn where needed) */
+    --background: 40 25% 98%;
+    --foreground: 228 9% 18%;
+    --card: 40 25% 99%;
+    --card-foreground: 228 9% 18%;
+    --popover: 40 25% 99%;
+    --popover-foreground: 228 9% 18%;
+    --primary: 29 30% 59%;
+    --primary-foreground: 228 46% 12%;
+    --secondary: 40 20% 95%;
+    --secondary-foreground: 228 51% 29%;
+    --muted: 40 15% 92%;
+    --muted-foreground: 228 9% 38%;
+    --accent: 29 30% 59%;
+    --accent-foreground: 228 46% 12%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 228 12% 82%;
-    --input: 228 12% 82%;
+    --border: 228 12% 88%;
+    --input: 228 12% 88%;
     --ring: 29 30% 59%;
     --radius: 0.5rem;
   }
 
   .dark {
     --background: 228 46% 12%;
-    --foreground: 225 33% 98%;
-    --card: 228 46% 12%;
-    --card-foreground: 225 33% 98%;
-    --popover: 228 46% 12%;
-    --popover-foreground: 225 33% 98%;
+    --foreground: 40 25% 98%;
+    --card: 228 46% 14%;
+    --card-foreground: 40 25% 98%;
+    --popover: 228 46% 14%;
+    --popover-foreground: 40 25% 98%;
     --primary: 29 30% 59%;
     --primary-foreground: 228 46% 12%;
     --secondary: 227 30% 18%;
-    --secondary-foreground: 225 33% 98%;
+    --secondary-foreground: 40 25% 98%;
     --muted: 227 22% 24%;
     --muted-foreground: 227 9% 68%;
-    --accent: 227 22% 24%;
-    --accent-foreground: 225 33% 98%;
+    --accent: 29 30% 59%;
+    --accent-foreground: 228 46% 12%;
     --destructive: 0 72% 56%;
     --destructive-foreground: 0 0% 98%;
     --border: 228 24% 28%;
@@ -55,191 +65,30 @@
     @apply border-border;
   }
   body {
-    background:
-      radial-gradient(1200px 520px at 80% -10%, rgba(37, 52, 113, 0.18), transparent 55%),
-      radial-gradient(900px 420px at 10% 12%, rgba(183, 150, 120, 0.16), transparent 58%),
-      linear-gradient(180deg, #f7f8fb 0%, #f2f2f5 100%);
-    @apply text-sandstone-text antialiased;
+    background: var(--sandstone-off-white);
+    color: var(--sandstone-charcoal);
+    @apply antialiased;
     overflow-x: hidden;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  h1,
-  h2,
-  h3 {
+  h1, h2, h3 {
     @apply font-heading font-bold;
   }
 }
 
 @keyframes sandstone-fade-up {
-  0% {
-    opacity: 0;
-    transform: translateY(18px);
-    filter: blur(6px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
+  0% { opacity: 0; transform: translateY(18px); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-@keyframes sandstone-light-sweep {
-  0% {
-    transform: translateX(-130%);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.75;
-  }
-  50% {
-    opacity: 0.22;
-  }
-  100% {
-    transform: translateX(130%);
-    opacity: 0;
-  }
+@keyframes slide-over-in {
+  0% { opacity: 0; transform: translateX(100%); }
+  100% { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes sandstone-orb-drift {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(14px, -10px, 0) scale(1.08);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
-/* Glassmorphism utility */
+/* Utilities */
 @layer utilities {
-  .glass {
-    @apply bg-white/80 dark:bg-sandstone-navy/80 backdrop-blur-md border border-white/20;
-  }
-  .glass-warm {
-    background: linear-gradient(
-      135deg,
-      rgba(251, 246, 239, 0.9) 0%,
-      rgba(184, 135, 70, 0.34) 100%
-    );
-    @apply backdrop-blur-md border border-sandstone-base/30;
-  }
-  .section-frame {
-    @apply relative overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-[0_20px_45px_-25px_rgba(37,52,113,0.35)] backdrop-blur-xl;
-  }
-  .panel-glass {
-    @apply rounded-2xl border border-white/60 bg-white/65 shadow-[0_16px_35px_-20px_rgba(37,52,113,0.32)] backdrop-blur-lg;
-  }
-  .badge-sandstone {
-    @apply inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase backdrop-blur-sm;
-    border-color: rgba(183, 150, 120, 0.55);
-    background: linear-gradient(
-      102deg,
-      rgba(29, 40, 88, 0.98) 0%,
-      rgba(37, 52, 113, 0.96) 52%,
-      rgba(138, 111, 86, 0.98) 100%
-    );
-    color: rgba(247, 248, 251, 0.98);
-    letter-spacing: 0.2em;
-    box-shadow: 0 14px 28px -20px rgba(37, 52, 113, 0.6);
-  }
-  .badge-sandstone-dark {
-    @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase backdrop-blur-md;
-    border-color: rgba(183, 150, 120, 0.4);
-    background: linear-gradient(
-      110deg,
-      rgba(29, 40, 88, 0.95) 0%,
-      rgba(37, 52, 113, 0.9) 55%,
-      rgba(138, 111, 86, 0.92) 100%
-    );
-    color: rgba(247, 248, 251, 0.98);
-    letter-spacing: 0.16em;
-    box-shadow: 0 12px 28px -20px rgba(37, 52, 113, 0.48);
-  }
-  .badge-sandstone-accent {
-    @apply inline-flex items-center rounded-full border px-4 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm;
-    border-color: rgba(183, 150, 120, 0.72);
-    background: linear-gradient(
-      96deg,
-      rgba(29, 40, 88, 0.98) 0%,
-      rgba(37, 52, 113, 0.94) 50%,
-      rgba(138, 111, 86, 0.96) 100%
-    );
-    letter-spacing: 0.1em;
-    box-shadow: 0 14px 26px -18px rgba(37, 52, 113, 0.6);
-  }
-  .badge-sandstone-chip {
-    @apply inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition;
-    border-color: rgba(183, 150, 120, 0.42);
-    background: linear-gradient(
-      110deg,
-      rgba(183, 150, 120, 0.2) 0%,
-      rgba(255, 255, 255, 0.78) 45%,
-      rgba(37, 52, 113, 0.18) 100%
-    );
-    color: rgba(37, 52, 113, 0.9);
-    box-shadow: 0 12px 24px -20px rgba(75, 31, 47, 0.56);
-  }
-  .badge-sandstone-chip:hover {
-    border-color: rgba(184, 135, 70, 0.72);
-    background: linear-gradient(
-      110deg,
-      rgba(184, 135, 70, 0.28) 0%,
-      rgba(255, 255, 255, 0.76) 42%,
-      rgba(90, 34, 50, 0.24) 100%
-    );
-    color: rgba(75, 31, 47, 0.98);
-  }
-  .badge-sandstone-price {
-    @apply inline-flex items-center rounded-full border px-3 py-1.5 text-sm font-semibold text-white backdrop-blur-sm;
-    border-color: rgba(255, 255, 255, 0.38);
-    background: linear-gradient(
-      104deg,
-      rgba(75, 31, 47, 0.94) 0%,
-      rgba(90, 34, 50, 0.9) 55%,
-      rgba(184, 135, 70, 0.78) 100%
-    );
-    box-shadow: 0 12px 22px -16px rgba(0, 0, 0, 0.72);
-  }
   .fade-up-soft {
     animation: sandstone-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .orb-drift {
-    animation: sandstone-orb-drift 13s ease-in-out infinite;
-  }
-  .light-sweep {
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-  }
-  .light-sweep::after {
-    content: "";
-    position: absolute;
-    inset: -20% -60%;
-    pointer-events: none;
-    background: linear-gradient(
-      110deg,
-      transparent 42%,
-      rgba(255, 234, 205, 0.5) 50%,
-      transparent 58%
-    );
-    mix-blend-mode: screen;
-    transform: translateX(-130%);
-    animation: sandstone-light-sweep 8.2s ease-in-out infinite;
-    z-index: 2;
-  }
-  .image-structure {
-    position: relative;
-    isolation: isolate;
-  }
-  .image-structure::before {
-    content: "";
-    position: absolute;
-    inset: 8px;
-    border-radius: 0.65rem;
-    border: 1px solid rgba(255, 250, 245, 0.45);
-    pointer-events: none;
-    z-index: 2;
   }
 }

@@ -8,20 +8,21 @@ This project follows **SOLID** principles and a **clean file architecture** so t
 
 | Principle | Application |
 |-----------|-------------|
-| **S**ingle Responsibility | Each module has one reason to change: `schemas/` = validation, `services/` = external I/O, `actions/` = orchestration, `PropertyCard` = display one listing, `BentoGrid` = layout only. |
-| **O**pen/Closed | New CRMs: implement `ILeadSubmissionService` and swap in; new property sources: pass different `properties` into `BentoGrid` without changing the component. |
-| **L**iskov Substitution | Any `ILeadSubmissionService` implementation can replace `leadSubmissionService`; any `PropertyCard[]` from constants, API, or CMS works with `BentoGrid`. |
+| **S**ingle Responsibility | Each module has one reason to change: `schemas/` = validation, `services/` = external I/O, `actions/` = orchestration, property card = display one listing, listing section = layout and composition only. |
+| **O**pen/Closed | New CRMs: implement `ILeadSubmissionService` and swap in; new property sources: pass different `properties` into `FeaturedListingsSection` without changing the component. |
+| **L**iskov Substitution | Any `ILeadSubmissionService` implementation can replace `leadSubmissionService`; any `PropertyCard[]` from constants, API, or CMS works with the listing section and grid. |
 | **I**nterface Segregation | Small contracts: `LeadInput`, `SubmitLeadState`, `PropertyCard`, `ILeadSubmissionService`. No fat interfaces. |
-| **D**ependency Inversion | Actions depend on `@/config` and `@/services` (abstractions), not on `process.env` or `fetch` directly. Page injects `properties` into `BentoGrid`. |
+| **D**ependency Inversion | Actions depend on `@/config` and `@/services` (abstractions), not on `process.env` or `fetch` directly. Page injects `properties` into sections. |
 
 ---
 
 ## Design Patterns
 
-- **Repository-style data injection** — `BentoGrid` receives `properties` from the page; data can come from constants, an API, or a future repository without changing the grid.
+- **Repository-style data injection** — The home page fetches properties (MSL or fallback) and passes them into `<FeaturedListingsSection properties={...} />`. Data can later come from constants, an API, or a CMS without changing the section or card components.
 - **Service abstraction** — Lead submission is behind `ILeadSubmissionService`; the Server Action orchestrates validation and calls the service. Easy to add HubSpot, Salesforce, or a mock for tests.
-- **Single source of truth for validation** — `LeadSchema` in `schemas/lead.ts` is used by the Server Action; client-side validation can reuse the same schema.
+- **Single source of truth for validation** — `LeadSchema` in `schemas/lead.ts` is used by the Server Action; the same schema can be reused for client-side validation if needed.
 - **Centralized config** — `config/env.ts` owns environment variables so the rest of the app depends on a stable API, not `process.env` keys.
+- **Design tokens** — Brand colors and semantics live in `src/app/globals.css` as CSS variables and are referenced by Tailwind and components for consistent theming.
 
 ---
 
@@ -31,30 +32,48 @@ This project follows **SOLID** principles and a **clean file architecture** so t
 src/
 ├── actions/           # Server Actions (orchestration only)
 │   └── submit-lead.ts
-├── app/                # Next.js App Router (pages, layout, global styles)
+├── app/               # Next.js App Router
+│   ├── globals.css    # Design tokens (brand palette), Tailwind, base styles
+│   ├── layout.tsx     # Root layout, Montserrat font (next/font), metadata
+│   ├── page.tsx       # Home: fetch properties, compose sections
+│   ├── sell/          # Sell My House stub page
+│   ├── rent/          # Rent My House stub page
+│   ├── join/          # Join the Team stub page
+│   ├── listings/[id]/ # Listing detail (dynamic)
+│   ├── privacy-policy/
+│   └── terms-and-conditions/
 ├── components/
-│   ├── ui/             # Primitives (Button, Input, Card, etc.)
-│   ├── properties/     # Property grid + card (presentational)
-│   ├── HeroSection.tsx
-│   └── ContactForm.tsx
-├── config/             # Environment & app config (single place for env)
+│   ├── ui/            # Primitives (Button, Input, Card, Label, Textarea, rolling-number)
+│   ├── properties/    # BentoGrid, PropertyCard (presentational; used where needed)
+│   ├── sections/      # FeaturedListingsSection, PrimaryActionTiles, AboutSection
+│   ├── SiteHeader.tsx      # Sticky top app bar, logo, nav, hamburger
+│   ├── HeroSection.tsx     # Hero image, lockup, pill search + Search button
+│   ├── MobileMenuPortal.tsx # Slide-over menu (mobile)
+│   ├── ContactForm.tsx
+│   ├── SiteFooter.tsx
+│   └── ViewOnlyDocument.tsx # Legal doc view-only wrapper
+├── config/            # Environment & app config
 │   └── env.ts
-├── constants/          # Static data (e.g. mock properties)
-│   └── properties.ts
-├── lib/                # Pure utilities (cn, zod helpers)
+├── constants/         # Static data, nav, copy
+│   ├── site.ts        # SITE_NAV, contact, footer, about, hero CTA, agents, etc.
+│   └── properties.ts  # (if any static property data)
+├── lib/               # Pure utilities (cn, zod helpers)
 │   ├── utils.ts
 │   └── zod.ts
-├── schemas/            # Validation (Zod schemas, single source of truth)
+├── schemas/           # Validation (Zod schemas)
 │   └── lead.ts
-├── services/           # External I/O (CRM webhooks, future APIs)
-│   └── lead.service.ts
-└── types/              # Shared TypeScript types & contracts
+├── services/          # External I/O (CRM webhooks, MSL feed)
+│   ├── lead.service.ts
+│   └── msl.service.ts
+└── types/             # Shared TypeScript contracts
     ├── lead.ts
     ├── property.ts
+    ├── agent.ts
+    ├── gallery.ts
     └── index.ts
 ```
 
-**Dependency flow:** `app` → `components` → `ui`; `actions` → `schemas`, `config`, `services`; `components` → `types`. No circular dependencies; types and schemas stay dependency-free.
+**Dependency flow:** `app` to `components` to `ui`; `actions` to `schemas`, `config`, `services`; `components` to `types`. No circular dependencies; types and schemas stay dependency-free.
 
 ---
 
@@ -68,6 +87,6 @@ src/
 
 ## Adding a New Data Source for Properties
 
-1. Create a function or module that returns `PropertyCard[]` (e.g. in `constants/`, or a new `repositories/` or `data/` layer that calls an API).
-2. In the page (or a layout/data wrapper), pass that array into `<BentoGrid properties={...} />`.
-3. `BentoGrid` and `PropertyCard` remain unchanged (Open/Closed).
+1. Create a function or module that returns `PropertyCard[]` (e.g. in `constants/`, or a new layer that calls an API).
+2. In the home page (or a layout/data wrapper), fetch that array and pass it into `<FeaturedListingsSection properties={...} />`.
+3. `FeaturedListingsSection` and card/link behavior remain unchanged (Open/Closed). The listing detail page `/listings/[id]` currently uses the same `fetchMslPropertyCards()` and finds by `id`; a future single-property fetch could be added without changing the section.

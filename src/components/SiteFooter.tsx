@@ -1,110 +1,88 @@
 "use client";
 
 import Image from "next/image";
-import { Phone, Mail, Facebook, Instagram, Linkedin } from "lucide-react";
-import { SITE_CONTACT, FOOTER_BRAND, SOCIAL_LINKS, SITE_NAV } from "@/constants/site";
-
-const iconMap = {
-  facebook: Facebook,
-  instagram: Instagram,
-  linkedin: Linkedin,
-} as const;
+import Link from "next/link";
+import {
+  SITE_NAV,
+  FOOTER_BRAND,
+  FOOTER_TAGLINE,
+  FOOTER_ABOUT,
+  FOOTER_BRAND_IMAGES,
+  PRIVACY_POLICY_HREF,
+  TERMS_AND_CONDITIONS_HREF,
+} from "@/constants/site";
 
 export function SiteFooter() {
   return (
     <footer
       id="footer"
-      className="bg-gradient-to-r from-sandstone-maroon via-sandstone-navy to-sandstone-gold text-white/90 py-[35px] md:py-[42px] scroll-mt-20"
+      className="bg-[var(--sandstone-navy)] text-[var(--sandstone-off-white)] py-12 md:py-14 scroll-mt-20"
     >
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="grid grid-cols-1 items-start justify-items-center gap-y-5 gap-x-7 lg:grid-cols-[1fr_auto_1fr] lg:gap-x-[35px]">
-          {/* Logo + ethos */}
-          <div className="w-full max-w-sm justify-self-center text-center lg:justify-self-start lg:text-left">
-            <div className="flex items-center justify-center gap-[7px] lg:justify-start">
-              <Image
-                src="/logo.jpg"
-                alt="Sandstone Real Estate Team logo"
-                width={140}
-                height={48}
-                className="h-12 w-auto object-contain"
-                priority
-              />
-              <div className="text-base text-white/85 leading-snug">
-                <p className="font-heading text-lg text-sandstone-base">Sandstone Real Estate</p>
-                <p className="text-sm text-white/80">Luxury · Lifestyle · Legacy</p>
-              </div>
-            </div>
+        <div className="flex flex-col items-center gap-10 text-center">
+          <div className="max-w-md">
+            <Image
+              src="/logo-mark.webp"
+              alt=""
+              width={80}
+              height={80}
+              className="mx-auto h-16 w-auto object-contain"
+            />
+            <p className="mt-3 font-heading text-xl font-bold text-[var(--sandstone-sand-gold)]">
+              {FOOTER_BRAND}
+            </p>
+            <p className="mt-1 text-sm text-white/80">{FOOTER_TAGLINE}</p>
+            <p className="mt-4 text-sm leading-relaxed text-white/75">
+              {FOOTER_ABOUT}
+            </p>
           </div>
 
-          {/* Center navigation */}
-          <div className="w-full max-w-xl justify-self-center text-center">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-sandstone-base mb-[7px]">
-              Navigation
-            </h3>
-            <ul className="flex flex-wrap justify-center gap-x-3 gap-y-1.5 text-base text-white/90 sm:text-lg sm:gap-[14px]">
+          <nav aria-label="Footer">
+            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
               {SITE_NAV.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href} className="hover:text-sandstone-base transition-colors">
+                  <Link
+                    href={item.href}
+                    className="text-white/90 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+                  >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
-          {/* Social + Contact */}
-          <div className="w-full max-w-sm justify-self-center space-y-3 text-center lg:justify-self-end lg:text-right">
-            <div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-sandstone-base">
-                Social Media
-              </h3>
-              <ul className="mt-[7px] flex flex-wrap justify-center gap-[14px] text-base lg:justify-end">
-                {SOCIAL_LINKS.map((link) => {
-                  const Icon = iconMap[link.icon];
-                  return (
-                    <li key={link.label}>
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-white/90 hover:text-sandstone-base transition-colors"
-                        aria-label={link.label}
-                      >
-                        {Icon ? <Icon className="h-4 w-4" /> : link.label}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-            <div className="space-y-[7px]">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-sandstone-base">
-                Contact
-              </h3>
-              <div className="flex flex-col items-center gap-[7px] lg:items-end">
-                <a
-                  href={`tel:${SITE_CONTACT.phoneRaw}`}
-                  className="inline-flex items-center gap-[7px] text-sm hover:text-sandstone-base transition-colors"
-                >
-                  <Phone className="h-3.5 w-3.5 shrink-0" />
-                  {SITE_CONTACT.phone}
-                </a>
-                <a
-                  href={`mailto:${SITE_CONTACT.email}`}
-                  className="inline-flex items-center gap-[7px] text-sm hover:text-sandstone-base transition-colors break-all"
-                >
-                  <Mail className="h-3.5 w-3.5 shrink-0" />
-                  {SITE_CONTACT.email}
-                </a>
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            {FOOTER_BRAND_IMAGES.map((img) => (
+              <div key={img.name} className="relative h-10 w-24 opacity-90">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-contain object-center"
+                />
               </div>
-            </div>
+            ))}
           </div>
-        </div>
 
-        <div className="mt-[21px] border-t border-white/15 pt-[14px]">
-          <div className="mx-auto w-full max-w-xl text-center text-sm text-white/80">
-            <span>© {new Date().getFullYear()} {FOOTER_BRAND}</span>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 border-t border-white/15 pt-6 text-sm text-white/70">
+            <Link
+              href={PRIVACY_POLICY_HREF}
+              className="hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href={TERMS_AND_CONDITIONS_HREF}
+              className="hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+            >
+              Terms &amp; Conditions
+            </Link>
           </div>
+
+          <p className="text-xs text-white/60">
+            © {new Date().getFullYear()} {FOOTER_BRAND}
+          </p>
         </div>
       </div>
     </footer>

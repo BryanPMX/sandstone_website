@@ -3,11 +3,9 @@
 import { type CSSProperties, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { HERO_CTA } from "@/constants/site";
 
-const HEADER_HEIGHT_PX = 64;
+const HEADER_HEIGHT_PX = 56;
 
 export type NavItem = { label: string; href: string };
 
@@ -17,11 +15,6 @@ type MobileMenuPortalProps = {
   navItems: readonly NavItem[];
 };
 
-/**
- * Renders the mobile menu into document.body so no ancestor layout (overflow,
- * flex, transform) can clip or collapse the list. Uses explicit dimensions
- * and a plain scrollable div (no Framer Motion on the scroll container).
- */
 export function MobileMenuPortal({
   isOpen,
   onClose,
@@ -29,10 +22,7 @@ export function MobileMenuPortal({
 }: MobileMenuPortalProps) {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  useEffect(() => setMounted(true), []);
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: KeyboardEvent) => {
@@ -42,9 +32,7 @@ export function MobileMenuPortal({
     return () => window.removeEventListener("keydown", handler);
   }, [isOpen, onClose]);
 
-  if (!mounted || !isOpen || typeof document === "undefined") {
-    return null;
-  }
+  if (!mounted || !isOpen || typeof document === "undefined") return null;
 
   const overlayStyle: CSSProperties = {
     position: "fixed",
@@ -53,96 +41,47 @@ export function MobileMenuPortal({
     width: "100vw",
     height: `calc(100dvh - ${HEADER_HEIGHT_PX}px)`,
     zIndex: 70,
-    backgroundColor: "#253471", // sandstone-navy
-  };
-
-  const panelStyle: CSSProperties = {
-    width: "100%",
-    height: "100%",
-    overflowY: "auto",
-    WebkitOverflowScrolling: "touch",
-    padding: "20px 12px 0",
-    paddingBottom: "max(2.5rem, env(safe-area-inset-bottom, 2.5rem))",
-    boxSizing: "border-box",
+    backgroundColor: "var(--sandstone-navy)",
   };
 
   const content = (
-    <div
-      className="md:hidden"
-      style={overlayStyle}
-      onClick={onClose}
-      role="presentation"
-    >
+    <div className="md:hidden" style={overlayStyle} onClick={onClose} role="presentation">
       <div
         id="mobile-nav"
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation"
-        style={panelStyle}
+        className="h-full overflow-y-auto px-4 pt-6 pb-safe"
+        style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
         onClick={(e) => e.stopPropagation()}
       >
         <nav aria-label="Main">
-          <ul
-            style={{
-              listStyle: "none",
-              margin: 0,
-              padding: 0,
-              display: "block",
-            }}
-          >
+          <ul className="space-y-1">
             {navItems.map((item) => (
-              <li
-                key={item.href}
-                style={{
-                  display: "block",
-                  minHeight: 48,
-                  marginBottom: 8,
-                }}
-              >
+              <li key={item.href}>
                 <Link
                   href={item.href}
                   onClick={onClose}
-                  className="group relative isolate block overflow-hidden rounded-xl border border-white/22 bg-gradient-to-r from-sandstone-navy/94 via-[#475fa0]/90 to-[#c6a57f]/90 px-4 py-3 text-[15px] font-semibold tracking-[0.03em] text-white no-underline shadow-[0_14px_28px_-22px_rgba(37,52,113,0.62)] transition-all duration-300 hover:-translate-y-px hover:border-sandstone-base/70 hover:shadow-[0_20px_34px_-22px_rgba(183,150,120,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy"
+                  className="block rounded-xl px-4 py-3 text-base font-medium text-[var(--sandstone-off-white)] hover:bg-white/10 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                 >
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-y-0 -left-2/3 w-[58%] -skew-x-12 bg-gradient-to-r from-white/0 via-[#ffe8c7]/45 to-white/0 opacity-0 transition-all duration-700 group-hover:left-[132%] group-hover:opacity-100 group-focus-visible:left-[132%] group-focus-visible:opacity-100"
-                  />
-                  <span className="relative z-10">{item.label}</span>
+                  {item.label}
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
-
-        <div className="mt-6 space-y-3">
-          <Button
-            asChild
-            size="lg"
-            className="w-full justify-center bg-sandstone-base text-sandstone-navy shadow-[0_18px_48px_-22px_rgba(255,210,175,0.95)] hover:-translate-y-[3px] hover:bg-sandstone-base/90"
-          >
-            <Link href="/#contact" onClick={onClose}>
-              {HERO_CTA}
-            </Link>
-          </Button>
-
+        <div className="mt-8">
           <Link
             href="/#contact"
             onClick={onClose}
-            className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/15 py-3 px-4 text-base font-medium text-white no-underline transition-colors hover:border-sandstone-base/80 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sandstone-base focus-visible:ring-offset-2 focus-visible:ring-offset-sandstone-navy"
+            className="block w-full rounded-full bg-[var(--sandstone-sand-gold)] py-3 text-center font-semibold text-white hover:opacity-95"
           >
-            <Mail className="h-4 w-4" aria-hidden />
-            <span>Contact Us</span>
+            {HERO_CTA}
           </Link>
         </div>
-
-        <div className="mt-8 space-y-1 text-sm text-white/70">
-          <p className="font-semibold text-white/90">Sandstone Real Estate Team</p>
-          <p className="leading-relaxed">
-            Luxury guidance, relocation expertise, and concierge support — now
-            one tap away.
-          </p>
-        </div>
+        <p className="mt-6 text-sm text-white/70">
+          Sandstone Real Estate Group. Luxury. Lifestyle. Legacy.
+        </p>
       </div>
     </div>
   );
