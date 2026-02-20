@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 import { HERO_SLOGAN } from "@/constants/site";
 
 const SEARCH_PLACEHOLDER = "Enter an address, neighborhood in EP";
@@ -31,7 +32,7 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
 
   return (
     <section className="relative w-full overflow-hidden bg-[var(--sandstone-navy)]">
-      <div className="relative aspect-[16/10] w-full min-h-[70vh] sm:aspect-[16/9] sm:min-h-[75vh]">
+      <div className="relative h-[48vh] min-h-[320px] w-full md:h-[62vh] md:min-h-[520px]">
         <Image
           src="/hero.webp"
           alt=""
@@ -41,20 +42,20 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
           priority
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/90 via-[var(--sandstone-navy)]/50 to-[var(--sandstone-navy)]/30"
+          className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/70 via-[var(--sandstone-navy)]/32 to-[var(--sandstone-navy)]/15"
           aria-hidden
         />
       </div>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-4 py-20 text-center">
-        <div className="relative z-10 w-full max-w-2xl">
+      <div className="absolute inset-0 flex flex-col items-center justify-start px-4 pt-20 text-center lg:pt-32">
+        <div className="relative z-10 w-full max-w-2xl lg:hidden">
           <div className="mb-6 flex justify-center">
             <Image
               src="/logo-hero.webp"
               alt="Sandstone Real Estate Group"
               width={280}
               height={80}
-              className="h-14 w-auto object-contain sm:h-16 md:h-20"
+              className="h-14 w-auto object-contain sm:h-16"
               priority
             />
           </div>
@@ -65,20 +66,31 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
 
         <form
           onSubmit={handleSearch}
-          className="relative z-10 mt-8 flex w-full max-w-xl flex-col gap-3 sm:flex-row sm:items-center sm:rounded-full sm:bg-white/95 sm:py-1 sm:pr-1 sm:shadow-lg"
+          className="relative z-10 mt-6 w-full max-w-xl lg:mt-0 lg:max-w-lg"
         >
-          <input
-            type="search"
-            name="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={SEARCH_PLACEHOLDER}
-            className="w-full rounded-full border border-white/30 bg-white/90 px-5 py-3.5 text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/60 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/30 sm:border-0 sm:bg-transparent sm:py-3 sm:focus:ring-0"
-            aria-label="Search by address or neighborhood"
-          />
+          <div className="relative">
+            <input
+              type="search"
+              name="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={SEARCH_PLACEHOLDER}
+              className="w-full rounded-full border border-white/30 bg-white/95 px-5 py-3.5 pr-14 text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/60 shadow-lg focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+              aria-label="Search by address or neighborhood"
+            />
+
+            <button
+              type="submit"
+              className="absolute right-1.5 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)] lg:flex"
+              aria-label="Submit search"
+            >
+              <Search className="h-4 w-4" />
+            </button>
+          </div>
+
           <button
             type="submit"
-            className="shrink-0 rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3.5 font-semibold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)] focus:ring-offset-2 focus:ring-offset-[var(--sandstone-navy)] sm:px-8"
+            className="mt-3 w-full rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 font-semibold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)] focus:ring-offset-2 focus:ring-offset-[var(--sandstone-navy)] lg:hidden"
           >
             Search
           </button>

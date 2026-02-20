@@ -8,10 +8,16 @@ import { SITE_NAV } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { MobileMenuPortal } from "@/components/MobileMenuPortal";
 
-export function SiteHeader() {
+interface SiteHeaderProps {
+  overlayDesktop?: boolean;
+}
+
+export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollPositionRef = useRef(0);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const desktopLeftNav = SITE_NAV.slice(0, 2);
+  const desktopRightNav = SITE_NAV.slice(2);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -66,57 +72,113 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 left-0 right-0 z-[80] flex h-14 items-center justify-between px-4 md:h-16 md:px-6",
-        "bg-[var(--sandstone-navy)] border-b border-white/10"
+        "left-0 right-0 z-[80]",
+        overlayDesktop
+          ? "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)] lg:absolute lg:top-0 lg:border-none lg:bg-transparent"
+          : "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]"
       )}
     >
-      <Link
-        href="/"
-        className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
-        aria-label="Sandstone Real Estate Group - Home"
-      >
-        <div className="relative h-9 w-9 shrink-0 md:h-10 md:w-10">
-          <Image
-            src="/logo-mark.webp"
-            alt=""
-            fill
-            className="object-contain"
-            sizes="40px"
-            priority
-          />
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:h-24 lg:px-6">
+        <div className="flex w-full items-center justify-between lg:hidden">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+            aria-label="Sandstone Real Estate Group - Home"
+          >
+            <div className="relative h-9 w-9 shrink-0">
+              <Image
+                src="/logo-mark.webp"
+                alt=""
+                fill
+                className="object-contain"
+                sizes="36px"
+                priority
+              />
+            </div>
+          </Link>
+
+          <button
+            ref={menuButtonRef}
+            type="button"
+            className="p-2 text-[var(--sandstone-off-white)]/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-nav"
+            onClick={toggleMenu}
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
-      </Link>
 
-      <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 md:flex md:items-center md:gap-6" aria-label="Main">
-        <ul className="flex items-center gap-6">
-          {SITE_NAV.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="text-sm font-medium text-[var(--sandstone-off-white)]/90 transition hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+        <div className="hidden w-full items-center justify-between lg:flex">
+          <nav aria-label="Primary left">
+            <ul className="flex items-center gap-8">
+              {desktopLeftNav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "text-sm font-medium tracking-wide text-white/90 transition hover:text-[var(--sandstone-sand-gold)]",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-      <div className="ml-auto flex items-center">
-        <button
-          ref={menuButtonRef}
-          type="button"
-          className="p-2 text-[var(--sandstone-off-white)]/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)] md:ml-0"
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-nav"
-          onClick={toggleMenu}
-        >
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+            aria-label="Sandstone Real Estate Group - Home"
+          >
+            <div className="relative h-12 w-12 shrink-0">
+              <Image
+                src="/logo-mark.webp"
+                alt=""
+                fill
+                className="object-contain"
+                sizes="48px"
+                priority
+              />
+            </div>
+            <div className="leading-tight text-center">
+              <p className="font-heading text-sm font-semibold tracking-[0.16em] text-white">
+                SANDSTONE
+              </p>
+              <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/85">
+                REAL ESTATE TEAM
+              </p>
+            </div>
+          </Link>
+
+          <nav aria-label="Primary right">
+            <ul className="flex items-center gap-8">
+              {desktopRightNav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "text-sm font-medium tracking-wide text-white/90 transition hover:text-[var(--sandstone-sand-gold)]",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
 
-      <MobileMenuPortal isOpen={isMenuOpen} onClose={closeMenu} navItems={SITE_NAV} />
+      <MobileMenuPortal
+        isOpen={isMenuOpen}
+        onClose={closeMenu}
+        navItems={SITE_NAV}
+      />
     </header>
   );
 }

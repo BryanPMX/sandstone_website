@@ -16,43 +16,34 @@ export function SiteFooter() {
   return (
     <footer
       id="footer"
-      className="bg-[var(--sandstone-navy)] text-[var(--sandstone-off-white)] py-12 md:py-14 scroll-mt-20"
+      className="scroll-mt-20 bg-[var(--sandstone-navy)] py-10 text-[var(--sandstone-off-white)]"
     >
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="flex flex-col items-center gap-10 text-center">
-          <div className="max-w-md">
-            <Image
-              src="/logo-mark.webp"
-              alt=""
-              width={80}
-              height={80}
-              className="mx-auto h-16 w-auto object-contain"
-            />
-            <p className="mt-3 font-heading text-xl font-bold text-[var(--sandstone-sand-gold)]">
-              {FOOTER_BRAND}
-            </p>
-            <p className="mt-1 text-sm text-white/80">{FOOTER_TAGLINE}</p>
-            <p className="mt-4 text-sm leading-relaxed text-white/75">
+        <div className="grid gap-8 md:grid-cols-[1.1fr_0.8fr_0.9fr] md:items-start">
+          <div className="text-center md:text-left">
+            <div className="mx-auto flex w-fit items-center gap-3 md:mx-0">
+              <Image
+                src="/logo-mark.webp"
+                alt="Sandstone logo"
+                width={48}
+                height={48}
+                className="h-12 w-12 object-contain"
+              />
+              <div>
+                <p className="font-heading text-lg font-bold text-[var(--sandstone-sand-gold)]">
+                  {FOOTER_BRAND}
+                </p>
+                <p className="text-xs uppercase tracking-[0.18em] text-white/75">
+                  {FOOTER_TAGLINE}
+                </p>
+              </div>
+            </div>
+            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/78 md:mx-0">
               {FOOTER_ABOUT}
             </p>
           </div>
 
-          <nav aria-label="Footer">
-            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
-              {SITE_NAV.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-white/90 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="flex flex-wrap items-center justify-center gap-8">
+          <div className="flex items-center justify-center gap-6 md:justify-center">
             {FOOTER_BRAND_IMAGES.map((img) => (
               <div key={img.name} className="relative h-10 w-24 opacity-90">
                 <Image
@@ -65,22 +56,41 @@ export function SiteFooter() {
             ))}
           </div>
 
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 border-t border-white/15 pt-6 text-sm text-white/70">
+          <nav aria-label="Footer" className="text-center md:text-right">
+            <p className="mb-2 text-xs uppercase tracking-[0.18em] text-white/60">
+              Menu
+            </p>
+            <ul className="space-y-1.5 text-sm">
+              {SITE_NAV.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-white/85 transition hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+
+        <div className="mt-8 border-t border-white/15 pt-4 text-center text-xs text-white/65 md:flex md:items-center md:justify-between">
+          <div className="flex justify-center gap-4 md:justify-start">
             <Link
               href={PRIVACY_POLICY_HREF}
-              className="hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+              className="hover:text-[var(--sandstone-sand-gold)]"
             >
               Privacy Policy
             </Link>
             <Link
               href={TERMS_AND_CONDITIONS_HREF}
-              className="hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+              className="hover:text-[var(--sandstone-sand-gold)]"
             >
               Terms &amp; Conditions
             </Link>
           </div>
-
-          <p className="text-xs text-white/60">
+          <p className="mt-2 md:mt-0">
             © {new Date().getFullYear()} {FOOTER_BRAND}
           </p>
         </div>

@@ -17,12 +17,15 @@ export function FeaturedListingsSection({
     : "/listings";
 
   return (
-    <section id="listings" className="bg-[var(--sandstone-off-white)] py-14 md:py-20 scroll-mt-20">
+    <section
+      id="listings"
+      className="bg-[var(--sandstone-off-white)] py-12 md:py-16 scroll-mt-20"
+    >
       <div className="container mx-auto max-w-6xl px-4">
-        <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
+        <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-[2rem]">
           Sandstone Collection
         </h2>
-        <p className="mx-auto mt-2 max-w-xl text-center text-[var(--sandstone-charcoal)]/80">
+        <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-[var(--sandstone-charcoal)]/70">
           Curated listings in El Paso and the Southwest.
         </p>
 
@@ -31,7 +34,7 @@ export function FeaturedListingsSection({
             No listings matched <strong>{searchQuery}</strong>. Try a different search.
           </p>
         ) : (
-          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+          <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
             {displayList.map((property, index) => (
               <ListingCard
                 key={property.id}
@@ -43,10 +46,10 @@ export function FeaturedListingsSection({
         )}
 
         {displayList.length > 0 && (
-          <div className="mt-10 flex justify-center">
+          <div className="mt-8 flex justify-center">
             <Link
               href={viewMoreHref}
-              className="inline-flex w-full max-w-xs items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3.5 font-semibold text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 sm:w-auto"
+              className="inline-flex w-full max-w-xs items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-2 text-sm font-semibold text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 sm:w-[180px]"
             >
               View More
             </Link>

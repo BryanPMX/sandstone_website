@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader overlayDesktop />
       <main className="min-h-screen">
         <HeroSection initialQuery={searchQuery} />
         <FeaturedListingsSection
