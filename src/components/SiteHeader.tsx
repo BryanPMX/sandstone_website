@@ -78,7 +78,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
           : "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]"
       )}
     >
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:h-28 lg:items-start lg:px-6 lg:pt-4">
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:h-28 lg:items-start lg:px-6 lg:pt-3">
         <div className="flex w-full items-center justify-between lg:hidden">
           <Link
             href="/"
@@ -110,9 +110,9 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
           </button>
         </div>
 
-        <div className="hidden w-full items-start justify-between lg:flex">
+        <div className="hidden w-full items-start justify-center gap-8 lg:flex xl:gap-12">
           <nav aria-label="Primary left">
-            <ul className="flex items-center gap-8">
+            <ul className="flex items-center gap-6 pt-1">
               {desktopLeftNav.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -134,20 +134,20 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
             className="flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
             aria-label="Sandstone Real Estate Group - Home"
           >
-            <div className="relative h-[136px] w-[184px] shrink-0">
+            <div className="relative h-[168px] w-[228px] shrink-0">
               <Image
                 src="/desktop-hero-logo.webp"
                 alt="Sandstone Real Estate Group"
                 fill
                 className="object-contain"
-                sizes="184px"
+                sizes="228px"
                 priority
               />
             </div>
           </Link>
 
           <nav aria-label="Primary right">
-            <ul className="flex items-center gap-8">
+            <ul className="flex items-center gap-6 pt-1">
               {desktopRightNav.map((item) => (
                 <li key={item.href}>
                   <Link

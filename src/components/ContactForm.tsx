@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -256,21 +255,13 @@ export function ContactForm() {
           </div>
 
           <aside className="relative isolate min-h-[340px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.5)]">
-            <Image
-              src="/house2.webp"
-              alt="Luxury home exterior"
-              fill
-              className="object-cover object-center"
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              unoptimized
-            />
             <div
-              className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/74 via-[var(--sandstone-navy)]/32 to-[var(--sandstone-navy)]/8"
               aria-hidden
-            />
-            <div
-              className="absolute inset-0 bg-gradient-to-br from-[var(--sandstone-navy)]/18 via-transparent to-[var(--sandstone-sand-gold)]/16"
-              aria-hidden
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to top, rgba(37,52,113,0.74) 8%, rgba(37,52,113,0.34) 50%, rgba(37,52,113,0.08) 100%), linear-gradient(135deg, rgba(37,52,113,0.12), rgba(183,150,120,0.14)), url('/house2.webp')",
+              }}
             />
             <div className="relative flex h-full flex-col justify-end p-6 text-white md:p-7">
               <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
