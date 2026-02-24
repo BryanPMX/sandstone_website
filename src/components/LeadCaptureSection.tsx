@@ -23,6 +23,7 @@ export interface LeadCaptureSectionProps {
   heading: string;
   subheading: string;
   showHeader?: boolean;
+  showAside?: boolean;
   ctaLabel: string;
   messagePlaceholder?: string;
   asideEyebrow?: string;
@@ -38,6 +39,7 @@ export function LeadCaptureSection({
   heading,
   subheading,
   showHeader = true,
+  showAside = true,
   ctaLabel,
   messagePlaceholder = "Tell us about your real estate goals...",
   asideEyebrow = "Luxury. Lifestyle. Legacy.",
@@ -58,6 +60,8 @@ export function LeadCaptureSection({
   const hasCaptchaError =
     state?.success === false && Boolean(state.fieldErrors?.captcha);
   const id = (field: string) => `${formType}-${field}`;
+  const requiresAddress = formType === "sell" || formType === "rent";
+  const showMessageField = formType !== "join";
 
   return (
     <section
@@ -92,9 +96,11 @@ export function LeadCaptureSection({
         )}
 
         <div
-          className={`${
-            showHeader ? "mt-8" : "mt-6"
-          } grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch`}
+          className={
+            showAside
+              ? `${showHeader ? "mt-8" : "mt-6"} grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch`
+              : `${showHeader ? "mt-8" : "mt-6"} mx-auto max-w-2xl`
+          }
         >
           <div className="rounded-2xl border border-white/70 bg-white/80 p-5 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-6">
             <form action={formAction} className="space-y-5">
@@ -178,7 +184,9 @@ export function LeadCaptureSection({
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor={id("phone")}>Phone</Label>
+                  <Label htmlFor={id("phone")}>
+                    {formType === "join" ? "Phone Number" : "Phone"}
+                  </Label>
                   <Input
                     id={id("phone")}
                     name="phone"
@@ -200,26 +208,51 @@ export function LeadCaptureSection({
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor={id("message")}>Message</Label>
-                <Textarea
-                  id={id("message")}
-                  name="message"
-                  placeholder={messagePlaceholder}
-                  rows={3}
-                  disabled={isPending}
-                  className={
-                    state?.success === false && state.fieldErrors?.message
-                      ? "border-red-500"
-                      : ""
-                  }
-                />
-                {state?.success === false && state.fieldErrors?.message && (
-                  <p className="text-xs text-red-600">
-                    {state.fieldErrors.message[0]}
-                  </p>
-                )}
-              </div>
+              {requiresAddress ? (
+                <div className="space-y-1.5">
+                  <Label htmlFor={id("address")}>Address</Label>
+                  <Input
+                    id={id("address")}
+                    name="address"
+                    placeholder="123 Main St, El Paso, TX"
+                    required
+                    disabled={isPending}
+                    className={
+                      state?.success === false && state.fieldErrors?.address
+                        ? "border-red-500"
+                        : ""
+                    }
+                  />
+                  {state?.success === false && state.fieldErrors?.address && (
+                    <p className="text-xs text-red-600">
+                      {state.fieldErrors.address[0]}
+                    </p>
+                  )}
+                </div>
+              ) : null}
+
+              {showMessageField ? (
+                <div className="space-y-1.5">
+                  <Label htmlFor={id("message")}>Message</Label>
+                  <Textarea
+                    id={id("message")}
+                    name="message"
+                    placeholder={messagePlaceholder}
+                    rows={3}
+                    disabled={isPending}
+                    className={
+                      state?.success === false && state.fieldErrors?.message
+                        ? "border-red-500"
+                        : ""
+                    }
+                  />
+                  {state?.success === false && state.fieldErrors?.message && (
+                    <p className="text-xs text-red-600">
+                      {state.fieldErrors.message[0]}
+                    </p>
+                  )}
+                </div>
+              ) : null}
 
               <div className="space-y-3 rounded-xl border border-[var(--sandstone-navy)]/12 bg-white/88 p-4">
                 {hasCaptchaError && (
@@ -338,37 +371,39 @@ export function LeadCaptureSection({
             </form>
           </div>
 
-          <aside className="relative isolate min-h-[340px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)]">
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to top, rgba(37,52,113,0.74) 8%, rgba(37,52,113,0.34) 50%, rgba(37,52,113,0.08) 100%), linear-gradient(135deg, rgba(37,52,113,0.12), rgba(183,150,120,0.14)), url('/house2.webp')",
-              }}
-            />
-            <div
-              aria-hidden
-              className="absolute right-[-12%] top-[-8%] h-36 w-36 rounded-full bg-[var(--sandstone-sand-gold)]/20 blur-3xl"
-            />
-            <div className="relative flex h-full flex-col justify-end p-6 text-white md:p-7">
-              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
-                {asideEyebrow}
-              </p>
-              <h3 className="mt-2 font-heading text-3xl font-bold leading-tight md:text-4xl">
-                {asideTitle}
-              </h3>
-              <p className="mt-3 max-w-sm text-sm text-white/85">
-                {asideDescription}
-              </p>
-              <Link
-                href={asideCtaHref}
-                className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
-              >
-                {asideCtaLabel}
-              </Link>
-            </div>
-          </aside>
+          {showAside ? (
+            <aside className="relative isolate min-h-[340px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)]">
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to top, rgba(37,52,113,0.74) 8%, rgba(37,52,113,0.34) 50%, rgba(37,52,113,0.08) 100%), linear-gradient(135deg, rgba(37,52,113,0.12), rgba(183,150,120,0.14)), url('/house2.webp')",
+                }}
+              />
+              <div
+                aria-hidden
+                className="absolute right-[-12%] top-[-8%] h-36 w-36 rounded-full bg-[var(--sandstone-sand-gold)]/20 blur-3xl"
+              />
+              <div className="relative flex h-full flex-col justify-end p-6 text-white md:p-7">
+                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
+                  {asideEyebrow}
+                </p>
+                <h3 className="mt-2 font-heading text-3xl font-bold leading-tight md:text-4xl">
+                  {asideTitle}
+                </h3>
+                <p className="mt-3 max-w-sm text-sm text-white/85">
+                  {asideDescription}
+                </p>
+                <Link
+                  href={asideCtaHref}
+                  className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
+                >
+                  {asideCtaLabel}
+                </Link>
+              </div>
+            </aside>
+          ) : null}
         </div>
       </div>
     </section>

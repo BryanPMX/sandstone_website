@@ -9,6 +9,7 @@ export type LeadInput = {
   lastName: string;
   email: string;
   phone: string;
+  address?: string;
   message: string;
 };
 

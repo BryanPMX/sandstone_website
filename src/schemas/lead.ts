@@ -9,6 +9,7 @@ export const LeadSchema = z.object({
   lastName: z.string().min(1, "Last name is required").max(100),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone is required").max(30),
+  address: z.string().max(250).optional().default(""),
   message: z.string().max(2000).optional().default(""),
   acceptPrivacyPolicy: z
     .string()

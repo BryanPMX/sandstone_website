@@ -20,6 +20,7 @@ export async function submitLeadForForm(
     lastName: formData.get("lastName") ?? "",
     email: formData.get("email") ?? "",
     phone: formData.get("phone") ?? "",
+    address: formData.get("address") ?? "",
     message: formData.get("message") ?? "",
     acceptPrivacyPolicy: formData.get("acceptPrivacyPolicy") ?? "",
     acceptTermsConditions: formData.get("acceptTermsConditions") ?? "",
@@ -33,6 +34,17 @@ export async function submitLeadForForm(
       success: false,
       error: "Please fix the errors below.",
       fieldErrors: zodIssuesToFieldErrors(parsed.error.issues),
+    };
+  }
+
+  const requiresAddress = formType === "sell" || formType === "rent";
+  if (requiresAddress && !parsed.data.address.trim()) {
+    return {
+      success: false,
+      error: "Please fix the errors below.",
+      fieldErrors: {
+        address: ["Address is required."],
+      },
     };
   }
 
@@ -90,6 +102,7 @@ export async function submitLeadForForm(
     lastName: parsed.data.lastName,
     email: parsed.data.email,
     phone: parsed.data.phone,
+    address: parsed.data.address.trim() || undefined,
     message: parsed.data.message,
   };
   const result = await leadSubmissionService.submit(leadPayload, webhookUrl);
