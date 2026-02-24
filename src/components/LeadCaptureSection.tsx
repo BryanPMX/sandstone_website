@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Script from "next/script";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,90 @@ import {
 } from "@/constants/site";
 
 const initialState: SubmitLeadState | null = null;
+
+type TurnstileApi = {
+  render: (
+    container: HTMLElement,
+    options: Record<string, string | boolean>
+  ) => string;
+  remove?: (widgetId: string) => void;
+};
+
+declare global {
+  interface Window {
+    turnstile?: TurnstileApi;
+  }
+}
+
+function TurnstileWidget({
+  siteKey,
+  formType,
+}: {
+  siteKey: string;
+  formType: LeadFormType;
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const widgetIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+    let pollId: number | null = null;
+
+    const renderWidget = () => {
+      if (isCancelled || widgetIdRef.current || !containerRef.current) {
+        return;
+      }
+
+      if (!window.turnstile?.render) {
+        return;
+      }
+
+      containerRef.current.innerHTML = "";
+      widgetIdRef.current = window.turnstile.render(containerRef.current, {
+        sitekey: siteKey,
+        theme: "light",
+      });
+
+      if (pollId !== null) {
+        window.clearInterval(pollId);
+        pollId = null;
+      }
+    };
+
+    const handleReady = () => {
+      renderWidget();
+    };
+
+    renderWidget();
+    window.addEventListener("turnstile-ready", handleReady);
+
+    if (!widgetIdRef.current) {
+      pollId = window.setInterval(renderWidget, 250);
+    }
+
+    return () => {
+      isCancelled = true;
+      window.removeEventListener("turnstile-ready", handleReady);
+
+      if (pollId !== null) {
+        window.clearInterval(pollId);
+      }
+
+      if (widgetIdRef.current && window.turnstile?.remove) {
+        window.turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
+    };
+  }, [formType, siteKey]);
+
+  return (
+    <div
+      ref={containerRef}
+      data-turnstile-form={formType}
+      className="min-h-[65px]"
+    />
+  );
+}
 
 export interface LeadCaptureSectionProps {
   formType: LeadFormType;
@@ -69,8 +153,12 @@ export function LeadCaptureSection({
       className="relative scroll-mt-20 bg-gradient-to-b from-[#f6f2ec] to-white py-14 md:py-16"
     >
       <Script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        id="cloudflare-turnstile-api"
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         strategy="afterInteractive"
+        onReady={() => {
+          window.dispatchEvent(new Event("turnstile-ready"));
+        }}
       />
 
       <div className="container mx-auto max-w-6xl px-4">
@@ -271,10 +359,10 @@ export function LeadCaptureSection({
                   </p>
 
                   {turnstileSiteKey ? (
-                    <div
-                      className="cf-turnstile"
-                      data-sitekey={turnstileSiteKey}
-                      data-theme="light"
+                    <TurnstileWidget
+                      key={`${formType}-turnstile`}
+                      formType={formType}
+                      siteKey={turnstileSiteKey}
                     />
                   ) : (
                     <p className="text-xs text-red-600">
