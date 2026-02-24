@@ -12,11 +12,13 @@ import { MobileMenuPortal } from "@/components/MobileMenuPortal";
 interface SiteHeaderProps {
   overlayDesktop?: boolean;
   variant?: "default" | "lead";
+  showDesktopCenterLogo?: boolean;
 }
 
 export function SiteHeader({
   overlayDesktop = false,
   variant = "default",
+  showDesktopCenterLogo = true,
 }: SiteHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -174,11 +176,11 @@ export function SiteHeader({
                     href={item.href}
                     className={cn(
                       isLeadHeader
-                        ? "inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-off-white)]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-white/8 hover:text-[var(--sandstone-sand-gold)]"
+                        ? "inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white hover:shadow-[0_10px_18px_-14px_rgba(183,150,120,0.65)]"
                         : "text-sm font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
                       isLeadHeader &&
                         isActiveNavItem(item.href) &&
-                        "border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/10 text-[var(--sandstone-sand-gold)]",
+                        "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] shadow-[0_12px_22px_-16px_rgba(183,150,120,0.8)] hover:text-[var(--sandstone-navy)]",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                     )}
                   >
@@ -189,47 +191,61 @@ export function SiteHeader({
             </ul>
           </nav>
 
-          <Link
-            href="/"
-            className={cn(
-              "flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
-              isLeadHeader && "relative justify-center px-2"
-            )}
-            aria-label="Sandstone Real Estate Group - Home"
-          >
-            {isLeadHeader ? (
-              <span
-                aria-hidden
-                className="absolute inset-x-4 top-1/2 h-9 -translate-y-1/2 rounded-full bg-[var(--sandstone-sand-gold)]/10 blur-2xl"
-              />
-            ) : null}
-            <div
+          {showDesktopCenterLogo ? (
+            <Link
+              href="/"
               className={cn(
-                "relative shrink-0",
+                "flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
+                isLeadHeader && "relative justify-center px-2"
+              )}
+              aria-label="Sandstone Real Estate Group - Home"
+            >
+              {isLeadHeader ? (
+                <span
+                  aria-hidden
+                  className="absolute inset-x-4 top-1/2 h-9 -translate-y-1/2 rounded-full bg-[var(--sandstone-sand-gold)]/10 blur-2xl"
+                />
+              ) : null}
+              <div
+                className={cn(
+                  "relative shrink-0",
+                  isHeroHeader
+                    ? "h-[168px] w-[228px]"
+                    : isLeadHeader
+                      ? "h-[118px] w-[184px]"
+                      : "h-[86px] w-[144px]"
+                )}
+              >
+                <Image
+                  src={desktopLogoSrc}
+                  alt="Sandstone Real Estate Group"
+                  fill
+                  className={cn(
+                    "object-contain",
+                    isHeroHeader
+                      ? ""
+                      : isLeadHeader
+                        ? "drop-shadow-[0_4px_10px_rgba(183,150,120,0.15)]"
+                        : "brightness-110"
+                  )}
+                  sizes={isHeroHeader ? "228px" : isLeadHeader ? "184px" : "144px"}
+                  priority
+                />
+              </div>
+            </Link>
+          ) : (
+            <div
+              aria-hidden
+              className={cn(
+                "shrink-0",
                 isHeroHeader
                   ? "h-[168px] w-[228px]"
                   : isLeadHeader
                     ? "h-[118px] w-[184px]"
                     : "h-[86px] w-[144px]"
               )}
-            >
-              <Image
-                src={desktopLogoSrc}
-                alt="Sandstone Real Estate Group"
-                fill
-                className={cn(
-                  "object-contain",
-                  isHeroHeader
-                    ? ""
-                    : isLeadHeader
-                      ? "drop-shadow-[0_4px_10px_rgba(183,150,120,0.15)]"
-                      : "brightness-110"
-                )}
-                sizes={isHeroHeader ? "228px" : isLeadHeader ? "184px" : "144px"}
-                priority
-              />
-            </div>
-          </Link>
+            />
+          )}
 
           <nav aria-label="Primary right">
             <ul
@@ -245,11 +261,11 @@ export function SiteHeader({
                     href={item.href}
                     className={cn(
                       isLeadHeader
-                        ? "inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-off-white)]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-white/8 hover:text-[var(--sandstone-sand-gold)]"
+                        ? "inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white hover:shadow-[0_10px_18px_-14px_rgba(183,150,120,0.65)]"
                         : "text-sm font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
                       isLeadHeader &&
                         isActiveNavItem(item.href) &&
-                        "border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/10 text-[var(--sandstone-sand-gold)]",
+                        "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] shadow-[0_12px_22px_-16px_rgba(183,150,120,0.8)] hover:text-[var(--sandstone-navy)]",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                     )}
                   >
