@@ -10,7 +10,7 @@ export const metadata = {
 export default function RentPage() {
   return (
     <>
-      <SiteHeader />
+      <SiteHeader variant="lead" />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         <LeadCaptureSection
           formType="rent"

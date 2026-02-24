@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
@@ -10,10 +11,15 @@ import { MobileMenuPortal } from "@/components/MobileMenuPortal";
 
 interface SiteHeaderProps {
   overlayDesktop?: boolean;
+  variant?: "default" | "lead";
 }
 
-export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
+export function SiteHeader({
+  overlayDesktop = false,
+  variant = "default",
+}: SiteHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
   const scrollPositionRef = useRef(0);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const desktopLeftNav = SITE_NAV.slice(0, 2);
@@ -69,6 +75,13 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
   const closeMenu = () => setIsMenuOpen(false);
   const toggleMenu = () => setIsMenuOpen((open) => !open);
   const isHeroHeader = overlayDesktop;
+  const isLeadHeader = !overlayDesktop && variant === "lead";
+  const desktopLogoSrc = "/desktop-hero-logo.webp";
+  const mobileLogoSrc = isLeadHeader ? desktopLogoSrc : "/mobile-header-logo.webp";
+  const isActiveNavItem = (href: string) => {
+    if (href.includes("#")) return false;
+    return pathname === href;
+  };
 
   return (
     <header
@@ -76,28 +89,48 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
         "left-0 right-0 z-[80]",
         overlayDesktop
           ? "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)] lg:absolute lg:top-0 lg:border-none lg:bg-transparent"
-          : "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]"
+          : cn(
+              "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]",
+              isLeadHeader &&
+                "bg-gradient-to-b from-[var(--sandstone-navy)] to-[var(--sandstone-navy-deep)] shadow-[0_16px_30px_-22px_rgba(17,24,61,0.85)]"
+            )
       )}
     >
       <div
         className={cn(
           "mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:px-6",
-          isHeroHeader ? "lg:h-28 lg:items-start lg:pt-3" : "lg:h-[92px]"
+          isHeroHeader
+            ? "lg:h-28 lg:items-start lg:pt-3"
+            : isLeadHeader
+              ? "lg:h-[116px]"
+              : "lg:h-[92px]"
         )}
       >
         <div className="flex w-full items-center justify-between lg:hidden">
           <Link
             href="/"
-            className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+            className={cn(
+              "flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]",
+              isLeadHeader &&
+                "rounded-full border border-white/10 bg-white/5 px-2 py-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+            )}
             aria-label="Sandstone Real Estate Group - Home"
           >
-            <div className="relative h-9 w-9 shrink-0">
+            <div
+              className={cn(
+                "relative shrink-0",
+                isLeadHeader ? "h-11 w-11" : "h-9 w-9"
+              )}
+            >
               <Image
-                src="/mobile-header-logo.webp"
+                src={mobileLogoSrc}
                 alt="Sandstone Real Estate Group"
                 fill
-                className="object-contain brightness-110 contrast-110"
-                sizes="36px"
+                className={cn(
+                  "object-contain",
+                  isLeadHeader ? "drop-shadow-[0_2px_8px_rgba(183,150,120,0.25)]" : "brightness-110 contrast-110"
+                )}
+                sizes={isLeadHeader ? "44px" : "36px"}
                 priority
               />
             </div>
@@ -106,7 +139,11 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
           <button
             ref={menuButtonRef}
             type="button"
-            className="p-2 text-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+            className={cn(
+              "p-2 text-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]",
+              isLeadHeader &&
+                "rounded-full border border-white/10 bg-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+            )}
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-nav"
@@ -118,7 +155,8 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
 
         <div
           className={cn(
-            "hidden w-full justify-center gap-8 lg:flex xl:gap-12",
+            "hidden w-full justify-center lg:flex",
+            isLeadHeader ? "gap-4 xl:gap-6" : "gap-8 xl:gap-12",
             isHeroHeader ? "items-start" : "items-center"
           )}
         >
@@ -126,6 +164,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
             <ul
               className={cn(
                 "flex items-center gap-6",
+                isLeadHeader && "gap-2.5",
                 isHeroHeader ? "pt-1" : "pt-0"
               )}
             >
@@ -134,7 +173,12 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "text-sm font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
+                      isLeadHeader
+                        ? "inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-off-white)]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-white/8 hover:text-[var(--sandstone-sand-gold)]"
+                        : "text-sm font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
+                      isLeadHeader &&
+                        isActiveNavItem(item.href) &&
+                        "border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/10 text-[var(--sandstone-sand-gold)]",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                     )}
                   >
@@ -147,21 +191,41 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
 
           <Link
             href="/"
-            className="flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+            className={cn(
+              "flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
+              isLeadHeader && "relative justify-center px-2"
+            )}
             aria-label="Sandstone Real Estate Group - Home"
           >
+            {isLeadHeader ? (
+              <span
+                aria-hidden
+                className="absolute inset-x-4 top-1/2 h-9 -translate-y-1/2 rounded-full bg-[var(--sandstone-sand-gold)]/10 blur-2xl"
+              />
+            ) : null}
             <div
               className={cn(
                 "relative shrink-0",
-                isHeroHeader ? "h-[168px] w-[228px]" : "h-[86px] w-[144px]"
+                isHeroHeader
+                  ? "h-[168px] w-[228px]"
+                  : isLeadHeader
+                    ? "h-[118px] w-[184px]"
+                    : "h-[86px] w-[144px]"
               )}
             >
               <Image
-                src="/desktop-hero-logo.webp"
+                src={desktopLogoSrc}
                 alt="Sandstone Real Estate Group"
                 fill
-                className={cn("object-contain", isHeroHeader ? "" : "brightness-110")}
-                sizes={isHeroHeader ? "228px" : "144px"}
+                className={cn(
+                  "object-contain",
+                  isHeroHeader
+                    ? ""
+                    : isLeadHeader
+                      ? "drop-shadow-[0_4px_10px_rgba(183,150,120,0.15)]"
+                      : "brightness-110"
+                )}
+                sizes={isHeroHeader ? "228px" : isLeadHeader ? "184px" : "144px"}
                 priority
               />
             </div>
@@ -171,6 +235,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
             <ul
               className={cn(
                 "flex items-center gap-6",
+                isLeadHeader && "gap-2.5",
                 isHeroHeader ? "pt-1" : "pt-0"
               )}
             >
@@ -179,7 +244,12 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "text-sm font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
+                      isLeadHeader
+                        ? "inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-off-white)]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-white/8 hover:text-[var(--sandstone-sand-gold)]"
+                        : "text-sm font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
+                      isLeadHeader &&
+                        isActiveNavItem(item.href) &&
+                        "border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/10 text-[var(--sandstone-sand-gold)]",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                     )}
                   >
