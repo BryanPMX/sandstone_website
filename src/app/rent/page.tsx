@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import { LeadPageIntro } from "@/components/LeadPageIntro";
 
 export const metadata = {
   title: "Rent My House | Sandstone Real Estate Group",
@@ -12,22 +13,23 @@ export default function RentPage() {
     <>
       <SiteHeader />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
-        <section className="px-4 pb-6 pt-16">
-          <div className="container mx-auto max-w-2xl text-center">
-            <h1 className="font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
-              Rent My House
-            </h1>
-            <p className="mt-4 text-[var(--sandstone-charcoal)]/80">
-              Whether you&apos;re listing a rental or optimizing an existing one, we bring trusted guidance and a streamlined leasing approach.
-            </p>
-          </div>
-        </section>
+        <LeadPageIntro
+          eyebrow="Sandstone Rental Services"
+          title="Rent My House"
+          description="Whether you&apos;re listing a rental or optimizing an existing one, we bring trusted guidance and a streamlined leasing approach."
+          highlights={[
+            "Rental Positioning",
+            "Tenant Quality Focus",
+            "Leasing Support",
+          ]}
+        />
 
         <LeadCaptureSection
           formType="rent"
           sectionId="rent-lead"
           heading="Rent My House"
           subheading="Share your rental goals and property details, and we&apos;ll help you map the next steps."
+          showHeader={false}
           ctaLabel="START MY RENTAL CONSULTATION"
           messagePlaceholder="Tell us about the rental property, availability, and what kind of support you need..."
           asideTitle="Rent Smarter, Not Harder"

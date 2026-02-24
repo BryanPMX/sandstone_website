@@ -22,6 +22,7 @@ export interface LeadCaptureSectionProps {
   sectionId?: string;
   heading: string;
   subheading: string;
+  showHeader?: boolean;
   ctaLabel: string;
   messagePlaceholder?: string;
   asideEyebrow?: string;
@@ -36,6 +37,7 @@ export function LeadCaptureSection({
   sectionId,
   heading,
   subheading,
+  showHeader = true,
   ctaLabel,
   messagePlaceholder = "Tell us about your real estate goals...",
   asideEyebrow = "Luxury. Lifestyle. Legacy.",
@@ -68,17 +70,33 @@ export function LeadCaptureSection({
       />
 
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="text-center">
-          <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-            {heading}
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-[var(--sandstone-charcoal)]/80">
-            {subheading}
-          </p>
-        </div>
+        {showHeader ? (
+          <div className="text-center">
+            <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+              {heading}
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-[var(--sandstone-charcoal)]/80">
+              {subheading}
+            </p>
+          </div>
+        ) : (
+          <div className="mx-auto max-w-3xl text-center">
+            <div
+              aria-hidden
+              className="mx-auto h-px w-28 bg-gradient-to-r from-transparent via-[var(--sandstone-sand-gold)] to-transparent"
+            />
+            <p className="mt-4 text-sm text-[var(--sandstone-charcoal)]/80 md:text-[15px]">
+              {subheading}
+            </p>
+          </div>
+        )}
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch">
-          <div className="rounded-2xl border border-white/65 bg-white/72 p-5 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.5)] backdrop-blur-sm sm:p-6">
+        <div
+          className={`${
+            showHeader ? "mt-8" : "mt-6"
+          } grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch`}
+        >
+          <div className="rounded-2xl border border-white/70 bg-white/80 p-5 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-6">
             <form action={formAction} className="space-y-5">
               {state?.success === true && (
                 <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
@@ -320,7 +338,7 @@ export function LeadCaptureSection({
             </form>
           </div>
 
-          <aside className="relative isolate min-h-[340px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.5)]">
+          <aside className="relative isolate min-h-[340px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)]">
             <div
               aria-hidden
               className="absolute inset-0 bg-cover bg-center"
@@ -328,6 +346,10 @@ export function LeadCaptureSection({
                 backgroundImage:
                   "linear-gradient(to top, rgba(37,52,113,0.74) 8%, rgba(37,52,113,0.34) 50%, rgba(37,52,113,0.08) 100%), linear-gradient(135deg, rgba(37,52,113,0.12), rgba(183,150,120,0.14)), url('/house2.webp')",
               }}
+            />
+            <div
+              aria-hidden
+              className="absolute right-[-12%] top-[-8%] h-36 w-36 rounded-full bg-[var(--sandstone-sand-gold)]/20 blur-3xl"
             />
             <div className="relative flex h-full flex-col justify-end p-6 text-white md:p-7">
               <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">

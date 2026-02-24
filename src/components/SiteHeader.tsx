@@ -68,6 +68,7 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
 
   const closeMenu = () => setIsMenuOpen(false);
   const toggleMenu = () => setIsMenuOpen((open) => !open);
+  const isHeroHeader = overlayDesktop;
 
   return (
     <header
@@ -78,7 +79,12 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
           : "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]"
       )}
     >
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:h-28 lg:items-start lg:px-6 lg:pt-3">
+      <div
+        className={cn(
+          "mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:px-6",
+          isHeroHeader ? "lg:h-28 lg:items-start lg:pt-3" : "lg:h-[92px]"
+        )}
+      >
         <div className="flex w-full items-center justify-between lg:hidden">
           <Link
             href="/"
@@ -110,9 +116,19 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
           </button>
         </div>
 
-        <div className="hidden w-full items-start justify-center gap-8 lg:flex xl:gap-12">
+        <div
+          className={cn(
+            "hidden w-full justify-center gap-8 lg:flex xl:gap-12",
+            isHeroHeader ? "items-start" : "items-center"
+          )}
+        >
           <nav aria-label="Primary left">
-            <ul className="flex items-center gap-6 pt-1">
+            <ul
+              className={cn(
+                "flex items-center gap-6",
+                isHeroHeader ? "pt-1" : "pt-0"
+              )}
+            >
               {desktopLeftNav.map((item) => (
                 <li key={item.href}>
                   <Link
@@ -134,20 +150,30 @@ export function SiteHeader({ overlayDesktop = false }: SiteHeaderProps) {
             className="flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
             aria-label="Sandstone Real Estate Group - Home"
           >
-            <div className="relative h-[168px] w-[228px] shrink-0">
+            <div
+              className={cn(
+                "relative shrink-0",
+                isHeroHeader ? "h-[168px] w-[228px]" : "h-[86px] w-[144px]"
+              )}
+            >
               <Image
                 src="/desktop-hero-logo.webp"
                 alt="Sandstone Real Estate Group"
                 fill
-                className="object-contain"
-                sizes="228px"
+                className={cn("object-contain", isHeroHeader ? "" : "brightness-110")}
+                sizes={isHeroHeader ? "228px" : "144px"}
                 priority
               />
             </div>
           </Link>
 
           <nav aria-label="Primary right">
-            <ul className="flex items-center gap-6 pt-1">
+            <ul
+              className={cn(
+                "flex items-center gap-6",
+                isHeroHeader ? "pt-1" : "pt-0"
+              )}
+            >
               {desktopRightNav.map((item) => (
                 <li key={item.href}>
                   <Link
