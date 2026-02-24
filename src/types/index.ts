@@ -1,2 +1,2 @@
 export type { PropertyCard } from "./property";
-export type { LeadInput, SubmitLeadState } from "./lead";
+export type { LeadFormType, LeadInput, SubmitLeadState } from "./lead";

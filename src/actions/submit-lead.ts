@@ -1,16 +1,17 @@
 "use server";
 
 import { LeadSchema } from "@/schemas";
-import { getRoluWebhookUrl } from "@/config";
-import { leadSubmissionService } from "@/services";
-import type { SubmitLeadState } from "@/types";
+import { getLeadWebhookUrl, getTurnstileSecretKey } from "@/config";
+import { captchaVerificationService, leadSubmissionService } from "@/services";
+import type { LeadFormType, SubmitLeadState } from "@/types";
 import { zodIssuesToFieldErrors } from "@/lib/zod";
 
 /**
  * Server Action: validate lead form, then submit to CRM (Rolu webhook).
  * Single responsibility: orchestrate validation + submission; delegates to schema and service.
  */
-export async function submitLead(
+export async function submitLeadForForm(
+  formType: LeadFormType,
   _prevState: SubmitLeadState | null,
   formData: FormData
 ): Promise<SubmitLeadState> {
@@ -23,6 +24,7 @@ export async function submitLead(
     acceptPrivacyPolicy: formData.get("acceptPrivacyPolicy") ?? "",
     acceptTermsConditions: formData.get("acceptTermsConditions") ?? "",
   };
+  const captchaToken = String(formData.get("cf-turnstile-response") ?? "");
 
   const parsed = LeadSchema.safeParse(raw);
 
@@ -34,10 +36,48 @@ export async function submitLead(
     };
   }
 
-  const webhookUrl = getRoluWebhookUrl();
+  if (!captchaToken) {
+    return {
+      success: false,
+      error: "Please complete the captcha before submitting.",
+      fieldErrors: {
+        captcha: ["Please complete the captcha before submitting."],
+      },
+    };
+  }
+
+  const turnstileSecretKey = getTurnstileSecretKey();
+
+  if (!turnstileSecretKey) {
+    console.error("TURNSTILE_SECRET_KEY is not set");
+    return {
+      success: false,
+      error: "Captcha is not configured. Please try again later.",
+      fieldErrors: {
+        captcha: ["Captcha is not configured."],
+      },
+    };
+  }
+
+  const captchaResult = await captchaVerificationService.verify(
+    captchaToken,
+    turnstileSecretKey
+  );
+
+  if (!captchaResult.ok) {
+    return {
+      success: false,
+      error: captchaResult.error ?? "Captcha verification failed. Please try again.",
+      fieldErrors: {
+        captcha: [captchaResult.error ?? "Captcha verification failed."],
+      },
+    };
+  }
+
+  const webhookUrl = getLeadWebhookUrl(formType);
 
   if (!webhookUrl) {
-    console.error("ROLU_WEBHOOK_URL is not set");
+    console.error(`ROLU webhook URL is not set for form type: ${formType}`);
     return {
       success: false,
       error:
@@ -62,4 +102,11 @@ export async function submitLead(
   }
 
   return { success: true, message: "Thank you. We'll be in touch soon." };
+}
+
+export async function submitLead(
+  prevState: SubmitLeadState | null,
+  formData: FormData
+): Promise<SubmitLeadState> {
+  return submitLeadForForm("contact", prevState, formData);
 }

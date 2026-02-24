@@ -12,6 +12,9 @@ export type LeadInput = {
   message: string;
 };
 
+/** Supported lead capture form variants across the site */
+export type LeadFormType = "contact" | "sell" | "rent" | "join";
+
 /** Result of submitLead Server Action */
 export type SubmitLeadState =
   | { success: true; message?: string }
