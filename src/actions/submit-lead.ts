@@ -4,6 +4,7 @@ import { LeadSchema } from "@/schemas";
 import { getLeadWebhookUrl, getTurnstileSecretKey } from "@/config";
 import { captchaVerificationService, leadSubmissionService } from "@/services";
 import type { LeadFormType, SubmitLeadState } from "@/types";
+import { buildLeadWebhookPayload } from "@/lib";
 import { zodIssuesToFieldErrors } from "@/lib/zod";
 
 /**
@@ -97,14 +98,14 @@ export async function submitLeadForForm(
     };
   }
 
-  const leadPayload = {
+  const leadPayload = buildLeadWebhookPayload(formType, {
     firstName: parsed.data.firstName,
     lastName: parsed.data.lastName,
     email: parsed.data.email,
     phone: parsed.data.phone,
-    address: parsed.data.address.trim() || undefined,
+    address: parsed.data.address,
     message: parsed.data.message,
-  };
+  });
   const result = await leadSubmissionService.submit(leadPayload, webhookUrl);
 
   if (!result.ok) {
