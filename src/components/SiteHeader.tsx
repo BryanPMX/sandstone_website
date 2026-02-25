@@ -109,26 +109,32 @@ export function SiteHeader({
         )}
       >
         <div className="flex w-full items-center justify-between lg:hidden">
-          {isLeadHeader ? (
-            <div aria-hidden className="h-10 w-10" />
-          ) : (
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
-              aria-label="Sandstone Real Estate Group - Home"
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+            aria-label="Sandstone Real Estate Group - Home"
+          >
+            <div
+              className={cn(
+                "relative shrink-0",
+                isLeadHeader ? "h-11 w-11" : "h-9 w-9"
+              )}
             >
-              <div className="relative h-9 w-9 shrink-0">
-                <Image
-                  src={mobileLogoSrc}
-                  alt="Sandstone Real Estate Group"
-                  fill
-                  className="object-contain brightness-110 contrast-110"
-                  sizes="36px"
-                  priority
-                />
-              </div>
-            </Link>
-          )}
+              <Image
+                src={mobileLogoSrc}
+                alt="Sandstone Real Estate Group"
+                fill
+                className={cn(
+                  "object-contain",
+                  isLeadHeader
+                    ? "drop-shadow-[0_2px_8px_rgba(183,150,120,0.25)]"
+                    : "brightness-110 contrast-110"
+                )}
+                sizes={isLeadHeader ? "44px" : "36px"}
+                priority
+              />
+            </div>
+          </Link>
 
           <button
             ref={menuButtonRef}
