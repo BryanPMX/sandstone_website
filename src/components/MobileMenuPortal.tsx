@@ -21,6 +21,9 @@ export function MobileMenuPortal({
   navItems,
 }: MobileMenuPortalProps) {
   const [mounted, setMounted] = useState(false);
+  const mobileNavItems = navItems.some((item) => item.href === "/")
+    ? navItems
+    : ([{ label: "Home", href: "/" }, ...navItems] as const);
 
   useEffect(() => setMounted(true), []);
   useEffect(() => {
@@ -57,7 +60,7 @@ export function MobileMenuPortal({
       >
         <nav aria-label="Main">
           <ul className="space-y-1">
-            {navItems.map((item) => (
+            {mobileNavItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
