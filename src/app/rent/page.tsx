@@ -1,7 +1,6 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
-import { LeadPageLogoSeam } from "@/components/LeadPageLogoSeam";
 
 export const metadata = {
   title: "Rent My House | Sandstone Real Estate Group",
@@ -12,7 +11,6 @@ export default function RentPage() {
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
-      <LeadPageLogoSeam />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         <LeadCaptureSection
           formType="rent"
