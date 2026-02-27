@@ -82,7 +82,7 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
           <div className="pointer-events-none absolute bottom-5 left-1/2 z-20 h-[44px] w-[206px] -translate-x-1/2 lg:hidden">
             <Image
               src="/mobile-logo-hero.webp"
-              alt="Sandstone Real Estate Team"
+              alt="Sandstone Real Estate Group"
               fill
               className="object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]"
               sizes="206px"

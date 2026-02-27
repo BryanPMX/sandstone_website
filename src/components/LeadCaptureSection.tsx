@@ -10,8 +10,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { submitLeadForForm } from "@/actions/submit-lead";
 import type { LeadFormType, SubmitLeadState } from "@/types";
 import {
+  FORM_MARKETING_SMS_COPY,
+  FORM_PHONE_SMS_NOTICE,
+  FORM_TRANSACTIONAL_SMS_COPY,
   PRIVACY_POLICY_LABEL,
   PRIVACY_POLICY_HREF,
+  SMS_DISCLOSURE_BRAND,
+  TERMS_AND_CONDITIONS_LABEL,
+  TERMS_AND_CONDITIONS_HREF,
   SITE_CONTACT,
 } from "@/constants/site";
 
@@ -135,8 +141,6 @@ export function LeadCaptureSection({
   const action = submitLeadForForm.bind(null, formType);
   const [state, formAction, isPending] = useActionState(action, initialState);
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-  const hasConsentErrors =
-    state?.success === false && Boolean(state.fieldErrors?.acceptContactConsent);
   const hasCaptchaError =
     state?.success === false && Boolean(state.fieldErrors?.captcha);
   const id = (field: string) => `${formType}-${field}`;
@@ -289,6 +293,9 @@ export function LeadCaptureSection({
                       {state.fieldErrors.phone[0]}
                     </p>
                   )}
+                  <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/65">
+                    {FORM_PHONE_SMS_NOTICE}
+                  </p>
                 </div>
               </div>
 
@@ -367,37 +374,58 @@ export function LeadCaptureSection({
                   )}
                 </div>
 
-                {hasConsentErrors && (
-                  <div
-                    role="alert"
-                    aria-live="assertive"
-                    className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800"
-                  >
-                    Please accept the required consent before submitting.
+                <fieldset className="space-y-3">
+                  <legend className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
+                    Text Message Preferences
+                  </legend>
+                  <div className="space-y-1">
+                    <p className="text-xs leading-5 text-[var(--sandstone-charcoal)]/75">
+                      Choose which SMS messages you want from {SMS_DISCLOSURE_BRAND}.
+                      Both options are optional and do not block form submission.
+                    </p>
                   </div>
-                )}
 
-                <label className="flex cursor-pointer items-start gap-3 text-xs leading-5 text-sandstone-text/90 sm:text-sm">
-                  <input
-                    type="checkbox"
-                    name="acceptContactConsent"
-                    value="on"
-                    disabled={isPending}
-                    className="mt-1 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                    aria-describedby={
-                      state?.success === false && state.fieldErrors?.acceptContactConsent
-                        ? id("consent-error")
-                        : undefined
-                    }
-                    aria-invalid={
-                      state?.success === false && Boolean(state.fieldErrors?.acceptContactConsent)
-                    }
-                  />
-                  <span>
-                    By submitting this form, I agree to receive emails, calls, and/or
-                    text messages from Sandstone Real Estate Group by Keller Williams
-                    regarding my inquiry. I understand that my information will be
-                    handled in accordance with the{" "}
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-xs leading-5 text-sandstone-text/90 sm:text-sm">
+                    <input
+                      type="checkbox"
+                      name="acceptTransactionalSms"
+                      value="on"
+                      disabled={isPending}
+                      className="mt-1 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
+                    />
+                    <span>
+                      <span className="block font-semibold text-[var(--sandstone-navy)]">
+                        Transactional SMS updates
+                      </span>
+                      <span className="mt-1 block">
+                        {FORM_TRANSACTIONAL_SMS_COPY}
+                      </span>
+                    </span>
+                  </label>
+
+                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-xs leading-5 text-sandstone-text/90 sm:text-sm">
+                    <input
+                      type="checkbox"
+                      name="acceptMarketingSms"
+                      value="on"
+                      disabled={isPending}
+                      className="mt-1 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
+                    />
+                    <span>
+                      <span className="flex flex-wrap items-center gap-2 font-semibold text-[var(--sandstone-navy)]">
+                        <span>Marketing SMS updates</span>
+                        <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[var(--sandstone-bronze)]">
+                          Optional
+                        </span>
+                      </span>
+                      <span className="mt-1 block">
+                        {FORM_MARKETING_SMS_COPY}
+                      </span>
+                    </span>
+                  </label>
+
+                  <p className="text-xs leading-5 text-[var(--sandstone-charcoal)]/75">
+                    Review our{" "}
                     <Link
                       href={PRIVACY_POLICY_HREF}
                       target="_blank"
@@ -406,14 +434,19 @@ export function LeadCaptureSection({
                     >
                       {PRIVACY_POLICY_LABEL}
                     </Link>
-                    {" "}and that I can opt out at any time.
-                  </span>
-                </label>
-                {state?.success === false && state.fieldErrors?.acceptContactConsent && (
-                  <p id={id("consent-error")} className="text-xs text-red-600">
-                    {state.fieldErrors.acceptContactConsent[0]}
+                    {" "}and{" "}
+                    <Link
+                      href={TERMS_AND_CONDITIONS_HREF}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
+                    >
+                      {TERMS_AND_CONDITIONS_LABEL}
+                    </Link>
+                    . Mobile opt-in data is not shared with third parties for
+                    marketing purposes.
                   </p>
-                )}
+                </fieldset>
               </div>
 
               <Button

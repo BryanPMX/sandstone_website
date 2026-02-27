@@ -107,7 +107,6 @@ src/
 ├── actions/
 │   └── submit-lead.ts
 ├── app/
-│   ├── api/documents/[doc]/route.ts
 │   ├── globals.css
 │   ├── join/page.tsx
 │   ├── layout.tsx
@@ -135,10 +134,10 @@ src/
 │   │   └── textarea.tsx
 │   ├── ContactForm.tsx
 │   ├── HeroSection.tsx
+│   ├── LegalDocumentLayout.tsx
 │   ├── MobileMenuPortal.tsx
 │   ├── SiteFooter.tsx
 │   ├── SiteHeader.tsx
-│   └── ViewOnlyDocument.tsx
 ├── config/
 │   ├── env.ts
 │   └── index.ts

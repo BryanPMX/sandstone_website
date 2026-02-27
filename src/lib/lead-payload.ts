@@ -19,6 +19,8 @@ export function buildLeadWebhookPayload(
     lastName: fields.lastName.trim(),
     email: fields.email.trim(),
     phone: fields.phone.trim(),
+    acceptTransactionalSms: fields.acceptTransactionalSms,
+    acceptMarketingSms: fields.acceptMarketingSms,
   } as const;
 
   const address = normalizeText(fields.address);

@@ -11,6 +11,8 @@ export type LeadFormFields = {
   phone: string;
   address?: string;
   message?: string;
+  acceptTransactionalSms: boolean;
+  acceptMarketingSms: boolean;
 };
 
 /** Supported lead capture form variants across the site */
@@ -22,6 +24,8 @@ type LeadWebhookPayloadBase = {
   lastName: string;
   email: string;
   phone: string;
+  acceptTransactionalSms: boolean;
+  acceptMarketingSms: boolean;
 };
 
 export type ContactLeadWebhookPayload = LeadWebhookPayloadBase & {

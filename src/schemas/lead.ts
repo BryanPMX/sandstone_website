@@ -11,12 +11,8 @@ export const LeadSchema = z.object({
   phone: z.string().min(1, "Phone is required").max(30),
   address: z.string().max(250).optional().default(""),
   message: z.string().max(2000).optional().default(""),
-  acceptContactConsent: z
-    .string()
-    .refine((v) => v === "on", {
-      message:
-        "Please agree to the contact consent and Privacy Policy before submitting.",
-    }),
+  acceptTransactionalSms: z.boolean().default(false),
+  acceptMarketingSms: z.boolean().default(false),
 });
 
 export type LeadSchemaType = z.infer<typeof LeadSchema>;

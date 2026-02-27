@@ -23,7 +23,8 @@ export async function submitLeadForForm(
     phone: formData.get("phone") ?? "",
     address: formData.get("address") ?? "",
     message: formData.get("message") ?? "",
-    acceptContactConsent: formData.get("acceptContactConsent") ?? "",
+    acceptTransactionalSms: formData.get("acceptTransactionalSms") === "on",
+    acceptMarketingSms: formData.get("acceptMarketingSms") === "on",
   };
   const captchaToken = String(formData.get("cf-turnstile-response") ?? "");
 
@@ -104,6 +105,8 @@ export async function submitLeadForForm(
     phone: parsed.data.phone,
     address: parsed.data.address,
     message: parsed.data.message,
+    acceptTransactionalSms: parsed.data.acceptTransactionalSms,
+    acceptMarketingSms: parsed.data.acceptMarketingSms,
   });
   const result = await leadSubmissionService.submit(leadPayload, webhookUrl);
 
