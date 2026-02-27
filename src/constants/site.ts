@@ -42,8 +42,6 @@ export const PRIVACY_POLICY_HREF = "/privacy-policy";
 export const PRIVACY_POLICY_LABEL = "Privacy Policy";
 export const TERMS_AND_CONDITIONS_HREF = "/terms-and-conditions";
 export const TERMS_AND_CONDITIONS_LABEL = "Terms and Conditions";
-export const FORM_SMS_CONSENT_COPY =
-  "consent to receive SMS updates about my inquiry. Msg & data rates may apply. Reply STOP to opt out.";
 
 export const FOOTER_BRAND = "Sandstone Real Estate Group";
 export const FOOTER_TAGLINE = "Luxury. Lifestyle. Legacy.";

@@ -10,11 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { submitLeadForForm } from "@/actions/submit-lead";
 import type { LeadFormType, SubmitLeadState } from "@/types";
 import {
-  FORM_SMS_CONSENT_COPY,
   PRIVACY_POLICY_LABEL,
   PRIVACY_POLICY_HREF,
-  TERMS_AND_CONDITIONS_LABEL,
-  TERMS_AND_CONDITIONS_HREF,
   SITE_CONTACT,
 } from "@/constants/site";
 
@@ -397,7 +394,10 @@ export function LeadCaptureSection({
                     }
                   />
                   <span>
-                    I agree to the{" "}
+                    By submitting this form, I agree to receive emails, calls, and/or
+                    text messages from Sandstone Real Estate Group by Keller Williams
+                    regarding my inquiry. I understand that my information will be
+                    handled in accordance with the{" "}
                     <Link
                       href={PRIVACY_POLICY_HREF}
                       target="_blank"
@@ -406,16 +406,7 @@ export function LeadCaptureSection({
                     >
                       {PRIVACY_POLICY_LABEL}
                     </Link>
-                    {" "}and{" "}
-                    <Link
-                      href={TERMS_AND_CONDITIONS_HREF}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
-                    >
-                      {TERMS_AND_CONDITIONS_LABEL}
-                    </Link>
-                    {" "}and {FORM_SMS_CONSENT_COPY}
+                    {" "}and that I can opt out at any time.
                   </span>
                 </label>
                 {state?.success === false && state.fieldErrors?.acceptContactConsent && (

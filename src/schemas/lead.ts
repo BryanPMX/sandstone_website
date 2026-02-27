@@ -15,7 +15,7 @@ export const LeadSchema = z.object({
     .string()
     .refine((v) => v === "on", {
       message:
-        "Please agree to the Privacy Policy, Terms and Conditions, and SMS consent before submitting.",
+        "Please agree to the contact consent and Privacy Policy before submitting.",
     }),
 });
 
