@@ -32,99 +32,99 @@ export default function PrivacyPolicyPage() {
           <section>
             <p>
               {SMS_DISCLOSURE_BRAND} (&quot;Sandstone,&quot; &quot;we,&quot; &quot;us,&quot; or
-              &quot;our&quot;) respects your privacy and is committed to protecting your personal information[cite: 3]. 
+              &quot;our&quot;) respects your privacy and is committed to protecting your personal information. 
               This policy explains how we collect, use, disclose, store, and safeguard your information when you visit 
-              our website, submit forms, or communicate with us by phone, email, or SMS[cite: 4].
+              our website, submit forms, or communicate with us by phone, email, or SMS.
             </p>
           </section>
 
           <section>
-            <h2>Information We Collect</h2>
-            <p>We collect information you voluntarily provide, such as[cite: 7, 8]:</p>
+            <h2>1. Information We Collect</h2>
+            <p>We collect personal information you voluntarily provide, including:</p>
             <ul>
-              <li>Full name, email address, and phone number[cite: 16, 17, 19].</li>
-              <li>Property preferences, addresses, and communication preferences[cite: 20, 21].</li>
-              <li>SMS opt-in selections and any other information you voluntarily provide through contact forms or consultations[cite: 22, 23].</li>
+              <li>Contact details such as full name, email address, and phone number.</li>
+              <li>Property preferences, physical addresses, and communication preferences.</li>
+              <li>SMS opt-in selections and any other information you voluntarily provide through contact forms or consultations.</li>
               <li>
                 Technical data automatically collected via cookies, including IP addresses, browser types, 
-                pages visited, and time spent on our site[cite: 24, 26, 28, 29, 30].
+                pages visited, and time spent on our site.
               </li>
             </ul>
           </section>
 
           <section>
-            <h2>How We Use Your Information</h2>
+            <h2>2. How We Use Your Information</h2>
             <ul>
-              <li>Responding to inquiries and providing real estate services[cite: 35, 36].</li>
-              <li>Scheduling appointments, consultations, and showings[cite: 11, 37].</li>
-              <li>Sending confirmations, reminders, and transactional messages[cite: 38, 39].</li>
+              <li>Responding to inquiries and providing requested real estate services.</li>
+              <li>Scheduling appointments, consultations, and property showings.</li>
+              <li>Sending confirmations, reminders, and transactional messages.</li>
               <li>
-                Sending marketing communications only if you have explicitly opted in[cite: 40].
+                Sending marketing communications only if you have explicitly opted in.
               </li>
-              <li>Improving website functionality and ensuring legal compliance[cite: 41, 42].</li>
+              <li>Improving website functionality and ensuring legal compliance.</li>
             </ul>
           </section>
 
           <section>
-            <h2>SMS Communications & Explicit Consent</h2>
+            <h2>3. SMS Communications & Explicit Consent</h2>
             <p>
-              We comply with TCPA, CTIA, and A2P 10DLC requirements[cite: 44]. Entering your phone number 
-              alone does not constitute consent to receive text messages[cite: 50].
+              We comply with TCPA, CTIA, and A2P 10DLC standards. Entering your phone number 
+              alone does not authorize us to send text messages.
             </p>
             <ul>
               <li>
                 We only send SMS to individuals who provide prior express written consent through a 
-                clear, separate, and non-mandatory checkbox[cite: 46].
+                clear, separate, and non-mandatory checkbox.
               </li>
-              <li>Consent is not a condition of purchase, and checkboxes are never pre-checked[cite: 47, 48].</li>
-              <li>Marketing SMS consent is separate from transactional communications[cite: 49].</li>
-              <li>Message frequency varies but typically does not exceed 2-8 messages per month for marketing[cite: 60, 61].</li>
-              <li>Message and data rates may apply[cite: 63].</li>
-              <li><strong>Reply HELP for assistance or STOP to unsubscribe at any time[cite: 67, 68].</strong></li>
+              <li>Consent is not a condition of purchase, and checkboxes are never pre-checked.</li>
+              <li>Marketing SMS consent is separate from transactional communications.</li>
+              <li>Message frequency varies but typically does not exceed 2-8 messages per month for marketing.</li>
+              <li>Message and data rates may apply.</li>
+              <li><strong>Reply HELP for assistance or STOP to unsubscribe at any time.</strong></li>
             </ul>
           </section>
 
           <section>
-            <h2>Data Sharing & Privacy</h2>
+            <h2>4. Data Sharing Statement</h2>
             <p>
-              We do not sell, rent, or trade your personal information[cite: 43]. 
+              We do not sell, rent, or trade your personal information. 
             </p>
             <p>
-              <strong>Carrier Requirement:</strong> Mobile information and SMS opt-in data will not be shared, 
-              sold, rented, or transferred to third parties or affiliates for marketing or promotional purposes[cite: 73]. 
+              <strong>Mobile Privacy Clause:</strong> Mobile information and SMS opt-in data will not be shared, 
+              sold, rented, or transferred to third parties or affiliates for marketing or promotional purposes. 
               We share data only with service providers necessary to deliver messaging services (such as GoHighLevel), 
-              who are contractually required to safeguard your data[cite: 74, 78].
+              who are contractually required to safeguard your data.
             </p>
           </section>
 
           <section>
-            <h2>Data Security & Your Rights</h2>
+            <h2>5. Data Security & Your Rights</h2>
             <p>
               We implement technical and physical safeguards, including SSL encrypted connections and secure 
-              hosting environments, to protect your data[cite: 93, 94, 95].
+              hosting environments, to protect your data. 
             </p>
             <p>
               Under the Texas Data Privacy and Security Act (TDPSA), you may have the right to access, 
-              correct, or request the deletion of your personal data[cite: 106, 107, 108, 109, 110].
+              correct, or request the deletion of your personal data. To exercise these rights, please contact us via email.
             </p>
           </section>
 
           <section>
-            <h2>Contact Us</h2>
+            <h2>6. Contact Us</h2>
             <p>
-              Questions about this policy or our privacy practices can be sent to:
+              If you have questions about this policy or our privacy practices, please reach out:
             </p>
             <p>
               <strong>Email:</strong> <Link href={`mailto:${SITE_CONTACT.email}`}>{SITE_CONTACT.email}</Link><br />
-              <strong>Phone:</strong> <Link href={`tel:${SITE_CONTACT.phoneRaw}`}>{SITE_CONTACT.phone}</Link> [cite: 125, 126]
+              <strong>Phone:</strong> <Link href={`tel:${SITE_CONTACT.phoneRaw}`}>{SITE_CONTACT.phone}</Link>
             </p>
-            <p>{SITE_ADDRESS.full} [cite: 124]</p>
+            <p>{SITE_ADDRESS.full}</p>
             <p>
               Review our{" "}
               <Link href={TERMS_AND_CONDITIONS_HREF}>
                 {TERMS_AND_CONDITIONS_LABEL}
               </Link>{" "}
-              for complete program terms.
+              for complete website and program terms.
             </p>
           </section>
         </LegalDocumentLayout>
