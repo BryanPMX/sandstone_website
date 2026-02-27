@@ -10,7 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { submitLeadForForm } from "@/actions/submit-lead";
 import type { LeadFormType, SubmitLeadState } from "@/types";
 import {
+  FORM_SMS_CONSENT_COPY,
+  PRIVACY_POLICY_LABEL,
   PRIVACY_POLICY_HREF,
+  TERMS_AND_CONDITIONS_LABEL,
   TERMS_AND_CONDITIONS_HREF,
   SITE_CONTACT,
 } from "@/constants/site";
@@ -136,11 +139,7 @@ export function LeadCaptureSection({
   const [state, formAction, isPending] = useActionState(action, initialState);
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const hasConsentErrors =
-    state?.success === false &&
-    Boolean(
-      state.fieldErrors?.acceptPrivacyPolicy ||
-        state.fieldErrors?.acceptTermsConditions
-    );
+    state?.success === false && Boolean(state.fieldErrors?.acceptContactConsent);
   const hasCaptchaError =
     state?.success === false && Boolean(state.fieldErrors?.captcha);
   const id = (field: string) => `${formType}-${field}`;
@@ -377,71 +376,51 @@ export function LeadCaptureSection({
                     aria-live="assertive"
                     className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800"
                   >
-                    Please accept both documents before submitting.
+                    Please accept the required consent before submitting.
                   </div>
                 )}
 
-                <label className="flex cursor-pointer items-start gap-3 text-sm text-sandstone-text/90">
+                <label className="flex cursor-pointer items-start gap-3 text-xs leading-5 text-sandstone-text/90 sm:text-sm">
                   <input
                     type="checkbox"
-                    name="acceptPrivacyPolicy"
+                    name="acceptContactConsent"
                     value="on"
                     disabled={isPending}
                     className="mt-1 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                    aria-describedby={id("privacy-error")}
+                    aria-describedby={
+                      state?.success === false && state.fieldErrors?.acceptContactConsent
+                        ? id("consent-error")
+                        : undefined
+                    }
                     aria-invalid={
-                      state?.success === false &&
-                      Boolean(state.fieldErrors?.acceptPrivacyPolicy)
+                      state?.success === false && Boolean(state.fieldErrors?.acceptContactConsent)
                     }
                   />
                   <span>
-                    I have read and accept the{" "}
+                    I agree to the{" "}
                     <Link
                       href={PRIVACY_POLICY_HREF}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
                     >
-                      Privacy Policy
+                      {PRIVACY_POLICY_LABEL}
                     </Link>
-                    .
-                  </span>
-                </label>
-                {state?.success === false && state.fieldErrors?.acceptPrivacyPolicy && (
-                  <p id={id("privacy-error")} className="text-xs text-red-600">
-                    {state.fieldErrors.acceptPrivacyPolicy[0]}
-                  </p>
-                )}
-
-                <label className="flex cursor-pointer items-start gap-3 text-sm text-sandstone-text/90">
-                  <input
-                    type="checkbox"
-                    name="acceptTermsConditions"
-                    value="on"
-                    disabled={isPending}
-                    className="mt-1 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                    aria-describedby={id("terms-error")}
-                    aria-invalid={
-                      state?.success === false &&
-                      Boolean(state.fieldErrors?.acceptTermsConditions)
-                    }
-                  />
-                  <span>
-                    I have read and accept the{" "}
+                    {" "}and{" "}
                     <Link
                       href={TERMS_AND_CONDITIONS_HREF}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
                     >
-                      Terms and Conditions
+                      {TERMS_AND_CONDITIONS_LABEL}
                     </Link>
-                    .
+                    {" "}and {FORM_SMS_CONSENT_COPY}
                   </span>
                 </label>
-                {state?.success === false && state.fieldErrors?.acceptTermsConditions && (
-                  <p id={id("terms-error")} className="text-xs text-red-600">
-                    {state.fieldErrors.acceptTermsConditions[0]}
+                {state?.success === false && state.fieldErrors?.acceptContactConsent && (
+                  <p id={id("consent-error")} className="text-xs text-red-600">
+                    {state.fieldErrors.acceptContactConsent[0]}
                   </p>
                 )}
               </div>

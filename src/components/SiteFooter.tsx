@@ -8,7 +8,9 @@ import {
   FOOTER_TAGLINE,
   FOOTER_ABOUT,
   FOOTER_BRAND_IMAGES,
+  PRIVACY_POLICY_LABEL,
   PRIVACY_POLICY_HREF,
+  TERMS_AND_CONDITIONS_LABEL,
   TERMS_AND_CONDITIONS_HREF,
 } from "@/constants/site";
 
@@ -81,13 +83,13 @@ export function SiteFooter() {
               href={PRIVACY_POLICY_HREF}
               className="hover:text-[var(--sandstone-sand-gold)]"
             >
-              Privacy Policy
+              {PRIVACY_POLICY_LABEL}
             </Link>
             <Link
               href={TERMS_AND_CONDITIONS_HREF}
               className="hover:text-[var(--sandstone-sand-gold)]"
             >
-              Terms &amp; Conditions
+              {TERMS_AND_CONDITIONS_LABEL}
             </Link>
           </div>
           <p className="mt-2 md:mt-0">

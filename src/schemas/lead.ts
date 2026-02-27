@@ -11,15 +11,11 @@ export const LeadSchema = z.object({
   phone: z.string().min(1, "Phone is required").max(30),
   address: z.string().max(250).optional().default(""),
   message: z.string().max(2000).optional().default(""),
-  acceptPrivacyPolicy: z
+  acceptContactConsent: z
     .string()
     .refine((v) => v === "on", {
-      message: "Please check the box to confirm you accept the Privacy Policy before submitting.",
-    }),
-  acceptTermsConditions: z
-    .string()
-    .refine((v) => v === "on", {
-      message: "Please check the box to confirm you accept the Terms and Conditions before submitting.",
+      message:
+        "Please agree to the Privacy Policy, Terms and Conditions, and SMS consent before submitting.",
     }),
 });
 

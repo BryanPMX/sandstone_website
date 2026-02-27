@@ -4,10 +4,11 @@ import { join } from "path";
 import { ViewOnlyDocument } from "@/components/ViewOnlyDocument";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { FOOTER_BRAND, TERMS_AND_CONDITIONS_LABEL } from "@/constants/site";
 
 export const metadata = {
-  title: "Terms and Conditions | Sandstone Real Estate Group",
-  description: "Terms and Conditions for Sandstone Real Estate Group.",
+  title: `${TERMS_AND_CONDITIONS_LABEL} | ${FOOTER_BRAND}`,
+  description: `${TERMS_AND_CONDITIONS_LABEL} for ${FOOTER_BRAND}.`,
 };
 
 export default async function TermsAndConditionsPage() {
@@ -27,9 +28,12 @@ export default async function TermsAndConditionsPage() {
       <SiteHeader />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         {html ? (
-          <ViewOnlyDocument html={html} title="Terms and Conditions" />
+          <ViewOnlyDocument html={html} title={TERMS_AND_CONDITIONS_LABEL} />
         ) : (
-          <FallbackView doc="terms-and-conditions" title="Terms and Conditions" />
+          <FallbackView
+            doc="terms-and-conditions"
+            title={TERMS_AND_CONDITIONS_LABEL}
+          />
         )}
       </main>
       <SiteFooter />

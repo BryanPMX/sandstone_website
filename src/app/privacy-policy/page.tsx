@@ -4,10 +4,11 @@ import { join } from "path";
 import { ViewOnlyDocument } from "@/components/ViewOnlyDocument";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { FOOTER_BRAND, PRIVACY_POLICY_LABEL } from "@/constants/site";
 
 export const metadata = {
-  title: "Privacy Policy | Sandstone Real Estate Group",
-  description: "Privacy Policy for Sandstone Real Estate Group.",
+  title: `${PRIVACY_POLICY_LABEL} | ${FOOTER_BRAND}`,
+  description: `${PRIVACY_POLICY_LABEL} for ${FOOTER_BRAND}.`,
 };
 
 export default async function PrivacyPolicyPage() {
@@ -27,9 +28,9 @@ export default async function PrivacyPolicyPage() {
       <SiteHeader />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         {html ? (
-          <ViewOnlyDocument html={html} title="Privacy Policy" />
+          <ViewOnlyDocument html={html} title={PRIVACY_POLICY_LABEL} />
         ) : (
-          <FallbackView doc="privacy-policy" title="Privacy Policy" />
+          <FallbackView doc="privacy-policy" title={PRIVACY_POLICY_LABEL} />
         )}
       </main>
       <SiteFooter />

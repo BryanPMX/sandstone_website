@@ -23,8 +23,7 @@ export async function submitLeadForForm(
     phone: formData.get("phone") ?? "",
     address: formData.get("address") ?? "",
     message: formData.get("message") ?? "",
-    acceptPrivacyPolicy: formData.get("acceptPrivacyPolicy") ?? "",
-    acceptTermsConditions: formData.get("acceptTermsConditions") ?? "",
+    acceptContactConsent: formData.get("acceptContactConsent") ?? "",
   };
   const captchaToken = String(formData.get("cf-turnstile-response") ?? "");
 
