@@ -186,12 +186,12 @@ export function LeadCaptureSection({
         <div
           className={
             showAside
-              ? `${showHeader ? "mt-8" : "mt-6"} grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch`
+              ? `${showHeader ? "mt-8" : "mt-6"} grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.82fr)] lg:items-start xl:gap-8`
               : `${showHeader ? "mt-8" : "mt-6"} mx-auto max-w-2xl`
           }
         >
-          <div className="rounded-2xl border border-white/70 bg-white/80 p-5 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-6">
-            <form action={formAction} className="space-y-5">
+          <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6">
+            <form action={formAction} className="space-y-4">
               {state?.success === true && (
                 <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
                   {state.message}
@@ -204,8 +204,8 @@ export function LeadCaptureSection({
                 </p>
               )}
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
+              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+                <div className="space-y-1">
                   <Label htmlFor={id("firstName")}>First Name</Label>
                   <Input
                     id={id("firstName")}
@@ -226,7 +226,7 @@ export function LeadCaptureSection({
                   )}
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <Label htmlFor={id("lastName")}>Last Name</Label>
                   <Input
                     id={id("lastName")}
@@ -248,8 +248,8 @@ export function LeadCaptureSection({
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
+              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+                <div className="space-y-1">
                   <Label htmlFor={id("email")}>Email</Label>
                   <Input
                     id={id("email")}
@@ -271,7 +271,7 @@ export function LeadCaptureSection({
                   )}
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <Label htmlFor={id("phone")}>
                     {formType === "join" ? "Phone Number" : "Phone"}
                   </Label>
@@ -300,7 +300,7 @@ export function LeadCaptureSection({
               </div>
 
               {requiresAddress ? (
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <Label htmlFor={id("address")}>Address</Label>
                   <Input
                     id={id("address")}
@@ -323,18 +323,20 @@ export function LeadCaptureSection({
               ) : null}
 
               {showMessageField ? (
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <Label htmlFor={id("message")}>Message</Label>
                   <Textarea
                     id={id("message")}
                     name="message"
                     placeholder={messagePlaceholder}
-                    rows={3}
+                    rows={2}
                     disabled={isPending}
                     className={
-                      state?.success === false && state.fieldErrors?.message
-                        ? "border-red-500"
-                        : ""
+                      `${
+                        state?.success === false && state.fieldErrors?.message
+                          ? "border-red-500"
+                          : ""
+                      } min-h-[88px]`
                     }
                   />
                   {state?.success === false && state.fieldErrors?.message && (
@@ -345,7 +347,7 @@ export function LeadCaptureSection({
                 </div>
               ) : null}
 
-              <div className="space-y-3 rounded-xl border border-[var(--sandstone-navy)]/12 bg-white/88 p-4">
+              <div className="space-y-2.5 rounded-xl border border-[var(--sandstone-navy)]/12 bg-white/88 p-3.5 sm:p-4">
                 {hasCaptchaError && (
                   <div
                     role="alert"
@@ -356,7 +358,7 @@ export function LeadCaptureSection({
                   </div>
                 )}
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <p className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
                     Security Check
                   </p>
@@ -374,57 +376,57 @@ export function LeadCaptureSection({
                   )}
                 </div>
 
-                <fieldset className="space-y-3">
+                <fieldset className="space-y-2.5">
                   <legend className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
                     Text Message Preferences
                   </legend>
-                  <div className="space-y-1">
-                    <p className="text-xs leading-5 text-[var(--sandstone-charcoal)]/75">
-                      Choose which SMS messages you want from {SMS_DISCLOSURE_BRAND}.
-                      Both options are optional and do not block form submission.
-                    </p>
-                  </div>
+                  <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
+                    Choose which SMS messages you want from {SMS_DISCLOSURE_BRAND}.
+                    Both options are optional and do not block form submission.
+                  </p>
 
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-xs leading-5 text-sandstone-text/90 sm:text-sm">
-                    <input
-                      type="checkbox"
-                      name="acceptTransactionalSms"
-                      value="on"
-                      disabled={isPending}
-                      className="mt-1 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                    />
-                    <span>
-                      <span className="block font-semibold text-[var(--sandstone-navy)]">
-                        Transactional SMS updates
-                      </span>
-                      <span className="mt-1 block">
-                        {FORM_TRANSACTIONAL_SMS_COPY}
-                      </span>
-                    </span>
-                  </label>
-
-                  <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-xs leading-5 text-sandstone-text/90 sm:text-sm">
-                    <input
-                      type="checkbox"
-                      name="acceptMarketingSms"
-                      value="on"
-                      disabled={isPending}
-                      className="mt-1 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                    />
-                    <span>
-                      <span className="flex flex-wrap items-center gap-2 font-semibold text-[var(--sandstone-navy)]">
-                        <span>Marketing SMS updates</span>
-                        <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[var(--sandstone-bronze)]">
-                          Optional
+                  <div className="grid gap-2.5 md:grid-cols-2 md:gap-3">
+                    <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-[11px] leading-4 text-sandstone-text/90 sm:text-xs sm:leading-5">
+                      <input
+                        type="checkbox"
+                        name="acceptTransactionalSms"
+                        value="on"
+                        disabled={isPending}
+                        className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
+                      />
+                      <span>
+                        <span className="block font-semibold text-[var(--sandstone-navy)]">
+                          Transactional SMS updates
+                        </span>
+                        <span className="mt-1 block">
+                          {FORM_TRANSACTIONAL_SMS_COPY}
                         </span>
                       </span>
-                      <span className="mt-1 block">
-                        {FORM_MARKETING_SMS_COPY}
-                      </span>
-                    </span>
-                  </label>
+                    </label>
 
-                  <p className="text-xs leading-5 text-[var(--sandstone-charcoal)]/75">
+                    <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-[11px] leading-4 text-sandstone-text/90 sm:text-xs sm:leading-5">
+                      <input
+                        type="checkbox"
+                        name="acceptMarketingSms"
+                        value="on"
+                        disabled={isPending}
+                        className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
+                      />
+                      <span>
+                        <span className="flex flex-wrap items-center gap-2 font-semibold text-[var(--sandstone-navy)]">
+                          <span>Marketing SMS updates</span>
+                          <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[var(--sandstone-bronze)]">
+                            Optional
+                          </span>
+                        </span>
+                        <span className="mt-1 block">
+                          {FORM_MARKETING_SMS_COPY}
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+
+                  <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
                     Review our{" "}
                     <Link
                       href={PRIVACY_POLICY_HREF}
@@ -463,7 +465,7 @@ export function LeadCaptureSection({
           </div>
 
           {showAside ? (
-            <aside className="relative isolate min-h-[340px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)]">
+            <aside className="relative isolate min-h-[320px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:min-h-[420px] lg:max-w-[420px] lg:justify-self-end xl:min-h-[460px]">
               <div
                 aria-hidden
                 className="absolute inset-0 bg-cover bg-center"
@@ -476,7 +478,7 @@ export function LeadCaptureSection({
                 aria-hidden
                 className="absolute right-[-12%] top-[-8%] h-36 w-36 rounded-full bg-[var(--sandstone-sand-gold)]/20 blur-3xl"
               />
-              <div className="relative flex h-full flex-col justify-end p-6 text-white md:p-7">
+              <div className="relative flex min-h-[320px] flex-col justify-end p-6 text-white md:p-7 lg:min-h-[420px] xl:min-h-[460px]">
                 <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
                   {asideEyebrow}
                 </p>
