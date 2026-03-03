@@ -4,6 +4,7 @@ import Image from "next/image";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { fetchPropertyDetailById } from "@/services";
+import { shouldBypassNextImageOptimization } from "@/lib";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -39,6 +40,8 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
   }
 
   const heroImages = property.images.slice(0, 5);
+  const heroImageSrc = heroImages[0] ?? property.image;
+  const bypassHeroOptimization = shouldBypassNextImageOptimization(heroImageSrc);
   const primaryFacts = [
     property.listingNumber && `MLS #${property.listingNumber}`,
     property.beds != null && `${property.beds} beds`,
@@ -64,30 +67,36 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
             <div className="grid gap-3 bg-[var(--sandstone-charcoal)]/5 p-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
               <div className="relative min-h-[320px] overflow-hidden rounded-[1.5rem] bg-[var(--sandstone-navy)]/8">
                 <Image
-                  src={heroImages[0] ?? property.image}
+                  src={heroImageSrc}
                   alt={property.title}
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 66vw"
-                  priority
+                  priority={!bypassHeroOptimization}
+                  unoptimized={bypassHeroOptimization}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                {heroImages.slice(1).map((image, index) => (
-                  <div
-                    key={`${property.id}-${index + 1}`}
-                    className="relative min-h-[154px] overflow-hidden rounded-[1.25rem] bg-[var(--sandstone-navy)]/8"
-                  >
-                    <Image
-                      src={image}
-                      alt={`${property.title} photo ${index + 2}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 50vw, 22vw"
-                    />
-                  </div>
-                ))}
+                {heroImages.slice(1).map((image, index) => {
+                  const bypassOptimization = shouldBypassNextImageOptimization(image);
+
+                  return (
+                    <div
+                      key={`${property.id}-${index + 1}`}
+                      className="relative min-h-[154px] overflow-hidden rounded-[1.25rem] bg-[var(--sandstone-navy)]/8"
+                    >
+                      <Image
+                        src={image}
+                        alt={`${property.title} photo ${index + 2}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 50vw, 22vw"
+                        unoptimized={bypassOptimization}
+                      />
+                    </div>
+                  );
+                })}
                 {heroImages.length === 1 && (
                   <div className="col-span-2 flex min-h-[154px] items-center justify-center rounded-[1.25rem] border border-dashed border-[var(--sandstone-navy)]/15 bg-[var(--sandstone-off-white)] px-6 text-center text-sm text-[var(--sandstone-charcoal)]/65">
                     Additional listing photos will appear here when Spark provides them.

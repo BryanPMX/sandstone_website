@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { PropertyCard } from "@/types";
+import { shouldBypassNextImageOptimization } from "@/lib";
 
 interface ListingCardProps {
   property: PropertyCard;
@@ -11,6 +12,7 @@ interface ListingCardProps {
  * Presentational listing card used across listing surfaces.
  */
 export function ListingCard({ property, priority = false }: ListingCardProps) {
+  const bypassOptimization = shouldBypassNextImageOptimization(property.image);
   const details = [
     property.beds != null && `${property.beds} beds`,
     property.baths != null && `${property.baths} baths`,
@@ -47,7 +49,8 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover transition duration-300 group-hover:scale-105"
-          priority={priority}
+          priority={priority && !bypassOptimization}
+          unoptimized={bypassOptimization}
         />
         <div
           className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/70 via-transparent to-transparent"
