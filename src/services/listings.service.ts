@@ -112,6 +112,25 @@ function mapFallbackCardToDetail(property: PropertyCard): PropertyDetail {
   };
 }
 
+function matchesPropertyIdentifier(property: PropertyCard, id: string): boolean {
+  return property.id === id || property.listingNumber === id;
+}
+
+async function findSparkPropertyCardFromCollections(
+  id: string
+): Promise<PropertyCard | null> {
+  const [myProperties, activeProperties] = await Promise.all([
+    fetchMyPropertyCards(),
+    fetchActivePropertyCards(),
+  ]);
+
+  return (
+    myProperties.find((property) => matchesPropertyIdentifier(property, id)) ??
+    activeProperties.find((property) => matchesPropertyIdentifier(property, id)) ??
+    null
+  );
+}
+
 async function fetchLegacyPropertyCardsOrFallback(
   options?: ListingsFetchOptions
 ): Promise<ListingsResolution> {
@@ -227,10 +246,16 @@ async function fetchPropertyCardByIdUncached(
     } catch (error) {
       console.error("[Listings] Spark property lookup failed, falling back.", error);
     }
+
+    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
+
+    if (sparkFallbackProperty) {
+      return sparkFallbackProperty;
+    }
   }
 
   const fallback = await fetchLegacyPropertyCardsOrFallback();
-  return fallback.properties.find((property) => property.id === id) ?? null;
+  return fallback.properties.find((property) => matchesPropertyIdentifier(property, id)) ?? null;
 }
 
 async function fetchPropertyDetailByIdUncached(
@@ -246,10 +271,16 @@ async function fetchPropertyDetailByIdUncached(
     } catch (error) {
       console.error("[Listings] Spark property detail lookup failed, falling back.", error);
     }
+
+    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
+
+    if (sparkFallbackProperty) {
+      return mapFallbackCardToDetail(sparkFallbackProperty);
+    }
   }
 
   const fallback = await fetchLegacyPropertyCardsOrFallback();
-  const property = fallback.properties.find((item) => item.id === id);
+  const property = fallback.properties.find((item) => matchesPropertyIdentifier(item, id));
   return property ? mapFallbackCardToDetail(property) : null;
 }
 
