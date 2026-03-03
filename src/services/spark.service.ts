@@ -44,6 +44,7 @@ type SparkFetchOptions = {
 
 const SPARK_REVALIDATE_SECONDS = 300;
 const REPLICATION_SPARK_API_BASE_URL = "https://replication.sparkapi.com";
+const SPARK_MAX_API_PAGE_SIZE = 25;
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80";
 const DEFAULT_LOCATION = "El Paso, TX";
@@ -208,7 +209,7 @@ function buildSparkUrl({
   }
 
   const url = new URL(path, baseUrl);
-  url.searchParams.set("_limit", String(limit ?? getSparkListingsPageSize()));
+  url.searchParams.set("_limit", String(resolveSparkRequestLimit(limit)));
   if (expand.length > 0) {
     url.searchParams.set("_expand", expand.join(","));
   }
@@ -226,6 +227,11 @@ function buildSparkUrl({
   }
 
   return url.toString();
+}
+
+function resolveSparkRequestLimit(limit?: number): number {
+  const requested = limit ?? getSparkListingsPageSize();
+  return Math.min(Math.max(1, requested), SPARK_MAX_API_PAGE_SIZE);
 }
 
 function buildSparkListingDetailPath(path: string, id: string): string {
@@ -1063,7 +1069,7 @@ async function fetchAllSparkPropertyCards(
   filter?: string,
   options?: SparkFetchOptions
 ): Promise<PropertyCard[]> {
-  const pageSize = getSparkListingsPageSize();
+  const requestPageSize = resolveSparkRequestLimit();
   const properties: PropertyCard[] = [];
   const seenIds = new Set<string>();
   let page = 1;
@@ -1090,7 +1096,7 @@ async function fetchAllSparkPropertyCards(
 
     const hasMorePages = totalPages
       ? page < totalPages
-      : pageProperties.length === pageSize;
+      : pageProperties.length === requestPageSize;
 
     if (!hasMorePages) {
       break;
@@ -1247,29 +1253,67 @@ export async function fetchActiveSparkPropertyCardsPage(
   page: number,
   options?: SparkFetchOptions
 ): Promise<SparkPropertyCardsPage> {
-  const safePage = Number.isFinite(page) ? Math.max(1, Math.floor(page)) : 1;
-  const { properties, pagination } = await fetchSparkCollectionPage(
-    {
-      path: getSparkListingsPath(),
-      filter: getSparkActiveListingsFilter(),
-      page: safePage,
-    },
-    options
-  );
+  const requestedPage = Number.isFinite(page) ? Math.max(1, Math.floor(page)) : 1;
+  const displayPageSize = getSparkListingsPageSize();
+  const requestPageSize = resolveSparkRequestLimit();
+  const path = getSparkListingsPath();
+  const filter = getSparkActiveListingsFilter();
 
-  const pageSize = getSparkListingsPageSize();
-  const totalRows = pagination?.totalRows ?? properties.length;
-  const totalPages =
-    pagination?.totalPages ?? Math.max(1, Math.ceil(totalRows / pageSize));
-  const currentPage = pagination?.currentPage ?? Math.min(safePage, totalPages);
+  let resolvedPage = requestedPage;
 
-  return {
-    properties,
-    currentPage,
-    totalPages,
-    totalRows,
-    pageSize,
-  };
+  while (true) {
+    const offset = (resolvedPage - 1) * displayPageSize;
+    const startingSparkPage = Math.floor(offset / requestPageSize) + 1;
+    let skip = offset % requestPageSize;
+    let sparkPage = startingSparkPage;
+    let totalRows = 0;
+    let totalSparkPages = 1;
+    const properties: PropertyCard[] = [];
+
+    while (properties.length < displayPageSize && sparkPage <= totalSparkPages) {
+      const { properties: sparkPageProperties, pagination } = await fetchSparkCollectionPage(
+        {
+          path,
+          filter,
+          page: sparkPage,
+        },
+        options
+      );
+
+      totalRows = pagination?.totalRows ?? totalRows;
+      totalSparkPages = pagination?.totalPages ?? totalSparkPages;
+
+      const visibleProperties = skip > 0
+        ? sparkPageProperties.slice(skip)
+        : sparkPageProperties;
+
+      properties.push(
+        ...visibleProperties.slice(0, displayPageSize - properties.length)
+      );
+
+      if (sparkPageProperties.length < requestPageSize) {
+        break;
+      }
+
+      skip = 0;
+      sparkPage += 1;
+    }
+
+    const totalPages = Math.max(1, Math.ceil(totalRows / displayPageSize));
+
+    if (resolvedPage > totalPages) {
+      resolvedPage = totalPages;
+      continue;
+    }
+
+    return {
+      properties,
+      currentPage: resolvedPage,
+      totalPages,
+      totalRows,
+      pageSize: displayPageSize,
+    };
+  }
 }
 
 export async function fetchMySparkPropertyCards(

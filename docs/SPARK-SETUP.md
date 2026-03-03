@@ -44,7 +44,7 @@ SPARK_API_BASE_URL=https://replication.sparkapi.com
 
 - The app sends the token in the `Authorization` header from the server.
 - The app automatically retries on `replication.sparkapi.com` when Spark returns restriction code `1021`.
-- `/listings` paginates through all active listings from Spark because standard Spark requests cap `_limit` per page.
+- `/listings` paginates through all active listings from Spark and can assemble larger UI pages even though standard Spark requests cap `_limit` per page at `25`.
 - The home page uses Spark `my/listings` for the carousel.
 - If Spark is unavailable, the app can fall back to `MSL_FEED_URL`.
 - Listing payloads are normalized into the internal `PropertyCard` contract before reaching the UI.
