@@ -15,7 +15,7 @@ export default function RentPage() {
         <LeadCaptureSection
           formType="rent"
           sectionId="rent-lead"
-          heading="Rent My House!"
+          heading="Rent My House"
           subheading="Share your rental goals and property details, and we&apos;ll help you map the next steps."
           showAside={false}
           ctaLabel="START MY RENTAL CONSULTATION"
