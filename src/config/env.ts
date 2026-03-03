@@ -85,17 +85,18 @@ export function getSparkMyListingsFilter(): string {
 }
 
 export function getSparkListingsPageSize(): number {
+  const defaultPageSize = 27;
   const raw = getEnv("SPARK_PAGE_SIZE") ?? getEnv("SPARK_LISTINGS_LIMIT");
 
   if (!raw) {
-    return 25;
+    return defaultPageSize;
   }
 
   const parsed = Number.parseInt(raw, 10);
 
   if (!Number.isFinite(parsed) || parsed <= 0) {
-    return 25;
+    return defaultPageSize;
   }
 
-  return Math.min(parsed, 25);
+  return parsed;
 }

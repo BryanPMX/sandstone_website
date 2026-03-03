@@ -91,7 +91,7 @@ The project is organized by responsibility:
 - `SPARK_API_MY_LISTINGS_PATH`: optional override, defaults to `/v1/my/listings`
 - `SPARK_ACTIVE_LISTINGS_FILTER`: Spark `_filter` for the full listings page, defaults to `MlsStatus Eq 'Active'`
 - `SPARK_MY_LISTINGS_FILTER`: optional home-page `my/listings` filter, defaults to the active filter
-- `SPARK_PAGE_SIZE`: Spark per-page fetch size, defaults to `25`
+- `SPARK_PAGE_SIZE`: Spark per-page fetch size, defaults to `27`
 - `ROLU_WEBHOOK_URL`: backward-compatible contact webhook fallback
 - `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`: preferred lead webhook envs
 - `TURNSTILE_SECRET_KEY`: required for server-side captcha verification

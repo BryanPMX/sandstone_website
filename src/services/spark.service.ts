@@ -34,6 +34,7 @@ type SparkCollectionRequest = {
   path: string;
   filter?: string;
   page?: number;
+  limit?: number;
   includePagination?: boolean;
   expand?: string[];
 };
@@ -196,6 +197,7 @@ function buildSparkUrl({
   path,
   filter,
   page,
+  limit,
   includePagination = false,
   expand = COLLECTION_EXPANSIONS,
 }: SparkCollectionRequest): string {
@@ -206,7 +208,7 @@ function buildSparkUrl({
   }
 
   const url = new URL(path, baseUrl);
-  url.searchParams.set("_limit", String(getSparkListingsPageSize()));
+  url.searchParams.set("_limit", String(limit ?? getSparkListingsPageSize()));
   if (expand.length > 0) {
     url.searchParams.set("_expand", expand.join(","));
   }
@@ -1025,7 +1027,10 @@ async function fetchSparkCollectionPage(
   request: SparkCollectionRequest,
   options?: SparkFetchOptions
 ): Promise<{ properties: PropertyCard[]; pagination?: SparkPagination }> {
-  const { results, pagination } = await fetchSparkResults(request, options);
+  const { results, pagination } = await fetchSparkResults(
+    { ...request, includePagination: true },
+    options
+  );
 
   return {
     properties: results.map(mapSparkListing),
@@ -1037,10 +1042,7 @@ async function fetchSparkResults(
   request: SparkCollectionRequest,
   options?: SparkFetchOptions
 ): Promise<{ results: unknown[]; pagination?: SparkPagination }> {
-  const response = await fetchSparkPayload(
-    buildSparkUrl({ ...request, includePagination: true }),
-    options
-  );
+  const response = await fetchSparkPayload(buildSparkUrl(request), options);
 
   if (!response.ok) {
     const responseText = await response.text();
@@ -1143,6 +1145,7 @@ async function fetchSparkListingRecordByDirectPath(
     const response = await fetchSparkPayload(
       buildSparkUrl({
         path: buildSparkListingDetailPath(path, id),
+        limit: 1,
         expand: DETAIL_EXPANSIONS,
       }),
       options
@@ -1175,19 +1178,24 @@ async function fetchSparkListingRecordByFilters(
   options?: SparkFetchOptions
 ): Promise<UnknownRecord | null> {
   for (const filter of buildIdentifierFilters(id)) {
-    for (const path of getSparkLookupPaths()) {
-      const record = await fetchSparkListingRecord(
-        {
-          path,
-          filter,
-          expand: DETAIL_EXPANSIONS,
-        },
-        options
-      );
+    const records = await Promise.all(
+      getSparkLookupPaths().map((path) =>
+        fetchSparkListingRecord(
+          {
+            path,
+            filter,
+            limit: 1,
+            expand: DETAIL_EXPANSIONS,
+          },
+          options
+        )
+      )
+    );
 
-      if (record) {
-        return record;
-      }
+    const match = records.find((record): record is UnknownRecord => Boolean(record));
+
+    if (match) {
+      return match;
     }
   }
 
