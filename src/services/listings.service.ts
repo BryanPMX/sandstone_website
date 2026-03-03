@@ -394,6 +394,18 @@ async function fetchPropertyCardByIdUncached(
       console.error("[Listings] Spark property lookup failed, falling back.", error);
     }
 
+    if (sourceHint) {
+      try {
+        const unhintedProperty = await fetchSparkPropertyCardById(id);
+
+        if (unhintedProperty) {
+          return unhintedProperty;
+        }
+      } catch (error) {
+        console.error("[Listings] Unhinted Spark property lookup failed, falling back.", error);
+      }
+    }
+
     const sparkFallbackProperty = await findSparkPropertyCardFromCollections(
       id,
       sourceHint
@@ -401,6 +413,14 @@ async function fetchPropertyCardByIdUncached(
 
     if (sparkFallbackProperty) {
       return sparkFallbackProperty;
+    }
+
+    if (sourceHint) {
+      const unhintedSparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
+
+      if (unhintedSparkFallbackProperty) {
+        return unhintedSparkFallbackProperty;
+      }
     }
   }
 
@@ -441,6 +461,18 @@ async function fetchPropertyDetailByIdUncached(
       console.error("[Listings] Spark property detail lookup failed, falling back.", error);
     }
 
+    if (sourceHint) {
+      try {
+        const unhintedProperty = await fetchSparkPropertyDetailById(id);
+
+        if (unhintedProperty) {
+          return unhintedProperty;
+        }
+      } catch (error) {
+        console.error("[Listings] Unhinted Spark property detail lookup failed, falling back.", error);
+      }
+    }
+
     const sparkFallbackProperty = await findSparkPropertyCardFromCollections(
       id,
       sourceHint
@@ -448,6 +480,14 @@ async function fetchPropertyDetailByIdUncached(
 
     if (sparkFallbackProperty) {
       return mapFallbackCardToDetail(sparkFallbackProperty);
+    }
+
+    if (sourceHint) {
+      const unhintedSparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
+
+      if (unhintedSparkFallbackProperty) {
+        return mapFallbackCardToDetail(unhintedSparkFallbackProperty);
+      }
     }
   }
 
