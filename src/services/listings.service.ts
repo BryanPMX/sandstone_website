@@ -2,10 +2,11 @@ import "server-only";
 
 import { cache } from "react";
 import type { PropertyCard, PropertyDetail } from "@/types";
-import { getMslFeedUrl, hasSparkAccessToken } from "@/config";
+import { getMslFeedUrl, getSparkListingsPageSize, hasSparkAccessToken } from "@/config";
 import { fetchLegacyFeedPropertyCards } from "@/services/msl.service";
 import {
   fetchAllActiveSparkPropertyCards,
+  fetchActiveSparkPropertyCardsPage,
   fetchMySparkPropertyCards,
   fetchSparkPropertyCardById,
   fetchSparkPropertyDetailById,
@@ -22,6 +23,12 @@ type ListingsResolution = {
   sparkError?: string;
   legacyError?: string;
 };
+type PaginatedListingsResolution = ListingsResolution & {
+  currentPage: number;
+  totalPages: number;
+  totalRows: number;
+  pageSize: number;
+};
 
 export interface ListingsDiagnostics {
   target: ListingsTarget;
@@ -35,6 +42,17 @@ export interface ListingsDiagnostics {
   >;
   sparkConfigured: boolean;
   legacyFeedConfigured: boolean;
+  sparkError?: string;
+  legacyError?: string;
+}
+
+export interface PaginatedPropertyCards {
+  source: ListingsSource;
+  properties: PropertyCard[];
+  currentPage: number;
+  totalPages: number;
+  totalRows: number;
+  pageSize: number;
   sparkError?: string;
   legacyError?: string;
 }
@@ -122,6 +140,21 @@ function matchesPropertyIdentifier(property: PropertyCard, id: string): boolean 
   return property.routeId === id || property.id === id || property.listingNumber === id;
 }
 
+async function findSparkPropertyCardFromCollections(
+  id: string
+): Promise<PropertyCard | null> {
+  const [myProperties, activeProperties] = await Promise.all([
+    fetchMyPropertyCards(),
+    fetchActivePropertyCards(),
+  ]);
+
+  return (
+    myProperties.find((property) => matchesPropertyIdentifier(property, id)) ??
+    activeProperties.find((property) => matchesPropertyIdentifier(property, id)) ??
+    null
+  );
+}
+
 async function fetchLegacyPropertyCardsOrFallback(
   options?: ListingsFetchOptions
 ): Promise<ListingsResolution> {
@@ -207,6 +240,27 @@ function buildListingsDiagnostics(
   };
 }
 
+function paginateProperties(
+  properties: PropertyCard[],
+  page: number,
+  pageSize: number
+): PaginatedListingsResolution {
+  const safePageSize = Math.max(1, pageSize);
+  const totalRows = properties.length;
+  const totalPages = Math.max(1, Math.ceil(totalRows / safePageSize));
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const startIndex = (currentPage - 1) * safePageSize;
+
+  return {
+    source: "demo-fallback",
+    properties: properties.slice(startIndex, startIndex + safePageSize),
+    currentPage,
+    totalPages,
+    totalRows,
+    pageSize: safePageSize,
+  };
+}
+
 async function fetchActivePropertyCardsUncached(): Promise<PropertyCard[]> {
   const resolution = await resolvePropertyCards("active");
   return resolution.properties;
@@ -215,6 +269,57 @@ async function fetchActivePropertyCardsUncached(): Promise<PropertyCard[]> {
 async function fetchMyPropertyCardsUncached(): Promise<PropertyCard[]> {
   const resolution = await resolvePropertyCards("my");
   return resolution.properties;
+}
+
+async function fetchActivePropertyCardsPageUncached(
+  page: number,
+  options?: ListingsFetchOptions
+): Promise<PaginatedPropertyCards> {
+  const currentPage = Number.isFinite(page) ? Math.max(1, Math.floor(page)) : 1;
+
+  if (hasSparkAccessToken()) {
+    try {
+      const sparkPage = await fetchActiveSparkPropertyCardsPage(currentPage, options);
+
+      return {
+        source: "spark",
+        properties: sparkPage.properties,
+        currentPage: sparkPage.currentPage,
+        totalPages: sparkPage.totalPages,
+        totalRows: sparkPage.totalRows,
+        pageSize: sparkPage.pageSize,
+      };
+    } catch (error) {
+      const sparkError = formatError(error);
+      console.error("[Listings] Active Spark listings page failed, falling back.", error);
+      const fallback = await fetchLegacyPropertyCardsOrFallback(options);
+      const paginatedFallback = paginateProperties(
+        fallback.properties,
+        currentPage,
+        getSparkListingsPageSize()
+      );
+
+      return {
+        ...paginatedFallback,
+        source: fallback.source,
+        sparkError,
+        legacyError: fallback.legacyError,
+      };
+    }
+  }
+
+  const fallback = await fetchLegacyPropertyCardsOrFallback(options);
+  const paginatedFallback = paginateProperties(
+    fallback.properties,
+    currentPage,
+    getSparkListingsPageSize()
+  );
+
+  return {
+    ...paginatedFallback,
+    source: fallback.source,
+    legacyError: fallback.legacyError,
+  };
 }
 
 export async function inspectListingsTarget(
@@ -238,6 +343,12 @@ async function fetchPropertyCardByIdUncached(
     } catch (error) {
       console.error("[Listings] Spark property lookup failed, falling back.", error);
     }
+
+    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
+
+    if (sparkFallbackProperty) {
+      return sparkFallbackProperty;
+    }
   }
 
   const fallback = await fetchLegacyPropertyCardsOrFallback();
@@ -257,6 +368,12 @@ async function fetchPropertyDetailByIdUncached(
     } catch (error) {
       console.error("[Listings] Spark property detail lookup failed, falling back.", error);
     }
+
+    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
+
+    if (sparkFallbackProperty) {
+      return mapFallbackCardToDetail(sparkFallbackProperty);
+    }
   }
 
   const fallback = await fetchLegacyPropertyCardsOrFallback();
@@ -265,6 +382,7 @@ async function fetchPropertyDetailByIdUncached(
 }
 
 export const fetchActivePropertyCards = cache(fetchActivePropertyCardsUncached);
+export const fetchActivePropertyCardsPage = cache(fetchActivePropertyCardsPageUncached);
 export const fetchMyPropertyCards = cache(fetchMyPropertyCardsUncached);
 export const fetchPropertyCardById = cache(fetchPropertyCardByIdUncached);
 export const fetchPropertyDetailById = cache(fetchPropertyDetailByIdUncached);

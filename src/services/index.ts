@@ -5,6 +5,7 @@ export {
 } from "./lead.service";
 export {
   fetchActivePropertyCards,
+  fetchActivePropertyCardsPage,
   fetchMyPropertyCards,
   fetchPropertyCardById,
   fetchPropertyDetailById,

@@ -23,6 +23,13 @@ type SparkPagination = {
   totalPages?: number;
   totalRows?: number;
 };
+type SparkPropertyCardsPage = {
+  properties: PropertyCard[];
+  currentPage: number;
+  totalPages: number;
+  totalRows: number;
+  pageSize: number;
+};
 type SparkCollectionRequest = {
   path: string;
   filter?: string;
@@ -1103,16 +1110,23 @@ function buildIdentifierFilters(id: string): string[] {
   const escaped = trimmed.replace(/'/g, "''");
   if (/^\d+$/.test(trimmed)) {
     return [
+      `StandardFields.ListingId Eq ${trimmed}`,
+      `StandardFields.ListingId Eq '${escaped}'`,
       `ListingId Eq ${trimmed}`,
       `ListingId Eq '${escaped}'`,
+      `StandardFields.Id Eq '${escaped}'`,
       `Id Eq '${escaped}'`,
+      `StandardFields.ListingKey Eq '${escaped}'`,
       `ListingKey Eq '${escaped}'`,
     ];
   }
 
   return [
+    `StandardFields.ListingKey Eq '${escaped}'`,
     `ListingKey Eq '${escaped}'`,
+    `StandardFields.Id Eq '${escaped}'`,
     `Id Eq '${escaped}'`,
+    `StandardFields.ListingId Eq '${escaped}'`,
     `ListingId Eq '${escaped}'`,
   ];
 }
@@ -1219,6 +1233,35 @@ export async function fetchAllActiveSparkPropertyCards(
     getSparkActiveListingsFilter(),
     options
   );
+}
+
+export async function fetchActiveSparkPropertyCardsPage(
+  page: number,
+  options?: SparkFetchOptions
+): Promise<SparkPropertyCardsPage> {
+  const safePage = Number.isFinite(page) ? Math.max(1, Math.floor(page)) : 1;
+  const { properties, pagination } = await fetchSparkCollectionPage(
+    {
+      path: getSparkListingsPath(),
+      filter: getSparkActiveListingsFilter(),
+      page: safePage,
+    },
+    options
+  );
+
+  const pageSize = getSparkListingsPageSize();
+  const totalRows = pagination?.totalRows ?? properties.length;
+  const totalPages =
+    pagination?.totalPages ?? Math.max(1, Math.ceil(totalRows / pageSize));
+  const currentPage = pagination?.currentPage ?? Math.min(safePage, totalPages);
+
+  return {
+    properties,
+    currentPage,
+    totalPages,
+    totalRows,
+    pageSize,
+  };
 }
 
 export async function fetchMySparkPropertyCards(
