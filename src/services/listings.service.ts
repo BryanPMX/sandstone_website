@@ -291,7 +291,28 @@ async function fetchActivePropertyCardsPageUncached(
       };
     } catch (error) {
       const sparkError = formatError(error);
-      console.error("[Listings] Active Spark listings page failed, falling back.", error);
+      console.error("[Listings] Active Spark listings page failed, retrying via full Spark feed.", error);
+
+      try {
+        const fullSparkProperties = await fetchAllActiveSparkPropertyCards(options);
+        const paginatedSparkFallback = paginateProperties(
+          fullSparkProperties,
+          currentPage,
+          getSparkListingsPageSize()
+        );
+
+        return {
+          ...paginatedSparkFallback,
+          source: "spark",
+          sparkError,
+        };
+      } catch (fullFeedError) {
+        console.error(
+          "[Listings] Full active Spark feed failed after paged fetch error, falling back.",
+          fullFeedError
+        );
+      }
+
       const fallback = await fetchLegacyPropertyCardsOrFallback(options);
       const paginatedFallback = paginateProperties(
         fallback.properties,
