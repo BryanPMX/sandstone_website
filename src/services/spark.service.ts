@@ -29,6 +29,7 @@ type SparkFetchOptions = {
 };
 
 const SPARK_REVALIDATE_SECONDS = 300;
+const REPLICATION_SPARK_API_BASE_URL = "https://replication.sparkapi.com";
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80";
 const DEFAULT_LOCATION = "El Paso, TX";
@@ -197,6 +198,29 @@ function buildSparkUrl({
 function buildSparkListingDetailPath(id: string): string {
   const basePath = getSparkListingsPath().replace(/\/$/, "");
   return `${basePath}/${encodeURIComponent(id)}`;
+}
+
+function usesReplicationHost(url: string): boolean {
+  return new URL(url).hostname === new URL(REPLICATION_SPARK_API_BASE_URL).hostname;
+}
+
+function rewriteSparkUrlBase(url: string, baseUrl: string): string {
+  const current = new URL(url);
+  const targetBase = new URL(baseUrl);
+
+  current.protocol = targetBase.protocol;
+  current.hostname = targetBase.hostname;
+  current.port = targetBase.port;
+
+  return current.toString();
+}
+
+function shouldRetryWithReplication(response: Response, bodyText: string, url: string): boolean {
+  if (response.status !== 403 || usesReplicationHost(url)) {
+    return false;
+  }
+
+  return bodyText.includes("\"Code\":1021") || bodyText.includes("replication.sparkapi.com");
 }
 
 function extractResults(payload: unknown): unknown[] {
@@ -392,7 +416,15 @@ async function fetchSparkPayload(
     request.next = { revalidate: SPARK_REVALIDATE_SECONDS };
   }
 
-  return fetch(url, request);
+  const response = await fetch(url, request);
+  const responseText = response.status === 403 ? await response.clone().text() : "";
+
+  if (shouldRetryWithReplication(response, responseText, url)) {
+    const replicationUrl = rewriteSparkUrlBase(url, REPLICATION_SPARK_API_BASE_URL);
+    return fetch(replicationUrl, request);
+  }
+
+  return response;
 }
 
 async function fetchSparkCollectionPage(

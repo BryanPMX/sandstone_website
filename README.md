@@ -86,7 +86,7 @@ The project is organized by responsibility:
 ## Environment Variables
 
 - `SPARK_ACCESS_TOKEN`: preferred server-only Spark access token
-- `SPARK_API_BASE_URL`: optional override, defaults to `https://sparkapi.com`
+- `SPARK_API_BASE_URL`: optional override, defaults to `https://sparkapi.com`; replication-restricted keys should use `https://replication.sparkapi.com`
 - `SPARK_API_LISTINGS_PATH`: optional override, defaults to `/v1/listings`
 - `SPARK_API_MY_LISTINGS_PATH`: optional override, defaults to `/v1/my/listings`
 - `SPARK_ACTIVE_LISTINGS_FILTER`: Spark `_filter` for the full listings page, defaults to `MlsStatus Eq 'Active'`
@@ -107,8 +107,9 @@ Recommended rollout:
 1. Request Spark API access for the correct MLS/account from the Spark dashboard.
 2. Copy the issued access token/API key into `SPARK_ACCESS_TOKEN` in your deployment environment.
 3. Keep the token server-only. Do not expose it with a `NEXT_PUBLIC_` prefix and do not call Spark directly from client components.
-4. Set `SPARK_ACTIVE_LISTINGS_FILTER` and, if needed, `SPARK_MY_LISTINGS_FILTER` to match your MLS status fields.
-5. Leave `MSL_FEED_URL` unset once Spark is validated, or keep it temporarily as a fallback during cutover.
+4. If Spark returns key restriction error `1021`, set `SPARK_API_BASE_URL=https://replication.sparkapi.com`.
+5. Set `SPARK_ACTIVE_LISTINGS_FILTER` and, if needed, `SPARK_MY_LISTINGS_FILTER` to match your MLS status fields.
+6. Leave `MSL_FEED_URL` unset once Spark is validated, or keep it temporarily as a fallback during cutover.
 
 ## Local Development
 

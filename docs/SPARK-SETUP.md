@@ -34,9 +34,16 @@ SPARK_MY_LISTINGS_FILTER=MlsStatus Eq 'Active'
 MSL_FEED_URL=https://example.com/legacy-listings-feed
 ```
 
+If Spark responds with key restriction error `1021`, switch `SPARK_API_BASE_URL` to:
+
+```bash
+SPARK_API_BASE_URL=https://replication.sparkapi.com
+```
+
 ## Implementation Notes
 
 - The app sends the token in the `Authorization` header from the server.
+- The app automatically retries on `replication.sparkapi.com` when Spark returns restriction code `1021`.
 - `/listings` paginates through all active listings from Spark because standard Spark requests cap `_limit` per page.
 - The home page uses Spark `my/listings` for the carousel.
 - If Spark is unavailable, the app can fall back to `MSL_FEED_URL`.
