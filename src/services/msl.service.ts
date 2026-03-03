@@ -7,19 +7,28 @@ import { getMslFeedUrl } from "@/config";
  * Legacy Rolu/MSL feed fallback kept for backwards compatibility.
  * Spark API is now the primary listings source.
  */
-export async function fetchLegacyFeedPropertyCards(): Promise<PropertyCard[]> {
+export async function fetchLegacyFeedPropertyCards(
+  options?: { fresh?: boolean }
+): Promise<PropertyCard[]> {
   const feedUrl = getMslFeedUrl();
 
   if (!feedUrl) {
     throw new Error("MSL_FEED_URL is not set.");
   }
 
-  const res = await fetch(feedUrl, {
+  const request: RequestInit & { next?: { revalidate: number } } = {
     next: { revalidate: 300 },
     headers: {
       Accept: "application/json",
     },
-  });
+  };
+
+  if (options?.fresh) {
+    request.cache = "no-store";
+    delete request.next;
+  }
+
+  const res = await fetch(feedUrl, request);
 
   if (!res.ok) {
     throw new Error(`[MSL] Feed error ${res.status}`);

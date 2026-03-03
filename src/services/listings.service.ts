@@ -10,6 +10,29 @@ import {
   fetchSparkPropertyCardById,
 } from "@/services/spark.service";
 
+type ListingsTarget = "active" | "my";
+type ListingsSource = "spark" | "legacy-feed" | "demo-fallback";
+type ListingsFetchOptions = {
+  fresh?: boolean;
+};
+type ListingsResolution = {
+  source: ListingsSource;
+  properties: PropertyCard[];
+  sparkError?: string;
+  legacyError?: string;
+};
+
+export interface ListingsDiagnostics {
+  target: ListingsTarget;
+  source: ListingsSource;
+  count: number;
+  sample: Array<Pick<PropertyCard, "id" | "title" | "location" | "price">>;
+  sparkConfigured: boolean;
+  legacyFeedConfigured: boolean;
+  sparkError?: string;
+  legacyError?: string;
+}
+
 const FALLBACK_PROPERTIES: PropertyCard[] = [
   {
     id: "demo-1",
@@ -47,40 +70,120 @@ const FALLBACK_PROPERTIES: PropertyCard[] = [
   },
 ];
 
-async function fetchLegacyPropertyCardsOrFallback(): Promise<PropertyCard[]> {
+function formatError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === "string") {
+    return error;
+  }
+
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return "Unknown error";
+  }
+}
+
+async function fetchLegacyPropertyCardsOrFallback(
+  options?: ListingsFetchOptions
+): Promise<ListingsResolution> {
   if (getMslFeedUrl()) {
     try {
-      return await fetchLegacyFeedPropertyCards();
+      return {
+        source: "legacy-feed",
+        properties: await fetchLegacyFeedPropertyCards(options),
+      };
     } catch (error) {
+      const legacyError = formatError(error);
       console.error("[Listings] Legacy feed failed, falling back.", error);
+
+      return {
+        source: "demo-fallback",
+        properties: FALLBACK_PROPERTIES,
+        legacyError,
+      };
     }
   }
 
-  return FALLBACK_PROPERTIES;
+  return {
+    source: "demo-fallback",
+    properties: FALLBACK_PROPERTIES,
+  };
+}
+
+async function resolvePropertyCards(
+  target: ListingsTarget,
+  options?: ListingsFetchOptions
+): Promise<ListingsResolution> {
+  if (hasSparkAccessToken()) {
+    try {
+      const properties =
+        target === "active"
+          ? await fetchAllActiveSparkPropertyCards(options)
+          : await fetchMySparkPropertyCards(options);
+
+      return {
+        source: "spark",
+        properties,
+      };
+    } catch (error) {
+      const sparkError = formatError(error);
+      console.error(
+        `[Listings] ${target === "active" ? "Active" : "My"} Spark listings failed, falling back.`,
+        error
+      );
+
+      const fallback = await fetchLegacyPropertyCardsOrFallback(options);
+
+      return {
+        ...fallback,
+        sparkError,
+      };
+    }
+  }
+
+  return fetchLegacyPropertyCardsOrFallback(options);
+}
+
+function buildListingsDiagnostics(
+  target: ListingsTarget,
+  resolution: ListingsResolution
+): ListingsDiagnostics {
+  return {
+    target,
+    source: resolution.source,
+    count: resolution.properties.length,
+    sample: resolution.properties.slice(0, 3).map((property) => ({
+      id: property.id,
+      title: property.title,
+      location: property.location,
+      price: property.price,
+    })),
+    sparkConfigured: hasSparkAccessToken(),
+    legacyFeedConfigured: Boolean(getMslFeedUrl()),
+    sparkError: resolution.sparkError,
+    legacyError: resolution.legacyError,
+  };
 }
 
 async function fetchActivePropertyCardsUncached(): Promise<PropertyCard[]> {
-  if (hasSparkAccessToken()) {
-    try {
-      return await fetchAllActiveSparkPropertyCards();
-    } catch (error) {
-      console.error("[Listings] Active Spark listings failed, falling back.", error);
-    }
-  }
-
-  return fetchLegacyPropertyCardsOrFallback();
+  const resolution = await resolvePropertyCards("active");
+  return resolution.properties;
 }
 
 async function fetchMyPropertyCardsUncached(): Promise<PropertyCard[]> {
-  if (hasSparkAccessToken()) {
-    try {
-      return await fetchMySparkPropertyCards();
-    } catch (error) {
-      console.error("[Listings] My Spark listings failed, falling back.", error);
-    }
-  }
+  const resolution = await resolvePropertyCards("my");
+  return resolution.properties;
+}
 
-  return fetchLegacyPropertyCardsOrFallback();
+export async function inspectListingsTarget(
+  target: ListingsTarget,
+  options?: ListingsFetchOptions
+): Promise<ListingsDiagnostics> {
+  const resolution = await resolvePropertyCards(target, options);
+  return buildListingsDiagnostics(target, resolution);
 }
 
 async function fetchPropertyCardByIdUncached(
@@ -98,8 +201,8 @@ async function fetchPropertyCardByIdUncached(
     }
   }
 
-  const properties = await fetchLegacyPropertyCardsOrFallback();
-  return properties.find((property) => property.id === id) ?? null;
+  const fallback = await fetchLegacyPropertyCardsOrFallback();
+  return fallback.properties.find((property) => property.id === id) ?? null;
 }
 
 export const fetchActivePropertyCards = cache(fetchActivePropertyCardsUncached);

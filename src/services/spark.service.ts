@@ -24,6 +24,9 @@ type SparkCollectionRequest = {
   page?: number;
   includePagination?: boolean;
 };
+type SparkFetchOptions = {
+  fresh?: boolean;
+};
 
 const SPARK_REVALIDATE_SECONDS = 300;
 const FALLBACK_IMAGE =
@@ -369,24 +372,36 @@ function getSparkHeaders(accessToken: string): HeadersInit {
   };
 }
 
-async function fetchSparkPayload(url: string): Promise<Response> {
+async function fetchSparkPayload(
+  url: string,
+  options?: SparkFetchOptions
+): Promise<Response> {
   const accessToken = getSparkAccessToken();
 
   if (!accessToken) {
     throw new Error("SPARK_ACCESS_TOKEN is not set.");
   }
 
-  return fetch(url, {
+  const request: RequestInit & { next?: { revalidate: number } } = {
     headers: getSparkHeaders(accessToken),
-    next: { revalidate: SPARK_REVALIDATE_SECONDS },
-  });
+  };
+
+  if (options?.fresh) {
+    request.cache = "no-store";
+  } else {
+    request.next = { revalidate: SPARK_REVALIDATE_SECONDS };
+  }
+
+  return fetch(url, request);
 }
 
 async function fetchSparkCollectionPage(
-  request: SparkCollectionRequest
+  request: SparkCollectionRequest,
+  options?: SparkFetchOptions
 ): Promise<{ properties: PropertyCard[]; pagination?: SparkPagination }> {
   const response = await fetchSparkPayload(
-    buildSparkUrl({ ...request, includePagination: true })
+    buildSparkUrl({ ...request, includePagination: true }),
+    options
   );
 
   if (!response.ok) {
@@ -407,7 +422,8 @@ async function fetchSparkCollectionPage(
 
 async function fetchAllSparkPropertyCards(
   path: string,
-  filter?: string
+  filter?: string,
+  options?: SparkFetchOptions
 ): Promise<PropertyCard[]> {
   const pageSize = getSparkListingsPageSize();
   const properties: PropertyCard[] = [];
@@ -421,7 +437,7 @@ async function fetchAllSparkPropertyCards(
         path,
         filter,
         page,
-      });
+      }, options);
 
     for (const property of pageProperties) {
       if (seenIds.has(property.id)) {
@@ -448,27 +464,35 @@ async function fetchAllSparkPropertyCards(
   return properties;
 }
 
-export async function fetchAllActiveSparkPropertyCards(): Promise<PropertyCard[]> {
+export async function fetchAllActiveSparkPropertyCards(
+  options?: SparkFetchOptions
+): Promise<PropertyCard[]> {
   return fetchAllSparkPropertyCards(
     getSparkListingsPath(),
-    getSparkActiveListingsFilter()
+    getSparkActiveListingsFilter(),
+    options
   );
 }
 
-export async function fetchMySparkPropertyCards(): Promise<PropertyCard[]> {
+export async function fetchMySparkPropertyCards(
+  options?: SparkFetchOptions
+): Promise<PropertyCard[]> {
   return fetchAllSparkPropertyCards(
     getSparkMyListingsPath(),
-    getSparkMyListingsFilter()
+    getSparkMyListingsFilter(),
+    options
   );
 }
 
 export async function fetchSparkPropertyCardById(
-  id: string
+  id: string,
+  options?: SparkFetchOptions
 ): Promise<PropertyCard | null> {
   const response = await fetchSparkPayload(
     buildSparkUrl({
       path: buildSparkListingDetailPath(id),
-    })
+    }),
+    options
   );
 
   if (response.status === 404) {
