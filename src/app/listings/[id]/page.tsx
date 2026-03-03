@@ -16,22 +16,12 @@ function resolveDetailSourceHint(
   return value === "active" || value === "my" ? value : undefined;
 }
 
-export async function generateMetadata({ params, searchParams }: PageProps) {
+export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
-  const query = await searchParams;
-  const property = await fetchPropertyDetailById(
-    id,
-    query.sparkId?.trim() || undefined,
-    resolveDetailSourceHint(query.src)
-  );
-
-  if (!property) {
-    return { title: "Listing | Sandstone Real Estate Group" };
-  }
 
   return {
-    title: `${property.title} | Sandstone Real Estate Group`,
-    description: property.description ?? `${property.location} — ${property.price}`,
+    title: `Listing ${id} | Sandstone Real Estate Group`,
+    description: "Property details from Sandstone Real Estate Group.",
   };
 }
 

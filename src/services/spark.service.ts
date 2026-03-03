@@ -45,6 +45,7 @@ type SparkFetchOptions = {
 type SparkListingLookupOptions = SparkFetchOptions & {
   preferredTarget?: SparkLookupTarget;
   preferDirectLookup?: boolean;
+  restrictToPreferredTarget?: boolean;
 };
 
 const SPARK_REVALIDATE_SECONDS = 300;
@@ -271,7 +272,14 @@ function getSparkPathForTarget(target: SparkLookupTarget): string {
   return target === "active" ? getSparkListingsPath() : getSparkMyListingsPath();
 }
 
-function getSparkLookupPaths(preferredTarget?: SparkLookupTarget): string[] {
+function getSparkLookupPaths(
+  preferredTarget?: SparkLookupTarget,
+  restrictToPreferredTarget = false
+): string[] {
+  if (preferredTarget && restrictToPreferredTarget) {
+    return [getSparkPathForTarget(preferredTarget)];
+  }
+
   const orderedTargets: SparkLookupTarget[] = preferredTarget
     ? [preferredTarget, preferredTarget === "active" ? "my" : "active"]
     : ["active", "my"];
@@ -1205,10 +1213,13 @@ function isNumericRouteId(id: string): boolean {
 
 async function fetchSparkListingRecordByDirectPath(
   id: string,
-  options?: SparkFetchOptions,
+  options?: SparkListingLookupOptions,
   preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
-  for (const path of getSparkLookupPaths(preferredTarget)) {
+  for (const path of getSparkLookupPaths(
+    preferredTarget,
+    options?.restrictToPreferredTarget ?? false
+  )) {
     const response = await fetchSparkPayload(
       buildSparkUrl({
         path: buildSparkListingDetailPath(path, id),
@@ -1242,12 +1253,15 @@ async function fetchSparkListingRecordByDirectPath(
 
 async function fetchSparkListingRecordByFilters(
   id: string,
-  options?: SparkFetchOptions,
+  options?: SparkListingLookupOptions,
   preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
   for (const filter of buildIdentifierFilters(id)) {
     const records = await Promise.all(
-      getSparkLookupPaths(preferredTarget).map((path) =>
+      getSparkLookupPaths(
+        preferredTarget,
+        options?.restrictToPreferredTarget ?? false
+      ).map((path) =>
         fetchSparkListingRecord(
           {
             path,

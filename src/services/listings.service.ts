@@ -372,6 +372,7 @@ async function fetchPropertyCardByIdUncached(
         const hintedProperty = await fetchSparkPropertyCardById(sparkId, {
           preferredTarget: sourceHint,
           preferDirectLookup: true,
+          restrictToPreferredTarget: Boolean(sourceHint),
         });
 
         if (hintedProperty) {
@@ -385,6 +386,7 @@ async function fetchPropertyCardByIdUncached(
     try {
       const property = await fetchSparkPropertyCardById(id, {
         preferredTarget: sourceHint,
+        restrictToPreferredTarget: Boolean(sourceHint),
       });
 
       if (property) {
@@ -439,6 +441,7 @@ async function fetchPropertyDetailByIdUncached(
         const hintedProperty = await fetchSparkPropertyDetailById(sparkId, {
           preferredTarget: sourceHint,
           preferDirectLookup: true,
+          restrictToPreferredTarget: Boolean(sourceHint),
         });
 
         if (hintedProperty) {
@@ -452,6 +455,7 @@ async function fetchPropertyDetailByIdUncached(
     try {
       const property = await fetchSparkPropertyDetailById(id, {
         preferredTarget: sourceHint,
+        restrictToPreferredTarget: Boolean(sourceHint),
       });
 
       if (property) {
