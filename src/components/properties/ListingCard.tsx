@@ -11,6 +11,7 @@ interface ListingCardProps {
  * Presentational listing card used across listing surfaces.
  */
 export function ListingCard({ property, priority = false }: ListingCardProps) {
+  const routeId = property.listingNumber ?? property.id;
   const details = [
     property.beds != null && `${property.beds} beds`,
     property.baths != null && `${property.baths} baths`,
@@ -21,7 +22,7 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
 
   return (
     <Link
-      href={`/listings/${property.id}`}
+      href={`/listings/${routeId}`}
       className="group block overflow-hidden rounded-2xl border border-white/65 bg-white/72 shadow-[0_18px_36px_-24px_rgba(37,52,113,0.55)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_rgba(37,52,113,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
     >
       <div className="relative aspect-[4/3] overflow-hidden">
