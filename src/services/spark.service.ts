@@ -182,8 +182,18 @@ function normalizeSparkImageUrl(value: string | undefined): string | undefined {
     return undefined;
   }
 
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  if (trimmed.startsWith("//")) {
+    return `https:${trimmed}`;
+  }
+
   try {
-    const url = new URL(value);
+    const url = new URL(trimmed);
 
     if (
       url.protocol === "http:" &&
@@ -192,11 +202,24 @@ function normalizeSparkImageUrl(value: string | undefined): string | undefined {
       url.protocol = "https:";
       return url.toString();
     }
+
+    return url.toString();
   } catch {
-    return value;
+    if (
+      trimmed.startsWith("/") ||
+      trimmed.startsWith("./") ||
+      trimmed.startsWith("../") ||
+      trimmed.includes("/")
+    ) {
+      try {
+        return new URL(trimmed, getSparkApiBaseUrl()).toString();
+      } catch {
+        return trimmed;
+      }
+    }
   }
 
-  return value;
+  return trimmed;
 }
 
 function buildSparkUrl({
@@ -560,6 +583,21 @@ function buildListingInternalId(record: UnknownRecord, index: number): string {
   );
 }
 
+function buildSparkDirectLookupId(record: UnknownRecord): string | undefined {
+  return asString(
+    pickFirst(
+      record,
+      ["Id"],
+      ["StandardFields", "Id"],
+      ["ListingKey"],
+      ["StandardFields", "ListingKey"],
+      ["ListingId"],
+      ["StandardFields", "ListingId"],
+      ["id"]
+    )
+  );
+}
+
 function buildListingNumber(record: UnknownRecord): string | undefined {
   return asString(
     pickFirst(
@@ -649,13 +687,14 @@ function mapSparkListing(
 ): PropertyCard {
   const record = getRecord(item) ?? {};
   const id = buildListingInternalId(record, index);
+  const sparkId = buildSparkDirectLookupId(record) ?? id;
   const listingNumber = buildListingNumber(record);
   const routeId = buildListingRouteId(record, id);
 
   return {
     id,
     routeId,
-    sparkId: id,
+    sparkId,
     sparkSource,
     listingNumber,
     title: buildTitle(record, routeId),
@@ -1244,39 +1283,23 @@ async function fetchSparkListingRecordByRouteId(
   options?: SparkListingLookupOptions
 ): Promise<UnknownRecord | null> {
   const normalizedId = id.trim();
+  const numericRouteId = isNumericRouteId(normalizedId);
+  const shouldTryDirectLookup = options?.preferDirectLookup || !numericRouteId;
 
   if (!normalizedId) {
     return null;
   }
 
-  if (options?.preferDirectLookup) {
+  if (shouldTryDirectLookup) {
     const directPathRecord = await fetchSparkListingRecordByDirectPath(
       normalizedId,
       options,
-      options.preferredTarget
+      options?.preferredTarget
     );
 
     if (directPathRecord) {
       return directPathRecord;
     }
-  }
-
-  if (isNumericRouteId(normalizedId)) {
-    return fetchSparkListingRecordByFilters(
-      normalizedId,
-      options,
-      options?.preferredTarget
-    );
-  }
-
-  const directPathRecord = await fetchSparkListingRecordByDirectPath(
-    normalizedId,
-    options,
-    options?.preferredTarget
-  );
-
-  if (directPathRecord) {
-    return directPathRecord;
   }
 
   return fetchSparkListingRecordByFilters(
