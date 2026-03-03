@@ -515,7 +515,7 @@ function buildLocation(record: UnknownRecord): string {
   );
 }
 
-function buildListingRouteId(record: UnknownRecord, index: number): string {
+function buildListingInternalId(record: UnknownRecord, index: number): string {
   return (
     asString(
       pickFirst(
@@ -532,19 +532,18 @@ function buildListingRouteId(record: UnknownRecord, index: number): string {
   );
 }
 
-function buildListingNumber(record: UnknownRecord, fallbackId: string): string {
-  return (
-    asString(
-      pickFirst(
-        record,
-        ["ListingId"],
-        ["StandardFields", "ListingId"],
-        ["ListingKey"],
-        ["StandardFields", "ListingKey"],
-        ["Id"]
-      )
-    ) ?? fallbackId
+function buildListingNumber(record: UnknownRecord): string | undefined {
+  return asString(
+    pickFirst(
+      record,
+      ["ListingId"],
+      ["StandardFields", "ListingId"]
+    )
   );
+}
+
+function buildListingRouteId(record: UnknownRecord, internalId: string): string {
+  return buildListingNumber(record) ?? internalId;
 }
 
 function extractImageUrls(record: UnknownRecord): string[] {
@@ -617,13 +616,15 @@ function extractImage(record: UnknownRecord): string {
 
 function mapSparkListing(item: unknown, index: number): PropertyCard {
   const record = getRecord(item) ?? {};
-  const id = buildListingRouteId(record, index);
-  const listingNumber = buildListingNumber(record, id);
+  const id = buildListingInternalId(record, index);
+  const listingNumber = buildListingNumber(record);
+  const routeId = buildListingRouteId(record, id);
 
   return {
     id,
+    routeId,
     listingNumber,
-    title: buildTitle(record, id),
+    title: buildTitle(record, routeId),
     location: buildLocation(record),
     price: formatPrice(
       pickFirst(
@@ -1100,28 +1101,27 @@ function buildIdentifierFilters(id: string): string[] {
   }
 
   const escaped = trimmed.replace(/'/g, "''");
-  const filters = [
+  if (/^\d+$/.test(trimmed)) {
+    return [
+      `ListingId Eq ${trimmed}`,
+      `ListingId Eq '${escaped}'`,
+      `Id Eq '${escaped}'`,
+      `ListingKey Eq '${escaped}'`,
+    ];
+  }
+
+  return [
     `ListingKey Eq '${escaped}'`,
     `Id Eq '${escaped}'`,
     `ListingId Eq '${escaped}'`,
   ];
-
-  if (/^\d+$/.test(trimmed)) {
-    filters.push(`ListingId Eq ${trimmed}`);
-  }
-
-  return filters;
 }
 
-async function fetchSparkListingRecord(
-  request: SparkCollectionRequest,
-  options?: SparkFetchOptions
-): Promise<UnknownRecord | null> {
-  const { results } = await fetchSparkResults(request, options);
-  return extractFirstSparkRecord(results) ?? null;
+function isNumericRouteId(id: string): boolean {
+  return /^\d+$/.test(id.trim());
 }
 
-async function fetchSparkListingRecordByRouteId(
+async function fetchSparkListingRecordByDirectPath(
   id: string,
   options?: SparkFetchOptions
 ): Promise<UnknownRecord | null> {
@@ -1153,8 +1153,15 @@ async function fetchSparkListingRecordByRouteId(
     }
   }
 
-  for (const path of getSparkLookupPaths()) {
-    for (const filter of buildIdentifierFilters(id)) {
+  return null;
+}
+
+async function fetchSparkListingRecordByFilters(
+  id: string,
+  options?: SparkFetchOptions
+): Promise<UnknownRecord | null> {
+  for (const filter of buildIdentifierFilters(id)) {
+    for (const path of getSparkLookupPaths()) {
       const record = await fetchSparkListingRecord(
         {
           path,
@@ -1171,6 +1178,37 @@ async function fetchSparkListingRecordByRouteId(
   }
 
   return null;
+}
+
+async function fetchSparkListingRecord(
+  request: SparkCollectionRequest,
+  options?: SparkFetchOptions
+): Promise<UnknownRecord | null> {
+  const { results } = await fetchSparkResults(request, options);
+  return extractFirstSparkRecord(results) ?? null;
+}
+
+async function fetchSparkListingRecordByRouteId(
+  id: string,
+  options?: SparkFetchOptions
+): Promise<UnknownRecord | null> {
+  const normalizedId = id.trim();
+
+  if (!normalizedId) {
+    return null;
+  }
+
+  if (isNumericRouteId(normalizedId)) {
+    return fetchSparkListingRecordByFilters(normalizedId, options);
+  }
+
+  const directPathRecord = await fetchSparkListingRecordByDirectPath(normalizedId, options);
+
+  if (directPathRecord) {
+    return directPathRecord;
+  }
+
+  return fetchSparkListingRecordByFilters(normalizedId, options);
 }
 
 export async function fetchAllActiveSparkPropertyCards(

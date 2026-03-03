@@ -49,6 +49,7 @@ export async function fetchLegacyFeedPropertyCards(
 
     return {
       id: String(safeItem.id ?? idx),
+      routeId: String(safeItem.listingNumber ?? safeItem.id ?? idx),
       title: (safeItem.title ?? safeItem.name ?? "MSL Listing") as string,
       location: (safeItem.location ?? safeItem.address ?? "El Paso, TX") as string,
       price: (safeItem.price ?? safeItem.listPrice ?? "$—") as string,

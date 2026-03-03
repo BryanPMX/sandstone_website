@@ -28,7 +28,10 @@ export interface ListingsDiagnostics {
   source: ListingsSource;
   count: number;
   sample: Array<
-    Pick<PropertyCard, "id" | "title" | "location" | "price" | "image" | "listingNumber">
+    Pick<
+      PropertyCard,
+      "id" | "routeId" | "title" | "location" | "price" | "image" | "listingNumber"
+    >
   >;
   sparkConfigured: boolean;
   legacyFeedConfigured: boolean;
@@ -39,6 +42,7 @@ export interface ListingsDiagnostics {
 const FALLBACK_PROPERTIES: PropertyCard[] = [
   {
     id: "demo-1",
+    routeId: "demo-1",
     title: "Sunset Ridge Estate",
     location: "West El Paso · Franklin Mountains view",
     price: "$845,000",
@@ -51,6 +55,7 @@ const FALLBACK_PROPERTIES: PropertyCard[] = [
   },
   {
     id: "demo-2",
+    routeId: "demo-2",
     title: "Cimarron Canyon Modern",
     location: "Cimarron Canyon · El Paso",
     price: "$629,900",
@@ -62,6 +67,7 @@ const FALLBACK_PROPERTIES: PropertyCard[] = [
   },
   {
     id: "demo-3",
+    routeId: "demo-3",
     title: "Mission Hills Haven",
     location: "Mission Hills · Downtown access",
     price: "$712,000",
@@ -113,22 +119,7 @@ function mapFallbackCardToDetail(property: PropertyCard): PropertyDetail {
 }
 
 function matchesPropertyIdentifier(property: PropertyCard, id: string): boolean {
-  return property.id === id || property.listingNumber === id;
-}
-
-async function findSparkPropertyCardFromCollections(
-  id: string
-): Promise<PropertyCard | null> {
-  const [myProperties, activeProperties] = await Promise.all([
-    fetchMyPropertyCards(),
-    fetchActivePropertyCards(),
-  ]);
-
-  return (
-    myProperties.find((property) => matchesPropertyIdentifier(property, id)) ??
-    activeProperties.find((property) => matchesPropertyIdentifier(property, id)) ??
-    null
-  );
+  return property.routeId === id || property.id === id || property.listingNumber === id;
 }
 
 async function fetchLegacyPropertyCardsOrFallback(
@@ -202,6 +193,7 @@ function buildListingsDiagnostics(
     count: resolution.properties.length,
     sample: resolution.properties.slice(0, 3).map((property) => ({
       id: property.id,
+      routeId: property.routeId,
       listingNumber: property.listingNumber,
       title: property.title,
       location: property.location,
@@ -246,12 +238,6 @@ async function fetchPropertyCardByIdUncached(
     } catch (error) {
       console.error("[Listings] Spark property lookup failed, falling back.", error);
     }
-
-    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
-
-    if (sparkFallbackProperty) {
-      return sparkFallbackProperty;
-    }
   }
 
   const fallback = await fetchLegacyPropertyCardsOrFallback();
@@ -270,12 +256,6 @@ async function fetchPropertyDetailByIdUncached(
       }
     } catch (error) {
       console.error("[Listings] Spark property detail lookup failed, falling back.", error);
-    }
-
-    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
-
-    if (sparkFallbackProperty) {
-      return mapFallbackCardToDetail(sparkFallbackProperty);
     }
   }
 

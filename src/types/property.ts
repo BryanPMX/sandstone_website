@@ -4,6 +4,7 @@
  */
 export interface PropertyCard {
   id: string;
+  routeId: string;
   title: string;
   location: string;
   price: string;
