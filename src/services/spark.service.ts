@@ -46,6 +46,7 @@ type SparkListingLookupOptions = SparkFetchOptions & {
   preferredTarget?: SparkLookupTarget;
   preferDirectLookup?: boolean;
   restrictToPreferredTarget?: boolean;
+  identifierHint?: "listing-id" | "spark-id";
 };
 
 const SPARK_REVALIDATE_SECONDS = 300;
@@ -1176,7 +1177,10 @@ async function fetchAllSparkPropertyCards(
   return properties;
 }
 
-function buildIdentifierFilters(id: string): string[] {
+function buildIdentifierFilters(
+  id: string,
+  identifierHint?: SparkListingLookupOptions["identifierHint"]
+): string[] {
   const trimmed = id.trim();
 
   if (!trimmed) {
@@ -1184,6 +1188,25 @@ function buildIdentifierFilters(id: string): string[] {
   }
 
   const escaped = trimmed.replace(/'/g, "''");
+
+  if (identifierHint === "spark-id") {
+    return [
+      `StandardFields.Id Eq '${escaped}'`,
+      `Id Eq '${escaped}'`,
+      `StandardFields.ListingKey Eq '${escaped}'`,
+      `ListingKey Eq '${escaped}'`,
+    ];
+  }
+
+  if (identifierHint === "listing-id") {
+    return [
+      `StandardFields.ListingId Eq ${trimmed}`,
+      `StandardFields.ListingId Eq '${escaped}'`,
+      `ListingId Eq ${trimmed}`,
+      `ListingId Eq '${escaped}'`,
+    ];
+  }
+
   if (/^\d+$/.test(trimmed)) {
     return [
       `StandardFields.ListingId Eq ${trimmed}`,
@@ -1256,7 +1279,7 @@ async function fetchSparkListingRecordByFilters(
   options?: SparkListingLookupOptions,
   preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
-  for (const filter of buildIdentifierFilters(id)) {
+  for (const filter of buildIdentifierFilters(id, options?.identifierHint)) {
     const records = await Promise.all(
       getSparkLookupPaths(
         preferredTarget,

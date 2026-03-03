@@ -141,6 +141,10 @@ function matchesPropertyIdentifier(property: PropertyCard, id: string): boolean 
   return property.routeId === id || property.id === id || property.listingNumber === id;
 }
 
+function isNumericIdentifier(id: string): boolean {
+  return /^\d+$/.test(id.trim());
+}
+
 async function findSparkPropertyCardFromCollections(
   id: string,
   sourceHint?: DetailLookupSourceHint
@@ -367,12 +371,29 @@ async function fetchPropertyCardByIdUncached(
   sourceHint?: DetailLookupSourceHint
 ): Promise<PropertyCard | null> {
   if (hasSparkAccessToken()) {
+    if (sourceHint === "active" && isNumericIdentifier(id)) {
+      try {
+        const activeRouteProperty = await fetchSparkPropertyCardById(id, {
+          preferredTarget: sourceHint,
+          restrictToPreferredTarget: true,
+          identifierHint: "listing-id",
+        });
+
+        if (activeRouteProperty) {
+          return activeRouteProperty;
+        }
+      } catch (error) {
+        console.error("[Listings] Active route-id lookup failed, retrying via spark id.", error);
+      }
+    }
+
     if (sparkId) {
       try {
         const hintedProperty = await fetchSparkPropertyCardById(sparkId, {
           preferredTarget: sourceHint,
           preferDirectLookup: true,
           restrictToPreferredTarget: Boolean(sourceHint),
+          identifierHint: "spark-id",
         });
 
         if (hintedProperty) {
@@ -387,6 +408,9 @@ async function fetchPropertyCardByIdUncached(
       const property = await fetchSparkPropertyCardById(id, {
         preferredTarget: sourceHint,
         restrictToPreferredTarget: Boolean(sourceHint),
+        identifierHint: sourceHint === "active" && isNumericIdentifier(id)
+          ? "listing-id"
+          : undefined,
       });
 
       if (property) {
@@ -436,12 +460,29 @@ async function fetchPropertyDetailByIdUncached(
   sourceHint?: DetailLookupSourceHint
 ): Promise<PropertyDetail | null> {
   if (hasSparkAccessToken()) {
+    if (sourceHint === "active" && isNumericIdentifier(id)) {
+      try {
+        const activeRouteProperty = await fetchSparkPropertyDetailById(id, {
+          preferredTarget: sourceHint,
+          restrictToPreferredTarget: true,
+          identifierHint: "listing-id",
+        });
+
+        if (activeRouteProperty) {
+          return activeRouteProperty;
+        }
+      } catch (error) {
+        console.error("[Listings] Active route-id detail lookup failed, retrying via spark id.", error);
+      }
+    }
+
     if (sparkId) {
       try {
         const hintedProperty = await fetchSparkPropertyDetailById(sparkId, {
           preferredTarget: sourceHint,
           preferDirectLookup: true,
           restrictToPreferredTarget: Boolean(sourceHint),
+          identifierHint: "spark-id",
         });
 
         if (hintedProperty) {
@@ -456,6 +497,9 @@ async function fetchPropertyDetailByIdUncached(
       const property = await fetchSparkPropertyDetailById(id, {
         preferredTarget: sourceHint,
         restrictToPreferredTarget: Boolean(sourceHint),
+        identifierHint: sourceHint === "active" && isNumericIdentifier(id)
+          ? "listing-id"
+          : undefined,
       });
 
       if (property) {
