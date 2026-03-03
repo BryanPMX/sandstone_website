@@ -17,6 +17,7 @@ type ListingsSource = "spark" | "legacy-feed" | "demo-fallback";
 type ListingsFetchOptions = {
   fresh?: boolean;
 };
+type DetailLookupSourceHint = "active" | "my";
 type ListingsResolution = {
   source: ListingsSource;
   properties: PropertyCard[];
@@ -141,18 +142,27 @@ function matchesPropertyIdentifier(property: PropertyCard, id: string): boolean 
 }
 
 async function findSparkPropertyCardFromCollections(
-  id: string
+  id: string,
+  sourceHint?: DetailLookupSourceHint
 ): Promise<PropertyCard | null> {
-  const [myProperties, activeProperties] = await Promise.all([
-    fetchMyPropertyCards(),
-    fetchActivePropertyCards(),
-  ]);
+  const targets: ListingsTarget[] = sourceHint
+    ? [sourceHint, sourceHint === "active" ? "my" : "active"]
+    : ["my", "active"];
 
-  return (
-    myProperties.find((property) => matchesPropertyIdentifier(property, id)) ??
-    activeProperties.find((property) => matchesPropertyIdentifier(property, id)) ??
-    null
-  );
+  for (const target of targets) {
+    const properties =
+      target === "my"
+        ? await fetchMyPropertyCards()
+        : await fetchActivePropertyCards();
+
+    const match = properties.find((property) => matchesPropertyIdentifier(property, id));
+
+    if (match) {
+      return match;
+    }
+  }
+
+  return null;
 }
 
 async function fetchLegacyPropertyCardsOrFallback(
@@ -352,11 +362,30 @@ export async function inspectListingsTarget(
 }
 
 async function fetchPropertyCardByIdUncached(
-  id: string
+  id: string,
+  sparkId?: string,
+  sourceHint?: DetailLookupSourceHint
 ): Promise<PropertyCard | null> {
   if (hasSparkAccessToken()) {
+    if (sparkId) {
+      try {
+        const hintedProperty = await fetchSparkPropertyCardById(sparkId, {
+          preferredTarget: sourceHint,
+          preferDirectLookup: true,
+        });
+
+        if (hintedProperty) {
+          return hintedProperty;
+        }
+      } catch (error) {
+        console.error("[Listings] Spark hinted property lookup failed, retrying by route id.", error);
+      }
+    }
+
     try {
-      const property = await fetchSparkPropertyCardById(id);
+      const property = await fetchSparkPropertyCardById(id, {
+        preferredTarget: sourceHint,
+      });
 
       if (property) {
         return property;
@@ -365,7 +394,10 @@ async function fetchPropertyCardByIdUncached(
       console.error("[Listings] Spark property lookup failed, falling back.", error);
     }
 
-    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
+    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(
+      id,
+      sourceHint
+    );
 
     if (sparkFallbackProperty) {
       return sparkFallbackProperty;
@@ -377,11 +409,30 @@ async function fetchPropertyCardByIdUncached(
 }
 
 async function fetchPropertyDetailByIdUncached(
-  id: string
+  id: string,
+  sparkId?: string,
+  sourceHint?: DetailLookupSourceHint
 ): Promise<PropertyDetail | null> {
   if (hasSparkAccessToken()) {
+    if (sparkId) {
+      try {
+        const hintedProperty = await fetchSparkPropertyDetailById(sparkId, {
+          preferredTarget: sourceHint,
+          preferDirectLookup: true,
+        });
+
+        if (hintedProperty) {
+          return hintedProperty;
+        }
+      } catch (error) {
+        console.error("[Listings] Spark hinted detail lookup failed, retrying by route id.", error);
+      }
+    }
+
     try {
-      const property = await fetchSparkPropertyDetailById(id);
+      const property = await fetchSparkPropertyDetailById(id, {
+        preferredTarget: sourceHint,
+      });
 
       if (property) {
         return property;
@@ -390,7 +441,10 @@ async function fetchPropertyDetailByIdUncached(
       console.error("[Listings] Spark property detail lookup failed, falling back.", error);
     }
 
-    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(id);
+    const sparkFallbackProperty = await findSparkPropertyCardFromCollections(
+      id,
+      sourceHint
+    );
 
     if (sparkFallbackProperty) {
       return mapFallbackCardToDetail(sparkFallbackProperty);

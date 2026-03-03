@@ -18,10 +18,26 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
   ]
     .filter(Boolean)
     .join(" · ");
+  const detailHref = (() => {
+    const searchParams = new URLSearchParams();
+
+    if (property.sparkId) {
+      searchParams.set("sparkId", property.sparkId);
+    }
+
+    if (property.sparkSource) {
+      searchParams.set("src", property.sparkSource);
+    }
+
+    const queryString = searchParams.toString();
+    return queryString
+      ? `/listings/${property.routeId}?${queryString}`
+      : `/listings/${property.routeId}`;
+  })();
 
   return (
     <Link
-      href={`/listings/${property.routeId}`}
+      href={detailHref}
       className="group block overflow-hidden rounded-2xl border border-white/65 bg-white/72 shadow-[0_18px_36px_-24px_rgba(37,52,113,0.55)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_rgba(37,52,113,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
     >
       <div className="relative aspect-[4/3] overflow-hidden">

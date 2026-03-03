@@ -7,11 +7,23 @@ import { fetchPropertyDetailById } from "@/services";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ sparkId?: string; src?: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
+function resolveDetailSourceHint(
+  value: string | undefined
+): "active" | "my" | undefined {
+  return value === "active" || value === "my" ? value : undefined;
+}
+
+export async function generateMetadata({ params, searchParams }: PageProps) {
   const { id } = await params;
-  const property = await fetchPropertyDetailById(id);
+  const query = await searchParams;
+  const property = await fetchPropertyDetailById(
+    id,
+    query.sparkId?.trim() || undefined,
+    resolveDetailSourceHint(query.src)
+  );
 
   if (!property) {
     return { title: "Listing | Sandstone Real Estate Group" };
@@ -23,9 +35,14 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export default async function ListingPage({ params }: PageProps) {
+export default async function ListingPage({ params, searchParams }: PageProps) {
   const { id } = await params;
-  const property = await fetchPropertyDetailById(id);
+  const query = await searchParams;
+  const property = await fetchPropertyDetailById(
+    id,
+    query.sparkId?.trim() || undefined,
+    resolveDetailSourceHint(query.src)
+  );
 
   if (!property) {
     notFound();

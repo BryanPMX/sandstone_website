@@ -5,6 +5,8 @@
 export interface PropertyCard {
   id: string;
   routeId: string;
+  sparkId?: string;
+  sparkSource?: "active" | "my";
   title: string;
   location: string;
   price: string;

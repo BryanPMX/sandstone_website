@@ -30,6 +30,7 @@ type SparkPropertyCardsPage = {
   totalRows: number;
   pageSize: number;
 };
+type SparkLookupTarget = "active" | "my";
 type SparkCollectionRequest = {
   path: string;
   filter?: string;
@@ -40,6 +41,10 @@ type SparkCollectionRequest = {
 };
 type SparkFetchOptions = {
   fresh?: boolean;
+};
+type SparkListingLookupOptions = SparkFetchOptions & {
+  preferredTarget?: SparkLookupTarget;
+  preferDirectLookup?: boolean;
 };
 
 const SPARK_REVALIDATE_SECONDS = 300;
@@ -239,8 +244,16 @@ function buildSparkListingDetailPath(path: string, id: string): string {
   return `${basePath}/${encodeURIComponent(id)}`;
 }
 
-function getSparkLookupPaths(): string[] {
-  return [...new Set([getSparkListingsPath(), getSparkMyListingsPath()])];
+function getSparkPathForTarget(target: SparkLookupTarget): string {
+  return target === "active" ? getSparkListingsPath() : getSparkMyListingsPath();
+}
+
+function getSparkLookupPaths(preferredTarget?: SparkLookupTarget): string[] {
+  const orderedTargets: SparkLookupTarget[] = preferredTarget
+    ? [preferredTarget, preferredTarget === "active" ? "my" : "active"]
+    : ["active", "my"];
+
+  return [...new Set(orderedTargets.map(getSparkPathForTarget))];
 }
 
 function usesReplicationHost(url: string): boolean {
@@ -629,7 +642,11 @@ function extractImage(record: UnknownRecord): string {
   return extractImageUrls(record)[0] ?? FALLBACK_IMAGE;
 }
 
-function mapSparkListing(item: unknown, index: number): PropertyCard {
+function mapSparkListing(
+  item: unknown,
+  index: number,
+  sparkSource?: SparkLookupTarget
+): PropertyCard {
   const record = getRecord(item) ?? {};
   const id = buildListingInternalId(record, index);
   const listingNumber = buildListingNumber(record);
@@ -638,6 +655,8 @@ function mapSparkListing(item: unknown, index: number): PropertyCard {
   return {
     id,
     routeId,
+    sparkId: id,
+    sparkSource,
     listingNumber,
     title: buildTitle(record, routeId),
     location: buildLocation(record),
@@ -1031,7 +1050,8 @@ async function fetchSparkPayload(
 
 async function fetchSparkCollectionPage(
   request: SparkCollectionRequest,
-  options?: SparkFetchOptions
+  options?: SparkFetchOptions,
+  sparkSource?: SparkLookupTarget
 ): Promise<{ properties: PropertyCard[]; pagination?: SparkPagination }> {
   const { results, pagination } = await fetchSparkResults(
     { ...request, includePagination: true },
@@ -1039,7 +1059,7 @@ async function fetchSparkCollectionPage(
   );
 
   return {
-    properties: results.map(mapSparkListing),
+    properties: results.map((result, index) => mapSparkListing(result, index, sparkSource)),
     pagination,
   };
 }
@@ -1067,7 +1087,8 @@ async function fetchSparkResults(
 async function fetchAllSparkPropertyCards(
   path: string,
   filter?: string,
-  options?: SparkFetchOptions
+  options?: SparkFetchOptions,
+  sparkSource?: SparkLookupTarget
 ): Promise<PropertyCard[]> {
   const requestPageSize = resolveSparkRequestLimit();
   const properties: PropertyCard[] = [];
@@ -1081,7 +1102,7 @@ async function fetchAllSparkPropertyCards(
         path,
         filter,
         page,
-      }, options);
+      }, options, sparkSource);
 
     for (const property of pageProperties) {
       if (seenIds.has(property.id)) {
@@ -1145,9 +1166,10 @@ function isNumericRouteId(id: string): boolean {
 
 async function fetchSparkListingRecordByDirectPath(
   id: string,
-  options?: SparkFetchOptions
+  options?: SparkFetchOptions,
+  preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
-  for (const path of getSparkLookupPaths()) {
+  for (const path of getSparkLookupPaths(preferredTarget)) {
     const response = await fetchSparkPayload(
       buildSparkUrl({
         path: buildSparkListingDetailPath(path, id),
@@ -1181,11 +1203,12 @@ async function fetchSparkListingRecordByDirectPath(
 
 async function fetchSparkListingRecordByFilters(
   id: string,
-  options?: SparkFetchOptions
+  options?: SparkFetchOptions,
+  preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
   for (const filter of buildIdentifierFilters(id)) {
     const records = await Promise.all(
-      getSparkLookupPaths().map((path) =>
+      getSparkLookupPaths(preferredTarget).map((path) =>
         fetchSparkListingRecord(
           {
             path,
@@ -1218,7 +1241,7 @@ async function fetchSparkListingRecord(
 
 async function fetchSparkListingRecordByRouteId(
   id: string,
-  options?: SparkFetchOptions
+  options?: SparkListingLookupOptions
 ): Promise<UnknownRecord | null> {
   const normalizedId = id.trim();
 
@@ -1226,17 +1249,41 @@ async function fetchSparkListingRecordByRouteId(
     return null;
   }
 
-  if (isNumericRouteId(normalizedId)) {
-    return fetchSparkListingRecordByFilters(normalizedId, options);
+  if (options?.preferDirectLookup) {
+    const directPathRecord = await fetchSparkListingRecordByDirectPath(
+      normalizedId,
+      options,
+      options.preferredTarget
+    );
+
+    if (directPathRecord) {
+      return directPathRecord;
+    }
   }
 
-  const directPathRecord = await fetchSparkListingRecordByDirectPath(normalizedId, options);
+  if (isNumericRouteId(normalizedId)) {
+    return fetchSparkListingRecordByFilters(
+      normalizedId,
+      options,
+      options?.preferredTarget
+    );
+  }
+
+  const directPathRecord = await fetchSparkListingRecordByDirectPath(
+    normalizedId,
+    options,
+    options?.preferredTarget
+  );
 
   if (directPathRecord) {
     return directPathRecord;
   }
 
-  return fetchSparkListingRecordByFilters(normalizedId, options);
+  return fetchSparkListingRecordByFilters(
+    normalizedId,
+    options,
+    options?.preferredTarget
+  );
 }
 
 export async function fetchAllActiveSparkPropertyCards(
@@ -1245,7 +1292,8 @@ export async function fetchAllActiveSparkPropertyCards(
   return fetchAllSparkPropertyCards(
     getSparkListingsPath(),
     getSparkActiveListingsFilter(),
-    options
+    options,
+    "active"
   );
 }
 
@@ -1277,7 +1325,8 @@ export async function fetchActiveSparkPropertyCardsPage(
           filter,
           page: sparkPage,
         },
-        options
+        options,
+        "active"
       );
 
       totalRows = pagination?.totalRows ?? totalRows;
@@ -1322,21 +1371,22 @@ export async function fetchMySparkPropertyCards(
   return fetchAllSparkPropertyCards(
     getSparkMyListingsPath(),
     getSparkMyListingsFilter(),
-    options
+    options,
+    "my"
   );
 }
 
 export async function fetchSparkPropertyCardById(
   id: string,
-  options?: SparkFetchOptions
+  options?: SparkListingLookupOptions
 ): Promise<PropertyCard | null> {
   const listing = await fetchSparkListingRecordByRouteId(id, options);
-  return listing ? mapSparkListing(listing, 0) : null;
+  return listing ? mapSparkListing(listing, 0, options?.preferredTarget) : null;
 }
 
 export async function fetchSparkPropertyDetailById(
   id: string,
-  options?: SparkFetchOptions
+  options?: SparkListingLookupOptions
 ): Promise<PropertyDetail | null> {
   const listing = await fetchSparkListingRecordByRouteId(id, options);
   return listing ? mapSparkPropertyDetail(listing) : null;
