@@ -22,7 +22,7 @@ export const metadata = {
 export default function TermsAndConditionsPage() {
   return (
     <>
-      <SiteHeader />
+      <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         <LegalDocumentLayout
           title={TERMS_AND_CONDITIONS_LABEL}

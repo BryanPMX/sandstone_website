@@ -22,7 +22,7 @@ export const metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <>
-      <SiteHeader />
+      <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         <LegalDocumentLayout
           title={PRIVACY_POLICY_LABEL}
