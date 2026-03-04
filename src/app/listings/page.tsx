@@ -15,6 +15,32 @@ interface ListingsPageProps {
   searchParams: Promise<{ search?: string; page?: string }>;
 }
 
+function buildVisiblePageItems(currentPage: number, totalPages: number): Array<number | "ellipsis"> {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  const pages = new Set<number>([1, totalPages, currentPage - 1, currentPage, currentPage + 1]);
+  const sortedPages = Array.from(pages)
+    .filter((page) => page >= 1 && page <= totalPages)
+    .sort((a, b) => a - b);
+
+  const items: Array<number | "ellipsis"> = [];
+
+  for (let index = 0; index < sortedPages.length; index += 1) {
+    const page = sortedPages[index];
+    const previous = sortedPages[index - 1];
+
+    if (previous != null && page - previous > 1) {
+      items.push("ellipsis");
+    }
+
+    items.push(page);
+  }
+
+  return items;
+}
+
 export default async function ListingsPage({ searchParams }: ListingsPageProps) {
   const params = await searchParams;
   const searchQuery = (params.search ?? "").trim();
@@ -32,6 +58,9 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const totalPages = searchQuery ? 1 : paginatedResult?.totalPages ?? 1;
   const resolvedPage = searchQuery ? 1 : paginatedResult?.currentPage ?? 1;
   const hasPagination = !searchQuery && totalPages > 1;
+  const visiblePageItems = hasPagination
+    ? buildVisiblePageItems(resolvedPage, totalPages)
+    : [];
 
   const buildPageHref = (page: number) => {
     const targetPage = Math.max(1, page);
@@ -99,6 +128,37 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
                 >
                   Previous
                 </Link>
+                <div className="flex items-center gap-2">
+                  {visiblePageItems.map((item, index) => {
+                    if (item === "ellipsis") {
+                      return (
+                        <span
+                          key={`ellipsis-${index}`}
+                          className="inline-flex min-w-9 items-center justify-center px-1 text-sm text-[var(--sandstone-charcoal)]/55"
+                        >
+                          …
+                        </span>
+                      );
+                    }
+
+                    const isActive = item === resolvedPage;
+
+                    return (
+                      <Link
+                        key={`page-${item}`}
+                        href={buildPageHref(item)}
+                        aria-current={isActive ? "page" : undefined}
+                        className={`inline-flex min-w-9 items-center justify-center rounded-full px-3 py-2 text-sm font-semibold transition ${
+                          isActive
+                            ? "bg-[var(--sandstone-navy)] text-white"
+                            : "bg-white text-[var(--sandstone-navy)] shadow-sm hover:bg-[var(--sandstone-off-white)]"
+                        }`}
+                      >
+                        {item}
+                      </Link>
+                    );
+                  })}
+                </div>
                 <Link
                   href={buildPageHref(resolvedPage + 1)}
                   aria-disabled={resolvedPage >= totalPages}
