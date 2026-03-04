@@ -93,7 +93,7 @@ The project is organized by responsibility:
 - `SPARK_MY_LISTINGS_FILTER`: optional home-page `my/listings` filter, defaults to the active filter
 - `SPARK_PAGE_SIZE`: Spark per-page fetch size, defaults to `27`
 - `ROLU_WEBHOOK_URL`: backward-compatible contact webhook fallback
-- `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`: preferred lead webhook envs
+- `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`, `ROLU_WEBHOOK_GIVEAWAY_URL`: preferred lead webhook envs
 - `TURNSTILE_SECRET_KEY`: required for server-side captcha verification
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY`: required for the Turnstile widget
 - `MSL_FEED_URL`: optional legacy listings feed fallback

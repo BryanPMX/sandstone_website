@@ -19,12 +19,17 @@ export function getLeadWebhookUrl(formType: LeadFormType): string | undefined {
     sell: "ROLU_WEBHOOK_SELL_URL",
     rent: "ROLU_WEBHOOK_RENT_URL",
     join: "ROLU_WEBHOOK_JOIN_URL",
+    giveaway: "ROLU_WEBHOOK_GIVEAWAY_URL",
   };
 
   const resolved = getEnv(formWebhookEnvKey[formType]);
 
   if (resolved) {
     return resolved;
+  }
+
+  if (formType === "giveaway") {
+    return getEnv("ROLU_WEBHOOK_CONTACT_URL") ?? getRoluWebhookUrl();
   }
 
   // Backward compatibility with the original single-form setup.

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { submitLead } from "@/actions/submit-lead";
+import { submitGiveawayLead } from "@/actions/submit-lead";
 import type { SubmitLeadState } from "@/types";
 import {
   CONTACT_CTA,
@@ -88,7 +88,10 @@ function TurnstileWidget({ siteKey }: { siteKey: string }) {
 }
 
 export function QrVisitForm() {
-  const [state, formAction, isPending] = useActionState(submitLead, initialState);
+  const [state, formAction, isPending] = useActionState(
+    submitGiveawayLead,
+    initialState
+  );
   const turnstileSiteKey =
     typeof process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY === "string"
       ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY

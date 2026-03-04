@@ -6,6 +6,7 @@ export type {
 } from "./property";
 export type {
   ContactLeadWebhookPayload,
+  GiveawayLeadWebhookPayload,
   JoinLeadWebhookPayload,
   LeadFormFields,
   LeadFormType,

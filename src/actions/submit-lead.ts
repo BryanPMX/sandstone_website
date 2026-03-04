@@ -126,3 +126,10 @@ export async function submitLead(
 ): Promise<SubmitLeadState> {
   return submitLeadForForm("contact", prevState, formData);
 }
+
+export async function submitGiveawayLead(
+  prevState: SubmitLeadState | null,
+  formData: FormData
+): Promise<SubmitLeadState> {
+  return submitLeadForForm("giveaway", prevState, formData);
+}

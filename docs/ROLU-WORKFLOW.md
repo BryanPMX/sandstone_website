@@ -7,7 +7,7 @@ Goal: keep listing data fresh and keep lead delivery reliable.
 - `SPARK_ACCESS_TOKEN`: primary server-only listings credential
 - `MSL_FEED_URL`: optional fallback endpoint returning an array of listings
 - `ROLU_WEBHOOK_URL`: backward-compatible contact webhook fallback
-- `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`: preferred form-specific lead webhooks
+- `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`, `ROLU_WEBHOOK_GIVEAWAY_URL`: preferred form-specific lead webhooks
 
 ## Listings Source Order
 
@@ -68,5 +68,5 @@ Validation happens server-side before webhook submission.
 ## Operational Checks
 
 - If listings look stale, verify Spark credentials first, then `MSL_FEED_URL` if the legacy fallback is enabled.
-- If form submissions fail, verify `ROLU_WEBHOOK_URL` and destination status.
+- If form submissions fail, verify `ROLU_WEBHOOK_*` values and destination status.
 - Keep listing images accessible over HTTPS for best compatibility.

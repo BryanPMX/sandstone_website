@@ -16,7 +16,7 @@ export type LeadFormFields = {
 };
 
 /** Supported lead capture form variants across the site */
-export type LeadFormType = "contact" | "sell" | "rent" | "join";
+export type LeadFormType = "contact" | "sell" | "rent" | "join" | "giveaway";
 
 type LeadWebhookPayloadBase = {
   formType: LeadFormType;
@@ -49,12 +49,18 @@ export type JoinLeadWebhookPayload = LeadWebhookPayloadBase & {
   formType: "join";
 };
 
+export type GiveawayLeadWebhookPayload = LeadWebhookPayloadBase & {
+  formType: "giveaway";
+  message: string;
+};
+
 /** Explicit per-form payload contract sent to ROLU webhooks */
 export type LeadWebhookPayload =
   | ContactLeadWebhookPayload
   | SellLeadWebhookPayload
   | RentLeadWebhookPayload
-  | JoinLeadWebhookPayload;
+  | JoinLeadWebhookPayload
+  | GiveawayLeadWebhookPayload;
 
 /** Backward-compatible alias used by services */
 export type LeadInput = LeadWebhookPayload;

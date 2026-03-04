@@ -58,6 +58,12 @@ export function buildLeadWebhookPayload(
         ...base,
         formType: "join",
       };
+    case "giveaway":
+      return {
+        ...base,
+        formType: "giveaway",
+        message: message ?? "",
+      };
     default: {
       const exhaustiveCheck: never = formType;
       throw new Error(`Unsupported form type: ${exhaustiveCheck}`);
