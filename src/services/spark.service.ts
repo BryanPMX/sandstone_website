@@ -1374,11 +1374,14 @@ export async function fetchActiveSparkPropertyCardsPage(
     const startingSparkPage = Math.floor(offset / requestPageSize) + 1;
     let skip = offset % requestPageSize;
     let sparkPage = startingSparkPage;
-    let totalRows = 0;
-    let totalSparkPages = 1;
+    let totalRows: number | undefined;
+    let totalSparkPages: number | undefined;
     const properties: PropertyCard[] = [];
 
-    while (properties.length < displayPageSize && sparkPage <= totalSparkPages) {
+    while (
+      properties.length < displayPageSize &&
+      (totalSparkPages == null || sparkPage <= totalSparkPages)
+    ) {
       const { properties: sparkPageProperties, pagination } = await fetchSparkCollectionPage(
         {
           path,
@@ -1400,7 +1403,11 @@ export async function fetchActiveSparkPropertyCardsPage(
         ...visibleProperties.slice(0, displayPageSize - properties.length)
       );
 
-      if (sparkPageProperties.length < requestPageSize) {
+      const hasMoreSparkPages = totalSparkPages != null
+        ? sparkPage < totalSparkPages
+        : sparkPageProperties.length === requestPageSize;
+
+      if (!hasMoreSparkPages) {
         break;
       }
 
@@ -1408,7 +1415,16 @@ export async function fetchActiveSparkPropertyCardsPage(
       sparkPage += 1;
     }
 
-    const totalPages = Math.max(1, Math.ceil(totalRows / displayPageSize));
+    const totalPages = totalRows != null
+      ? Math.max(1, Math.ceil(totalRows / displayPageSize))
+      : properties.length < displayPageSize
+        ? resolvedPage
+        : resolvedPage + 1;
+    const effectiveTotalRows = totalRows ?? (
+      properties.length < displayPageSize
+        ? offset + properties.length
+        : offset + properties.length + 1
+    );
 
     if (resolvedPage > totalPages) {
       resolvedPage = totalPages;
@@ -1419,7 +1435,7 @@ export async function fetchActiveSparkPropertyCardsPage(
       properties,
       currentPage: resolvedPage,
       totalPages,
-      totalRows,
+      totalRows: effectiveTotalRows,
       pageSize: displayPageSize,
     };
   }
