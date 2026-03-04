@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { QrVisitForm } from "@/components/QrVisitForm";
 
 /**
@@ -16,7 +18,9 @@ export const metadata: Metadata = {
 
 export default function GiveawayPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#f6f2ec] to-white flex flex-col items-center justify-center px-4 py-12">
+    <>
+      <SiteHeader variant="lead" logoOnly />
+      <main className="min-h-screen bg-gradient-to-b from-[#f6f2ec] to-white flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-md text-center mb-8">
         <h1 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)] sm:text-3xl">
           Enter the Giveaway
@@ -32,5 +36,7 @@ export default function GiveawayPage() {
         Sandstone Real Estate Group · El Paso
       </p>
     </main>
+      <SiteFooter showNav={false} />
+    </>
   );
 }

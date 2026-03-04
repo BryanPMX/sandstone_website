@@ -13,12 +13,15 @@ interface SiteHeaderProps {
   overlayDesktop?: boolean;
   variant?: "default" | "lead";
   showDesktopCenterLogo?: boolean;
+  /** When true, only the logo (far left) is shown; no nav links or menu. Used for giveaway. */
+  logoOnly?: boolean;
 }
 
 export function SiteHeader({
   overlayDesktop = false,
   variant = "default",
   showDesktopCenterLogo = true,
+  logoOnly = false,
 }: SiteHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -85,6 +88,52 @@ export function SiteHeader({
     if (href.includes("#")) return false;
     return pathname === href;
   };
+
+  if (logoOnly) {
+    return (
+      <header
+        className={cn(
+          "sticky top-0 left-0 right-0 z-[80] border-b border-white/10 bg-[var(--sandstone-navy)] shadow-[0_10px_24px_-20px_rgba(17,24,61,0.85)]"
+        )}
+      >
+        <Link
+          href="/"
+          className="absolute left-4 top-1/2 z-[85] hidden -translate-y-1/2 items-center text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)] lg:inline-flex"
+          aria-label="Sandstone Real Estate Group - Home"
+        >
+          <div className="relative h-9 w-9 shrink-0">
+            <Image
+              src={mobileLogoSrc}
+              alt="Sandstone Real Estate Group"
+              fill
+              className="object-contain brightness-110 contrast-110"
+              sizes="36px"
+              priority
+            />
+          </div>
+        </Link>
+        <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 lg:h-[92px] lg:px-6">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)] lg:hidden"
+            aria-label="Sandstone Real Estate Group - Home"
+          >
+            <div className="relative h-9 w-9 shrink-0">
+              <Image
+                src={mobileLogoSrc}
+                alt="Sandstone Real Estate Group"
+                fill
+                className="object-contain brightness-110 contrast-110"
+                sizes="36px"
+                priority
+              />
+            </div>
+          </Link>
+          <div className="lg:hidden" aria-hidden />
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header

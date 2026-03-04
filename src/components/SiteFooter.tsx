@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import {
   SITE_NAV,
   FOOTER_BRAND,
@@ -14,14 +15,24 @@ import {
   TERMS_AND_CONDITIONS_HREF,
 } from "@/constants/site";
 
-export function SiteFooter() {
+interface SiteFooterProps {
+  /** When false, hides the right column (Menu + nav links). Used for giveaway. */
+  showNav?: boolean;
+}
+
+export function SiteFooter({ showNav = true }: SiteFooterProps) {
   return (
     <footer
       id="footer"
       className="scroll-mt-20 bg-gradient-to-b from-[var(--sandstone-navy)] to-[var(--sandstone-navy-deep)] py-10 text-[var(--sandstone-off-white)]"
     >
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="grid gap-8 md:grid-cols-[1.1fr_0.8fr_0.9fr] md:items-start">
+        <div
+          className={cn(
+            "grid gap-8 md:items-start",
+            showNav ? "md:grid-cols-[1.1fr_0.8fr_0.9fr]" : "md:grid-cols-[1fr_auto]"
+          )}
+        >
           <div className="text-center md:text-left">
             <div className="mx-auto flex w-fit items-center gap-3 md:mx-0">
               <Image
@@ -58,23 +69,25 @@ export function SiteFooter() {
             ))}
           </div>
 
-          <nav aria-label="Footer" className="text-center md:text-right">
-            <p className="mb-2 text-xs uppercase tracking-[0.18em] text-white/60">
-              Menu
-            </p>
-            <ul className="space-y-1.5 text-sm">
-              {SITE_NAV.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-white/85 transition hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {showNav ? (
+            <nav aria-label="Footer" className="text-center md:text-right">
+              <p className="mb-2 text-xs uppercase tracking-[0.18em] text-white/60">
+                Menu
+              </p>
+              <ul className="space-y-1.5 text-sm">
+                {SITE_NAV.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="text-white/85 transition hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ) : null}
         </div>
 
         <div className="mt-8 border-t border-white/15 pt-4 text-center text-xs text-white/65 md:flex md:items-center md:justify-between">
