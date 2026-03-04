@@ -69,15 +69,15 @@ export function ListingCarousel({ properties }: ListingCarouselProps) {
   };
 
   return (
-    <div className="mt-10 md:mt-12">
+    <div className="mt-6 md:mt-8">
       <div className="relative">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-20 bg-gradient-to-r from-[#f8f6f3] to-transparent md:block"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-12 bg-gradient-to-r from-[#f8f6f3]/58 via-[#f8f6f3]/20 to-transparent md:block lg:w-14"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-20 bg-gradient-to-l from-[#f8f6f3] to-transparent md:block"
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-12 bg-gradient-to-l from-[#f8f6f3]/58 via-[#f8f6f3]/20 to-transparent md:block lg:w-14"
         />
 
         <Button
