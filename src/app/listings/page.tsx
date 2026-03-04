@@ -29,7 +29,6 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const properties = searchQuery
     ? filterPropertyCards(await fetchActivePropertyCards(), searchQuery)
     : paginatedResult?.properties ?? [];
-  const totalRows = searchQuery ? properties.length : paginatedResult?.totalRows ?? 0;
   const totalPages = searchQuery ? 1 : paginatedResult?.totalPages ?? 1;
   const resolvedPage = searchQuery ? 1 : paginatedResult?.currentPage ?? 1;
   const hasPagination = !searchQuery && totalPages > 1;
@@ -53,11 +52,11 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
           <h1 className="mt-4 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
             Sandstone Collection
           </h1>
-          <p className="mt-2 max-w-2xl text-[var(--sandstone-charcoal)]/80">
-            {searchQuery
-              ? `Results for "${searchQuery}".`
-              : `Showing page ${resolvedPage} of ${totalPages} from the current Spark feed (${totalRows.toLocaleString()} active listings).`}
-          </p>
+          {searchQuery ? (
+            <p className="mt-2 max-w-2xl text-[var(--sandstone-charcoal)]/80">
+              {`Results for "${searchQuery}".`}
+            </p>
+          ) : null}
 
           {properties.length === 0 ? (
             <div className="mt-10 rounded-2xl border border-[var(--sandstone-navy)]/10 bg-white p-6 text-center">
