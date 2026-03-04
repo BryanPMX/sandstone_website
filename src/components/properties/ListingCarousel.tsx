@@ -113,7 +113,7 @@ export function ListingCarousel({ properties }: ListingCarouselProps) {
           {properties.map((property, index) => (
             <div
               key={property.id}
-              className="min-w-[84%] snap-start sm:min-w-[360px] lg:min-w-[380px]"
+              className="min-w-full snap-start sm:min-w-[360px] lg:min-w-[380px]"
             >
               <ListingCard property={property} priority={index < 2} />
             </div>
