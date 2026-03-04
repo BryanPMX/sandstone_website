@@ -95,9 +95,28 @@ export function SiteHeader({
           : cn(
               "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]",
               isLeadHeader && "shadow-[0_10px_24px_-20px_rgba(17,24,61,0.85)]"
-            )
+        )
       )}
     >
+      {showLeadCenteredDesktopNav ? (
+        <Link
+          href="/"
+          className="absolute left-3 top-1/2 z-[85] hidden -translate-y-1/2 items-center text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)] lg:inline-flex"
+          aria-label="Sandstone Real Estate Group - Home"
+        >
+          <div className="relative h-9 w-9 shrink-0">
+            <Image
+              src={mobileLogoSrc}
+              alt="Sandstone Real Estate Group"
+              fill
+              className="object-contain brightness-110 contrast-110"
+              sizes="36px"
+              priority
+            />
+          </div>
+        </Link>
+      ) : null}
+
       <div
         className={cn(
           "mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:px-6",
@@ -149,30 +168,12 @@ export function SiteHeader({
         <div
           className={cn(
             "hidden w-full justify-center lg:flex",
-            showLeadCenteredDesktopNav && "relative",
             showLeadCenteredDesktopNav ? "gap-0" : isLeadHeader ? "gap-4 xl:gap-6" : "gap-8 xl:gap-12",
             isHeroHeader ? "items-start" : "items-center"
           )}
         >
           {showLeadCenteredDesktopNav ? (
             <>
-              <Link
-                href="/"
-                className="absolute left-0 top-1/2 inline-flex -translate-y-1/2 items-center text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
-                aria-label="Sandstone Real Estate Group - Home"
-              >
-                <div className="relative h-9 w-9 shrink-0">
-                  <Image
-                    src={mobileLogoSrc}
-                    alt="Sandstone Real Estate Group"
-                    fill
-                    className="object-contain brightness-110 contrast-110"
-                    sizes="36px"
-                    priority
-                  />
-                </div>
-              </Link>
-
               <nav aria-label="Primary left" className="flex-1">
                 <ul className="flex items-center justify-end gap-2 xl:gap-5">
                   {desktopLeftNav.map((item) => (
