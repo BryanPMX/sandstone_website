@@ -97,7 +97,7 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
             src={property.image}
             alt={property.title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
             className="object-cover transition duration-300 group-hover:scale-105"
             priority={priority && !bypassOptimization}
             unoptimized={bypassOptimization}

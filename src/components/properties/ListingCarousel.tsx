@@ -54,14 +54,18 @@ export function ListingCarousel({ properties }: ListingCarouselProps) {
     };
   }, [properties.length]);
 
-  const scrollByViewport = (direction: "left" | "right") => {
+  const scrollByCard = (direction: "left" | "right") => {
     const container = containerRef.current;
 
     if (!container) {
       return;
     }
 
-    const distance = Math.max(container.clientWidth * 0.9, 320);
+    const firstCard = container.querySelector<HTMLElement>("[data-carousel-card]");
+    const containerStyles = window.getComputedStyle(container);
+    const gap = Number.parseFloat(containerStyles.columnGap || containerStyles.gap || "0") || 0;
+    const distance = firstCard ? firstCard.offsetWidth + gap : container.clientWidth;
+
     container.scrollBy({
       left: direction === "left" ? -distance : distance,
       behavior: "smooth",
@@ -86,7 +90,7 @@ export function ListingCarousel({ properties }: ListingCarouselProps) {
           variant="outline"
           aria-controls={carouselId}
           aria-label="Scroll listings left"
-          onClick={() => scrollByViewport("left")}
+          onClick={() => scrollByCard("left")}
           disabled={!canScrollLeft}
           className="absolute left-1 top-1/2 z-20 h-10 w-10 -translate-y-1/2 rounded-full border-[var(--sandstone-navy)]/18 bg-white/95 text-[var(--sandstone-navy)] shadow-[0_12px_28px_-18px_rgba(17,24,61,0.65)] backdrop-blur disabled:opacity-45 md:left-2 md:h-11 md:w-11"
         >
@@ -98,7 +102,7 @@ export function ListingCarousel({ properties }: ListingCarouselProps) {
           variant="outline"
           aria-controls={carouselId}
           aria-label="Scroll listings right"
-          onClick={() => scrollByViewport("right")}
+          onClick={() => scrollByCard("right")}
           disabled={!canScrollRight}
           className="absolute right-1 top-1/2 z-20 h-10 w-10 -translate-y-1/2 rounded-full border-[var(--sandstone-navy)]/18 bg-white/95 text-[var(--sandstone-navy)] shadow-[0_12px_28px_-18px_rgba(17,24,61,0.65)] backdrop-blur disabled:opacity-45 md:right-2 md:h-11 md:w-11"
         >
@@ -108,12 +112,13 @@ export function ListingCarousel({ properties }: ListingCarouselProps) {
         <div
           id={carouselId}
           ref={containerRef}
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-5 pt-1 scroll-smooth [scroll-padding-inline:1rem] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:gap-5"
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5 pt-1 scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:gap-5"
         >
           {properties.map((property, index) => (
             <div
               key={property.id}
-              className="min-w-full snap-start sm:min-w-[360px] lg:min-w-[380px]"
+              data-carousel-card
+              className="w-full shrink-0 snap-start md:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]"
             >
               <ListingCard property={property} priority={index < 2} />
             </div>
