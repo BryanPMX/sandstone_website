@@ -14,20 +14,22 @@ export function FeaturedListingsSection({
   return (
     <section
       id="listings"
-      className="scroll-mt-20 bg-gradient-to-b from-[#f1ece4] via-[#f8f6f3] to-white py-12 md:py-16"
+      className="scroll-mt-20 bg-gradient-to-b from-[#f1ece4] via-[#f8f6f3] to-white py-16 md:py-20"
     >
       <div className="container mx-auto max-w-6xl px-4">
-        <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-[2rem]">
-          My Listings
-        </h2>
-        <p className="mx-auto mt-2 max-w-2xl text-center text-sm text-[var(--sandstone-charcoal)]/70">
-          {searchQuery
-            ? `Showing matches from my Flexmls listings for "${searchQuery}".`
-            : "A carousel of my current Flexmls listings."}
-        </p>
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-[2.15rem]">
+            My Listings
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--sandstone-charcoal)]/70 md:text-base">
+            {searchQuery
+              ? `Showing matches from my Flexmls listings for "${searchQuery}".`
+              : "A carousel of my current Flexmls listings."}
+          </p>
+        </div>
 
         {properties.length === 0 ? (
-          <p className="mx-auto mt-10 max-w-xl rounded-xl border border-[var(--sandstone-navy)]/10 bg-white px-4 py-6 text-center text-sm text-[var(--sandstone-charcoal)]/85">
+          <p className="mx-auto mt-12 max-w-xl rounded-xl border border-[var(--sandstone-navy)]/10 bg-white px-4 py-6 text-center text-sm text-[var(--sandstone-charcoal)]/85">
             No listings matched <strong>{searchQuery}</strong>. Try a different search.
           </p>
         ) : (
@@ -35,12 +37,12 @@ export function FeaturedListingsSection({
         )}
 
         {properties.length > 0 && (
-          <div className="mt-8 flex justify-center">
+          <div className="mt-10 flex justify-center md:mt-12">
             <Link
               href="/listings"
-              className="inline-flex w-full max-w-xs items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-2 text-sm font-semibold text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 sm:w-[180px]"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3 text-sm font-semibold text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
             >
-              View All Active Listings
+              View all active listings
             </Link>
           </div>
         )}
