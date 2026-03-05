@@ -58,7 +58,9 @@ const FALLBACK_IMAGE =
 const DEFAULT_LOCATION = "El Paso, TX";
 const MAX_SPARK_PAGES = 400;
 const COLLECTION_EXPANSIONS = ["PrimaryPhoto"];
-const DETAIL_EXPANSIONS = ["PrimaryPhoto", "Photos"];
+// Some Spark accounts reject _expand on listing detail endpoints (Code 1053).
+// Keep detail lookups expansion-free and enrich images via the /photos fallback.
+const DETAIL_EXPANSIONS: string[] = [];
 const PHOTO_URL_PATHS: PathSegment[][] = [
   ["Uri2048"],
   ["Uri1600"],
