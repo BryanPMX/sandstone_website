@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, Mail, MessageCircle, Phone } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { ListingInquiryCard } from "@/components/properties";
 import { fetchPropertyDetailById } from "@/services";
 import { SITE_CONTACT } from "@/constants";
 import { cn, shouldBypassNextImageOptimization } from "@/lib";
@@ -51,20 +52,6 @@ function normalizeDialTarget(value: string | undefined): string | undefined {
   return digits || undefined;
 }
 
-function formatPhoneForDisplay(value: string): string {
-  const digits = value.replace(/\D/g, "");
-
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-  }
-
-  if (digits.length === 11 && digits.startsWith("1")) {
-    return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-  }
-
-  return value;
-}
-
 function buildMapUrls(input: {
   latitude?: number;
   longitude?: number;
@@ -81,15 +68,6 @@ function buildMapUrls(input: {
     embed: `https://maps.google.com/maps?hl=en&q=${encodedQuery}&z=14&output=embed`,
     details: `https://www.google.com/maps/search/?api=1&query=${encodedQuery}`,
   };
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part.charAt(0).toUpperCase())
-    .join("");
 }
 
 function ListingGalleryImage({
@@ -165,6 +143,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
     uniqueImages[2],
     uniqueImages[3],
   ];
+  const remainingImages = uniqueImages.slice(4);
   const primaryStats = [
     property.beds != null ? `${formatFactNumber(property.beds)} Beds` : null,
     property.baths != null ? `${formatFactNumber(property.baths)} Baths` : null,
@@ -181,12 +160,8 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
     mapAddress: property.specs.mapAddress,
     fallbackQuery: heading,
   });
-  const agentName = property.specs.listingAgentName || "Sandstone Listing Agent";
-  const agentEmail = property.specs.listingAgentEmail || SITE_CONTACT.email;
+  const agentName = property.specs.listingAgentName;
   const dialTarget = normalizeDialTarget(property.specs.listingAgentPhone) || SITE_CONTACT.phoneRaw;
-  const agentPhoneDisplay = formatPhoneForDisplay(
-    property.specs.listingAgentPhone || SITE_CONTACT.phone
-  );
   const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
     ? `1${dialTarget.replace(/^\+/, "")}`
     : dialTarget.replace(/^\+/, "");
@@ -211,33 +186,61 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
               {heading}
             </h1>
 
-            <div className="mt-6 grid gap-2 md:gap-3 lg:grid-cols-[1.12fr_0.9fr_1.12fr] lg:auto-rows-[172px]">
-              <ListingGalleryImage
-                src={galleryImages[0]}
-                alt={property.title}
-                className="lg:row-span-2 lg:min-h-0"
-                sizes="(max-width: 1024px) 100vw, 36vw"
-                priority
-              />
-              <ListingGalleryImage
-                src={galleryImages[1]}
-                alt={`${property.title} photo 2`}
-                className="lg:min-h-0"
-                sizes="(max-width: 1024px) 100vw, 20vw"
-              />
-              <ListingGalleryImage
-                src={galleryImages[2]}
-                alt={`${property.title} photo 3`}
-                className="lg:min-h-0"
-                sizes="(max-width: 1024px) 100vw, 20vw"
-              />
-              <ListingGalleryImage
-                src={galleryImages[3]}
-                alt={`${property.title} photo 4`}
-                className="lg:row-span-2 lg:min-h-0"
-                sizes="(max-width: 1024px) 100vw, 36vw"
-              />
-            </div>
+            {uniqueImages.length >= 4 ? (
+              <div className="mt-6 grid gap-2 md:gap-3 lg:grid-cols-[1.12fr_0.9fr_1.12fr] lg:auto-rows-[172px]">
+                <ListingGalleryImage
+                  src={galleryImages[0]}
+                  alt={property.title}
+                  className="lg:row-span-2 lg:min-h-0"
+                  sizes="(max-width: 1024px) 100vw, 36vw"
+                  priority
+                />
+                <ListingGalleryImage
+                  src={galleryImages[1]}
+                  alt={`${property.title} photo 2`}
+                  className="lg:min-h-0"
+                  sizes="(max-width: 1024px) 100vw, 20vw"
+                />
+                <ListingGalleryImage
+                  src={galleryImages[2]}
+                  alt={`${property.title} photo 3`}
+                  className="lg:min-h-0"
+                  sizes="(max-width: 1024px) 100vw, 20vw"
+                />
+                <ListingGalleryImage
+                  src={galleryImages[3]}
+                  alt={`${property.title} photo 4`}
+                  className="lg:row-span-2 lg:min-h-0"
+                  sizes="(max-width: 1024px) 100vw, 36vw"
+                />
+              </div>
+            ) : (
+              <div className="mt-6 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-3">
+                {uniqueImages.map((image, index) => (
+                  <ListingGalleryImage
+                    key={`${property.id}-photo-${index}`}
+                    src={image}
+                    alt={`${property.title} photo ${index + 1}`}
+                    className="min-h-[190px] md:min-h-[220px]"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority={index === 0}
+                  />
+                ))}
+              </div>
+            )}
+            {remainingImages.length > 0 && (
+              <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4">
+                {remainingImages.map((image, index) => (
+                  <ListingGalleryImage
+                    key={`${property.id}-extra-${index}`}
+                    src={image}
+                    alt={`${property.title} photo ${index + 5}`}
+                    className="min-h-[155px] md:min-h-[170px]"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  />
+                ))}
+              </div>
+            )}
 
             <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 md:gap-x-8">
               <p className="font-heading text-4xl font-bold text-[var(--sandstone-navy)]">
@@ -327,59 +330,12 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 </div>
               </article>
 
-              <aside className="rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/70 p-5">
-                <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-                  Contact Agent
-                </h2>
-                <div className="mt-4 flex items-center gap-3 border-b border-[var(--sandstone-navy)]/15 pb-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-base font-bold text-white">
-                    {getInitials(agentName)}
-                  </div>
-                  <div>
-                    <p className="text-lg font-semibold text-[var(--sandstone-charcoal)]">
-                      {agentName}
-                    </p>
-                    <p className="text-base text-[var(--sandstone-charcoal)]/62">
-                      Real Estate Agent
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-4 space-y-3">
-                  <Link
-                    href={`tel:${dialTarget}`}
-                    className="flex items-center gap-2 rounded-lg border border-[var(--sandstone-navy)]/14 bg-white px-3 py-2 text-sm text-[var(--sandstone-charcoal)] hover:border-[var(--sandstone-navy)]/28"
-                  >
-                    <Phone size={16} className="text-[var(--sandstone-navy)]" />
-                    <span>{agentPhoneDisplay}</span>
-                  </Link>
-                  <Link
-                    href={`mailto:${agentEmail}`}
-                    className="flex items-center gap-2 rounded-lg border border-[var(--sandstone-navy)]/14 bg-white px-3 py-2 text-sm text-[var(--sandstone-charcoal)] hover:border-[var(--sandstone-navy)]/28"
-                  >
-                    <Mail size={16} className="text-[var(--sandstone-navy)]" />
-                    <span>{agentEmail}</span>
-                  </Link>
-                </div>
-
-                <div className="mt-4 space-y-3">
-                  <Link
-                    href="/#contact"
-                    className="block rounded-lg bg-[var(--sandstone-navy)] px-4 py-2.5 text-center text-base font-semibold text-white transition hover:opacity-95"
-                  >
-                    Schedule Tour
-                  </Link>
-                  <Link
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-lg bg-[#21b94f] px-4 py-2.5 text-base font-semibold text-white transition hover:brightness-95"
-                  >
-                    <MessageCircle size={18} />
-                    WhatsApp
-                  </Link>
-                </div>
-              </aside>
+              <ListingInquiryCard
+                listingTitle={property.title}
+                listingRouteId={property.routeId}
+                listingAgentName={agentName}
+                whatsappHref={whatsappHref}
+              />
             </div>
           </section>
         </div>
