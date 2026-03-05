@@ -1384,11 +1384,14 @@ function mapSparkPropertyDetail(item: unknown): PropertyDetail | null {
   ].filter((section): section is PropertyMetadataSection => Boolean(section));
 
   const images = extractImageUrls(record);
+  const resolvedImages = images.length > 0 ? images : [card.image];
+  const primaryImage = resolvedImages[0] ?? card.image;
 
   return {
     ...card,
+    image: primaryImage,
     description,
-    images: images.length > 0 ? images : [card.image],
+    images: resolvedImages,
     specs: buildPropertyDetailSpecs(record, card),
     metadataSections: sections,
   };
@@ -1915,14 +1918,23 @@ export async function fetchSparkPropertyDetailById(
     return detail;
   }
 
-  const mergedImages = [detail.image];
+  const mergedImages: string[] = [];
+
+  if (detail.image && detail.image !== FALLBACK_IMAGE) {
+    addUniqueString(mergedImages, detail.image);
+  }
 
   for (const image of supplementalImages) {
     addUniqueString(mergedImages, image);
   }
 
+  if (mergedImages.length === 0) {
+    addUniqueString(mergedImages, detail.image);
+  }
+
   return {
     ...detail,
+    image: mergedImages[0] ?? detail.image,
     images: mergedImages,
   };
 }
