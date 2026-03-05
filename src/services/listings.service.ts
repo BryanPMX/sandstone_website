@@ -589,4 +589,4 @@ export const fetchActivePropertyCards = cache(fetchActivePropertyCardsUncached);
 export const fetchActivePropertyCardsPage = cache(fetchActivePropertyCardsPageUncached);
 export const fetchMyPropertyCards = cache(fetchMyPropertyCardsUncached);
 export const fetchPropertyCardById = cache(fetchPropertyCardByIdUncached);
-export const fetchPropertyDetailById = cache(fetchPropertyDetailByIdUncached);
+export const fetchPropertyDetailById = fetchPropertyDetailByIdUncached;

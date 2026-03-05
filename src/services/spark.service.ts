@@ -1841,6 +1841,29 @@ export async function fetchSparkPropertyDetailById(
 
   for (const candidateId of candidateIds) {
     try {
+      const directRecord = await fetchSparkListingRecordByDirectPath(
+        candidateId,
+        {
+          ...options,
+          preferDirectLookup: true,
+        },
+        options?.preferredTarget
+      );
+
+      if (directRecord) {
+        for (const image of extractImageUrls(directRecord)) {
+          addUniqueString(supplementalImages, image);
+        }
+      }
+
+      if (supplementalImages.length > 1) {
+        break;
+      }
+    } catch (error) {
+      console.error("[Spark] Direct detail lookup failed while collecting supplemental photos.", error);
+    }
+
+    try {
       const images = await fetchSparkListingPhotosByDirectPath(
         candidateId,
         options,
