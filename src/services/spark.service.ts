@@ -506,6 +506,52 @@ function addUniqueImageUrl(target: string[], value: string | undefined): void {
   addUniqueString(target, value);
 }
 
+function buildPhotoRecordKey(record: UnknownRecord, index: number): string {
+  return (
+    asString(
+      pickFirst(
+        record,
+        ["Id"],
+        ["StandardFields", "Id"],
+        ["ResourceUri"],
+        ["StandardFields", "ResourceUri"],
+        ["Uri2048"],
+        ["Uri1600"],
+        ["Uri1280"],
+        ["Uri1024"],
+        ["Uri800"],
+        ["Uri640"],
+        ["Uri300"],
+        ["UriLarge"],
+        ["Uri"],
+        ["MediaURL"],
+        ["StandardFields", "Uri2048"],
+        ["StandardFields", "Uri1600"],
+        ["StandardFields", "Uri1280"],
+        ["StandardFields", "Uri1024"],
+        ["StandardFields", "Uri800"],
+        ["StandardFields", "Uri640"],
+        ["StandardFields", "Uri300"],
+        ["StandardFields", "UriLarge"],
+        ["StandardFields", "Uri"],
+        ["StandardFields", "MediaURL"]
+      )
+    ) ?? `photo-${index}`
+  );
+}
+
+function pickPreferredPhotoUrl(record: UnknownRecord): string | undefined {
+  for (const path of PHOTO_URL_PATHS) {
+    const normalized = normalizeSparkImageUrl(asString(readPath(record, path)));
+
+    if (normalized && isLikelyImageUrl(normalized)) {
+      return normalized;
+    }
+  }
+
+  return undefined;
+}
+
 function extractResults(payload: unknown): unknown[] {
   if (Array.isArray(payload)) {
     return payload;
@@ -808,6 +854,8 @@ function extractImageUrls(record: UnknownRecord): string[] {
     );
   }
 
+  const seenPhotoKeys = new Set<string>();
+
   for (const collection of [
     pickFirst(record, ["Photos"]),
     pickFirst(record, ["Photos", "D", "Results"]),
@@ -822,19 +870,17 @@ function extractImageUrls(record: UnknownRecord): string[] {
     pickFirst(record, ["Media", "D", "Results"]),
     pickFirst(record, ["Media", "Results"]),
   ]) {
-    for (const item of extractRecords(collection)) {
-      for (const path of PHOTO_URL_PATHS) {
-        addUniqueImageUrl(
-          images,
-          normalizeSparkImageUrl(asString(readPath(item, path)))
-        );
+    extractRecords(collection).forEach((item, index) => {
+      const photoKey = buildPhotoRecordKey(item, index);
+
+      if (seenPhotoKeys.has(photoKey)) {
+        return;
       }
 
-      extractUrlLikeValues(item, images);
-    }
+      seenPhotoKeys.add(photoKey);
+      addUniqueImageUrl(images, pickPreferredPhotoUrl(item));
+    });
   }
-
-  extractUrlLikeValues(record, images);
 
   return images;
 }
@@ -843,71 +889,26 @@ function extractImage(record: UnknownRecord): string {
   return extractImageUrls(record)[0] ?? FALLBACK_IMAGE;
 }
 
-function extractUrlLikeValues(value: unknown, target: string[], depth = 0): void {
-  if (depth > 5 || value == null) {
-    return;
-  }
-
-  if (typeof value === "string") {
-    const normalized = normalizeSparkImageUrl(value);
-
-    if (normalized) {
-      addUniqueImageUrl(target, normalized);
-    }
-
-    return;
-  }
-
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      extractUrlLikeValues(item, target, depth + 1);
-    }
-    return;
-  }
-
-  const record = getRecord(value);
-
-  if (!record) {
-    return;
-  }
-
-  for (const [key, nestedValue] of Object.entries(record)) {
-    if (
-      typeof nestedValue === "string" &&
-      /(uri|url|media|photo)/i.test(key)
-    ) {
-      const normalized = normalizeSparkImageUrl(nestedValue);
-
-      if (normalized) {
-        addUniqueImageUrl(target, normalized);
-      }
-    } else {
-      extractUrlLikeValues(nestedValue, target, depth + 1);
-    }
-  }
-}
-
 function extractImageUrlsFromPayload(payload: unknown): string[] {
   const urls: string[] = [];
+  const seenPhotoKeys = new Set<string>();
 
-  for (const item of extractResults(payload)) {
+  extractResults(payload).forEach((item, index) => {
     const record = getRecord(item);
 
     if (!record) {
-      continue;
+      return;
     }
 
-    for (const path of PHOTO_URL_PATHS) {
-      addUniqueImageUrl(
-        urls,
-        normalizeSparkImageUrl(asString(readPath(record, path)))
-      );
+    const photoKey = buildPhotoRecordKey(record, index);
+
+    if (seenPhotoKeys.has(photoKey)) {
+      return;
     }
 
-    extractUrlLikeValues(record, urls);
-  }
-
-  extractUrlLikeValues(payload, urls);
+    seenPhotoKeys.add(photoKey);
+    addUniqueImageUrl(urls, pickPreferredPhotoUrl(record));
+  });
 
   return urls;
 }
