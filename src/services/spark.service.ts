@@ -480,6 +480,32 @@ function addUniqueString(target: string[], value: string | undefined): void {
   target.push(value);
 }
 
+function isLikelyImageUrl(value: string): boolean {
+  const lower = value.toLowerCase();
+
+  if (!/^https?:\/\//.test(lower)) {
+    return false;
+  }
+
+  if (
+    /\.(jpg|jpeg|png|webp|gif|avif|bmp|tiff)(\?|#|$)/i.test(lower) ||
+    /\/(true|false)\//.test(lower) ||
+    /\/cdn\.resize\.sparkplatform\.com\//.test(lower)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+function addUniqueImageUrl(target: string[], value: string | undefined): void {
+  if (!value || !isLikelyImageUrl(value)) {
+    return;
+  }
+
+  addUniqueString(target, value);
+}
+
 function extractResults(payload: unknown): unknown[] {
   if (Array.isArray(payload)) {
     return payload;
@@ -776,7 +802,7 @@ function extractImageUrls(record: UnknownRecord): string[] {
     ["image", "url"],
     ["photo"],
   ] as PathSegment[][]) {
-    addUniqueString(
+    addUniqueImageUrl(
       images,
       normalizeSparkImageUrl(asString(readPath(record, directPath)))
     );
@@ -798,7 +824,7 @@ function extractImageUrls(record: UnknownRecord): string[] {
   ]) {
     for (const item of extractRecords(collection)) {
       for (const path of PHOTO_URL_PATHS) {
-        addUniqueString(
+        addUniqueImageUrl(
           images,
           normalizeSparkImageUrl(asString(readPath(item, path)))
         );
@@ -825,8 +851,8 @@ function extractUrlLikeValues(value: unknown, target: string[], depth = 0): void
   if (typeof value === "string") {
     const normalized = normalizeSparkImageUrl(value);
 
-    if (normalized && /^https?:\/\//i.test(normalized)) {
-      addUniqueString(target, normalized);
+    if (normalized) {
+      addUniqueImageUrl(target, normalized);
     }
 
     return;
@@ -852,8 +878,8 @@ function extractUrlLikeValues(value: unknown, target: string[], depth = 0): void
     ) {
       const normalized = normalizeSparkImageUrl(nestedValue);
 
-      if (normalized && /^https?:\/\//i.test(normalized)) {
-        addUniqueString(target, normalized);
+      if (normalized) {
+        addUniqueImageUrl(target, normalized);
       }
     } else {
       extractUrlLikeValues(nestedValue, target, depth + 1);
@@ -872,7 +898,7 @@ function extractImageUrlsFromPayload(payload: unknown): string[] {
     }
 
     for (const path of PHOTO_URL_PATHS) {
-      addUniqueString(
+      addUniqueImageUrl(
         urls,
         normalizeSparkImageUrl(asString(readPath(record, path)))
       );
