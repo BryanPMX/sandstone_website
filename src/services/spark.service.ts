@@ -142,6 +142,19 @@ function asString(value: unknown): string | undefined {
     return String(value);
   }
 
+  const record = getRecord(value);
+
+  if (record) {
+    return (
+      asString(record.Value) ??
+      asString(record.value) ??
+      asString(record.Amount) ??
+      asString(record.amount) ??
+      asString(record.Text) ??
+      asString(record.text)
+    );
+  }
+
   return undefined;
 }
 
@@ -162,6 +175,17 @@ function asNumber(value: unknown): number | undefined {
     if (Number.isFinite(parsed)) {
       return parsed;
     }
+  }
+
+  const record = getRecord(value);
+
+  if (record) {
+    return (
+      asNumber(record.Value) ??
+      asNumber(record.value) ??
+      asNumber(record.Amount) ??
+      asNumber(record.amount)
+    );
   }
 
   return undefined;
@@ -947,29 +971,54 @@ function mapSparkListing(
       pickFirst(
         record,
         ["BedroomsTotal"],
+        ["Bedrooms"],
+        ["Beds"],
         ["BedsTotal"],
+        ["BedsTotalInteger"],
+        ["StandardFields", "Bedrooms"],
+        ["StandardFields", "Beds"],
         ["StandardFields", "BedroomsTotal"],
-        ["StandardFields", "BedsTotal"]
+        ["StandardFields", "BedsTotal"],
+        ["StandardFields", "BedsTotalInteger"]
       )
     ),
     baths: asNumber(
       pickFirst(
         record,
         ["BathroomsTotalDecimal"],
+        ["BathroomsTotal"],
         ["BathroomsTotalInteger"],
+        ["BathsFull"],
+        ["FullBaths"],
         ["BathsTotal"],
+        ["Baths"],
         ["StandardFields", "BathroomsTotalDecimal"],
+        ["StandardFields", "BathroomsTotal"],
         ["StandardFields", "BathroomsTotalInteger"],
-        ["StandardFields", "BathsTotal"]
+        ["StandardFields", "BathsTotal"],
+        ["StandardFields", "Baths"],
+        ["StandardFields", "BathsFull"],
+        ["StandardFields", "FullBaths"]
       )
     ),
     sqft: formatSqft(
       pickFirst(
         record,
         ["BuildingAreaTotal"],
+        ["BuildingArea"],
         ["LivingArea"],
+        ["AboveGradeFinishedArea"],
+        ["BuildingAreaUnits", "Value"],
+        ["TotalFinishedArea"],
+        ["TotalArea"],
+        ["SquareFootage"],
         ["StandardFields", "BuildingAreaTotal"],
-        ["StandardFields", "LivingArea"]
+        ["StandardFields", "BuildingArea"],
+        ["StandardFields", "LivingArea"],
+        ["StandardFields", "AboveGradeFinishedArea"],
+        ["StandardFields", "TotalFinishedArea"],
+        ["StandardFields", "TotalArea"],
+        ["StandardFields", "SquareFootage"]
       )
     ),
     featured: index < 4,
