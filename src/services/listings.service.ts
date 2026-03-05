@@ -382,7 +382,7 @@ async function fetchPropertyCardByIdUncached(
   sourceHint?: DetailLookupSourceHint
 ): Promise<PropertyCard | null> {
   if (hasSparkAccessToken()) {
-    if (sourceHint === "active" && isNumericIdentifier(id)) {
+    if (!sparkId && sourceHint === "active" && isNumericIdentifier(id)) {
       try {
         const activeRouteProperty = await fetchSparkPropertyCardById(id, {
           preferredTarget: sourceHint,
@@ -486,7 +486,7 @@ async function fetchPropertyDetailByIdUncached(
   sourceHint?: DetailLookupSourceHint
 ): Promise<PropertyDetail | null> {
   if (hasSparkAccessToken()) {
-    if (sourceHint === "active" && isNumericIdentifier(id)) {
+    if (!sparkId && sourceHint === "active" && isNumericIdentifier(id)) {
       try {
         const activeRouteProperty = await fetchSparkPropertyDetailById(id, {
           preferredTarget: sourceHint,
