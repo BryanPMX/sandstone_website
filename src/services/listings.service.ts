@@ -118,6 +118,16 @@ function mapFallbackCardToDetail(property: PropertyCard): PropertyDetail {
   return {
     ...property,
     images: [property.image],
+    specs: {
+      interiorFeatures: [
+        "Spacious living room",
+        "Modern kitchen",
+        "Primary suite with walk-in closet",
+        "Hardwood flooring",
+      ],
+      nearbySchools: [],
+      mapAddress: `${property.title}, ${property.location}`,
+    },
     metadataSections: [
       {
         title: "Overview",

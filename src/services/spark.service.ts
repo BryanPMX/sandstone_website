@@ -3,6 +3,7 @@ import "server-only";
 import type {
   PropertyCard,
   PropertyDetail,
+  PropertyDetailSpecs,
   PropertyMetadataItem,
   PropertyMetadataSection,
 } from "@/types";
@@ -850,6 +851,122 @@ function buildAdditionalMetadataSection(record: UnknownRecord): PropertyMetadata
   };
 }
 
+function normalizeSpecListEntry(value: string): string {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function extractSpecList(
+  value: unknown,
+  options?: { split?: boolean }
+): string[] {
+  const splitValues = options?.split ?? true;
+
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => extractSpecList(item, { split: splitValues }));
+  }
+
+  const text = asString(value) ?? formatMetadataValue(value);
+
+  if (!text) {
+    return [];
+  }
+
+  const items = splitValues ? text.split(/[,;|]/g) : [text];
+
+  return items
+    .map((item) => normalizeSpecListEntry(item))
+    .filter((item) => item.length > 0);
+}
+
+function pushUniqueValues(target: string[], values: string[]): void {
+  for (const value of values) {
+    if (!target.includes(value)) {
+      target.push(value);
+    }
+  }
+}
+
+function buildPropertyDetailSpecs(
+  record: UnknownRecord,
+  card: PropertyCard
+): PropertyDetailSpecs {
+  const interiorFeatures: string[] = [];
+
+  for (const source of [
+    pickFirst(record, ["InteriorFeatures"], ["StandardFields", "InteriorFeatures"]),
+    pickFirst(record, ["Appliances"], ["StandardFields", "Appliances"]),
+    pickFirst(record, ["Flooring"], ["StandardFields", "Flooring"]),
+    pickFirst(record, ["LaundryFeatures"], ["StandardFields", "LaundryFeatures"]),
+  ]) {
+    pushUniqueValues(interiorFeatures, extractSpecList(source));
+  }
+
+  if (asBoolean(pickFirst(record, ["FireplaceYN"], ["StandardFields", "FireplaceYN"]))) {
+    pushUniqueValues(interiorFeatures, ["Fireplace"]);
+  }
+
+  if (asBoolean(pickFirst(record, ["CoolingYN"], ["StandardFields", "CoolingYN"]))) {
+    pushUniqueValues(interiorFeatures, ["Central air conditioning"]);
+  }
+
+  const nearbySchools: string[] = [];
+  for (const source of [
+    pickFirst(record, ["ElementarySchool"], ["StandardFields", "ElementarySchool"]),
+    pickFirst(record, ["MiddleOrJuniorSchool"], ["StandardFields", "MiddleOrJuniorSchool"]),
+    pickFirst(record, ["HighSchool"], ["StandardFields", "HighSchool"]),
+  ]) {
+    pushUniqueValues(nearbySchools, extractSpecList(source, { split: false }));
+  }
+
+  const mapAddress = asString(
+    pickFirst(
+      record,
+      ["UnparsedAddress"],
+      ["StandardFields", "UnparsedAddress"],
+      ["Address", "FullStreetAddress"]
+    )
+  ) ?? `${card.title}, ${card.location}`;
+
+  return {
+    interiorFeatures: interiorFeatures.slice(0, 12),
+    nearbySchools: nearbySchools.slice(0, 6),
+    mapAddress,
+    latitude: asNumber(
+      pickFirst(record, ["Latitude"], ["StandardFields", "Latitude"])
+    ),
+    longitude: asNumber(
+      pickFirst(record, ["Longitude"], ["StandardFields", "Longitude"])
+    ),
+    listingAgentName: asString(
+      pickFirst(
+        record,
+        ["ListAgentFullName"],
+        ["StandardFields", "ListAgentFullName"]
+      )
+    ),
+    listingAgentPhone: asString(
+      pickFirst(
+        record,
+        ["ListAgentDirectPhone"],
+        ["StandardFields", "ListAgentDirectPhone"],
+        ["ListAgentPreferredPhone"],
+        ["StandardFields", "ListAgentPreferredPhone"],
+        ["ListOfficePhone"],
+        ["StandardFields", "ListOfficePhone"]
+      )
+    ),
+    listingAgentEmail: asString(
+      pickFirst(
+        record,
+        ["ListAgentEmail"],
+        ["StandardFields", "ListAgentEmail"],
+        ["ListOfficeEmail"],
+        ["StandardFields", "ListOfficeEmail"]
+      )
+    ),
+  };
+}
+
 function mapSparkPropertyDetail(item: unknown): PropertyDetail | null {
   const record = getRecord(item);
 
@@ -1054,6 +1171,7 @@ function mapSparkPropertyDetail(item: unknown): PropertyDetail | null {
     ...card,
     description,
     images: images.length > 0 ? images : [card.image],
+    specs: buildPropertyDetailSpecs(record, card),
     metadataSections: sections,
   };
 }

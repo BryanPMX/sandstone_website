@@ -28,8 +28,20 @@ export interface PropertyMetadataSection {
   items: PropertyMetadataItem[];
 }
 
+export interface PropertyDetailSpecs {
+  interiorFeatures: string[];
+  nearbySchools: string[];
+  mapAddress?: string;
+  latitude?: number;
+  longitude?: number;
+  listingAgentName?: string;
+  listingAgentPhone?: string;
+  listingAgentEmail?: string;
+}
+
 export interface PropertyDetail extends PropertyCard {
   description?: string;
   images: string[];
+  specs: PropertyDetailSpecs;
   metadataSections: PropertyMetadataSection[];
 }

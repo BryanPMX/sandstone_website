@@ -1,6 +1,7 @@
 export type {
   PropertyCard,
   PropertyDetail,
+  PropertyDetailSpecs,
   PropertyMetadataItem,
   PropertyMetadataSection,
 } from "./property";
