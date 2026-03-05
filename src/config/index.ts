@@ -8,6 +8,7 @@ export {
   getSparkMyListingsPath,
   hasSparkAccessToken,
   getLeadWebhookUrl,
+  getListingInquiryWebhookUrl,
   getMslFeedUrl,
   getRoluWebhookUrl,
   getTurnstileSecretKey,

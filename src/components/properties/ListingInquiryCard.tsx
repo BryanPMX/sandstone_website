@@ -14,6 +14,10 @@ const initialState: SubmitLeadState | null = null;
 interface ListingInquiryCardProps {
   listingTitle: string;
   listingRouteId: string;
+  listingNumber?: string;
+  listingSparkId?: string;
+  listingPath: string;
+  listingPrice: string;
   listingAgentName?: string;
   whatsappHref: string;
 }
@@ -21,6 +25,10 @@ interface ListingInquiryCardProps {
 export function ListingInquiryCard({
   listingTitle,
   listingRouteId,
+  listingNumber,
+  listingSparkId,
+  listingPath,
+  listingPrice,
   listingAgentName,
   whatsappHref,
 }: ListingInquiryCardProps) {
@@ -38,6 +46,10 @@ export function ListingInquiryCard({
       <form action={formAction} className="mt-4 space-y-3">
         <input type="hidden" name="listingTitle" value={listingTitle} />
         <input type="hidden" name="listingRouteId" value={listingRouteId} />
+        <input type="hidden" name="listingNumber" value={listingNumber ?? ""} />
+        <input type="hidden" name="listingSparkId" value={listingSparkId ?? ""} />
+        <input type="hidden" name="listingPath" value={listingPath} />
+        <input type="hidden" name="listingPrice" value={listingPrice} />
         <input
           type="hidden"
           name="listingAgentName"

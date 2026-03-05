@@ -40,6 +40,14 @@ export function getLeadWebhookUrl(formType: LeadFormType): string | undefined {
   return undefined;
 }
 
+export function getListingInquiryWebhookUrl(): string | undefined {
+  return (
+    getEnv("ROLU_WEBHOOK_LISTING_INQUIRY_URL") ??
+    getEnv("ROLU_WEBHOOK_CONTACT_URL") ??
+    getRoluWebhookUrl()
+  );
+}
+
 export function getTurnstileSecretKey(): string | undefined {
   return getEnv("TURNSTILE_SECRET_KEY");
 }

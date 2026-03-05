@@ -7,7 +7,7 @@ Goal: keep listing data fresh and keep lead delivery reliable.
 - `SPARK_ACCESS_TOKEN`: primary server-only listings credential
 - `MSL_FEED_URL`: optional fallback endpoint returning an array of listings
 - `ROLU_WEBHOOK_URL`: backward-compatible contact webhook fallback
-- `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`, `ROLU_WEBHOOK_GIVEAWAY_URL`: preferred form-specific lead webhooks
+- `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`, `ROLU_WEBHOOK_GIVEAWAY_URL`, `ROLU_WEBHOOK_LISTING_INQUIRY_URL`: preferred form-specific lead webhooks
 
 ## Listings Source Order
 
@@ -62,6 +62,8 @@ Contact form submissions send:
 - `email`
 - `phone`
 - `message`
+
+Listing inquiry submissions on `/listings/[id]` send the same lead contract and append listing context into `message` (route id, MLS number, spark id, list price, listing path, and listing agent when available).
 
 Validation happens server-side before webhook submission.
 

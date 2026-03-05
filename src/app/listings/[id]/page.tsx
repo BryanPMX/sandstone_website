@@ -102,6 +102,22 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
     fallbackQuery: heading,
   });
   const agentName = property.specs.listingAgentName;
+  const listingPath = (() => {
+    const params = new URLSearchParams();
+
+    if (query.sparkId?.trim()) {
+      params.set("sparkId", query.sparkId.trim());
+    }
+
+    if (query.src?.trim()) {
+      params.set("src", query.src.trim());
+    }
+
+    const queryString = params.toString();
+    const basePath = `/listings/${property.routeId}`;
+
+    return queryString ? `${basePath}?${queryString}` : basePath;
+  })();
   const dialTarget = normalizeDialTarget(property.specs.listingAgentPhone) || SITE_CONTACT.phoneRaw;
   const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
     ? `1${dialTarget.replace(/^\+/, "")}`
@@ -220,6 +236,10 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
               <ListingInquiryCard
                 listingTitle={property.title}
                 listingRouteId={property.routeId}
+                listingNumber={property.listingNumber}
+                listingSparkId={property.sparkId}
+                listingPath={listingPath}
+                listingPrice={property.price}
                 listingAgentName={agentName}
                 whatsappHref={whatsappHref}
               />

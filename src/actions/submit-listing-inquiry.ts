@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { getLeadWebhookUrl } from "@/config";
+import { getListingInquiryWebhookUrl } from "@/config";
 import { leadSubmissionService } from "@/services";
 import type { SubmitLeadState } from "@/types";
 
@@ -11,6 +11,10 @@ const ListingInquirySchema = z.object({
   phone: z.string().min(1, "Phone is required").max(30),
   listingTitle: z.string().max(220).optional().default(""),
   listingRouteId: z.string().max(120).optional().default(""),
+  listingNumber: z.string().max(80).optional().default(""),
+  listingSparkId: z.string().max(120).optional().default(""),
+  listingPath: z.string().max(240).optional().default(""),
+  listingPrice: z.string().max(120).optional().default(""),
   listingAgentName: z.string().max(140).optional().default(""),
 });
 
@@ -41,6 +45,10 @@ export async function submitListingInquiry(
     phone: String(formData.get("phone") ?? ""),
     listingTitle: String(formData.get("listingTitle") ?? ""),
     listingRouteId: String(formData.get("listingRouteId") ?? ""),
+    listingNumber: String(formData.get("listingNumber") ?? ""),
+    listingSparkId: String(formData.get("listingSparkId") ?? ""),
+    listingPath: String(formData.get("listingPath") ?? ""),
+    listingPrice: String(formData.get("listingPrice") ?? ""),
     listingAgentName: String(formData.get("listingAgentName") ?? ""),
   });
 
@@ -52,7 +60,7 @@ export async function submitListingInquiry(
     };
   }
 
-  const webhookUrl = getLeadWebhookUrl("contact");
+  const webhookUrl = getListingInquiryWebhookUrl();
 
   if (!webhookUrl) {
     return {
@@ -64,7 +72,11 @@ export async function submitListingInquiry(
   const { firstName, lastName } = splitFullName(parsed.data.fullName);
   const detailParts = [
     parsed.data.listingTitle ? `Listing: ${parsed.data.listingTitle}` : null,
-    parsed.data.listingRouteId ? `Listing ID: ${parsed.data.listingRouteId}` : null,
+    parsed.data.listingRouteId ? `Listing Route ID: ${parsed.data.listingRouteId}` : null,
+    parsed.data.listingNumber ? `MLS Number: ${parsed.data.listingNumber}` : null,
+    parsed.data.listingSparkId ? `Spark ID: ${parsed.data.listingSparkId}` : null,
+    parsed.data.listingPrice ? `List Price: ${parsed.data.listingPrice}` : null,
+    parsed.data.listingPath ? `Listing Path: ${parsed.data.listingPath}` : null,
     parsed.data.listingAgentName ? `Flex MLS Agent: ${parsed.data.listingAgentName}` : null,
   ].filter((item): item is string => Boolean(item));
 
