@@ -1,25 +1,15 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { ListingInquiryCard } from "@/components/properties";
+import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
 import { fetchPropertyDetailById } from "@/services";
 import { SITE_CONTACT } from "@/constants";
-import { cn, shouldBypassNextImageOptimization } from "@/lib";
 
 interface PageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ sparkId?: string; src?: string }>;
-}
-
-interface ListingGalleryImageProps {
-  src?: string;
-  alt: string;
-  className: string;
-  sizes: string;
-  priority?: boolean;
 }
 
 function resolveDetailSourceHint(
@@ -70,48 +60,6 @@ function buildMapUrls(input: {
   };
 }
 
-function ListingGalleryImage({
-  src,
-  alt,
-  className,
-  sizes,
-  priority = false,
-}: ListingGalleryImageProps) {
-  if (!src) {
-    return (
-      <div
-        className={cn(
-          "flex min-h-[170px] items-center justify-center rounded-2xl border border-dashed border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] px-4 text-center text-sm text-[var(--sandstone-charcoal)]/62",
-          className
-        )}
-      >
-        Additional photos coming soon.
-      </div>
-    );
-  }
-
-  const bypassOptimization = shouldBypassNextImageOptimization(src);
-
-  return (
-    <div
-      className={cn(
-        "relative min-h-[170px] overflow-hidden rounded-2xl bg-[var(--sandstone-navy)]/10",
-        className
-      )}
-    >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizes}
-        className="object-cover"
-        priority={priority && !bypassOptimization}
-        unoptimized={bypassOptimization}
-      />
-    </div>
-  );
-}
-
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
 
@@ -137,13 +85,6 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
   const uniqueImages = Array.from(
     new Set([property.image, ...property.images].filter(Boolean))
   );
-  const galleryImages = [
-    uniqueImages[0] ?? property.image,
-    uniqueImages[1],
-    uniqueImages[2],
-    uniqueImages[3],
-  ];
-  const remainingImages = uniqueImages.slice(4);
   const primaryStats = [
     property.beds != null ? `${formatFactNumber(property.beds)} Beds` : null,
     property.baths != null ? `${formatFactNumber(property.baths)} Baths` : null,
@@ -186,61 +127,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
               {heading}
             </h1>
 
-            {uniqueImages.length >= 4 ? (
-              <div className="mt-6 grid gap-2 md:gap-3 lg:grid-cols-[1.12fr_0.9fr_1.12fr] lg:auto-rows-[172px]">
-                <ListingGalleryImage
-                  src={galleryImages[0]}
-                  alt={property.title}
-                  className="lg:row-span-2 lg:min-h-0"
-                  sizes="(max-width: 1024px) 100vw, 36vw"
-                  priority
-                />
-                <ListingGalleryImage
-                  src={galleryImages[1]}
-                  alt={`${property.title} photo 2`}
-                  className="lg:min-h-0"
-                  sizes="(max-width: 1024px) 100vw, 20vw"
-                />
-                <ListingGalleryImage
-                  src={galleryImages[2]}
-                  alt={`${property.title} photo 3`}
-                  className="lg:min-h-0"
-                  sizes="(max-width: 1024px) 100vw, 20vw"
-                />
-                <ListingGalleryImage
-                  src={galleryImages[3]}
-                  alt={`${property.title} photo 4`}
-                  className="lg:row-span-2 lg:min-h-0"
-                  sizes="(max-width: 1024px) 100vw, 36vw"
-                />
-              </div>
-            ) : (
-              <div className="mt-6 grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-3">
-                {uniqueImages.map((image, index) => (
-                  <ListingGalleryImage
-                    key={`${property.id}-photo-${index}`}
-                    src={image}
-                    alt={`${property.title} photo ${index + 1}`}
-                    className="min-h-[190px] md:min-h-[220px]"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    priority={index === 0}
-                  />
-                ))}
-              </div>
-            )}
-            {remainingImages.length > 0 && (
-              <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3 lg:grid-cols-4">
-                {remainingImages.map((image, index) => (
-                  <ListingGalleryImage
-                    key={`${property.id}-extra-${index}`}
-                    src={image}
-                    alt={`${property.title} photo ${index + 5}`}
-                    className="min-h-[155px] md:min-h-[170px]"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  />
-                ))}
-              </div>
-            )}
+            <ListingDetailGallery images={uniqueImages} title={property.title} />
 
             <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 md:gap-x-8">
               <p className="font-heading text-4xl font-bold text-[var(--sandstone-navy)]">
