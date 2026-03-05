@@ -70,7 +70,18 @@ const PHOTO_URL_PATHS: PathSegment[][] = [
   ["UriLarge"],
   ["Uri"],
   ["MediaURL"],
+  ["StandardFields", "Uri2048"],
+  ["StandardFields", "Uri1600"],
+  ["StandardFields", "Uri1280"],
+  ["StandardFields", "Uri1024"],
+  ["StandardFields", "Uri800"],
+  ["StandardFields", "Uri640"],
+  ["StandardFields", "Uri300"],
+  ["StandardFields", "UriLarge"],
+  ["StandardFields", "Uri"],
+  ["StandardFields", "MediaURL"],
   ["url"],
+  ["StandardFields", "url"],
 ];
 
 function getRecord(value: unknown): UnknownRecord | null {
@@ -432,6 +443,12 @@ function extractRecords(value: unknown): UnknownRecord[] {
 
   const wrapped = getRecord(record.D);
 
+  if (Array.isArray(record.D)) {
+    return record.D
+      .map((item) => getRecord(item))
+      .filter((item): item is UnknownRecord => Boolean(item));
+  }
+
   if (wrapped && Array.isArray(wrapped.Results)) {
     return wrapped.Results
       .map((item) => getRecord(item))
@@ -468,7 +485,15 @@ function extractResults(payload: unknown): unknown[] {
 
   const root = getRecord(payload);
   const wrapped = getRecord(root?.D);
-  const candidates = [wrapped?.Results, root?.Results, root?.results, root?.value];
+  const candidates = [
+    wrapped?.Results,
+    wrapped?.results,
+    wrapped?.value,
+    root?.Results,
+    root?.results,
+    root?.value,
+    root?.D,
+  ];
 
   for (const candidate of candidates) {
     if (Array.isArray(candidate)) {
@@ -776,14 +801,62 @@ function extractImageUrls(record: UnknownRecord): string[] {
           normalizeSparkImageUrl(asString(readPath(item, path)))
         );
       }
+
+      extractUrlLikeValues(item, images);
     }
   }
+
+  extractUrlLikeValues(record, images);
 
   return images;
 }
 
 function extractImage(record: UnknownRecord): string {
   return extractImageUrls(record)[0] ?? FALLBACK_IMAGE;
+}
+
+function extractUrlLikeValues(value: unknown, target: string[], depth = 0): void {
+  if (depth > 5 || value == null) {
+    return;
+  }
+
+  if (typeof value === "string") {
+    const normalized = normalizeSparkImageUrl(value);
+
+    if (normalized && /^https?:\/\//i.test(normalized)) {
+      addUniqueString(target, normalized);
+    }
+
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      extractUrlLikeValues(item, target, depth + 1);
+    }
+    return;
+  }
+
+  const record = getRecord(value);
+
+  if (!record) {
+    return;
+  }
+
+  for (const [key, nestedValue] of Object.entries(record)) {
+    if (
+      typeof nestedValue === "string" &&
+      /(uri|url|media|photo)/i.test(key)
+    ) {
+      const normalized = normalizeSparkImageUrl(nestedValue);
+
+      if (normalized && /^https?:\/\//i.test(normalized)) {
+        addUniqueString(target, normalized);
+      }
+    } else {
+      extractUrlLikeValues(nestedValue, target, depth + 1);
+    }
+  }
 }
 
 function extractImageUrlsFromPayload(payload: unknown): string[] {
@@ -802,7 +875,11 @@ function extractImageUrlsFromPayload(payload: unknown): string[] {
         normalizeSparkImageUrl(asString(readPath(record, path)))
       );
     }
+
+    extractUrlLikeValues(record, urls);
   }
+
+  extractUrlLikeValues(payload, urls);
 
   return urls;
 }

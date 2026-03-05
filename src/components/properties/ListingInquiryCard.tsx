@@ -123,7 +123,7 @@ export function ListingInquiryCard({
         </div>
 
         <p className="text-center text-xs text-[var(--sandstone-charcoal)]/65">
-          Listing agent from Flex MLS:{" "}
+          Listing Agent:{" "}
           <span className="font-semibold text-[var(--sandstone-charcoal)]/80">
             {listingAgentName || "Not available"}
           </span>
