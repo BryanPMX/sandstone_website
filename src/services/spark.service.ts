@@ -430,8 +430,22 @@ function extractRecords(value: unknown): UnknownRecord[] {
     return [];
   }
 
+  const wrapped = getRecord(record.D);
+
+  if (wrapped && Array.isArray(wrapped.Results)) {
+    return wrapped.Results
+      .map((item) => getRecord(item))
+      .filter((item): item is UnknownRecord => Boolean(item));
+  }
+
   if (Array.isArray(record.Results)) {
     return record.Results
+      .map((item) => getRecord(item))
+      .filter((item): item is UnknownRecord => Boolean(item));
+  }
+
+  if (Array.isArray(record.results)) {
+    return record.results
       .map((item) => getRecord(item))
       .filter((item): item is UnknownRecord => Boolean(item));
   }
@@ -622,6 +636,82 @@ function buildListingRouteId(record: UnknownRecord, internalId: string): string 
   return buildListingNumber(record) ?? internalId;
 }
 
+function joinNameParts(
+  firstName: string | undefined,
+  lastName: string | undefined
+): string | undefined {
+  const combined = [firstName, lastName].filter(Boolean).join(" ").trim();
+  return combined || undefined;
+}
+
+function buildListingAgentName(record: UnknownRecord): string | undefined {
+  const directName = asString(
+    pickFirst(
+      record,
+      ["ListAgentFullName"],
+      ["StandardFields", "ListAgentFullName"],
+      ["ListAgentName"],
+      ["StandardFields", "ListAgentName"],
+      ["ListingAgentName"],
+      ["StandardFields", "ListingAgentName"],
+      ["ListAgent", "FullName"],
+      ["StandardFields", "ListAgent", "FullName"],
+      ["ListAgent", "MemberFullName"],
+      ["StandardFields", "ListAgent", "MemberFullName"],
+      ["ListAgent", "Name"],
+      ["StandardFields", "ListAgent", "Name"],
+      ["ListAgent", "MemberName"],
+      ["StandardFields", "ListAgent", "MemberName"]
+    )
+  );
+
+  if (directName) {
+    return directName;
+  }
+
+  const firstName = asString(
+    pickFirst(
+      record,
+      ["ListAgentFirstName"],
+      ["StandardFields", "ListAgentFirstName"],
+      ["ListingAgentFirstName"],
+      ["StandardFields", "ListingAgentFirstName"],
+      ["ListAgent", "FirstName"],
+      ["StandardFields", "ListAgent", "FirstName"],
+      ["ListAgent", "MemberFirstName"],
+      ["StandardFields", "ListAgent", "MemberFirstName"]
+    )
+  );
+  const lastName = asString(
+    pickFirst(
+      record,
+      ["ListAgentLastName"],
+      ["StandardFields", "ListAgentLastName"],
+      ["ListingAgentLastName"],
+      ["StandardFields", "ListingAgentLastName"],
+      ["ListAgent", "LastName"],
+      ["StandardFields", "ListAgent", "LastName"],
+      ["ListAgent", "MemberLastName"],
+      ["StandardFields", "ListAgent", "MemberLastName"]
+    )
+  );
+
+  const fullNameFromParts = joinNameParts(firstName, lastName);
+  if (fullNameFromParts) {
+    return fullNameFromParts;
+  }
+
+  return asString(
+    pickFirst(
+      record,
+      ["CoListAgentFullName"],
+      ["StandardFields", "CoListAgentFullName"],
+      ["ListOfficeContactName"],
+      ["StandardFields", "ListOfficeContactName"]
+    )
+  );
+}
+
 function extractImageUrls(record: UnknownRecord): string[] {
   const images: string[] = [];
 
@@ -667,11 +757,17 @@ function extractImageUrls(record: UnknownRecord): string[] {
 
   for (const collection of [
     pickFirst(record, ["Photos"]),
+    pickFirst(record, ["Photos", "D", "Results"]),
     pickFirst(record, ["Photos", "Results"]),
     pickFirst(record, ["PrimaryPhoto"]),
+    pickFirst(record, ["PrimaryPhoto", "D", "Results"]),
     pickFirst(record, ["PrimaryPhoto", "Results"]),
     pickFirst(record, ["StandardFields", "Photos"]),
+    pickFirst(record, ["StandardFields", "Photos", "D", "Results"]),
+    pickFirst(record, ["StandardFields", "Photos", "Results"]),
     pickFirst(record, ["Media"]),
+    pickFirst(record, ["Media", "D", "Results"]),
+    pickFirst(record, ["Media", "Results"]),
   ]) {
     for (const item of extractRecords(collection)) {
       for (const path of PHOTO_URL_PATHS) {
@@ -688,6 +784,27 @@ function extractImageUrls(record: UnknownRecord): string[] {
 
 function extractImage(record: UnknownRecord): string {
   return extractImageUrls(record)[0] ?? FALLBACK_IMAGE;
+}
+
+function extractImageUrlsFromPayload(payload: unknown): string[] {
+  const urls: string[] = [];
+
+  for (const item of extractResults(payload)) {
+    const record = getRecord(item);
+
+    if (!record) {
+      continue;
+    }
+
+    for (const path of PHOTO_URL_PATHS) {
+      addUniqueString(
+        urls,
+        normalizeSparkImageUrl(asString(readPath(record, path)))
+      );
+    }
+  }
+
+  return urls;
 }
 
 function mapSparkListing(
@@ -707,6 +824,7 @@ function mapSparkListing(
     sparkId,
     sparkSource,
     listingNumber,
+    listingAgentName: buildListingAgentName(record),
     title: buildTitle(record, routeId),
     location: buildLocation(record),
     price: formatPrice(
@@ -937,13 +1055,7 @@ function buildPropertyDetailSpecs(
     longitude: asNumber(
       pickFirst(record, ["Longitude"], ["StandardFields", "Longitude"])
     ),
-    listingAgentName: asString(
-      pickFirst(
-        record,
-        ["ListAgentFullName"],
-        ["StandardFields", "ListAgentFullName"]
-      )
-    ),
+    listingAgentName: buildListingAgentName(record),
     listingAgentPhone: asString(
       pickFirst(
         record,
@@ -1392,6 +1504,46 @@ async function fetchSparkListingRecordByDirectPath(
   return null;
 }
 
+async function fetchSparkListingPhotosByDirectPath(
+  id: string,
+  options?: SparkListingLookupOptions,
+  preferredTarget?: SparkLookupTarget
+): Promise<string[]> {
+  for (const path of getSparkLookupPaths(
+    preferredTarget,
+    options?.restrictToPreferredTarget ?? false
+  )) {
+    const response = await fetchSparkPayload(
+      buildSparkUrl({
+        path: `${path.replace(/\/$/, "")}/${encodeURIComponent(id)}/photos`,
+        limit: 50,
+        expand: [],
+      }),
+      options
+    );
+
+    if (response.ok) {
+      const payload = (await response.json()) as unknown;
+      const imageUrls = extractImageUrlsFromPayload(payload);
+
+      if (imageUrls.length > 0) {
+        return imageUrls;
+      }
+
+      continue;
+    }
+
+    if (response.status !== 404) {
+      const responseText = await response.text();
+      throw new Error(
+        `[Spark] Photos request failed (${response.status}): ${responseText.slice(0, 400)}`
+      );
+    }
+  }
+
+  return [];
+}
+
 async function fetchSparkListingRecordByFilters(
   id: string,
   options?: SparkListingLookupOptions,
@@ -1583,5 +1735,65 @@ export async function fetchSparkPropertyDetailById(
   options?: SparkListingLookupOptions
 ): Promise<PropertyDetail | null> {
   const listing = await fetchSparkListingRecordByRouteId(id, options);
-  return listing ? mapSparkPropertyDetail(listing) : null;
+
+  if (!listing) {
+    return null;
+  }
+
+  const detail = mapSparkPropertyDetail(listing);
+
+  if (!detail) {
+    return null;
+  }
+
+  if (detail.images.length > 1) {
+    return detail;
+  }
+
+  const candidateIds = Array.from(
+    new Set(
+      [
+        id,
+        buildSparkDirectLookupId(listing),
+        buildListingNumber(listing),
+        buildListingInternalId(listing, 0),
+      ].map((value) => value?.trim()).filter((value): value is string => Boolean(value))
+    )
+  );
+  const supplementalImages: string[] = [];
+
+  for (const candidateId of candidateIds) {
+    try {
+      const images = await fetchSparkListingPhotosByDirectPath(
+        candidateId,
+        options,
+        options?.preferredTarget
+      );
+
+      for (const image of images) {
+        addUniqueString(supplementalImages, image);
+      }
+
+      if (supplementalImages.length > 1) {
+        break;
+      }
+    } catch (error) {
+      console.error("[Spark] Photo endpoint lookup failed for listing detail.", error);
+    }
+  }
+
+  if (supplementalImages.length === 0) {
+    return detail;
+  }
+
+  const mergedImages = [detail.image];
+
+  for (const image of supplementalImages) {
+    addUniqueString(mergedImages, image);
+  }
+
+  return {
+    ...detail,
+    images: mergedImages,
+  };
 }

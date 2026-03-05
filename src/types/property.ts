@@ -12,6 +12,7 @@ export interface PropertyCard {
   price: string;
   image: string;
   listingNumber?: string;
+  listingAgentName?: string;
   beds?: number;
   baths?: number;
   sqft?: string;

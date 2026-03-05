@@ -127,6 +127,7 @@ function mapFallbackCardToDetail(property: PropertyCard): PropertyDetail {
       ],
       nearbySchools: [],
       mapAddress: `${property.title}, ${property.location}`,
+      listingAgentName: property.listingAgentName,
     },
     metadataSections: [
       {
@@ -414,6 +415,21 @@ async function fetchPropertyCardByIdUncached(
       }
     }
 
+    if (sparkId && sourceHint) {
+      try {
+        const unhintedSparkIdProperty = await fetchSparkPropertyCardById(sparkId, {
+          preferDirectLookup: true,
+          identifierHint: "spark-id",
+        });
+
+        if (unhintedSparkIdProperty) {
+          return unhintedSparkIdProperty;
+        }
+      } catch (error) {
+        console.error("[Listings] Unhinted Spark-id property lookup failed, retrying by route id.", error);
+      }
+    }
+
     try {
       const property = await fetchSparkPropertyCardById(id, {
         preferredTarget: sourceHint,
@@ -500,6 +516,21 @@ async function fetchPropertyDetailByIdUncached(
         }
       } catch (error) {
         console.error("[Listings] Spark hinted detail lookup failed, retrying by route id.", error);
+      }
+    }
+
+    if (sparkId && sourceHint) {
+      try {
+        const unhintedSparkIdProperty = await fetchSparkPropertyDetailById(sparkId, {
+          preferDirectLookup: true,
+          identifierHint: "spark-id",
+        });
+
+        if (unhintedSparkIdProperty) {
+          return unhintedSparkIdProperty;
+        }
+      } catch (error) {
+        console.error("[Listings] Unhinted Spark-id detail lookup failed, retrying by route id.", error);
       }
     }
 
