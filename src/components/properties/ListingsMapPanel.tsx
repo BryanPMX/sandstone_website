@@ -8,6 +8,9 @@ const EL_PASO_BOUNDS_PADDING = 72;
 const DEFAULT_MAP_ZOOM = 11;
 const SINGLE_MARKER_ZOOM = 13;
 const SANDSTONE_SAND_GOLD_HEX = "#b79678";
+const MOBILE_MAX_WIDTH_MEDIA_QUERY = "(max-width: 1023px)";
+const MOBILE_MARKER_BATCH_SIZE = 24;
+const DESKTOP_MARKER_BATCH_SIZE = 90;
 
 type MapStatus = "idle" | "loading" | "ready" | "missing-key" | "error";
 type MappableProperty = PropertyCard & { latitude: number; longitude: number };
@@ -53,7 +56,7 @@ interface GoogleMapsNamespace {
       streetViewControl: boolean;
       fullscreenControl: boolean;
       clickableIcons: boolean;
-      gestureHandling: "greedy";
+      gestureHandling: "greedy" | "cooperative";
     }
   ) => GoogleMapsMapInstance;
   Marker: new (options: {
@@ -163,6 +166,25 @@ function buildPriceMarkerIcon(price: string, mapsApi: GoogleMapsNamespace): Mark
   };
 }
 
+function isMobileViewport(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return false;
+  }
+
+  return window.matchMedia(MOBILE_MAX_WIDTH_MEDIA_QUERY).matches;
+}
+
+function yieldToMainThread(): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") {
+      resolve();
+      return;
+    }
+
+    window.requestAnimationFrame(() => resolve());
+  });
+}
+
 function loadGoogleMaps(apiKey: string): Promise<void> {
   if (typeof window === "undefined") {
     return Promise.resolve();
@@ -198,6 +220,7 @@ export function ListingsMapPanel({ properties }: ListingsMapPanelProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const googleMapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
   const [status, setStatus] = useState<MapStatus>("idle");
+  const [shouldInitializeMap, setShouldInitializeMap] = useState(false);
   const mappableProperties = useMemo(
     () =>
       properties.filter(
@@ -208,8 +231,76 @@ export function ListingsMapPanel({ properties }: ListingsMapPanelProps) {
   );
 
   useEffect(() => {
+    const container = mapContainerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    let cancelled = false;
+    let idleTimer: number | null = null;
+
+    const enableInitialization = () => {
+      if (!cancelled) {
+        setShouldInitializeMap(true);
+      }
+    };
+
+    if (!isMobileViewport()) {
+      enableInitialization();
+
+      return () => {
+        cancelled = true;
+        if (idleTimer != null) {
+          window.clearTimeout(idleTimer);
+        }
+      };
+    }
+
+    // On mobile, defer heavy map setup until this section is near viewport and the browser settles.
+    const initializeSoon = () => {
+      idleTimer = window.setTimeout(enableInitialization, 180);
+    };
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            observer.disconnect();
+            initializeSoon();
+          }
+        },
+        { rootMargin: "160px 0px" }
+      );
+
+      observer.observe(container);
+
+      return () => {
+        cancelled = true;
+        observer.disconnect();
+        if (idleTimer != null) {
+          window.clearTimeout(idleTimer);
+        }
+      };
+    }
+
+    initializeSoon();
+
+    return () => {
+      cancelled = true;
+      if (idleTimer != null) {
+        window.clearTimeout(idleTimer);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (!googleMapsKey) {
       setStatus("missing-key");
+      return;
+    }
+
+    if (!shouldInitializeMap) {
       return;
     }
 
@@ -227,7 +318,7 @@ export function ListingsMapPanel({ properties }: ListingsMapPanelProps) {
     setStatus("loading");
 
     loadGoogleMaps(googleMapsKey)
-      .then(() => {
+      .then(async () => {
         if (cancelled) {
           return;
         }
@@ -238,6 +329,9 @@ export function ListingsMapPanel({ properties }: ListingsMapPanelProps) {
           throw new Error("Google Maps API is unavailable.");
         }
 
+        const isMobile = isMobileViewport();
+        const markerBatchSize = isMobile ? MOBILE_MARKER_BATCH_SIZE : DESKTOP_MARKER_BATCH_SIZE;
+        const markerIconCache = new Map<string, MarkerIcon>();
         const map = new mapsApi.Map(container, {
           center: DEFAULT_CENTER,
           zoom: DEFAULT_MAP_ZOOM,
@@ -245,57 +339,75 @@ export function ListingsMapPanel({ properties }: ListingsMapPanelProps) {
           streetViewControl: false,
           fullscreenControl: false,
           clickableIcons: false,
-          gestureHandling: "greedy",
+          gestureHandling: isMobile ? "cooperative" : "greedy",
         });
 
         if (mappableProperties.length > 0) {
           const bounds = new mapsApi.LatLngBounds();
+          for (let start = 0; start < mappableProperties.length; start += markerBatchSize) {
+            if (cancelled) {
+              return;
+            }
 
-          mappableProperties.forEach((property) => {
-            const position = {
-              lat: property.latitude,
-              lng: property.longitude,
-            };
-            const marker = new mapsApi.Marker({
-              map,
-              position,
-              icon: buildPriceMarkerIcon(property.price, mapsApi),
-              title: `${property.price} · ${property.title}`,
-            });
+            const batch = mappableProperties.slice(start, start + markerBatchSize);
 
-            const detailUrl = buildDetailHref(property);
-            // The card model stores a single primary image; use this first image in the map popup.
-            const primaryImage = sanitizeExternalImageUrl(property.image);
-            const detailsContent = [
-              `<div style="max-width:240px;font-family:Montserrat,Arial,sans-serif;">`,
-              primaryImage
-                ? `<img src="${escapeHtml(primaryImage)}" alt="${escapeHtml(property.title)}" style="display:block;width:100%;height:128px;object-fit:cover;border-radius:12px;margin:0 0 10px;" loading="lazy" />`
-                : "",
-              `<p style="margin:0;font-weight:700;color:${SANDSTONE_SAND_GOLD_HEX};">${escapeHtml(property.price)}</p>`,
-              `<p style="margin:6px 0 0;color:#2d2f36;font-weight:600;">${escapeHtml(property.title)}</p>`,
-              `<p style="margin:4px 0 0;color:#2d2f36;opacity:0.82;">${escapeHtml(property.location)}</p>`,
-              `<a style="display:inline-block;margin-top:10px;color:${SANDSTONE_SAND_GOLD_HEX};font-weight:700;text-decoration:underline;" href="${escapeHtml(detailUrl)}">View listing</a>`,
-              "</div>",
-            ].join("");
+            batch.forEach((property) => {
+              const position = {
+                lat: property.latitude,
+                lng: property.longitude,
+              };
+              const cachedIcon = markerIconCache.get(property.price);
+              const markerIcon = cachedIcon ?? buildPriceMarkerIcon(property.price, mapsApi);
 
-            const listener = marker.addListener("click", () => {
-              if (activeInfoWindow) {
-                activeInfoWindow.close();
+              if (!cachedIcon) {
+                markerIconCache.set(property.price, markerIcon);
               }
 
-              activeInfoWindow = new mapsApi.InfoWindow({
-                content: detailsContent,
-              });
-              activeInfoWindow.open({
-                anchor: marker,
+              const marker = new mapsApi.Marker({
                 map,
+                position,
+                icon: markerIcon,
+                title: `${property.price} · ${property.title}`,
               });
+
+              const detailUrl = buildDetailHref(property);
+              // The card model stores a single primary image; use this first image in the map popup.
+              const primaryImage = sanitizeExternalImageUrl(property.image);
+              const detailsContent = [
+                `<div style="max-width:240px;font-family:Montserrat,Arial,sans-serif;">`,
+                primaryImage
+                  ? `<img src="${escapeHtml(primaryImage)}" alt="${escapeHtml(property.title)}" style="display:block;width:100%;height:128px;object-fit:cover;border-radius:12px;margin:0 0 10px;" loading="lazy" />`
+                  : "",
+                `<p style="margin:0;font-weight:700;color:${SANDSTONE_SAND_GOLD_HEX};">${escapeHtml(property.price)}</p>`,
+                `<p style="margin:6px 0 0;color:#2d2f36;font-weight:600;">${escapeHtml(property.title)}</p>`,
+                `<p style="margin:4px 0 0;color:#2d2f36;opacity:0.82;">${escapeHtml(property.location)}</p>`,
+                `<a style="display:inline-block;margin-top:10px;color:${SANDSTONE_SAND_GOLD_HEX};font-weight:700;text-decoration:underline;" href="${escapeHtml(detailUrl)}">View listing</a>`,
+                "</div>",
+              ].join("");
+
+              const listener = marker.addListener("click", () => {
+                if (activeInfoWindow) {
+                  activeInfoWindow.close();
+                }
+
+                activeInfoWindow = new mapsApi.InfoWindow({
+                  content: detailsContent,
+                });
+                activeInfoWindow.open({
+                  anchor: marker,
+                  map,
+                });
+              });
+
+              markerListeners.push(listener);
+              markers.push(marker);
+              bounds.extend(position);
             });
 
-            markerListeners.push(listener);
-            markers.push(marker);
-            bounds.extend(position);
-          });
+            if (start + markerBatchSize < mappableProperties.length) {
+              await yieldToMainThread();
+            }
+          }
 
           if (mappableProperties.length === 1) {
             map.setCenter(bounds.getCenter());
@@ -320,7 +432,7 @@ export function ListingsMapPanel({ properties }: ListingsMapPanelProps) {
         activeInfoWindow.close();
       }
     };
-  }, [googleMapsKey, mappableProperties]);
+  }, [googleMapsKey, mappableProperties, shouldInitializeMap]);
 
   return (
     <section className="relative h-[56vh] min-h-[420px] overflow-hidden rounded-[1.65rem] border border-[var(--sandstone-navy)]/12 bg-white shadow-[0_24px_64px_-34px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:h-[calc(100vh-9.25rem)]">
@@ -328,7 +440,7 @@ export function ListingsMapPanel({ properties }: ListingsMapPanelProps) {
 
       {status === "loading" && (
         <div className="absolute inset-x-4 top-4 rounded-xl border border-white/70 bg-white/92 px-4 py-3 text-sm font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_26px_-22px_rgba(17,24,61,0.55)]">
-          Loading map and listing markers...
+          Loading map and optimizing markers...
         </div>
       )}
 
