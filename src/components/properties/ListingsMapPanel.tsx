@@ -7,6 +7,7 @@ const DEFAULT_CENTER = { lat: 31.7619, lng: -106.485 };
 const EL_PASO_BOUNDS_PADDING = 72;
 const DEFAULT_MAP_ZOOM = 11;
 const SINGLE_MARKER_ZOOM = 13;
+const SANDSTONE_SAND_GOLD_HEX = "#b79678";
 
 type MapStatus = "idle" | "loading" | "ready" | "missing-key" | "error";
 type MappableProperty = PropertyCard & { latitude: number; longitude: number };
@@ -108,9 +109,32 @@ function buildDetailHref(property: PropertyCard): string {
   }
 
   const query = params.toString();
-  const basePath = `/listings/${property.routeId}`;
+  const basePath = `/listings/${encodeURIComponent(property.routeId)}`;
 
   return query ? `${basePath}?${query}` : basePath;
+}
+
+function sanitizeExternalImageUrl(url: string): string | null {
+  const trimmed = url.trim();
+
+  if (!trimmed) {
+    return null;
+  }
+
+  try {
+    const baseOrigin = typeof window !== "undefined"
+      ? window.location.origin
+      : "https://sandstone.local";
+    const parsed = new URL(trimmed, baseOrigin);
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return null;
+    }
+
+    return parsed.toString();
+  } catch {
+    return null;
+  }
 }
 
 function buildPriceMarkerIcon(price: string, mapsApi: GoogleMapsNamespace): MarkerIcon {
@@ -126,8 +150,8 @@ function buildPriceMarkerIcon(price: string, mapsApi: GoogleMapsNamespace): Mark
 
   const svg = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${bubbleWidth}" height="${totalHeight}" viewBox="0 0 ${bubbleWidth} ${totalHeight}">`,
-    `<rect x="1" y="1" width="${bubbleWidth - 2}" height="${bubbleHeight - 2}" rx="17" fill="#253471" />`,
-    `<path d="M ${pointerLeft} ${bubbleHeight - 1} L ${pointerRight} ${bubbleHeight - 1} L ${halfWidth} ${pointerTip} Z" fill="#253471" />`,
+    `<rect x="1" y="1" width="${bubbleWidth - 2}" height="${bubbleHeight - 2}" rx="17" fill="${SANDSTONE_SAND_GOLD_HEX}" />`,
+    `<path d="M ${pointerLeft} ${bubbleHeight - 1} L ${pointerRight} ${bubbleHeight - 1} L ${halfWidth} ${pointerTip} Z" fill="${SANDSTONE_SAND_GOLD_HEX}" />`,
     `<text x="50%" y="${Math.floor(bubbleHeight / 2) + 5}" text-anchor="middle" fill="#FFFFFF" font-size="14" font-family="Montserrat, Arial, sans-serif" font-weight="700">${escapeSvgText(text)}</text>`,
     "</svg>",
   ].join("");
@@ -240,12 +264,17 @@ export function ListingsMapPanel({ properties }: ListingsMapPanelProps) {
             });
 
             const detailUrl = buildDetailHref(property);
+            // The card model stores a single primary image; use this first image in the map popup.
+            const primaryImage = sanitizeExternalImageUrl(property.image);
             const detailsContent = [
               `<div style="max-width:240px;font-family:Montserrat,Arial,sans-serif;">`,
-              `<p style="margin:0;font-weight:700;color:#253471;">${escapeHtml(property.price)}</p>`,
+              primaryImage
+                ? `<img src="${escapeHtml(primaryImage)}" alt="${escapeHtml(property.title)}" style="display:block;width:100%;height:128px;object-fit:cover;border-radius:12px;margin:0 0 10px;" loading="lazy" />`
+                : "",
+              `<p style="margin:0;font-weight:700;color:${SANDSTONE_SAND_GOLD_HEX};">${escapeHtml(property.price)}</p>`,
               `<p style="margin:6px 0 0;color:#2d2f36;font-weight:600;">${escapeHtml(property.title)}</p>`,
               `<p style="margin:4px 0 0;color:#2d2f36;opacity:0.82;">${escapeHtml(property.location)}</p>`,
-              `<a style="display:inline-block;margin-top:10px;color:#253471;font-weight:700;text-decoration:underline;" href="${escapeHtml(detailUrl)}">View listing</a>`,
+              `<a style="display:inline-block;margin-top:10px;color:${SANDSTONE_SAND_GOLD_HEX};font-weight:700;text-decoration:underline;" href="${escapeHtml(detailUrl)}">View listing</a>`,
               "</div>",
             ].join("");
 

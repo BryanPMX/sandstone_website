@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { ListingCard, ListingsMapPanel } from "@/components/properties";
-import { fetchActivePropertyCards, fetchActivePropertyCardsPage } from "@/services";
+import { ListingsMapPanel, ListingsMapSidebar } from "@/components/properties";
+import { fetchActivePropertyCards } from "@/services";
 import { filterPropertyCards } from "@/lib";
 
 export const metadata = {
@@ -18,13 +18,11 @@ interface ListingsMapPageProps {
 export default async function ListingsMapPage({ searchParams }: ListingsMapPageProps) {
   const params = await searchParams;
   const searchQuery = (params.search ?? "").trim();
-  const paginatedResult = searchQuery
-    ? null
-    : await fetchActivePropertyCardsPage(1);
+  const allProperties = await fetchActivePropertyCards();
   const properties = searchQuery
-    ? filterPropertyCards(await fetchActivePropertyCards(), searchQuery)
-    : paginatedResult?.properties ?? [];
-  const totalFound = searchQuery ? properties.length : paginatedResult?.totalRows ?? properties.length;
+    ? filterPropertyCards(allProperties, searchQuery)
+    : allProperties;
+  const totalFound = properties.length;
 
   return (
     <>
@@ -46,7 +44,7 @@ export default async function ListingsMapPage({ searchParams }: ListingsMapPageP
             <p className="text-sm text-[var(--sandstone-charcoal)]/70">
               {searchQuery
                 ? `${properties.length} listing${properties.length === 1 ? "" : "s"} found`
-                : `Showing ${properties.length} of ${totalFound} listing${totalFound === 1 ? "" : "s"}`}
+                : `Showing ${totalFound} listing${totalFound === 1 ? "" : "s"} on the map`}
             </p>
           </div>
 
@@ -99,18 +97,7 @@ export default async function ListingsMapPage({ searchParams }: ListingsMapPageP
           ) : (
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(340px,0.95fr)]">
               <ListingsMapPanel properties={properties} />
-
-              <aside className="rounded-[1.65rem] border border-[var(--sandstone-navy)]/12 bg-white/84 p-4 shadow-[0_24px_64px_-34px_rgba(37,52,113,0.45)] lg:max-h-[calc(100vh-9.25rem)] lg:overflow-y-auto">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2">
-                  {properties.map((property, index) => (
-                    <ListingCard
-                      key={property.id}
-                      property={property}
-                      priority={index < 2}
-                    />
-                  ))}
-                </div>
-              </aside>
+              <ListingsMapSidebar properties={properties} />
             </div>
           )}
         </section>
