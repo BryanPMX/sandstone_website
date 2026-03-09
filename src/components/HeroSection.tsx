@@ -2,31 +2,36 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
-const SEARCH_PLACEHOLDER = "Enter an address, neighborhood in EP";
+const SEARCH_PLACEHOLDER = "Find a property on the map";
 
-interface HeroSectionProps {
-  initialQuery?: string;
+function buildListingsMapHref(query: string): string {
+  const trimmed = query.trim();
+
+  if (!trimmed) {
+    return "/listings/map";
+  }
+
+  return `/listings/map?search=${encodeURIComponent(trimmed)}`;
 }
 
-export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
+export function HeroSection() {
   const router = useRouter();
-  const [query, setQuery] = useState(initialQuery);
-
-  useEffect(() => {
-    setQuery(initialQuery);
-  }, [initialQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const q = query.trim();
-    if (q) {
-      router.push(`/?search=${encodeURIComponent(q)}#listings`);
-    } else {
-      router.push("/#listings");
-    }
+    const form = e.currentTarget as HTMLFormElement;
+    const input = form.elements.namedItem("search");
+    const value = input instanceof HTMLInputElement ? input.value : "";
+    router.push(buildListingsMapHref(value));
+  };
+
+  const handleInputClick = (
+    event: React.MouseEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>
+  ) => {
+    const value = event.currentTarget.value;
+    router.push(buildListingsMapHref(value));
   };
 
   return (
@@ -59,9 +64,10 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
               <input
                 type="search"
                 name="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
                 placeholder={SEARCH_PLACEHOLDER}
+                defaultValue=""
+                onClick={handleInputClick}
+                onFocus={handleInputClick}
                 className="w-full rounded-full border border-white/40 bg-white/95 px-5 py-3 pr-14 text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/60 shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
                 aria-label="Search by address or neighborhood"
               />
@@ -97,9 +103,10 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
           <input
             type="search"
             name="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
             placeholder={SEARCH_PLACEHOLDER}
+            defaultValue=""
+            onClick={handleInputClick}
+            onFocus={handleInputClick}
             className="w-full rounded-full border border-white/35 bg-white/96 px-5 py-3 text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/58 shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
             aria-label="Search by address or neighborhood"
           />
