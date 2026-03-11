@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingsMapPanel, ListingsMapSidebar } from "@/components/properties";
 import { fetchActivePropertyCards } from "@/services";
-import { filterPropertyCards } from "@/lib";
+import { filterPropertyCardsWithFilters } from "@/lib";
 
 export const metadata = {
   title: "Map Search | Sandstone Real Estate Group",
@@ -12,16 +12,40 @@ export const metadata = {
 };
 
 interface ListingsMapPageProps {
-  searchParams: Promise<{ search?: string }>;
+  searchParams: Promise<{
+    search?: string;
+    lat?: string;
+    lng?: string;
+    radiusMiles?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    beds?: string;
+    baths?: string;
+  }>;
 }
 
 export default async function ListingsMapPage({ searchParams }: ListingsMapPageProps) {
   const params = await searchParams;
   const searchQuery = (params.search ?? "").trim();
+  const centerLat = params.lat ? Number(params.lat) : undefined;
+  const centerLng = params.lng ? Number(params.lng) : undefined;
+  const radiusMiles = params.radiusMiles ? Number(params.radiusMiles) : undefined;
+  const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
+  const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
+  const minBeds = params.beds ? Number(params.beds) : undefined;
+  const minBaths = params.baths ? Number(params.baths) : undefined;
+
   const allProperties = await fetchActivePropertyCards();
-  const properties = searchQuery
-    ? filterPropertyCards(allProperties, searchQuery)
-    : allProperties;
+  const properties = filterPropertyCardsWithFilters(allProperties, {
+    search: searchQuery,
+    centerLat,
+    centerLng,
+    radiusMiles,
+    minPrice,
+    maxPrice,
+    minBeds,
+    minBaths,
+  });
   const totalFound = properties.length;
 
   return (
