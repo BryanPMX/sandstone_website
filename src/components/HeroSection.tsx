@@ -16,7 +16,13 @@ interface HeroSectionProps {
   initialBaths?: string;
 }
 
-export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
+export function HeroSection({ 
+  initialQuery = "", 
+  initialType,
+  initialPrice,
+  initialBeds,
+  initialBaths
+}: HeroSectionProps) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
   const [listingType, setListingType] = useState<"buy" | "rent" | "sell">
@@ -132,7 +138,7 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
               <select
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="rounded-full border border-white/40 bg-white/95 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+                className="rounded-full border border-white/30 bg-white/60 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
               >
                 <option value="">Price</option>
                 {(listingType === "rent"
@@ -160,7 +166,7 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
               <select
                 value={beds}
                 onChange={(e) => setBeds(e.target.value)}
-                className="rounded-full border border-white/40 bg-white/95 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+                className="rounded-full border border-white/30 bg-white/60 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
               >
                 <option value="">Beds</option>
                 {["1-2", "3-4", "More than 5"].map((opt) => (
@@ -171,7 +177,7 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
               <select
                 value={baths}
                 onChange={(e) => setBaths(e.target.value)}
-                className="rounded-full border border-white/40 bg-white/95 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+                className="rounded-full border border-white/30 bg-white/60 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
               >
                 <option value="">Baths</option>
                 {["1-2", "3-4", "More than 5"].map((opt) => (
@@ -241,7 +247,7 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
           <select
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="rounded-full border border-white/40 bg-white/95 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+            className="rounded-full border border-white/30 bg-white/60 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
           >
             <option value="">Price</option>
             {(listingType === "rent"
@@ -267,7 +273,7 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
           <select
             value={beds}
             onChange={(e) => setBeds(e.target.value)}
-            className="rounded-full border border-white/40 bg-white/95 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+            className="rounded-full border border-white/30 bg-white/60 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
           >
             <option value="">Beds</option>
             {["1-2", "3-4", "More than 5"].map((opt) => (
@@ -278,7 +284,7 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
           <select
             value={baths}
             onChange={(e) => setBaths(e.target.value)}
-            className="rounded-full border border-white/40 bg-white/95 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+            className="rounded-full border border-white/30 bg-white/60 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
           >
             <option value="">Baths</option>
             {["1-2", "3-4", "More than 5"].map((opt) => (

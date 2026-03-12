@@ -257,12 +257,13 @@ export function SiteHeader({
 
               <nav aria-label="Primary right" className="flex-1">
                 <ul className="flex items-center justify-start gap-2 xl:gap-5">
-                  {desktopRightNav.map((item) => (
-                    <li key={item.href}>
+                  {desktopRightNav.map((item, idx) => (
+                    <li key={item.href} className="flex items-center gap-2 xl:gap-5">
+                      {idx > 0 && <div className="w-px h-4 bg-[var(--sandstone-sand-gold)]/30" />}
                       <Link
                         href={item.href}
                         className={cn(
-                          "inline-flex items-center px-3 py-2 text-[15px] font-semibold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)]",
+                          "inline-flex items-center px-3 py-2 text-[16px] font-semibold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)]" ,
                           isActiveNavItem(item.href) &&
                             "underline decoration-2 underline-offset-8",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
