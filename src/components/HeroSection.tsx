@@ -24,10 +24,6 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
   const [price, setPrice] = useState(initialPrice ?? "");
   const [beds, setBeds] = useState(initialBeds ?? "");
   const [baths, setBaths] = useState(initialBaths ?? "");
-  const [listingType, setListingType] = useState<"buy" | "rent" | "sell">("buy");
-  const [price, setPrice] = useState("");
-  const [beds, setBeds] = useState("");
-  const [baths, setBaths] = useState("");
 
   useEffect(() => {
     setQuery(initialQuery);
