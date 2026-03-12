@@ -12,7 +12,14 @@ export const metadata = {
 };
 
 interface ListingsPageProps {
-  searchParams: Promise<{ search?: string; page?: string }>;
+  searchParams: Promise<{
+    search?: string;
+    page?: string;
+    type?: string;
+    price?: string;
+    beds?: string;
+    baths?: string;
+  }>;
 }
 
 function buildVisiblePageItems(currentPage: number, totalPages: number): Array<number | "ellipsis"> {
@@ -43,7 +50,14 @@ function buildVisiblePageItems(currentPage: number, totalPages: number): Array<n
 
 export default async function ListingsPage({ searchParams }: ListingsPageProps) {
   const params = await searchParams;
-  const searchQuery = (params.search ?? "").trim();
+  const filters = {
+    query: (params.search ?? "").trim(),
+    type: params.type as "buy" | "rent" | "sell" | undefined,
+    price: params.price,
+    beds: params.beds,
+    baths: params.baths,
+  };
+  const searchQuery = filters.query;
   const requestedPage = Number.parseInt(params.page ?? "1", 10);
   const currentPage = Number.isFinite(requestedPage) && requestedPage > 0
     ? requestedPage
@@ -53,7 +67,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
     ? null
     : await fetchActivePropertyCardsPage(currentPage);
   const properties = searchQuery
-    ? filterPropertyCards(await fetchActivePropertyCards(), searchQuery)
+    ? filterPropertyCards(await fetchActivePropertyCards(), filters)
     : paginatedResult?.properties ?? [];
   const totalPages = searchQuery ? 1 : paginatedResult?.totalPages ?? 1;
   const resolvedPage = searchQuery ? 1 : paginatedResult?.currentPage ?? 1;
@@ -64,7 +78,14 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
 
   const buildPageHref = (page: number) => {
     const targetPage = Math.max(1, page);
-    return `/listings?page=${targetPage}`;
+    const paramsObj: Record<string,string> = { page: String(targetPage) };
+    if (filters.query) paramsObj.search = filters.query;
+    if (filters.type) paramsObj.type = filters.type;
+    if (filters.price) paramsObj.price = filters.price;
+    if (filters.beds) paramsObj.beds = filters.beds;
+    if (filters.baths) paramsObj.baths = filters.baths;
+    const qs = new URLSearchParams(paramsObj).toString();
+    return `/listings?${qs}`;
   };
 
   return (

@@ -4,26 +4,61 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const SEARCH_PLACEHOLDER = "Enter an address, neighborhood in EP";
 
 interface HeroSectionProps {
   initialQuery?: string;
+  initialType?: "buy" | "rent" | "sell";
+  initialPrice?: string;
+  initialBeds?: string;
+  initialBaths?: string;
 }
 
 export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
+  const [listingType, setListingType] = useState<"buy" | "rent" | "sell">
+    (initialType ?? "buy");
+  const [price, setPrice] = useState(initialPrice ?? "");
+  const [beds, setBeds] = useState(initialBeds ?? "");
+  const [baths, setBaths] = useState(initialBaths ?? "");
+  const [listingType, setListingType] = useState<"buy" | "rent" | "sell">("buy");
+  const [price, setPrice] = useState("");
+  const [beds, setBeds] = useState("");
+  const [baths, setBaths] = useState("");
 
   useEffect(() => {
     setQuery(initialQuery);
   }, [initialQuery]);
 
+  useEffect(() => {
+    if (initialType) setListingType(initialType);
+  }, [initialType]);
+  useEffect(() => {
+    if (initialPrice) setPrice(initialPrice);
+  }, [initialPrice]);
+  useEffect(() => {
+    if (initialBeds) setBeds(initialBeds);
+  }, [initialBeds]);
+  useEffect(() => {
+    if (initialBaths) setBaths(initialBaths);
+  }, [initialBaths]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = query.trim();
-    if (q) {
-      router.push(`/?search=${encodeURIComponent(q)}#listings`);
+    const params = new URLSearchParams();
+    if (q) params.set("search", q);
+    if (listingType) params.set("type", listingType);
+    if (price) params.set("price", price);
+    if (beds) params.set("beds", beds);
+    if (baths) params.set("baths", baths);
+
+    const searchStr = params.toString();
+    if (searchStr) {
+      router.push(`/?${searchStr}#listings`);
     } else {
       router.push("/#listings");
     }
@@ -55,6 +90,27 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
             onSubmit={handleSearch}
             className="absolute left-1/2 top-[35%] z-10 hidden w-[548px] max-w-[calc(100%-3rem)] -translate-x-1/2 lg:block xl:top-[36%]"
           >
+            {/* listing type tabs */}
+            <div className="mb-3 flex justify-center">
+              <div className="inline-flex rounded-full bg-white/20 p-1">
+                {(["buy", "rent", "sell"] as const).map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setListingType(type)}
+                    className={cn(
+                      "rounded-full px-4 py-1 font-semibold uppercase tracking-wide transition",
+                      listingType === type
+                        ? "bg-white text-[var(--sandstone-navy)]"
+                        : "text-white"
+                    )}
+                  >
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="relative">
               <input
                 type="search"
@@ -73,6 +129,59 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
               >
                 <Search className="h-4 w-4" />
               </button>
+            </div>
+
+            {/* additional filters below search input */}
+            <div className="mt-3 flex justify-center gap-3">
+              <select
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="rounded-full border border-white/40 bg-white/95 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+              >
+                <option value="">Price</option>
+                {(listingType === "rent"
+                  ? [
+                      "Less than - 1000",
+                      "1,000 - 2,000",
+                      "2,000 - 4,000",
+                      "5,000 - 10,000",
+                      "More than 10K",
+                    ]
+                  : [
+                      "Less than - 100k",
+                      "100k - 200K",
+                      "200k - 400k",
+                      "400k - 800k",
+                      "More than 800k",
+                    ]
+                ).map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={beds}
+                onChange={(e) => setBeds(e.target.value)}
+                className="rounded-full border border-white/40 bg-white/95 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+              >
+                <option value="">Beds</option>
+                {["1-2", "3-4", "More than 5"].map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+
+              <select
+                value={baths}
+                onChange={(e) => setBaths(e.target.value)}
+                className="rounded-full border border-white/40 bg-white/95 px-4 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+              >
+                <option value="">Baths</option>
+                {["1-2", "3-4", "More than 5"].map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
             </div>
           </form>
           <div
@@ -93,6 +202,26 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
       </div>
 
       <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
+        <div className="flex justify-center">
+          <div className="inline-flex rounded-full bg-white/20 p-1">
+            {(["buy", "rent", "sell"] as const).map((type) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setListingType(type)}
+                className={cn(
+                  "rounded-full px-3 py-1 text-sm font-semibold uppercase transition",
+                  listingType === type
+                    ? "bg-white text-[var(--sandstone-navy)]"
+                    : "text-white"
+                )}
+              >
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <form onSubmit={handleSearch} className="mx-auto mt-3 w-full max-w-sm">
           <input
             type="search"
@@ -111,6 +240,56 @@ export function HeroSection({ initialQuery = "" }: HeroSectionProps) {
             Search
           </button>
         </form>
+
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          <select
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className="rounded-full border border-white/40 bg-white/95 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+          >
+            <option value="">Price</option>
+            {(listingType === "rent"
+              ? [
+                  "Less than - 1000",
+                  "1,000 - 2,000",
+                  "2,000 - 4,000",
+                  "5,000 - 10,000",
+                  "More than 10K",
+                ]
+              : [
+                  "Less than - 100k",
+                  "100k - 200K",
+                  "200k - 400k",
+                  "400k - 800k",
+                  "More than 800k",
+                ]
+            ).map((opt) => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+
+          <select
+            value={beds}
+            onChange={(e) => setBeds(e.target.value)}
+            className="rounded-full border border-white/40 bg-white/95 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+          >
+            <option value="">Beds</option>
+            {["1-2", "3-4", "More than 5"].map((opt) => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+
+          <select
+            value={baths}
+            onChange={(e) => setBaths(e.target.value)}
+            className="rounded-full border border-white/40 bg-white/95 px-3 py-2 text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
+          >
+            <option value="">Baths</option>
+            {["1-2", "3-4", "More than 5"].map((opt) => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+        </div>
       </div>
     </section>
   );
