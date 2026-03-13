@@ -5,27 +5,16 @@ import { PrimaryActionTiles } from "@/components/sections/PrimaryActionTiles";
 import { ContactForm } from "@/components/ContactForm";
 import { SiteFooter } from "@/components/SiteFooter";
 import { fetchMyPropertyCards } from "@/services";
-import { filterPropertyCards } from "@/lib";
 
-interface HomePageProps {
-  searchParams: Promise<{ search?: string }>;
-}
-
-export default async function Home({ searchParams }: HomePageProps) {
-  const params = await searchParams;
-  const searchQuery = (params.search ?? "").trim();
+export default async function Home() {
   const properties = await fetchMyPropertyCards();
-  const filteredProperties = filterPropertyCards(properties, searchQuery);
 
   return (
     <>
       <SiteHeader overlayDesktop />
       <main className="min-h-screen">
-        <HeroSection initialQuery={searchQuery} />
-        <FeaturedListingsSection
-          properties={filteredProperties}
-          searchQuery={searchQuery}
-        />
+        <HeroSection />
+        <FeaturedListingsSection properties={properties} />
         <PrimaryActionTiles />
         <ContactForm />
       </main>

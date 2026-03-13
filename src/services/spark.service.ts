@@ -957,6 +957,20 @@ function mapSparkListing(
     listingAgentName: buildListingAgentName(record),
     title: buildTitle(record, routeId),
     location: buildLocation(record),
+    mapAddress: asString(
+      pickFirst(
+        record,
+        ["UnparsedAddress"],
+        ["StandardFields", "UnparsedAddress"],
+        ["Address", "FullStreetAddress"]
+      )
+    ),
+    latitude: asNumber(
+      pickFirst(record, ["Latitude"], ["StandardFields", "Latitude"])
+    ),
+    longitude: asNumber(
+      pickFirst(record, ["Longitude"], ["StandardFields", "Longitude"])
+    ),
     price: formatPrice(
       pickFirst(
         record,

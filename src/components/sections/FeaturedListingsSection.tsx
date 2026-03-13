@@ -19,13 +19,13 @@ export function FeaturedListingsSection({
       <div className="container mx-auto max-w-6xl px-4">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-[2.15rem]">
-            My Listings
+            Sandstone Collection
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--sandstone-charcoal)]/70 md:text-base">
-            {searchQuery
-              ? `Showing matches from my Flexmls listings for "${searchQuery}".`
-              : "A carousel of my current Flexmls listings."}
-          </p>
+          {searchQuery ? (
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--sandstone-charcoal)]/70 md:text-base">
+              {`Showing matches from my Flexmls listings for "${searchQuery}".`}
+            </p>
+          ) : null}
         </div>
 
         {properties.length === 0 ? (

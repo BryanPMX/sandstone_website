@@ -79,7 +79,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
             ← Back to home listings
           </Link>
           <h1 className="mt-4 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
-            Sandstone Collection
+            Sandstone All Listings
           </h1>
           {searchQuery ? (
             <p className="mt-2 max-w-2xl text-[var(--sandstone-charcoal)]/80">

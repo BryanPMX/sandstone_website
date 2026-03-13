@@ -47,6 +47,7 @@ The project is organized by responsibility:
 
 - `/`: home page
 - `/listings`: all listings, optional `?search=` filter
+- `/listings/map`: map-first listings search with price markers + sidebar cards
 - `/listings/[id]`: listing details
 - `/sell`: service stub page
 - `/rent`: service stub page
@@ -59,7 +60,7 @@ The project is organized by responsibility:
 `src/app/page.tsx` composes:
 
 1. `SiteHeader`
-2. `HeroSection` (search input)
+2. `HeroSection` (search entry that routes to `/listings/map`)
 3. `FeaturedListingsSection` (first 4 filtered listings)
 4. `PrimaryActionTiles`
 5. `AboutSection`
@@ -70,10 +71,11 @@ The project is organized by responsibility:
 
 1. `fetchMyPropertyCards()` powers the home page carousel from Spark `my/listings`.
 2. `fetchActivePropertyCards()` powers `/listings` by paginating through all active Spark listings.
-3. `fetchPropertyCardById()` loads listing detail pages directly by listing id.
-4. If Spark is not configured or fails, the app falls back to the legacy `MSL_FEED_URL` JSON feed.
-5. If neither source is available, curated demo listings keep the UI hydrated.
-6. `filterPropertyCards()` in `src/lib/properties.ts` applies search query filtering.
+3. `fetchActivePropertyCards()` also powers `/listings/map`, where coordinates are rendered as map markers.
+4. `fetchPropertyCardById()` loads listing detail pages directly by listing id.
+5. If Spark is not configured or fails, the app falls back to the legacy `MSL_FEED_URL` JSON feed.
+6. If neither source is available, curated demo listings keep the UI hydrated.
+7. `filterPropertyCards()` in `src/lib/properties.ts` applies search query filtering.
 
 ## Lead Form Flow
 
@@ -92,6 +94,7 @@ The project is organized by responsibility:
 - `SPARK_ACTIVE_LISTINGS_FILTER`: Spark `_filter` for the full listings page, defaults to `MlsStatus Eq 'Active'`
 - `SPARK_MY_LISTINGS_FILTER`: optional home-page `my/listings` filter, defaults to the active filter
 - `SPARK_PAGE_SIZE`: Spark per-page fetch size, defaults to `27`
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: required for the interactive `/listings/map` Google map
 - `ROLU_WEBHOOK_URL`: backward-compatible contact webhook fallback
 - `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`, `ROLU_WEBHOOK_GIVEAWAY_URL`, `ROLU_WEBHOOK_LISTING_INQUIRY_URL`: preferred lead webhook envs
 - `TURNSTILE_SECRET_KEY`: required for server-side captcha verification

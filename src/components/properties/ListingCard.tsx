@@ -40,9 +40,10 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
     }
 
     const queryString = searchParams.toString();
+    const safeRouteId = encodeURIComponent(property.routeId);
     return queryString
-      ? `/listings/${property.routeId}?${queryString}`
-      : `/listings/${property.routeId}`;
+      ? `/listings/${safeRouteId}?${queryString}`
+      : `/listings/${safeRouteId}`;
   })();
 
   useEffect(() => {

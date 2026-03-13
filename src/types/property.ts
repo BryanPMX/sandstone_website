@@ -9,6 +9,9 @@ export interface PropertyCard {
   sparkSource?: "active" | "my";
   title: string;
   location: string;
+  mapAddress?: string;
+  latitude?: number;
+  longitude?: number;
   price: string;
   image: string;
   listingNumber?: string;
