@@ -159,8 +159,8 @@ export function LeadCaptureSection({
   const showMessageField = formType !== "join";
 
   const formCard = (
-    <div className="mx-auto max-w-[460px] rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6">
-      <form action={formAction} className="space-y-4">
+    <div className="rounded-2xl border border-white/70 bg-white/80 p-3 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-4 md:p-5">
+      <form action={formAction} className="space-y-3">
         {state?.success === true && (
           <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
             {state.message}
@@ -173,9 +173,9 @@ export function LeadCaptureSection({
           </p>
         )}
 
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-          <div className="space-y-1">
-            <Label htmlFor={id("firstName")}>First Name</Label>
+        <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
+          <div className="space-y-0.5">
+            <Label htmlFor={id("firstName")} className="text-xs">First Name</Label>
             <Input
               id={id("firstName")}
               name="firstName"
@@ -195,8 +195,8 @@ export function LeadCaptureSection({
             )}
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor={id("lastName")}>Last Name</Label>
+          <div className="space-y-0.5">
+            <Label htmlFor={id("lastName")} className="text-xs">Last Name</Label>
             <Input
               id={id("lastName")}
               name="lastName"
@@ -217,9 +217,9 @@ export function LeadCaptureSection({
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-          <div className="space-y-1">
-            <Label htmlFor={id("email")}>Email</Label>
+        <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
+          <div className="space-y-0.5">
+            <Label htmlFor={id("email")} className="text-xs">Email</Label>
             <Input
               id={id("email")}
               name="email"
@@ -240,8 +240,8 @@ export function LeadCaptureSection({
             )}
           </div>
 
-          <div className="space-y-1">
-            <Label htmlFor={id("phone")}>{
+          <div className="space-y-0.5">
+            <Label htmlFor={id("phone")} className="text-xs">{
               formType === "join" ? "Phone Number" : "Phone"
             }</Label>
             <Input
@@ -269,8 +269,8 @@ export function LeadCaptureSection({
         </div>
 
         {requiresAddress ? (
-          <div className="space-y-1">
-            <Label htmlFor={id("address")}>Address</Label>
+          <div className="space-y-0.5">
+            <Label htmlFor={id("address")} className="text-xs">Address</Label>
             <Input
               id={id("address")}
               name="address"
@@ -292,8 +292,8 @@ export function LeadCaptureSection({
         ) : null}
 
         {showMessageField ? (
-          <div className="space-y-1">
-            <Label htmlFor={id("message")}>Message</Label>
+          <div className="space-y-0.5">
+            <Label htmlFor={id("message")} className="text-xs">Message</Label>
             <Textarea
               id={id("message")}
               name="message"
@@ -305,7 +305,7 @@ export function LeadCaptureSection({
                   state?.success === false && state.fieldErrors?.message
                     ? "border-red-500"
                     : ""
-                } min-h-[88px]`
+                } min-h-[64px]`
               }
             />
             {state?.success === false && state.fieldErrors?.message && (
@@ -438,8 +438,8 @@ export function LeadCaptureSection({
     <section
       id={sectionId}
       className={
-        `relative scroll-mt-20 py-14 md:py-16 ${
-          isHero ? "min-h-[780px]" : "bg-gradient-to-b from-[#f6f2ec] to-white"
+        `relative scroll-mt-20 py-8 md:py-10 ${
+          isHero ? "" : "bg-gradient-to-b from-[#f6f2ec] to-white"
         }`
       }
     >
@@ -467,12 +467,19 @@ export function LeadCaptureSection({
 
       <div className="relative container mx-auto max-w-6xl px-4">
         {isHero ? (
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(360px,0.6fr)]">
+          <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(380px,0.7fr)]">
             <div className="max-w-2xl text-white">
-              <h2 className="font-heading text-4xl font-bold md:text-5xl">
+              <h2 className="font-heading text-2xl font-bold md:text-3xl">
                 {heading}
               </h2>
-              <p className="mt-4 text-lg text-white/85">{subheading}</p>
+              <p className="mt-2 text-sm text-white/85">{subheading}</p>
+
+              <button
+                type="button"
+                className="mt-4 inline-flex items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2 text-xs font-semibold text-white shadow-lg hover:opacity-95"
+              >
+                Download PDF
+              </button>
             </div>
             {formCard}
           </div>
