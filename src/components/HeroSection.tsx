@@ -1,20 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
+import {
+  LISTINGS_MAP_PATH,
+  DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+  PROPERTY_SEARCH_PRICE_OPTIONS,
+  PROPERTY_SEARCH_BED_OPTIONS,
+  PROPERTY_SEARCH_BATH_OPTIONS,
+  buildListingsMapHref,
+  type PropertySearchPresetFilters,
+} from "@/lib";
 
 const SEARCH_PLACEHOLDER = "Enter an address, ZIP…";
-const LISTINGS_MAP_PATH = "/listings/map";
-
-type SearchMode = "buy" | "rent" | "sell";
-
-interface HeroSearchFilters {
-  pricePreset: "any" | "0-250" | "250-500" | "500-750" | "750-plus";
-  bedsPreset: "any" | "1" | "2" | "3" | "4";
-  bathsPreset: "any" | "1" | "2" | "3" | "4";
-}
 
 interface PlaceSuggestion {
   description: string;
@@ -63,73 +64,15 @@ interface GoogleMapsWithPlaces {
   };
 }
 
-interface BuildListingsMapHrefParams {
-  search?: string;
-  centerLat?: number;
-  centerLng?: number;
-  radiusMiles?: number;
-  minPrice?: number;
-  maxPrice?: number;
-  minBeds?: number;
-  minBaths?: number;
-  mode?: SearchMode;
-}
-
-function buildListingsMapHref(params: BuildListingsMapHrefParams): string {
-  const url = new URL(LISTINGS_MAP_PATH, typeof window !== "undefined" ? window.location.origin : "https://sandstone.homes");
-  const searchParams = url.searchParams;
-
-  if (params.search?.trim()) {
-    searchParams.set("search", params.search.trim());
-  }
-
-  if (typeof params.centerLat === "number" && Number.isFinite(params.centerLat)) {
-    searchParams.set("lat", String(params.centerLat));
-  }
-
-  if (typeof params.centerLng === "number" && Number.isFinite(params.centerLng)) {
-    searchParams.set("lng", String(params.centerLng));
-  }
-
-  if (typeof params.radiusMiles === "number" && params.radiusMiles > 0) {
-    searchParams.set("radiusMiles", String(params.radiusMiles));
-  }
-
-  if (typeof params.minPrice === "number") {
-    searchParams.set("minPrice", String(params.minPrice));
-  }
-
-  if (typeof params.maxPrice === "number") {
-    searchParams.set("maxPrice", String(params.maxPrice));
-  }
-
-  if (typeof params.minBeds === "number") {
-    searchParams.set("beds", String(params.minBeds));
-  }
-
-  if (typeof params.minBaths === "number") {
-    searchParams.set("baths", String(params.minBaths));
-  }
-
-  if (params.mode) {
-    searchParams.set("mode", params.mode);
-  }
-
-  return `${LISTINGS_MAP_PATH}?${searchParams.toString()}`;
-}
-
 export function HeroSection() {
   const router = useRouter();
   const [isNavigatingToMap, setIsNavigatingToMap] = useState(false);
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
-  const [activeTab, setActiveTab] = useState<SearchMode>("buy");
-  const [filters, setFilters] = useState<HeroSearchFilters>({
-    pricePreset: "any",
-    bedsPreset: "any",
-    bathsPreset: "any",
-  });
+  const [filters, setFilters] = useState<PropertySearchPresetFilters>(
+    DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS
+  );
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState<PlaceSuggestion | null>(null);
@@ -139,6 +82,8 @@ export function HeroSection() {
 
   useEffect(() => {
     router.prefetch(LISTINGS_MAP_PATH);
+    router.prefetch("/rent");
+    router.prefetch("/sell");
   }, [router]);
 
   useEffect(() => {
@@ -217,49 +162,20 @@ export function HeroSection() {
     };
   }, [isNavigatingToMap, isPending]);
 
-  const resolveFiltersToNumeric = () => {
-    let minPrice: number | undefined;
-    let maxPrice: number | undefined;
-
-    switch (filters.pricePreset) {
-      case "0-250":
-        minPrice = 0;
-        maxPrice = 250_000;
-        break;
-      case "250-500":
-        minPrice = 250_000;
-        maxPrice = 500_000;
-        break;
-      case "500-750":
-        minPrice = 500_000;
-        maxPrice = 750_000;
-        break;
-      case "750-plus":
-        minPrice = 750_000;
-        break;
-      default:
-        break;
-    }
-
-    const minBeds =
-      filters.bedsPreset === "any" ? undefined : Number.parseInt(filters.bedsPreset, 10);
-    const minBaths =
-      filters.bathsPreset === "any" ? undefined : Number.parseInt(filters.bathsPreset, 10);
-
-    return { minPrice, maxPrice, minBeds, minBaths };
-  };
-
-  const navigateToMap = (params: Omit<BuildListingsMapHrefParams, "mode">) => {
+  const navigateToMap = (params: {
+    search?: string;
+    centerLat?: number;
+    centerLng?: number;
+    radiusMiles?: number;
+  }) => {
     if (hasTriggeredRedirectRef.current) {
       return;
     }
 
     hasTriggeredRedirectRef.current = true;
-    const numericFilters = resolveFiltersToNumeric();
     const href = buildListingsMapHref({
       ...params,
-      ...numericFilters,
-      mode: activeTab,
+      filterPresets: filters,
     });
 
     setIsNavigatingToMap(true);
@@ -381,143 +297,130 @@ export function HeroSection() {
 
             <form
               onSubmit={handleSearchSubmit}
-              className="absolute left-1/2 top-[34%] z-10 hidden w-[620px] max-w-[calc(100%-3rem)] -translate-x-1/2 lg:block xl:top-[36%]"
+              className="absolute left-1/2 top-[30%] z-10 hidden w-[min(1120px,calc(100%-5rem))] -translate-x-1/2 lg:block xl:top-[32%]"
             >
-              <div className="rounded-[999px] bg-white/96 p-1.5 shadow-[0_18px_40px_-24px_rgba(0,0,0,0.65)] backdrop-blur-md">
-                <div className="flex items-stretch gap-1.5">
-                  <div className="flex flex-col justify-center rounded-full bg-[var(--sandstone-off-white)]/80 px-1.5 py-1 text-xs font-semibold text-[var(--sandstone-charcoal)]/80">
-                    <div className="flex items-center gap-0.5">
+              <div className="flex flex-col items-center">
+                <div className="inline-flex items-center rounded-[2rem] bg-[color:rgba(255,248,240,0.95)] px-7 py-4 shadow-[0_24px_48px_-30px_rgba(17,24,61,0.68)] backdrop-blur-md">
+                  <span className="border-b-[3px] border-[var(--sandstone-navy)] pb-1 text-[1.55rem] font-semibold leading-none text-[var(--sandstone-charcoal)]">
+                    Buy
+                  </span>
+                  <span aria-hidden className="mx-5 h-8 w-px bg-[var(--sandstone-charcoal)]/18" />
+                  <Link
+                    href="/rent"
+                    className="text-[1.5rem] font-medium leading-none text-[var(--sandstone-charcoal)]/56 transition hover:text-[var(--sandstone-charcoal)]"
+                  >
+                    Rent
+                  </Link>
+                  <span aria-hidden className="mx-5 h-8 w-px bg-[var(--sandstone-charcoal)]/18" />
+                  <Link
+                    href="/sell"
+                    className="text-[1.5rem] font-medium leading-none text-[var(--sandstone-charcoal)]/56 transition hover:text-[var(--sandstone-charcoal)]"
+                  >
+                    Sell
+                  </Link>
+                </div>
+
+                <div className="relative mt-5 w-full">
+                  <div className="rounded-[999px] bg-white/96 p-2.5 shadow-[0_30px_70px_-34px_rgba(0,0,0,0.72)] backdrop-blur-md">
+                    <div className="relative">
+                      <input
+                        type="search"
+                        name="search"
+                        value={searchValue}
+                        onChange={handleInputChange}
+                        placeholder={SEARCH_PLACEHOLDER}
+                        className="h-[92px] w-full rounded-full border border-white/55 bg-white/90 pl-9 pr-28 text-[1.65rem] font-medium text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/42 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35 xl:text-[1.8rem]"
+                        aria-label="Search by address or ZIP code"
+                        autoComplete="off"
+                      />
+
+                      {isSuggestionsLoading && (
+                        <div className="pointer-events-none absolute right-28 top-1/2 -translate-y-1/2 text-sm font-medium text-[var(--sandstone-charcoal)]/52">
+                          Searching...
+                        </div>
+                      )}
+
                       <button
-                        type="button"
-                        className={`rounded-full px-3 py-1 transition ${
-                          activeTab === "buy"
-                            ? "bg-white text-[var(--sandstone-charcoal)] shadow-sm"
-                            : "text-[var(--sandstone-charcoal)]/70"
-                        }`}
-                        onClick={() => setActiveTab("buy")}
+                        type="submit"
+                        className="absolute right-3 top-1/2 flex h-[74px] w-[74px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_18px_40px_-22px_rgba(37,52,113,0.95)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
+                        aria-label="Search homes near this address"
                       >
-                        Buy
-                      </button>
-                      <button
-                        type="button"
-                        className={`rounded-full px-3 py-1 transition ${
-                          activeTab === "rent"
-                            ? "bg-white text-[var(--sandstone-charcoal)] shadow-sm"
-                            : "text-[var(--sandstone-charcoal)]/70"
-                        }`}
-                        onClick={() => setActiveTab("rent")}
-                      >
-                        Rent
-                      </button>
-                      <button
-                        type="button"
-                        className={`rounded-full px-3 py-1 transition ${
-                          activeTab === "sell"
-                            ? "bg-white text-[var(--sandstone-charcoal)] shadow-sm"
-                            : "text-[var(--sandstone-charcoal)]/70"
-                        }`}
-                        onClick={() => setActiveTab("sell")}
-                      >
-                        Sell
+                        <Search className="h-8 w-8" strokeWidth={2.2} />
                       </button>
                     </div>
                   </div>
 
-                  <div className="relative flex-1">
-                    <input
-                      type="search"
-                      name="search"
-                      value={searchValue}
-                      onChange={handleInputChange}
-                      placeholder={SEARCH_PLACEHOLDER}
-                      className="w-full rounded-full border border-white/40 bg-transparent px-4 py-3 pr-12 text-sm text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/60 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35"
-                      aria-label="Search by address or ZIP code"
-                      autoComplete="off"
-                    />
+                  {suggestions.length > 0 && (
+                    <ul className="absolute left-0 right-0 top-[calc(100%+1rem)] z-20 max-h-72 overflow-y-auto rounded-[1.6rem] border border-[var(--sandstone-charcoal)]/12 bg-white/98 py-2 text-base text-[var(--sandstone-charcoal)] shadow-[0_24px_54px_-30px_rgba(0,0,0,0.62)]">
+                      {suggestions.map((suggestion) => (
+                        <li key={suggestion.placeId}>
+                          <button
+                            type="button"
+                            className="block w-full px-5 py-3 text-left transition hover:bg-[var(--sandstone-off-white)]"
+                            onClick={() => handleSuggestionClick(suggestion)}
+                          >
+                            {suggestion.description}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
 
-                    {suggestions.length > 0 && (
-                      <ul className="absolute left-0 right-0 top-[110%] z-20 max-h-64 overflow-y-auto rounded-2xl border border-[var(--sandstone-charcoal)]/12 bg-white/98 py-1 text-sm text-[var(--sandstone-charcoal)] shadow-[0_16px_40px_-24px_rgba(0,0,0,0.58)]">
-                        {suggestions.map((suggestion) => (
-                          <li key={suggestion.placeId}>
-                            <button
-                              type="button"
-                              className="block w-full px-3 py-2 text-left hover:bg-[var(--sandstone-off-white)]"
-                              onClick={() => handleSuggestionClick(suggestion)}
-                            >
-                              {suggestion.description}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+                  <select
+                    name="price"
+                    className="h-14 min-w-[148px] rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-base font-medium text-[var(--sandstone-charcoal)] shadow-[0_16px_36px_-28px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/25"
+                    value={filters.pricePreset}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        pricePreset: e.target.value as PropertySearchPresetFilters["pricePreset"],
+                      }))
+                    }
+                  >
+                    {PROPERTY_SEARCH_PRICE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
 
-                    {isSuggestionsLoading && (
-                      <div className="pointer-events-none absolute right-10 top-1/2 -translate-y-1/2 text-xs text-[var(--sandstone-charcoal)]/55">
-                        Searching…
-                      </div>
-                    )}
+                  <select
+                    name="beds"
+                    className="h-14 min-w-[136px] rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-base font-medium text-[var(--sandstone-charcoal)] shadow-[0_16px_36px_-28px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/25"
+                    value={filters.bedsPreset}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        bedsPreset: e.target.value as PropertySearchPresetFilters["bedsPreset"],
+                      }))
+                    }
+                  >
+                    {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
 
-                    <button
-                      type="submit"
-                      className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
-                      aria-label="Search homes near this address"
-                    >
-                      <Search className="h-4 w-4" />
-                    </button>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-xs font-medium text-[var(--sandstone-charcoal)]/80">
-                    <select
-                      className="min-w-[88px] rounded-full border border-[var(--sandstone-charcoal)]/16 bg-[color:rgba(255,255,255,0.96)] px-3 py-2 pr-5 text-[0.7rem] shadow-sm focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-1 focus:ring-[var(--sandstone-sand-gold)]/40"
-                      value={filters.pricePreset}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          pricePreset: e.target.value as HeroSearchFilters["pricePreset"],
-                        }))
-                      }
-                    >
-                      <option value="any">Price</option>
-                      <option value="0-250">Under $250k</option>
-                      <option value="250-500">$250k – $500k</option>
-                      <option value="500-750">$500k – $750k</option>
-                      <option value="750-plus">$750k+</option>
-                    </select>
-
-                    <select
-                      className="min-w-[72px] rounded-full border border-[var(--sandstone-charcoal)]/16 bg-[color:rgba(255,255,255,0.96)] px-3 py-2 pr-5 text-[0.7rem] shadow-sm focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-1 focus:ring-[var(--sandstone-sand-gold)]/40"
-                      value={filters.bedsPreset}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          bedsPreset: e.target.value as HeroSearchFilters["bedsPreset"],
-                        }))
-                      }
-                    >
-                      <option value="any">Beds</option>
-                      <option value="1">1+</option>
-                      <option value="2">2+</option>
-                      <option value="3">3+</option>
-                      <option value="4">4+</option>
-                    </select>
-
-                    <select
-                      className="min-w-[72px] rounded-full border border-[var(--sandstone-charcoal)]/16 bg-[color:rgba(255,255,255,0.96)] px-3 py-2 pr-5 text-[0.7rem] shadow-sm focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-1 focus:ring-[var(--sandstone-sand-gold)]/40"
-                      value={filters.bathsPreset}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          bathsPreset: e.target.value as HeroSearchFilters["bathsPreset"],
-                        }))
-                      }
-                    >
-                      <option value="any">Baths</option>
-                      <option value="1">1+</option>
-                      <option value="2">2+</option>
-                      <option value="3">3+</option>
-                      <option value="4">4+</option>
-                    </select>
-                  </div>
+                  <select
+                    name="baths"
+                    className="h-14 min-w-[136px] rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-base font-medium text-[var(--sandstone-charcoal)] shadow-[0_16px_36px_-28px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/25"
+                    value={filters.bathsPreset}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        bathsPreset: e.target.value as PropertySearchPresetFilters["bathsPreset"],
+                      }))
+                    }
+                  >
+                    {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
             </form>
@@ -539,6 +442,15 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
+          <div className="mx-auto flex max-w-sm items-center justify-center gap-4 text-sm font-semibold text-white/72">
+            <span className="border-b-2 border-white pb-1 text-white">Buy</span>
+            <Link href="/rent" className="transition hover:text-white">
+              Rent
+            </Link>
+            <Link href="/sell" className="transition hover:text-white">
+              Sell
+            </Link>
+          </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
             <input
               type="search"

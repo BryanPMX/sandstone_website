@@ -7,6 +7,7 @@ Next.js 15 (App Router) marketing website for Sandstone Real Estate Group.
 The site is a brand-forward real estate experience with:
 
 - Responsive landing page (desktop + mobile)
+- Hero search with Google Places-assisted address lookup and persistent price/bed/bath filters
 - Searchable listings feed with dynamic detail pages
 - Lead capture form wired to Rolu webhook
 - View-only Privacy Policy and Terms pages
@@ -47,7 +48,7 @@ The project is organized by responsibility:
 
 - `/`: home page
 - `/listings`: all listings, optional `?search=` filter
-- `/listings/map`: map-first listings search with price markers + sidebar cards
+- `/listings/map`: map-first listings search with preserved address, radius, price, bed, and bath filters
 - `/listings/[id]`: listing details
 - `/sell`: service stub page
 - `/rent`: service stub page
@@ -60,7 +61,7 @@ The project is organized by responsibility:
 `src/app/page.tsx` composes:
 
 1. `SiteHeader`
-2. `HeroSection` (search entry that routes to `/listings/map`)
+2. `HeroSection` (large stacked search UI that routes buy searches to `/listings/map` and links rent/sell tabs to their dedicated routes)
 3. `FeaturedListingsSection` (first 4 filtered listings)
 4. `PrimaryActionTiles`
 5. `AboutSection`
@@ -71,11 +72,13 @@ The project is organized by responsibility:
 
 1. `fetchMyPropertyCards()` powers the home page carousel from Spark `my/listings`.
 2. `fetchActivePropertyCards()` powers `/listings` by paginating through all active Spark listings.
-3. `fetchActivePropertyCards()` also powers `/listings/map`, where coordinates are rendered as map markers.
-4. `fetchPropertyCardById()` loads listing detail pages directly by listing id.
-5. If Spark is not configured or fails, the app falls back to the legacy `MSL_FEED_URL` JSON feed.
-6. If neither source is available, curated demo listings keep the UI hydrated.
-7. `filterPropertyCards()` in `src/lib/properties.ts` applies search query filtering.
+3. `buildListingsMapHref()` in `src/lib/properties.ts` normalizes hero search state into a shared query-string format.
+4. `parseListingsMapSearchParams()` in `src/lib/properties.ts` hydrates `/listings/map` from `searchParams`, preserving filter state on Enter submits.
+5. `fetchActivePropertyCards()` also powers `/listings/map`, where coordinates are rendered as map markers.
+6. `fetchPropertyCardById()` loads listing detail pages directly by listing id.
+7. If Spark is not configured or fails, the app falls back to the legacy `MSL_FEED_URL` JSON feed.
+8. If neither source is available, curated demo listings keep the UI hydrated.
+9. `filterPropertyCards()` and `filterPropertyCardsWithFilters()` in `src/lib/properties.ts` apply search query and preset filter logic.
 
 ## Lead Form Flow
 

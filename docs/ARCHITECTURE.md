@@ -28,7 +28,8 @@ This codebase is structured for a clean, maintainable marketing site with clear 
 
 - **Service abstraction:** lead submission is encapsulated behind `ILeadSubmissionService`.
 - **Data normalization at boundaries:** `spark.service.ts` maps Spark listing payloads into the internal `PropertyCard` shape.
-- **Pure filtering helper:** listing search lives in `lib/properties.ts` (`filterPropertyCards`) so pages remain composition-focused.
+- **Shared search-query model:** `buildListingsMapHref()` and `parseListingsMapSearchParams()` in `lib/properties.ts` keep the home hero and `/listings/map` query state aligned.
+- **Pure filtering helpers:** listing search lives in `lib/properties.ts` (`filterPropertyCards`, `filterPropertyCardsWithFilters`) so pages remain composition-focused.
 - **Section composition:** pages compose sections; sections consume typed props.
 
 ## Current App Flow
@@ -37,8 +38,9 @@ This codebase is structured for a clean, maintainable marketing site with clear 
 
 1. Fetch listings from `fetchMyPropertyCards()`.
 2. Try Spark `my/listings` first, then legacy `MSL_FEED_URL`, then demo fallback data.
-3. Apply query filtering through `filterPropertyCards()`.
-4. Render hero, carousel, action tiles, about, contact, footer.
+3. Render the hero search with a buy-first layout that mirrors the brand comp: segmented tabs, large address field, and preset price/bed/bath filters.
+4. On submit, normalize the hero state into `/listings/map` query params via `buildListingsMapHref()`.
+5. Render hero, carousel, action tiles, about, contact, footer.
 
 ### Listings (`/listings`)
 
@@ -46,6 +48,13 @@ This codebase is structured for a clean, maintainable marketing site with clear 
 2. Page through all active Spark listings before falling back.
 3. Apply `?search=` query filter.
 4. Render full results grid via reusable `ListingCard`.
+
+### Listings Map (`/listings/map`)
+
+1. Read route `searchParams` in the App Router page component.
+2. Normalize search text, radius, and preset filters through `parseListingsMapSearchParams()`.
+3. Apply shared filtering through `filterPropertyCardsWithFilters()`.
+4. Render the map/sidebar results plus a GET search form that preserves active filters on subsequent Enter submits.
 
 ### Listing Detail (`/listings/[id]`)
 
@@ -90,4 +99,4 @@ src/
 
 1. Return normalized `PropertyCard[]` from a new service/provider.
 2. Keep UI consuming `PropertyCard[]` only.
-3. Reuse `filterPropertyCards()` for search behavior.
+3. Reuse `buildListingsMapHref()`, `parseListingsMapSearchParams()`, and the filtering helpers for search behavior.

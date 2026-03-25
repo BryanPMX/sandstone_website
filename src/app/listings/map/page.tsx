@@ -3,7 +3,14 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingsMapPanel, ListingsMapSidebar } from "@/components/properties";
 import { fetchActivePropertyCards } from "@/services";
-import { filterPropertyCardsWithFilters } from "@/lib";
+import {
+  LISTINGS_MAP_PATH,
+  PROPERTY_SEARCH_PRICE_OPTIONS,
+  PROPERTY_SEARCH_BED_OPTIONS,
+  PROPERTY_SEARCH_BATH_OPTIONS,
+  filterPropertyCardsWithFilters,
+  parseListingsMapSearchParams,
+} from "@/lib";
 
 export const metadata = {
   title: "Map Search | Sandstone Real Estate Group",
@@ -12,28 +19,30 @@ export const metadata = {
 };
 
 interface ListingsMapPageProps {
-  searchParams: Promise<{
-    search?: string;
-    lat?: string;
-    lng?: string;
-    radiusMiles?: string;
-    minPrice?: string;
-    maxPrice?: string;
-    beds?: string;
-    baths?: string;
-  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function ListingsMapPage({ searchParams }: ListingsMapPageProps) {
   const params = await searchParams;
-  const searchQuery = (params.search ?? "").trim();
-  const centerLat = params.lat ? Number(params.lat) : undefined;
-  const centerLng = params.lng ? Number(params.lng) : undefined;
-  const radiusMiles = params.radiusMiles ? Number(params.radiusMiles) : undefined;
-  const minPrice = params.minPrice ? Number(params.minPrice) : undefined;
-  const maxPrice = params.maxPrice ? Number(params.maxPrice) : undefined;
-  const minBeds = params.beds ? Number(params.beds) : undefined;
-  const minBaths = params.baths ? Number(params.baths) : undefined;
+  const {
+    searchQuery,
+    centerLat,
+    centerLng,
+    radiusMiles,
+    filterPresets,
+    numericFilters,
+  } = parseListingsMapSearchParams(params);
+  const hasLocationFilter =
+    typeof centerLat === "number" &&
+    Number.isFinite(centerLat) &&
+    typeof centerLng === "number" &&
+    Number.isFinite(centerLng) &&
+    typeof radiusMiles === "number" &&
+    radiusMiles > 0;
+  const hasActivePresetFilters =
+    filterPresets.pricePreset !== "any" ||
+    filterPresets.bedsPreset !== "any" ||
+    filterPresets.bathsPreset !== "any";
 
   const allProperties = await fetchActivePropertyCards();
   const properties = filterPropertyCardsWithFilters(allProperties, {
@@ -41,10 +50,7 @@ export default async function ListingsMapPage({ searchParams }: ListingsMapPageP
     centerLat,
     centerLng,
     radiusMiles,
-    minPrice,
-    maxPrice,
-    minBeds,
-    minBaths,
+    ...numericFilters,
   });
   const totalFound = properties.length;
 
@@ -73,35 +79,97 @@ export default async function ListingsMapPage({ searchParams }: ListingsMapPageP
           </div>
 
           <form
-            action="/listings/map"
+            action={LISTINGS_MAP_PATH}
             method="get"
-            className="mt-6 grid gap-3 rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white/88 p-3 shadow-[0_16px_36px_-28px_rgba(37,52,113,0.48)] md:grid-cols-[minmax(0,1fr)_120px_120px]"
+            className="mt-6 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]"
           >
-            <label htmlFor="map-search" className="sr-only">
-              Search listings by address or neighborhood
-            </label>
-            <input
-              id="map-search"
-              name="search"
-              type="search"
-              defaultValue={searchQuery}
-              placeholder="Find a property in El Paso"
-              className="w-full rounded-full border border-[var(--sandstone-navy)]/22 px-5 py-3 text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/55 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/30"
-            />
-            <button
-              type="submit"
-              className="rounded-full bg-[var(--sandstone-navy)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--sandstone-navy-deep)]"
-            >
-              Search
-            </button>
-            <button
-              type="button"
-              disabled
-              className="cursor-not-allowed rounded-full border border-[var(--sandstone-navy)]/22 bg-white px-5 py-3 text-sm font-semibold text-[var(--sandstone-charcoal)]/55"
-              title="Price and advanced filters can be enabled next."
-            >
-              Filters
-            </button>
+            {typeof centerLat === "number" ? (
+              <input type="hidden" name="lat" value={centerLat} />
+            ) : null}
+            {typeof centerLng === "number" ? (
+              <input type="hidden" name="lng" value={centerLng} />
+            ) : null}
+            {typeof radiusMiles === "number" ? (
+              <input type="hidden" name="radiusMiles" value={radiusMiles} />
+            ) : null}
+
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 xl:flex-row">
+                <div className="flex-1">
+                  <label htmlFor="map-search" className="sr-only">
+                    Search listings by address or neighborhood
+                  </label>
+                  <input
+                    id="map-search"
+                    name="search"
+                    type="search"
+                    defaultValue={searchQuery}
+                    placeholder="Find a property in El Paso"
+                    className="h-16 w-full rounded-full border border-[var(--sandstone-navy)]/18 px-6 text-base font-medium text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/48 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/25 md:text-lg"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="inline-flex h-16 items-center justify-center rounded-full bg-[var(--sandstone-navy)] px-7 text-sm font-semibold text-white transition hover:bg-[var(--sandstone-navy-deep)] xl:min-w-[164px]"
+                >
+                  Search map
+                </button>
+                <Link
+                  href={LISTINGS_MAP_PATH}
+                  className="inline-flex h-16 items-center justify-center rounded-full border border-[var(--sandstone-navy)]/18 px-7 text-sm font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)] xl:min-w-[150px]"
+                >
+                  Clear all
+                </Link>
+              </div>
+
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-wrap gap-3">
+                  <select
+                    name="price"
+                    defaultValue={filterPresets.pricePreset}
+                    className="h-12 min-w-[156px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] px-4 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20"
+                  >
+                    {PROPERTY_SEARCH_PRICE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    name="beds"
+                    defaultValue={filterPresets.bedsPreset}
+                    className="h-12 min-w-[132px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] px-4 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20"
+                  >
+                    {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    name="baths"
+                    defaultValue={filterPresets.bathsPreset}
+                    className="h-12 min-w-[132px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] px-4 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20"
+                  >
+                    {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <p className="text-sm text-[var(--sandstone-charcoal)]/65">
+                  {hasLocationFilter
+                    ? `Area filter active: within ${radiusMiles} miles of the selected location.`
+                    : hasActivePresetFilters
+                      ? "Preset filters stay applied when you refine the search."
+                      : "Search by address, ZIP, price, beds, or baths."}
+                </p>
+              </div>
+            </div>
           </form>
         </section>
 
@@ -112,7 +180,7 @@ export default async function ListingsMapPage({ searchParams }: ListingsMapPageP
                 No listings matched <strong>{searchQuery}</strong>.
               </p>
               <Link
-                href="/listings/map"
+                href={LISTINGS_MAP_PATH}
                 className="mt-4 inline-block rounded-full bg-[var(--sandstone-navy)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95"
               >
                 Clear search
