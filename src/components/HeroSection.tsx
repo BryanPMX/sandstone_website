@@ -21,6 +21,48 @@ interface PlaceSuggestion {
   placeId: string;
 }
 
+interface GooglePlacePrediction {
+  description: string;
+  place_id: string;
+}
+
+interface GooglePlaceDetailsResult {
+  geometry?: {
+    location?: {
+      lat: () => number;
+      lng: () => number;
+    };
+  };
+}
+
+interface GooglePlacesAutocompleteService {
+  getPlacePredictions: (
+    request: {
+      input: string;
+      types?: string[];
+      componentRestrictions?: { country: string };
+    },
+    callback: (
+      predictions: GooglePlacePrediction[] | null,
+      status?: string
+    ) => void
+  ) => void;
+}
+
+interface GooglePlacesDetailsService {
+  getDetails: (
+    request: { placeId: string; fields: string[] },
+    callback: (place: GooglePlaceDetailsResult | null, status: string) => void
+  ) => void;
+}
+
+interface GoogleMapsWithPlaces {
+  places?: {
+    AutocompleteService: new () => GooglePlacesAutocompleteService;
+    PlacesService: new (container: HTMLElement) => GooglePlacesDetailsService;
+  };
+}
+
 interface BuildListingsMapHrefParams {
   search?: string;
   centerLat?: number;
@@ -92,8 +134,8 @@ export function HeroSection() {
   const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState<PlaceSuggestion | null>(null);
   const [mapsReady, setMapsReady] = useState(false);
-  const autocompleteServiceRef = useRef<unknown | null>(null);
-  const placesServiceRef = useRef<unknown | null>(null);
+  const autocompleteServiceRef = useRef<GooglePlacesAutocompleteService | null>(null);
+  const placesServiceRef = useRef<GooglePlacesDetailsService | null>(null);
 
   useEffect(() => {
     router.prefetch(LISTINGS_MAP_PATH);
@@ -101,22 +143,25 @@ export function HeroSection() {
 
   useEffect(() => {
     const googleMapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
+    const existingMapsApi = window.google?.maps as
+      | GoogleMapsWithPlaces
+      | undefined;
 
     if (!googleMapsKey || typeof window === "undefined") {
       return;
     }
 
-    if (window.google?.maps?.places) {
-      const mapsApi = window.google.maps as any;
-      autocompleteServiceRef.current = new mapsApi.places.AutocompleteService();
-      placesServiceRef.current = new mapsApi.places.PlacesService(document.createElement("div"));
+    if (existingMapsApi?.places) {
+      autocompleteServiceRef.current =
+        new existingMapsApi.places.AutocompleteService();
+      placesServiceRef.current = new existingMapsApi.places.PlacesService(
+        document.createElement("div")
+      );
       setMapsReady(true);
       return;
     }
 
-    const existingPromise = (window as any).__sandstoneGoogleMapsPromise as
-      | Promise<void>
-      | undefined;
+    const existingPromise = window.__sandstoneGoogleMapsPromise;
 
     const loaderPromise =
       existingPromise ??
@@ -135,15 +180,18 @@ export function HeroSection() {
         document.head.appendChild(script);
       });
 
-    (window as any).__sandstoneGoogleMapsPromise = loaderPromise;
+    window.__sandstoneGoogleMapsPromise = loaderPromise;
 
     loaderPromise
       .then(() => {
-        const mapsApi = window.google?.maps as any;
+        const mapsApi = window.google?.maps as
+          | GoogleMapsWithPlaces
+          | undefined;
         if (!mapsApi?.places) {
           return;
         }
-        autocompleteServiceRef.current = new mapsApi.places.AutocompleteService();
+        autocompleteServiceRef.current =
+          new mapsApi.places.AutocompleteService();
         placesServiceRef.current = new mapsApi.places.PlacesService(
           document.createElement("div")
         );
@@ -238,13 +286,13 @@ export function HeroSection() {
       });
     };
 
-    const placesService = placesServiceRef.current as any | null;
+    const placesService = placesServiceRef.current;
 
     if (mapsReady && placesService && (selectedSuggestion || suggestions[0])) {
       const placeId = (selectedSuggestion ?? suggestions[0])!.placeId;
       placesService.getDetails(
         { placeId, fields: ["geometry.location"] },
-        (place: any, status: string) => {
+        (place, status) => {
           if (
             status === "OK" &&
             place?.geometry?.location &&
@@ -275,14 +323,14 @@ export function HeroSection() {
     }
 
     setIsSuggestionsLoading(true);
-    const autocompleteService = autocompleteServiceRef.current as any;
+    const autocompleteService = autocompleteServiceRef.current;
     autocompleteService.getPlacePredictions(
       {
         input: value,
         types: ["address"],
         componentRestrictions: { country: "us" },
       },
-      (predictions: any[] | null) => {
+      (predictions) => {
         setIsSuggestionsLoading(false);
 
         if (!predictions || predictions.length === 0) {

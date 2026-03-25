@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
 import { Button } from "@/components/ui/button";
@@ -111,6 +112,7 @@ export interface LeadCaptureSectionProps {
   formType: LeadFormType;
   sectionId?: string;
   heading: string;
+  headingTag?: "h1" | "h2";
   subheading: string;
   showHeader?: boolean;
   showAside?: boolean;
@@ -121,12 +123,18 @@ export interface LeadCaptureSectionProps {
   asideDescription?: string;
   asideCtaLabel?: string;
   asideCtaHref?: string;
+  hero?: boolean;
+  heroBackgroundUrl?: string;
+  heroBackgroundAlt?: string;
+  heroCtaLabel?: string;
+  heroCtaHref?: string;
 }
 
 export function LeadCaptureSection({
   formType,
   sectionId,
   heading,
+  headingTag = "h2",
   subheading,
   showHeader = true,
   showAside = true,
@@ -137,6 +145,11 @@ export function LeadCaptureSection({
   asideDescription = "Schedule a consultation and get a personalized strategy for your property.",
   asideCtaLabel = "Schedule a Consultation",
   asideCtaHref = `tel:${SITE_CONTACT.phoneRaw}`,
+  hero = false,
+  heroBackgroundUrl,
+  heroBackgroundAlt = "",
+  heroCtaLabel,
+  heroCtaHref,
 }: LeadCaptureSectionProps) {
   const action = submitLeadForForm.bind(null, formType);
   const [state, formAction, isPending] = useActionState(action, initialState);
@@ -146,11 +159,297 @@ export function LeadCaptureSection({
   const id = (field: string) => `${formType}-${field}`;
   const requiresAddress = formType === "sell" || formType === "rent";
   const showMessageField = formType !== "join";
+  const isHero = hero && Boolean(heroBackgroundUrl);
+  const HeadingTag = headingTag;
+
+  const formCard = (
+    <div
+      className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6"
+    >
+      <form action={formAction} className={isHero ? "space-y-3.5" : "space-y-4"}>
+        {state?.success === true && (
+          <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
+            {state.message}
+          </p>
+        )}
+
+        {state?.success === false && state.error && (
+          <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
+            {state.error}
+          </p>
+        )}
+
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+          <div className="space-y-1">
+            <Label htmlFor={id("firstName")}>First Name</Label>
+            <Input
+              id={id("firstName")}
+              name="firstName"
+              placeholder="Jane"
+              required
+              disabled={isPending}
+              className={
+                state?.success === false && state.fieldErrors?.firstName
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {state?.success === false && state.fieldErrors?.firstName && (
+              <p className="text-xs text-red-600">
+                {state.fieldErrors.firstName[0]}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor={id("lastName")}>Last Name</Label>
+            <Input
+              id={id("lastName")}
+              name="lastName"
+              placeholder="Smith"
+              required
+              disabled={isPending}
+              className={
+                state?.success === false && state.fieldErrors?.lastName
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {state?.success === false && state.fieldErrors?.lastName && (
+              <p className="text-xs text-red-600">
+                {state.fieldErrors.lastName[0]}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+          <div className="space-y-1">
+            <Label htmlFor={id("email")}>Email</Label>
+            <Input
+              id={id("email")}
+              name="email"
+              type="email"
+              placeholder="jane@example.com"
+              required
+              disabled={isPending}
+              className={
+                state?.success === false && state.fieldErrors?.email
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {state?.success === false && state.fieldErrors?.email && (
+              <p className="text-xs text-red-600">
+                {state.fieldErrors.email[0]}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor={id("phone")}>
+              {formType === "join" ? "Phone Number" : "Phone"}
+            </Label>
+            <Input
+              id={id("phone")}
+              name="phone"
+              type="tel"
+              placeholder="(555) 123-4567"
+              required
+              disabled={isPending}
+              className={
+                state?.success === false && state.fieldErrors?.phone
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {state?.success === false && state.fieldErrors?.phone && (
+              <p className="text-xs text-red-600">
+                {state.fieldErrors.phone[0]}
+              </p>
+            )}
+            <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/65">
+              {FORM_PHONE_SMS_NOTICE}
+            </p>
+          </div>
+        </div>
+
+        {requiresAddress ? (
+          <div className="space-y-1">
+            <Label htmlFor={id("address")}>Address</Label>
+            <Input
+              id={id("address")}
+              name="address"
+              placeholder="123 Main St, El Paso, TX"
+              required
+              disabled={isPending}
+              className={
+                state?.success === false && state.fieldErrors?.address
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {state?.success === false && state.fieldErrors?.address && (
+              <p className="text-xs text-red-600">
+                {state.fieldErrors.address[0]}
+              </p>
+            )}
+          </div>
+        ) : null}
+
+        {showMessageField ? (
+          <div className="space-y-1">
+            <Label htmlFor={id("message")}>Message</Label>
+            <Textarea
+              id={id("message")}
+              name="message"
+              placeholder={messagePlaceholder}
+              rows={2}
+              disabled={isPending}
+              className={
+                `${
+                  state?.success === false && state.fieldErrors?.message
+                    ? "border-red-500"
+                    : ""
+                } min-h-[88px]`
+              }
+            />
+            {state?.success === false && state.fieldErrors?.message && (
+              <p className="text-xs text-red-600">
+                {state.fieldErrors.message[0]}
+              </p>
+            )}
+          </div>
+        ) : null}
+
+        <div className="space-y-2.5 rounded-xl border border-[var(--sandstone-navy)]/12 bg-white/88 p-3.5 sm:p-4">
+          {hasCaptchaError && (
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800"
+            >
+              {state.fieldErrors?.captcha?.[0]}
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <p className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
+              Security Check
+            </p>
+
+            {turnstileSiteKey ? (
+              <TurnstileWidget
+                key={`${formType}-turnstile`}
+                formType={formType}
+                siteKey={turnstileSiteKey}
+              />
+            ) : (
+              <p className="text-xs text-red-600">
+                Captcha is not configured. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+              </p>
+            )}
+          </div>
+
+          <fieldset className="space-y-2.5">
+            <legend className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
+              Text Message Preferences
+            </legend>
+            <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
+              Choose which SMS messages you want from {SMS_DISCLOSURE_BRAND}.
+              Both options are optional and do not block form submission.
+            </p>
+
+            <div className="grid gap-2.5 md:grid-cols-2 md:gap-3">
+              <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-[11px] leading-4 text-sandstone-text/90 sm:text-xs sm:leading-5">
+                <input
+                  type="checkbox"
+                  name="acceptTransactionalSms"
+                  value="on"
+                  disabled={isPending}
+                  className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
+                />
+                <span>
+                  <span className="block font-semibold text-[var(--sandstone-navy)]">
+                    Transactional SMS updates
+                  </span>
+                  <span className="mt-1 block">
+                    {FORM_TRANSACTIONAL_SMS_COPY}
+                  </span>
+                </span>
+              </label>
+
+              <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-[11px] leading-4 text-sandstone-text/90 sm:text-xs sm:leading-5">
+                <input
+                  type="checkbox"
+                  name="acceptMarketingSms"
+                  value="on"
+                  disabled={isPending}
+                  className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
+                />
+                <span>
+                  <span className="flex flex-wrap items-center gap-2 font-semibold text-[var(--sandstone-navy)]">
+                    <span>Marketing SMS updates</span>
+                    <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[var(--sandstone-bronze)]">
+                      Optional
+                    </span>
+                  </span>
+                  <span className="mt-1 block">
+                    {FORM_MARKETING_SMS_COPY}
+                  </span>
+                </span>
+              </label>
+            </div>
+
+            <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
+              Review our{" "}
+              <Link
+                href={PRIVACY_POLICY_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
+              >
+                {PRIVACY_POLICY_LABEL}
+              </Link>
+              {" "}and{" "}
+              <Link
+                href={TERMS_AND_CONDITIONS_HREF}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
+              >
+                {TERMS_AND_CONDITIONS_LABEL}
+              </Link>
+              . Mobile opt-in data is not shared with third parties for
+              marketing purposes.
+            </p>
+          </fieldset>
+        </div>
+
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 font-semibold uppercase tracking-wider text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+          disabled={isPending}
+        >
+          {isPending ? "Sending..." : ctaLabel}
+        </Button>
+
+        {/* TODO: add honeypot + rate limiting as a second anti-bot layer. */}
+      </form>
+    </div>
+  );
 
   return (
     <section
       id={sectionId}
-      className="relative scroll-mt-20 bg-gradient-to-b from-[#f6f2ec] to-white py-14 md:py-16"
+      className={
+        `relative scroll-mt-20 ${
+          isHero
+            ? "overflow-hidden py-10 md:py-12 lg:py-16"
+            : "bg-gradient-to-b from-[#f6f2ec] to-white py-14 md:py-16"
+        }`
+      }
     >
       <Script
         id="cloudflare-turnstile-api"
@@ -161,343 +460,120 @@ export function LeadCaptureSection({
         }}
       />
 
-      <div className="container mx-auto max-w-6xl px-4">
-        {showHeader ? (
-          <div className="text-center">
-            <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-              {heading}
-            </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-[var(--sandstone-charcoal)]/80">
-              {subheading}
-            </p>
+      {isHero ? (
+        <>
+          <div aria-hidden className="absolute inset-0">
+            <Image
+              src={heroBackgroundUrl as string}
+              alt={heroBackgroundAlt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(115deg,rgba(17,24,61,0.88)_0%,rgba(17,24,61,0.66)_48%,rgba(17,24,61,0.38)_100%)]"
+          />
+          <div aria-hidden className="absolute inset-0 bg-black/10" />
+        </>
+      ) : null}
+
+      <div className="relative container mx-auto max-w-6xl px-4">
+        {isHero ? (
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.85fr)] xl:gap-10">
+            <div className="max-w-2xl text-white">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)] sm:text-sm">
+                Sandstone Seller Strategy
+              </p>
+              <HeadingTag className="mt-4 font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+                {heading}
+              </HeadingTag>
+              <p className="mt-4 max-w-xl text-sm leading-6 text-white/88 sm:text-base sm:leading-7">
+                {subheading}
+              </p>
+
+              {heroCtaLabel && heroCtaHref ? (
+                <Link
+                  href={heroCtaHref}
+                  className="mt-6 inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/18"
+                >
+                  {heroCtaLabel}
+                </Link>
+              ) : null}
+            </div>
+
+            {formCard}
           </div>
         ) : (
-          <div className="mx-auto max-w-3xl text-center">
+          <>
+            {showHeader ? (
+              <div className="text-center">
+                <HeadingTag className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+                  {heading}
+                </HeadingTag>
+                <p className="mx-auto mt-3 max-w-2xl text-sm text-[var(--sandstone-charcoal)]/80">
+                  {subheading}
+                </p>
+              </div>
+            ) : (
+              <div className="mx-auto max-w-3xl text-center">
+                <div
+                  aria-hidden
+                  className="mx-auto h-px w-28 bg-gradient-to-r from-transparent via-[var(--sandstone-sand-gold)] to-transparent"
+                />
+                <p className="mt-4 text-sm text-[var(--sandstone-charcoal)]/80 md:text-[15px]">
+                  {subheading}
+                </p>
+              </div>
+            )}
+
             <div
-              aria-hidden
-              className="mx-auto h-px w-28 bg-gradient-to-r from-transparent via-[var(--sandstone-sand-gold)] to-transparent"
-            />
-            <p className="mt-4 text-sm text-[var(--sandstone-charcoal)]/80 md:text-[15px]">
-              {subheading}
-            </p>
-          </div>
-        )}
+              className={
+                showAside
+                  ? `${showHeader ? "mt-8" : "mt-6"} grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.82fr)] lg:items-start xl:gap-8`
+                  : `${showHeader ? "mt-8" : "mt-6"} mx-auto max-w-2xl`
+              }
+            >
+              {formCard}
 
-        <div
-          className={
-            showAside
-              ? `${showHeader ? "mt-8" : "mt-6"} grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.82fr)] lg:items-start xl:gap-8`
-              : `${showHeader ? "mt-8" : "mt-6"} mx-auto max-w-2xl`
-          }
-        >
-          <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6">
-            <form action={formAction} className="space-y-4">
-              {state?.success === true && (
-                <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
-                  {state.message}
-                </p>
-              )}
-
-              {state?.success === false && state.error && (
-                <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
-                  {state.error}
-                </p>
-              )}
-
-              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-                <div className="space-y-1">
-                  <Label htmlFor={id("firstName")}>First Name</Label>
-                  <Input
-                    id={id("firstName")}
-                    name="firstName"
-                    placeholder="Jane"
-                    required
-                    disabled={isPending}
-                    className={
-                      state?.success === false && state.fieldErrors?.firstName
-                        ? "border-red-500"
-                        : ""
-                    }
-                  />
-                  {state?.success === false && state.fieldErrors?.firstName && (
-                    <p className="text-xs text-red-600">
-                      {state.fieldErrors.firstName[0]}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor={id("lastName")}>Last Name</Label>
-                  <Input
-                    id={id("lastName")}
-                    name="lastName"
-                    placeholder="Smith"
-                    required
-                    disabled={isPending}
-                    className={
-                      state?.success === false && state.fieldErrors?.lastName
-                        ? "border-red-500"
-                        : ""
-                    }
-                  />
-                  {state?.success === false && state.fieldErrors?.lastName && (
-                    <p className="text-xs text-red-600">
-                      {state.fieldErrors.lastName[0]}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-                <div className="space-y-1">
-                  <Label htmlFor={id("email")}>Email</Label>
-                  <Input
-                    id={id("email")}
-                    name="email"
-                    type="email"
-                    placeholder="jane@example.com"
-                    required
-                    disabled={isPending}
-                    className={
-                      state?.success === false && state.fieldErrors?.email
-                        ? "border-red-500"
-                        : ""
-                    }
-                  />
-                  {state?.success === false && state.fieldErrors?.email && (
-                    <p className="text-xs text-red-600">
-                      {state.fieldErrors.email[0]}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor={id("phone")}>
-                    {formType === "join" ? "Phone Number" : "Phone"}
-                  </Label>
-                  <Input
-                    id={id("phone")}
-                    name="phone"
-                    type="tel"
-                    placeholder="(555) 123-4567"
-                    required
-                    disabled={isPending}
-                    className={
-                      state?.success === false && state.fieldErrors?.phone
-                        ? "border-red-500"
-                        : ""
-                    }
-                  />
-                  {state?.success === false && state.fieldErrors?.phone && (
-                    <p className="text-xs text-red-600">
-                      {state.fieldErrors.phone[0]}
-                    </p>
-                  )}
-                  <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/65">
-                    {FORM_PHONE_SMS_NOTICE}
-                  </p>
-                </div>
-              </div>
-
-              {requiresAddress ? (
-                <div className="space-y-1">
-                  <Label htmlFor={id("address")}>Address</Label>
-                  <Input
-                    id={id("address")}
-                    name="address"
-                    placeholder="123 Main St, El Paso, TX"
-                    required
-                    disabled={isPending}
-                    className={
-                      state?.success === false && state.fieldErrors?.address
-                        ? "border-red-500"
-                        : ""
-                    }
-                  />
-                  {state?.success === false && state.fieldErrors?.address && (
-                    <p className="text-xs text-red-600">
-                      {state.fieldErrors.address[0]}
-                    </p>
-                  )}
-                </div>
-              ) : null}
-
-              {showMessageField ? (
-                <div className="space-y-1">
-                  <Label htmlFor={id("message")}>Message</Label>
-                  <Textarea
-                    id={id("message")}
-                    name="message"
-                    placeholder={messagePlaceholder}
-                    rows={2}
-                    disabled={isPending}
-                    className={
-                      `${
-                        state?.success === false && state.fieldErrors?.message
-                          ? "border-red-500"
-                          : ""
-                      } min-h-[88px]`
-                    }
-                  />
-                  {state?.success === false && state.fieldErrors?.message && (
-                    <p className="text-xs text-red-600">
-                      {state.fieldErrors.message[0]}
-                    </p>
-                  )}
-                </div>
-              ) : null}
-
-              <div className="space-y-2.5 rounded-xl border border-[var(--sandstone-navy)]/12 bg-white/88 p-3.5 sm:p-4">
-                {hasCaptchaError && (
+              {showAside ? (
+                <aside className="relative isolate min-h-[320px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:min-h-[420px] lg:max-w-[420px] lg:justify-self-end xl:min-h-[460px]">
                   <div
-                    role="alert"
-                    aria-live="assertive"
-                    className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800"
-                  >
-                    {state.fieldErrors?.captcha?.[0]}
-                  </div>
-                )}
-
-                <div className="space-y-1.5">
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
-                    Security Check
-                  </p>
-
-                  {turnstileSiteKey ? (
-                    <TurnstileWidget
-                      key={`${formType}-turnstile`}
-                      formType={formType}
-                      siteKey={turnstileSiteKey}
-                    />
-                  ) : (
-                    <p className="text-xs text-red-600">
-                      Captcha is not configured. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+                    aria-hidden
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(to top, rgba(37,52,113,0.74) 8%, rgba(37,52,113,0.34) 50%, rgba(37,52,113,0.08) 100%), linear-gradient(135deg, rgba(37,52,113,0.12), rgba(183,150,120,0.14)), url('/house2.webp')",
+                    }}
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute right-[-12%] top-[-8%] h-36 w-36 rounded-full bg-[var(--sandstone-sand-gold)]/20 blur-3xl"
+                  />
+                  <div className="relative flex min-h-[320px] flex-col justify-end p-6 text-white md:p-7 lg:min-h-[420px] xl:min-h-[460px]">
+                    <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
+                      {asideEyebrow}
                     </p>
-                  )}
-                </div>
-
-                <fieldset className="space-y-2.5">
-                  <legend className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
-                    Text Message Preferences
-                  </legend>
-                  <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
-                    Choose which SMS messages you want from {SMS_DISCLOSURE_BRAND}.
-                    Both options are optional and do not block form submission.
-                  </p>
-
-                  <div className="grid gap-2.5 md:grid-cols-2 md:gap-3">
-                    <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-[11px] leading-4 text-sandstone-text/90 sm:text-xs sm:leading-5">
-                      <input
-                        type="checkbox"
-                        name="acceptTransactionalSms"
-                        value="on"
-                        disabled={isPending}
-                        className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                      />
-                      <span>
-                        <span className="block font-semibold text-[var(--sandstone-navy)]">
-                          Transactional SMS updates
-                        </span>
-                        <span className="mt-1 block">
-                          {FORM_TRANSACTIONAL_SMS_COPY}
-                        </span>
-                      </span>
-                    </label>
-
-                    <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-[11px] leading-4 text-sandstone-text/90 sm:text-xs sm:leading-5">
-                      <input
-                        type="checkbox"
-                        name="acceptMarketingSms"
-                        value="on"
-                        disabled={isPending}
-                        className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                      />
-                      <span>
-                        <span className="flex flex-wrap items-center gap-2 font-semibold text-[var(--sandstone-navy)]">
-                          <span>Marketing SMS updates</span>
-                          <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[var(--sandstone-bronze)]">
-                            Optional
-                          </span>
-                        </span>
-                        <span className="mt-1 block">
-                          {FORM_MARKETING_SMS_COPY}
-                        </span>
-                      </span>
-                    </label>
+                    <h3 className="mt-2 font-heading text-3xl font-bold leading-tight md:text-4xl">
+                      {asideTitle}
+                    </h3>
+                    <p className="mt-3 max-w-sm text-sm text-white/85">
+                      {asideDescription}
+                    </p>
+                    <Link
+                      href={asideCtaHref}
+                      className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
+                    >
+                      {asideCtaLabel}
+                    </Link>
                   </div>
-
-                  <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
-                    Review our{" "}
-                    <Link
-                      href={PRIVACY_POLICY_HREF}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
-                    >
-                      {PRIVACY_POLICY_LABEL}
-                    </Link>
-                    {" "}and{" "}
-                    <Link
-                      href={TERMS_AND_CONDITIONS_HREF}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
-                    >
-                      {TERMS_AND_CONDITIONS_LABEL}
-                    </Link>
-                    . Mobile opt-in data is not shared with third parties for
-                    marketing purposes.
-                  </p>
-                </fieldset>
-              </div>
-
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 font-semibold uppercase tracking-wider text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-                disabled={isPending}
-              >
-                {isPending ? "Sending..." : ctaLabel}
-              </Button>
-
-              {/* TODO: add honeypot + rate limiting as a second anti-bot layer. */}
-            </form>
-          </div>
-
-          {showAside ? (
-            <aside className="relative isolate min-h-[320px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:min-h-[420px] lg:max-w-[420px] lg:justify-self-end xl:min-h-[460px]">
-              <div
-                aria-hidden
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to top, rgba(37,52,113,0.74) 8%, rgba(37,52,113,0.34) 50%, rgba(37,52,113,0.08) 100%), linear-gradient(135deg, rgba(37,52,113,0.12), rgba(183,150,120,0.14)), url('/house2.webp')",
-                }}
-              />
-              <div
-                aria-hidden
-                className="absolute right-[-12%] top-[-8%] h-36 w-36 rounded-full bg-[var(--sandstone-sand-gold)]/20 blur-3xl"
-              />
-              <div className="relative flex min-h-[320px] flex-col justify-end p-6 text-white md:p-7 lg:min-h-[420px] xl:min-h-[460px]">
-                <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
-                  {asideEyebrow}
-                </p>
-                <h3 className="mt-2 font-heading text-3xl font-bold leading-tight md:text-4xl">
-                  {asideTitle}
-                </h3>
-                <p className="mt-3 max-w-sm text-sm text-white/85">
-                  {asideDescription}
-                </p>
-                <Link
-                  href={asideCtaHref}
-                  className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
-                >
-                  {asideCtaLabel}
-                </Link>
-              </div>
-            </aside>
-          ) : null}
-        </div>
+                </aside>
+              ) : null}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );
