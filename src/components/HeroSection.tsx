@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import {
   LISTINGS_MAP_PATH,
@@ -74,7 +74,6 @@ export function HeroSection() {
     DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS
   );
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
-  const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState<PlaceSuggestion | null>(null);
   const [mapsReady, setMapsReady] = useState(false);
   const autocompleteServiceRef = useRef<GooglePlacesAutocompleteService | null>(null);
@@ -238,7 +237,6 @@ export function HeroSection() {
       return;
     }
 
-    setIsSuggestionsLoading(true);
     const autocompleteService = autocompleteServiceRef.current;
     autocompleteService.getPlacePredictions(
       {
@@ -247,8 +245,6 @@ export function HeroSection() {
         componentRestrictions: { country: "us" },
       },
       (predictions) => {
-        setIsSuggestionsLoading(false);
-
         if (!predictions || predictions.length === 0) {
           setSuggestions([]);
           return;
@@ -297,31 +293,43 @@ export function HeroSection() {
 
             <form
               onSubmit={handleSearchSubmit}
-              className="absolute left-1/2 top-[30%] z-10 hidden w-[min(1120px,calc(100%-5rem))] -translate-x-1/2 lg:block xl:top-[32%]"
+              className="absolute left-1/2 top-[31%] z-10 hidden w-[min(920px,calc(100%-6rem))] -translate-x-1/2 lg:block xl:top-[33%]"
             >
               <div className="flex flex-col items-center">
-                <div className="inline-flex items-center rounded-[2rem] bg-[color:rgba(255,248,240,0.95)] px-7 py-4 shadow-[0_24px_48px_-30px_rgba(17,24,61,0.68)] backdrop-blur-md">
-                  <span className="border-b-[3px] border-[var(--sandstone-navy)] pb-1 text-[1.55rem] font-semibold leading-none text-[var(--sandstone-charcoal)]">
-                    Buy
-                  </span>
-                  <span aria-hidden className="mx-5 h-8 w-px bg-[var(--sandstone-charcoal)]/18" />
-                  <Link
-                    href="/rent"
-                    className="text-[1.5rem] font-medium leading-none text-[var(--sandstone-charcoal)]/56 transition hover:text-[var(--sandstone-charcoal)]"
-                  >
-                    Rent
-                  </Link>
-                  <span aria-hidden className="mx-5 h-8 w-px bg-[var(--sandstone-charcoal)]/18" />
-                  <Link
-                    href="/sell"
-                    className="text-[1.5rem] font-medium leading-none text-[var(--sandstone-charcoal)]/56 transition hover:text-[var(--sandstone-charcoal)]"
-                  >
-                    Sell
-                  </Link>
+                <div className="rounded-[1.8rem] bg-[color:rgba(255,248,240,0.95)] px-7 py-3 shadow-[0_18px_40px_-28px_rgba(17,24,61,0.68)] backdrop-blur-md">
+                  <div className="inline-flex items-center gap-4 border-b border-[var(--sandstone-charcoal)]/48 pb-1.5">
+                    <span className="border-b-[2px] border-[var(--sandstone-charcoal)] pb-0.5 font-heading text-[1.02rem] font-semibold tracking-[0.01em] text-[var(--sandstone-charcoal)]">
+                      Buy
+                    </span>
+                    <span
+                      aria-hidden
+                      className="text-[1.45rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
+                    >
+                      |
+                    </span>
+                    <Link
+                      href="/rent"
+                      className="font-heading text-[1.02rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)]/58 transition hover:text-[var(--sandstone-charcoal)]"
+                    >
+                      Rent
+                    </Link>
+                    <span
+                      aria-hidden
+                      className="text-[1.45rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
+                    >
+                      |
+                    </span>
+                    <Link
+                      href="/sell"
+                      className="font-heading text-[1.02rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)]/58 transition hover:text-[var(--sandstone-charcoal)]"
+                    >
+                      Sell
+                    </Link>
+                  </div>
                 </div>
 
-                <div className="relative mt-5 w-full">
-                  <div className="rounded-[999px] bg-white/96 p-2.5 shadow-[0_30px_70px_-34px_rgba(0,0,0,0.72)] backdrop-blur-md">
+                <div className="relative mt-4 w-full">
+                  <div className="rounded-[999px] bg-white/95 p-2 shadow-[0_24px_56px_-34px_rgba(0,0,0,0.68)] backdrop-blur-md">
                     <div className="relative">
                       <input
                         type="search"
@@ -329,34 +337,28 @@ export function HeroSection() {
                         value={searchValue}
                         onChange={handleInputChange}
                         placeholder={SEARCH_PLACEHOLDER}
-                        className="h-[92px] w-full rounded-full border border-white/55 bg-white/90 pl-9 pr-28 text-[1.65rem] font-medium text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/42 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/35 xl:text-[1.8rem]"
+                        className="h-[74px] w-full rounded-full border border-white/65 bg-white/92 pl-9 pr-24 font-heading text-[1.05rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[1.0rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28 xl:text-[1.12rem]"
                         aria-label="Search by address or ZIP code"
                         autoComplete="off"
                       />
 
-                      {isSuggestionsLoading && (
-                        <div className="pointer-events-none absolute right-28 top-1/2 -translate-y-1/2 text-sm font-medium text-[var(--sandstone-charcoal)]/52">
-                          Searching...
-                        </div>
-                      )}
-
                       <button
                         type="submit"
-                        className="absolute right-3 top-1/2 flex h-[74px] w-[74px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_18px_40px_-22px_rgba(37,52,113,0.95)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
+                        className="absolute right-3 top-1/2 flex h-[58px] w-[58px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_14px_28px_-18px_rgba(37,52,113,0.9)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
                         aria-label="Search homes near this address"
                       >
-                        <Search className="h-8 w-8" strokeWidth={2.2} />
+                        <Search className="h-6 w-6" strokeWidth={2.2} />
                       </button>
                     </div>
                   </div>
 
                   {suggestions.length > 0 && (
-                    <ul className="absolute left-0 right-0 top-[calc(100%+1rem)] z-20 max-h-72 overflow-y-auto rounded-[1.6rem] border border-[var(--sandstone-charcoal)]/12 bg-white/98 py-2 text-base text-[var(--sandstone-charcoal)] shadow-[0_24px_54px_-30px_rgba(0,0,0,0.62)]">
+                    <ul className="absolute left-0 right-0 top-[calc(100%+0.85rem)] z-20 max-h-72 overflow-y-auto rounded-[1.35rem] border border-[var(--sandstone-charcoal)]/12 bg-white/98 py-2 text-sm text-[var(--sandstone-charcoal)] shadow-[0_24px_54px_-30px_rgba(0,0,0,0.62)]">
                       {suggestions.map((suggestion) => (
                         <li key={suggestion.placeId}>
                           <button
                             type="button"
-                            className="block w-full px-5 py-3 text-left transition hover:bg-[var(--sandstone-off-white)]"
+                            className="block w-full px-5 py-2.5 text-left transition hover:bg-[var(--sandstone-off-white)]"
                             onClick={() => handleSuggestionClick(suggestion)}
                           >
                             {suggestion.description}
@@ -367,60 +369,78 @@ export function HeroSection() {
                   )}
                 </div>
 
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-                  <select
-                    name="price"
-                    className="h-14 min-w-[148px] rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-base font-medium text-[var(--sandstone-charcoal)] shadow-[0_16px_36px_-28px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/25"
-                    value={filters.pricePreset}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        pricePreset: e.target.value as PropertySearchPresetFilters["pricePreset"],
-                      }))
-                    }
-                  >
-                    {PROPERTY_SEARCH_PRICE_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5">
+                  <div className="relative">
+                    <select
+                      name="price"
+                      className="h-11 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 pr-9 text-[0.94rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      value={filters.pricePreset}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          pricePreset: e.target.value as PropertySearchPresetFilters["pricePreset"],
+                        }))
+                      }
+                    >
+                      {PROPERTY_SEARCH_PRICE_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      aria-hidden
+                      className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
+                    />
+                  </div>
 
-                  <select
-                    name="beds"
-                    className="h-14 min-w-[136px] rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-base font-medium text-[var(--sandstone-charcoal)] shadow-[0_16px_36px_-28px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/25"
-                    value={filters.bedsPreset}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        bedsPreset: e.target.value as PropertySearchPresetFilters["bedsPreset"],
-                      }))
-                    }
-                  >
-                    {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="beds"
+                      className="h-11 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 pr-9 text-[0.94rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      value={filters.bedsPreset}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          bedsPreset: e.target.value as PropertySearchPresetFilters["bedsPreset"],
+                        }))
+                      }
+                    >
+                      {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      aria-hidden
+                      className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
+                    />
+                  </div>
 
-                  <select
-                    name="baths"
-                    className="h-14 min-w-[136px] rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-base font-medium text-[var(--sandstone-charcoal)] shadow-[0_16px_36px_-28px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/25"
-                    value={filters.bathsPreset}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        bathsPreset: e.target.value as PropertySearchPresetFilters["bathsPreset"],
-                      }))
-                    }
-                  >
-                    {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="baths"
+                      className="h-11 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 pr-9 text-[0.94rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      value={filters.bathsPreset}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          bathsPreset: e.target.value as PropertySearchPresetFilters["bathsPreset"],
+                        }))
+                      }
+                    >
+                      {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      aria-hidden
+                      className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
+                    />
+                  </div>
                 </div>
               </div>
             </form>

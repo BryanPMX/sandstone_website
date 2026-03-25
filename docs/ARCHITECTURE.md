@@ -38,7 +38,7 @@ This codebase is structured for a clean, maintainable marketing site with clear 
 
 1. Fetch listings from `fetchMyPropertyCards()`.
 2. Try Spark `my/listings` first, then legacy `MSL_FEED_URL`, then demo fallback data.
-3. Render the hero search with a buy-first layout that mirrors the brand comp: segmented tabs, large address field, and preset price/bed/bath filters.
+3. Render the hero search with a buy-first layout that mirrors the brand comp: compact centered tabs, a refined address field, and preset price/bed/bath filters.
 4. On submit, normalize the hero state into `/listings/map` query params via `buildListingsMapHref()`.
 5. Render hero, carousel, action tiles, about, contact, footer.
 
