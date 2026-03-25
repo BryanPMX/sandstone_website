@@ -128,6 +128,7 @@ export interface LeadCaptureSectionProps {
   heroBackgroundAlt?: string;
   heroCtaLabel?: string;
   heroCtaHref?: string;
+  turnstileSiteKey?: string;
 }
 
 export function LeadCaptureSection({
@@ -150,10 +151,10 @@ export function LeadCaptureSection({
   heroBackgroundAlt = "",
   heroCtaLabel,
   heroCtaHref,
+  turnstileSiteKey = "",
 }: LeadCaptureSectionProps) {
   const action = submitLeadForForm.bind(null, formType);
   const [state, formAction, isPending] = useActionState(action, initialState);
-  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const hasCaptchaError =
     state?.success === false && Boolean(state.fieldErrors?.captcha);
   const id = (field: string) => `${formType}-${field}`;

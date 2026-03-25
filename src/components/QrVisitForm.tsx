@@ -87,15 +87,15 @@ function TurnstileWidget({ siteKey }: { siteKey: string }) {
   return <div ref={containerRef} className="min-h-[65px]" />;
 }
 
-export function QrVisitForm() {
+export function QrVisitForm({
+  turnstileSiteKey = "",
+}: {
+  turnstileSiteKey?: string;
+}) {
   const [state, formAction, isPending] = useActionState(
     submitGiveawayLead,
     initialState
   );
-  const turnstileSiteKey =
-    typeof process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY === "string"
-      ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
-      : "";
   const hasCaptchaError =
     state?.success === false && Boolean(state.fieldErrors?.captcha);
 

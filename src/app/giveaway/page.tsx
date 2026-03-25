@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { QrVisitForm } from "@/components/QrVisitForm";
+import { getTurnstileSiteKey } from "@/config";
 
 /**
  * Hidden page for giveaway sign-up. QR code / direct URL only.
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
 };
 
 export default function GiveawayPage() {
+  const turnstileSiteKey = getTurnstileSiteKey();
+
   return (
     <>
       <SiteHeader variant="lead" logoOnly />
@@ -30,7 +33,7 @@ export default function GiveawayPage() {
         </p>
       </div>
       <div className="rounded-2xl border border-white/65 bg-white/72 p-5 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.5)] backdrop-blur-sm sm:p-6 w-full max-w-md">
-        <QrVisitForm />
+        <QrVisitForm turnstileSiteKey={turnstileSiteKey} />
       </div>
       <p className="mt-6 text-xs text-[var(--sandstone-charcoal)]/60">
         Sandstone Real Estate Group · El Paso

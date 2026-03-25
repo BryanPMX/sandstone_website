@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import { getTurnstileSiteKey } from "@/config";
 
 export const metadata = {
   title: "Join the Team | Sandstone Real Estate Group",
@@ -8,6 +9,8 @@ export const metadata = {
 };
 
 export default function JoinPage() {
+  const turnstileSiteKey = getTurnstileSiteKey();
+
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
@@ -20,6 +23,7 @@ export default function JoinPage() {
           showAside={false}
           ctaLabel="APPLY TO CONNECT"
           messagePlaceholder="Share your experience, licensing status, and what you are looking for in your next team..."
+          turnstileSiteKey={turnstileSiteKey}
         />
       </main>
       <SiteFooter />

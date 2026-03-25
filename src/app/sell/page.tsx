@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import { getTurnstileSiteKey } from "@/config";
 
 const marketingFeatures = [
   {
@@ -77,6 +78,8 @@ export const metadata = {
 };
 
 export default function SellPage() {
+  const turnstileSiteKey = getTurnstileSiteKey();
+
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
@@ -94,6 +97,7 @@ export default function SellPage() {
           heroCtaHref="#seller-plan"
           ctaLabel="REQUEST A SELLER CONSULTATION"
           messagePlaceholder="Share your address, timing, and any details about the property..."
+          turnstileSiteKey={turnstileSiteKey}
         />
 
         <section className="bg-white py-14 sm:py-16 lg:py-20">

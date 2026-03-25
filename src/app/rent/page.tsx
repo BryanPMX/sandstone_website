@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import { getTurnstileSiteKey } from "@/config";
 
 export const metadata = {
   title: "Rent My House | Sandstone Real Estate Group",
@@ -8,6 +9,8 @@ export const metadata = {
 };
 
 export default function RentPage() {
+  const turnstileSiteKey = getTurnstileSiteKey();
+
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
@@ -20,6 +23,7 @@ export default function RentPage() {
           showAside={false}
           ctaLabel="START MY RENTAL CONSULTATION"
           messagePlaceholder="Tell us about the rental property, availability, and what kind of support you need..."
+          turnstileSiteKey={turnstileSiteKey}
         />
       </main>
       <SiteFooter />
