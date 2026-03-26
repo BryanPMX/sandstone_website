@@ -328,7 +328,7 @@ export function HeroSection() {
                   </div>
                 </div>
 
-                <div className="relative mt-3.5 w-full">
+                <div className="relative mt-3.5 w-full max-w-[670px]">
                   <div className="rounded-[999px] bg-white/95 p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)] backdrop-blur-md">
                     <div className="relative">
                       <input
@@ -337,17 +337,17 @@ export function HeroSection() {
                         value={searchValue}
                         onChange={handleInputChange}
                         placeholder={SEARCH_PLACEHOLDER}
-                        className="h-[60px] w-full rounded-full border border-white/65 bg-white/92 pl-7 pr-20 font-heading text-[0.96rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.92rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28 xl:text-[1rem]"
+                        className="h-[54px] w-full rounded-full border border-white/65 bg-white/92 pl-7 pr-[4.4rem] font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
                         aria-label="Search by address or ZIP code"
                         autoComplete="off"
                       />
 
                       <button
                         type="submit"
-                        className="absolute right-2.5 top-1/2 flex h-[46px] w-[46px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_12px_24px_-18px_rgba(37,52,113,0.9)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
+                        className="absolute right-2 top-1/2 flex h-[40px] w-[40px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_12px_24px_-18px_rgba(37,52,113,0.9)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
                         aria-label="Search homes near this address"
                       >
-                        <Search className="h-5 w-5" strokeWidth={2.2} />
+                        <Search className="h-4.5 w-4.5" strokeWidth={2.2} />
                       </button>
                     </div>
                   </div>
@@ -373,7 +373,7 @@ export function HeroSection() {
                   <div className="relative">
                     <select
                       name="price"
-                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 pr-8 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-center [text-align-last:center] text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
                       value={filters.pricePreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
@@ -397,7 +397,7 @@ export function HeroSection() {
                   <div className="relative">
                     <select
                       name="beds"
-                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 pr-8 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-center [text-align-last:center] text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
                       value={filters.bedsPreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
@@ -421,7 +421,7 @@ export function HeroSection() {
                   <div className="relative">
                     <select
                       name="baths"
-                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 pr-8 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-center [text-align-last:center] text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
                       value={filters.bathsPreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
