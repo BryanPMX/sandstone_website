@@ -293,43 +293,43 @@ export function HeroSection() {
 
             <form
               onSubmit={handleSearchSubmit}
-              className="absolute left-1/2 top-[31%] z-10 hidden w-[min(920px,calc(100%-6rem))] -translate-x-1/2 lg:block xl:top-[33%]"
+              className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
             >
               <div className="flex flex-col items-center">
-                <div className="rounded-[1.8rem] bg-[color:rgba(255,248,240,0.95)] px-7 py-3 shadow-[0_18px_40px_-28px_rgba(17,24,61,0.68)] backdrop-blur-md">
-                  <div className="inline-flex items-center gap-4 border-b border-[var(--sandstone-charcoal)]/48 pb-1.5">
-                    <span className="border-b-[2px] border-[var(--sandstone-charcoal)] pb-0.5 font-heading text-[1.02rem] font-semibold tracking-[0.01em] text-[var(--sandstone-charcoal)]">
+                <div className="rounded-[1.55rem] bg-[color:rgba(255,248,240,0.95)] px-6 py-2.5 shadow-[0_16px_36px_-28px_rgba(17,24,61,0.68)] backdrop-blur-md">
+                  <div className="inline-flex items-center gap-3 border-b border-[var(--sandstone-charcoal)]/48 pb-1">
+                    <span className="border-b-[2px] border-[var(--sandstone-charcoal)] pb-0.5 font-heading text-[0.94rem] font-semibold tracking-[0.01em] text-[var(--sandstone-charcoal)]">
                       Buy
                     </span>
                     <span
                       aria-hidden
-                      className="text-[1.45rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
+                      className="text-[1.2rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
                     >
                       |
                     </span>
                     <Link
                       href="/rent"
-                      className="font-heading text-[1.02rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)]/58 transition hover:text-[var(--sandstone-charcoal)]"
+                      className="font-heading text-[0.94rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)]/58 transition hover:text-[var(--sandstone-charcoal)]"
                     >
                       Rent
                     </Link>
                     <span
                       aria-hidden
-                      className="text-[1.45rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
+                      className="text-[1.2rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
                     >
                       |
                     </span>
                     <Link
                       href="/sell"
-                      className="font-heading text-[1.02rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)]/58 transition hover:text-[var(--sandstone-charcoal)]"
+                      className="font-heading text-[0.94rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)]/58 transition hover:text-[var(--sandstone-charcoal)]"
                     >
                       Sell
                     </Link>
                   </div>
                 </div>
 
-                <div className="relative mt-4 w-full">
-                  <div className="rounded-[999px] bg-white/95 p-2 shadow-[0_24px_56px_-34px_rgba(0,0,0,0.68)] backdrop-blur-md">
+                <div className="relative mt-3.5 w-full">
+                  <div className="rounded-[999px] bg-white/95 p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)] backdrop-blur-md">
                     <div className="relative">
                       <input
                         type="search"
@@ -337,28 +337,28 @@ export function HeroSection() {
                         value={searchValue}
                         onChange={handleInputChange}
                         placeholder={SEARCH_PLACEHOLDER}
-                        className="h-[74px] w-full rounded-full border border-white/65 bg-white/92 pl-9 pr-24 font-heading text-[1.05rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[1.0rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28 xl:text-[1.12rem]"
+                        className="h-[60px] w-full rounded-full border border-white/65 bg-white/92 pl-7 pr-20 font-heading text-[0.96rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.92rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28 xl:text-[1rem]"
                         aria-label="Search by address or ZIP code"
                         autoComplete="off"
                       />
 
                       <button
                         type="submit"
-                        className="absolute right-3 top-1/2 flex h-[58px] w-[58px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_14px_28px_-18px_rgba(37,52,113,0.9)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
+                        className="absolute right-2.5 top-1/2 flex h-[46px] w-[46px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_12px_24px_-18px_rgba(37,52,113,0.9)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
                         aria-label="Search homes near this address"
                       >
-                        <Search className="h-6 w-6" strokeWidth={2.2} />
+                        <Search className="h-5 w-5" strokeWidth={2.2} />
                       </button>
                     </div>
                   </div>
 
                   {suggestions.length > 0 && (
-                    <ul className="absolute left-0 right-0 top-[calc(100%+0.85rem)] z-20 max-h-72 overflow-y-auto rounded-[1.35rem] border border-[var(--sandstone-charcoal)]/12 bg-white/98 py-2 text-sm text-[var(--sandstone-charcoal)] shadow-[0_24px_54px_-30px_rgba(0,0,0,0.62)]">
+                    <ul className="absolute left-0 right-0 top-[calc(100%+0.7rem)] z-20 max-h-64 overflow-y-auto rounded-[1.2rem] border border-[var(--sandstone-charcoal)]/12 bg-white/98 py-1.5 text-[0.84rem] text-[var(--sandstone-charcoal)] shadow-[0_24px_54px_-30px_rgba(0,0,0,0.62)]">
                       {suggestions.map((suggestion) => (
                         <li key={suggestion.placeId}>
                           <button
                             type="button"
-                            className="block w-full px-5 py-2.5 text-left transition hover:bg-[var(--sandstone-off-white)]"
+                            className="block w-full px-4 py-2 text-left transition hover:bg-[var(--sandstone-off-white)]"
                             onClick={() => handleSuggestionClick(suggestion)}
                           >
                             {suggestion.description}
@@ -369,11 +369,11 @@ export function HeroSection() {
                   )}
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5">
+                <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
                   <div className="relative">
                     <select
                       name="price"
-                      className="h-11 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 pr-9 text-[0.94rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 pr-8 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
                       value={filters.pricePreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
@@ -390,14 +390,14 @@ export function HeroSection() {
                     </select>
                     <ChevronDown
                       aria-hidden
-                      className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
+                      className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
                     />
                   </div>
 
                   <div className="relative">
                     <select
                       name="beds"
-                      className="h-11 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 pr-9 text-[0.94rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 pr-8 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
                       value={filters.bedsPreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
@@ -414,14 +414,14 @@ export function HeroSection() {
                     </select>
                     <ChevronDown
                       aria-hidden
-                      className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
+                      className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
                     />
                   </div>
 
                   <div className="relative">
                     <select
                       name="baths"
-                      className="h-11 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 pr-9 text-[0.94rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 pr-8 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
                       value={filters.bathsPreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
@@ -438,7 +438,7 @@ export function HeroSection() {
                     </select>
                     <ChevronDown
                       aria-hidden
-                      className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
+                      className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
                     />
                   </div>
                 </div>
