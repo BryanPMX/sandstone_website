@@ -61,7 +61,7 @@ The project is organized by responsibility:
 `src/app/page.tsx` composes:
 
 1. `SiteHeader`
-2. `HeroSection` (compact centered search UI that routes buy searches to `/listings/map` and links rent/sell tabs to their dedicated routes)
+2. `HeroSection` (compact centered search UI with content-fit filter pills that routes buy searches to `/listings/map` and links rent/sell tabs to their dedicated routes)
 3. `FeaturedListingsSection` (first 4 filtered listings)
 4. `PrimaryActionTiles`
 5. `AboutSection`

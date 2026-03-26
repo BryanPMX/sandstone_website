@@ -64,6 +64,13 @@ interface GoogleMapsWithPlaces {
   };
 }
 
+function getSelectedOptionLabel<T extends string>(
+  options: Array<{ value: T; label: string }>,
+  value: T
+): string {
+  return options.find((option) => option.value === value)?.label ?? options[0]?.label ?? "";
+}
+
 export function HeroSection() {
   const router = useRouter();
   const [isNavigatingToMap, setIsNavigatingToMap] = useState(false);
@@ -370,10 +377,18 @@ export function HeroSection() {
                 </div>
 
                 <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
-                  <div className="relative">
+                  <div className="relative focus-within:outline-none">
+                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                      <span>{getSelectedOptionLabel(PROPERTY_SEARCH_PRICE_OPTIONS, filters.pricePreset)}</span>
+                      <ChevronDown
+                        aria-hidden
+                        className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
+                      />
+                    </div>
                     <select
                       name="price"
-                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-center [text-align-last:center] text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      aria-label="Filter by price"
+                      className="absolute inset-0 cursor-pointer opacity-0"
                       value={filters.pricePreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
@@ -388,16 +403,20 @@ export function HeroSection() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown
-                      aria-hidden
-                      className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
-                    />
                   </div>
 
-                  <div className="relative">
+                  <div className="relative focus-within:outline-none">
+                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                      <span>{getSelectedOptionLabel(PROPERTY_SEARCH_BED_OPTIONS, filters.bedsPreset)}</span>
+                      <ChevronDown
+                        aria-hidden
+                        className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
+                      />
+                    </div>
                     <select
                       name="beds"
-                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-center [text-align-last:center] text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      aria-label="Filter by bedrooms"
+                      className="absolute inset-0 cursor-pointer opacity-0"
                       value={filters.bedsPreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
@@ -412,16 +431,20 @@ export function HeroSection() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown
-                      aria-hidden
-                      className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
-                    />
                   </div>
 
-                  <div className="relative">
+                  <div className="relative focus-within:outline-none">
+                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                      <span>{getSelectedOptionLabel(PROPERTY_SEARCH_BATH_OPTIONS, filters.bathsPreset)}</span>
+                      <ChevronDown
+                        aria-hidden
+                        className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
+                      />
+                    </div>
                     <select
                       name="baths"
-                      className="h-9 appearance-none rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-5 text-center [text-align-last:center] text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/22"
+                      aria-label="Filter by bathrooms"
+                      className="absolute inset-0 cursor-pointer opacity-0"
                       value={filters.bathsPreset}
                       onChange={(e) =>
                         setFilters((prev) => ({
@@ -436,10 +459,6 @@ export function HeroSection() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown
-                      aria-hidden
-                      className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--sandstone-charcoal)]/55"
-                    />
                   </div>
                 </div>
               </div>
