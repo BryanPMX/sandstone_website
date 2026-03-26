@@ -303,7 +303,7 @@ export function HeroSection() {
               className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
             >
               <div className="flex flex-col items-center">
-                <div className="rounded-[1.55rem] bg-[color:rgba(255,248,240,0.95)] px-6 py-2.5 shadow-[0_16px_36px_-28px_rgba(17,24,61,0.68)] backdrop-blur-md">
+                <div className="rounded-[1.55rem] bg-white px-6 py-2.5 shadow-[0_16px_36px_-28px_rgba(17,24,61,0.68)]">
                   <div className="inline-flex items-center gap-3 border-b border-[var(--sandstone-charcoal)]/48 pb-1">
                     <span className="border-b-[2px] border-[var(--sandstone-charcoal)] pb-0.5 font-heading text-[0.94rem] font-semibold tracking-[0.01em] text-[var(--sandstone-charcoal)]">
                       Buy
@@ -336,7 +336,7 @@ export function HeroSection() {
                 </div>
 
                 <div className="relative mt-3.5 w-full max-w-[670px]">
-                  <div className="rounded-[999px] bg-white/95 p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)] backdrop-blur-md">
+                  <div className="rounded-[999px] bg-white p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)]">
                     <div className="relative">
                       <input
                         type="search"
@@ -344,7 +344,7 @@ export function HeroSection() {
                         value={searchValue}
                         onChange={handleInputChange}
                         placeholder={SEARCH_PLACEHOLDER}
-                        className="h-[54px] w-full rounded-full border border-white/65 bg-white/92 pl-7 pr-[4.4rem] font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
+                        className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-[4.4rem] font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
                         aria-label="Search by address or ZIP code"
                         autoComplete="off"
                       />
@@ -378,7 +378,7 @@ export function HeroSection() {
 
                 <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
                   <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                       <span>{getSelectedOptionLabel(PROPERTY_SEARCH_PRICE_OPTIONS, filters.pricePreset)}</span>
                       <ChevronDown
                         aria-hidden
@@ -406,7 +406,7 @@ export function HeroSection() {
                   </div>
 
                   <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                       <span>{getSelectedOptionLabel(PROPERTY_SEARCH_BED_OPTIONS, filters.bedsPreset)}</span>
                       <ChevronDown
                         aria-hidden
@@ -434,7 +434,7 @@ export function HeroSection() {
                   </div>
 
                   <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white/96 px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                       <span>{getSelectedOptionLabel(PROPERTY_SEARCH_BATH_OPTIONS, filters.bathsPreset)}</span>
                       <ChevronDown
                         aria-hidden
