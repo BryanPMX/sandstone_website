@@ -19,7 +19,7 @@ export default function RentPage() {
           formType="rent"
           sectionId="rent-lead"
           heading="Rent My House"
-          subheading="Share your rental goals and property details, and we&apos;ll help you map the next steps."
+          subheading="Share your rental goals and property details, and we&apos;ll help you map the next step"
           showAside={false}
           ctaLabel="START MY RENTAL CONSULTATION"
           messagePlaceholder="Tell us about the rental property, availability, and what kind of support you need..."
