@@ -305,6 +305,7 @@ export interface PropertySearchFilters {
   maxPrice?: number;
   minBeds?: number;
   minBaths?: number;
+  listingType?: "active" | "my";
 }
 
 function toRadians(value: number): number {
@@ -357,6 +358,7 @@ export function filterPropertyCardsWithFilters(
     maxPrice,
     minBeds,
     minBaths,
+    listingType,
   } = filters;
 
   const hasRadiusFilter =
@@ -370,6 +372,10 @@ export function filterPropertyCardsWithFilters(
   const normalizedQuery = search?.trim().toLowerCase() ?? "";
 
   return properties.filter((property) => {
+    if (listingType && property.sparkSource !== listingType) {
+      return false;
+    }
+
     if (hasRadiusFilter) {
       if (
         typeof property.latitude !== "number" ||
