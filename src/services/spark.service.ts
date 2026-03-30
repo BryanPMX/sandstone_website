@@ -15,6 +15,8 @@ import {
   getSparkListingsPath,
   getSparkMyListingsFilter,
   getSparkMyListingsPath,
+  getSparkRentalListingsFilter,
+  getSparkRentalListingsPath,
 } from "@/config";
 
 type UnknownRecord = Record<string, unknown>;
@@ -1891,6 +1893,17 @@ export async function fetchMySparkPropertyCards(
     getSparkMyListingsFilter(),
     options,
     "my"
+  );
+}
+
+export async function fetchAllRentalSparkPropertyCards(
+  options?: SparkFetchOptions
+): Promise<PropertyCard[]> {
+  return fetchAllSparkPropertyCards(
+    getSparkRentalListingsPath(),
+    getSparkRentalListingsFilter(),
+    options,
+    "active"
   );
 }
 

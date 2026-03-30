@@ -87,14 +87,52 @@ export function getSparkMyListingsPath(): string {
   return getEnv("SPARK_API_MY_LISTINGS_PATH") ?? "/v1/my/listings";
 }
 
+export function getSparkTeamFilter(): string {
+  return getEnv("SPARK_TEAM_FILTER") ?? "ListingAgent Eq 'Alejandro Gamboa'";
+}
+
 export function getSparkActiveListingsFilter(): string {
-  return getEnv("SPARK_ACTIVE_LISTINGS_FILTER") ??
-    getEnv("SPARK_LISTINGS_FILTER") ??
-    "MlsStatus Eq 'Active'";
+  const customFilter = getEnv("SPARK_ACTIVE_LISTINGS_FILTER") ??
+    getEnv("SPARK_LISTINGS_FILTER");
+  
+  if (customFilter) {
+    return customFilter;
+  }
+  
+  const statusFilter = "MlsStatus Eq 'Active'";
+  const teamFilter = getSparkTeamFilter();
+  
+  return `(${statusFilter}) And (${teamFilter})`;
 }
 
 export function getSparkMyListingsFilter(): string {
-  return getEnv("SPARK_MY_LISTINGS_FILTER") ?? getSparkActiveListingsFilter();
+  const customFilter = getEnv("SPARK_MY_LISTINGS_FILTER");
+  
+  if (customFilter) {
+    return customFilter;
+  }
+  
+  const statusFilter = "MlsStatus Eq 'Active'";
+  const teamFilter = getSparkTeamFilter();
+  
+  return `(${statusFilter}) And (${teamFilter})`;
+}
+
+export function getSparkRentalListingsPath(): string {
+  return getEnv("SPARK_API_RENTAL_LISTINGS_PATH") ?? "/v1/listings";
+}
+
+export function getSparkRentalListingsFilter(): string {
+  const customFilter = getEnv("SPARK_RENTAL_LISTINGS_FILTER");
+  
+  if (customFilter) {
+    return customFilter;
+  }
+  
+  const rentalFilter = "RentalCalendar Eq true";
+  const teamFilter = getSparkTeamFilter();
+  
+  return `(${rentalFilter}) And (${teamFilter})`;
 }
 
 export function getSparkListingsPageSize(): number {

@@ -6,13 +6,14 @@ import { getMslFeedUrl, getSparkListingsPageSize, hasSparkAccessToken } from "@/
 import { fetchLegacyFeedPropertyCards } from "@/services/msl.service";
 import {
   fetchAllActiveSparkPropertyCards,
+  fetchAllRentalSparkPropertyCards,
   fetchActiveSparkPropertyCardsPage,
   fetchMySparkPropertyCards,
   fetchSparkPropertyCardById,
   fetchSparkPropertyDetailById,
 } from "@/services/spark.service";
 
-type ListingsTarget = "active" | "my";
+type ListingsTarget = "active" | "my" | "rental";
 type ListingsSource = "spark" | "legacy-feed" | "demo-fallback";
 type ListingsFetchOptions = {
   fresh?: boolean;
@@ -216,6 +217,8 @@ async function resolvePropertyCards(
       const properties =
         target === "active"
           ? await fetchAllActiveSparkPropertyCards(options)
+          : target === "rental"
+          ? await fetchAllRentalSparkPropertyCards(options)
           : await fetchMySparkPropertyCards(options);
 
       return {
@@ -225,7 +228,7 @@ async function resolvePropertyCards(
     } catch (error) {
       const sparkError = formatError(error);
       console.error(
-        `[Listings] ${target === "active" ? "Active" : "My"} Spark listings failed, falling back.`,
+        `[Listings] ${target === "active" ? "Active" : target === "rental" ? "Rental" : "My"} Spark listings failed, falling back.`,
         error
       );
 
@@ -293,6 +296,11 @@ async function fetchActivePropertyCardsUncached(): Promise<PropertyCard[]> {
 
 async function fetchMyPropertyCardsUncached(): Promise<PropertyCard[]> {
   const resolution = await resolvePropertyCards("my");
+  return resolution.properties;
+}
+
+async function fetchRentalPropertyCardsUncached(): Promise<PropertyCard[]> {
+  const resolution = await resolvePropertyCards("rental");
   return resolution.properties;
 }
 
@@ -588,5 +596,6 @@ async function fetchPropertyDetailByIdUncached(
 export const fetchActivePropertyCards = cache(fetchActivePropertyCardsUncached);
 export const fetchActivePropertyCardsPage = cache(fetchActivePropertyCardsPageUncached);
 export const fetchMyPropertyCards = cache(fetchMyPropertyCardsUncached);
+export const fetchRentalPropertyCards = cache(fetchRentalPropertyCardsUncached);
 export const fetchPropertyCardById = cache(fetchPropertyCardByIdUncached);
 export const fetchPropertyDetailById = fetchPropertyDetailByIdUncached;
