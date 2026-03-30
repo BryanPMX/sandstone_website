@@ -7,6 +7,7 @@ export {
   fetchActivePropertyCards,
   fetchActivePropertyCardsPage,
   fetchMyPropertyCards,
+  fetchRentalPropertyCards,
   fetchPropertyCardById,
   fetchPropertyDetailById,
 } from "./listings.service";

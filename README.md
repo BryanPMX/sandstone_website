@@ -11,6 +11,7 @@ The site is a brand-forward real estate experience with:
 - Searchable listings feed with dynamic detail pages
 - Lead capture form wired to Rolu webhook
 - View-only Privacy Policy and Terms pages
+- This is a test!
 
 Core design direction is defined by brand tokens in `src/app/globals.css` and Montserrat loaded in `src/app/layout.tsx`.
 
