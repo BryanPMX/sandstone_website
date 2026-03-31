@@ -311,7 +311,7 @@ export interface PropertySearchFilters {
   maxPrice?: number;
   minBeds?: number;
   minBaths?: number;
-  listingType?: "active" | "my";
+  listingType?: "active" | "my" | "rental";
 }
 
 function toRadians(value: number): number {
