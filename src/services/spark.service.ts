@@ -33,7 +33,7 @@ type SparkPropertyCardsPage = {
   totalRows: number;
   pageSize: number;
 };
-type SparkLookupTarget = "active" | "my";
+type SparkLookupTarget = "active" | "my" | "rental";
 type SparkCollectionRequest = {
   path: string;
   filter?: string;
@@ -1903,7 +1903,7 @@ export async function fetchAllRentalSparkPropertyCards(
     getSparkRentalListingsPath(),
     getSparkRentalListingsFilter(),
     options,
-    "active"
+    "rental"
   );
 }
 
