@@ -65,7 +65,7 @@ export function MobileMenuPortal({
                 <Link
                   href={item.href}
                   onClick={onClose}
-                  className="block rounded-xl px-4 py-3 text-[12px] font-medium text-[var(--sandstone-off-white)] hover:bg-white/10 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                  className="block rounded-xl px-4 py-3 text-[14px] font-bold text-[var(--sandstone-off-white)] hover:bg-white/10 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                 >
                   {item.label}
                 </Link>

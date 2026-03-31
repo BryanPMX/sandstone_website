@@ -140,7 +140,7 @@ export function SiteHeader({
       className={cn(
         "left-0 right-0 z-[80]",
         overlayDesktop
-          ? "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)] lg:absolute lg:top-0 lg:border-none lg:bg-transparent"
+          ? "sticky top-[40px] border-b border-white/10 bg-[var(--sandstone-navy)] lg:absolute lg:top-[40px] lg:border-none lg:bg-transparent"
           : cn(
               "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]",
               isLeadHeader && "shadow-[0_10px_24px_-20px_rgba(17,24,61,0.85)]"
@@ -203,7 +203,8 @@ export function SiteHeader({
             ref={menuButtonRef}
             type="button"
             className={cn(
-              "p-2 text-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+              "p-2 text-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]",
+              isHeroHeader && "lg:absolute lg:right-6 lg:top-[180px]"
             )}
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMenuOpen}
@@ -230,7 +231,7 @@ export function SiteHeader({
                       <Link
                         href={item.href}
                         className={cn(
-                          "inline-flex items-center px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)]",
+                          "inline-flex items-center px-3 py-2 text-[14px] font-bold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)]",
                           isActiveNavItem(item.href) &&
                             "underline decoration-2 underline-offset-8",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
@@ -246,7 +247,7 @@ export function SiteHeader({
               <Link
                 href="/"
                 className={cn(
-                  "mx-2 inline-flex items-center px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] xl:mx-5",
+                  "mx-2 inline-flex items-center px-3 py-2 text-[14px] font-bold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] xl:mx-5",
                   isActiveNavItem("/") &&
                     "underline decoration-2 underline-offset-8"
                 )}
@@ -262,7 +263,7 @@ export function SiteHeader({
                       <Link
                         href={item.href}
                         className={cn(
-                          "inline-flex items-center px-3 py-2 text-[12px] font-semibold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)]",
+                          "inline-flex items-center px-3 py-2 text-[14px] font-bold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)]",
                           isActiveNavItem(item.href) &&
                             "underline decoration-2 underline-offset-8",
                           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
@@ -291,8 +292,8 @@ export function SiteHeader({
                         href={item.href}
                         className={cn(
                           isLeadHeader
-                            ? "inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white hover:shadow-[0_10px_18px_-14px_rgba(183,150,120,0.65)]"
-                            : "text-[12px] font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
+                            ? "inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-4 py-2 text-[14px] font-bold uppercase tracking-[0.12em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white hover:shadow-[0_10px_18px_-14px_rgba(183,150,120,0.65)]"
+                            : "text-[14px] font-bold tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
                           isLeadHeader &&
                             isActiveNavItem(item.href) &&
                             "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] shadow-[0_12px_22px_-16px_rgba(183,150,120,0.8)] hover:text-[var(--sandstone-navy)]",
@@ -325,7 +326,7 @@ export function SiteHeader({
                     className={cn(
                       "relative shrink-0",
                       isHeroHeader
-                        ? "h-[168px] w-[228px]"
+                        ? "h-[118px] w-[184px]"
                         : isLeadHeader
                           ? "h-[118px] w-[184px]"
                           : "h-[86px] w-[144px]"
@@ -343,7 +344,7 @@ export function SiteHeader({
                             ? "drop-shadow-[0_4px_10px_rgba(183,150,120,0.15)]"
                             : "brightness-110"
                       )}
-                      sizes={isHeroHeader ? "228px" : isLeadHeader ? "184px" : "144px"}
+                      sizes={isHeroHeader ? "184px" : isLeadHeader ? "184px" : "144px"}
                       priority
                     />
                   </div>
@@ -354,7 +355,7 @@ export function SiteHeader({
                   className={cn(
                     "shrink-0",
                     isHeroHeader
-                      ? "h-[168px] w-[228px]"
+                      ? "h-[118px] w-[184px]"
                       : isLeadHeader
                         ? "h-[118px] w-[184px]"
                         : "h-[86px] w-[144px]"
@@ -376,8 +377,8 @@ export function SiteHeader({
                         href={item.href}
                         className={cn(
                           isLeadHeader
-                            ? "inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white hover:shadow-[0_10px_18px_-14px_rgba(183,150,120,0.65)]"
-                            : "text-[12px] font-medium tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
+                            ? "inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-4 py-2 text-[14px] font-bold uppercase tracking-[0.12em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white hover:shadow-[0_10px_18px_-14px_rgba(183,150,120,0.65)]"
+                            : "text-[14px] font-bold tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
                           isLeadHeader &&
                             isActiveNavItem(item.href) &&
                             "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] shadow-[0_12px_22px_-16px_rgba(183,150,120,0.8)] hover:text-[var(--sandstone-navy)]",

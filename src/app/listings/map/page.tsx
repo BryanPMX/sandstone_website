@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SearchToolbar } from "@/components/SearchToolbar";
@@ -14,18 +15,26 @@ import {
 import type { PropertyCard } from "@/types";
 
 export default function ListingsMapPage() {
+  const searchParams = useSearchParams();
   const [allProperties, setAllProperties] = useState<PropertyCard[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Get initial filters from URL params
+  const initialListingType = (searchParams.get("listingType") || "active") as "active" | "my" | "rental";
+  const initialPricePreset = (searchParams.get("price") || "any") as PropertySearchPresetFilters["pricePreset"];
+  const initialBedsPreset = (searchParams.get("beds") || "any") as PropertySearchPresetFilters["bedsPreset"];
+  const initialBathsPreset = (searchParams.get("baths") || "any") as PropertySearchPresetFilters["bathsPreset"];
+  
   const [filters, setFilters] = useState<{
-    listingType: "active" | "my";
+    listingType: "active" | "my" | "rental";
     pricePreset: PropertySearchPresetFilters["pricePreset"];
     bedsPreset: PropertySearchPresetFilters["bedsPreset"];
     bathsPreset: PropertySearchPresetFilters["bathsPreset"];
   }>({
-    listingType: "active",
-    pricePreset: "any",
-    bedsPreset: "any",
-    bathsPreset: "any",
+    listingType: initialListingType,
+    pricePreset: initialPricePreset,
+    bedsPreset: initialBedsPreset,
+    bathsPreset: initialBathsPreset,
   });
 
   useEffect(() => {
@@ -119,7 +128,96 @@ export default function ListingsMapPage() {
           </div>
 
           <div className="mt-6">
-            <SearchToolbar onFiltersChange={setFilters} initialFilters={filters} />
+            <div className="flex flex-wrap items-center gap-3 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
+              {/* Buy/Sell/Rent Buttons */}
+              <div className="flex rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] p-1">
+                <button
+                  type="button"
+                  onClick={() => setFilters(prev => ({ ...prev, listingType: "active" }))}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                    filters.listingType === "active"
+                      ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                      : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                  }`}
+                >
+                  Buy
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilters(prev => ({ ...prev, listingType: "rental" }))}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                    filters.listingType === "rental"
+                      ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                      : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                  }`}
+                >
+                  Rent
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilters(prev => ({ ...prev, listingType: "my" }))}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                    filters.listingType === "my"
+                      ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                      : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                  }`}
+                >
+                  Sell
+                </button>
+              </div>
+
+              {/* Price, Beds, Baths Filters */}
+              <select
+                value={filters.pricePreset}
+                onChange={(e) => setFilters(prev => ({ ...prev, pricePreset: e.target.value as PropertySearchPresetFilters["pricePreset"] }))}
+                className="h-12 min-w-[156px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '12px'
+                }}
+              >
+                <option value="any">Price</option>
+                <option value="0-250">Under $250k</option>
+                <option value="250-500">$250k - $500k</option>
+                <option value="500-750">$500k - $750k</option>
+                <option value="750-plus">$750k+</option>
+              </select>
+
+              <select
+                value={filters.bedsPreset}
+                onChange={(e) => setFilters(prev => ({ ...prev, bedsPreset: e.target.value as PropertySearchPresetFilters["bedsPreset"] }))}
+                className="h-12 min-w-[132px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '12px'
+                }}
+              >
+                <option value="any">Beds</option>
+                <option value="1">1+ Beds</option>
+                <option value="2">2+ Beds</option>
+                <option value="3">3+ Beds</option>
+                <option value="4">4+ Beds</option>
+              </select>
+
+              <select
+                value={filters.bathsPreset}
+                onChange={(e) => setFilters(prev => ({ ...prev, bathsPreset: e.target.value as PropertySearchPresetFilters["bathsPreset"] }))}
+                className="h-12 min-w-[132px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundSize: '12px'
+                }}
+              >
+                <option value="any">Baths</option>
+                <option value="1">1+ Baths</option>
+                <option value="2">2+ Baths</option>
+                <option value="3">3+ Baths</option>
+                <option value="4">4+ Baths</option>
+              </select>
+            </div>
           </div>
         </section>
 

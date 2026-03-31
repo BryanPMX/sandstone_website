@@ -232,6 +232,7 @@ interface BuildListingsMapHrefParams {
   centerLng?: number;
   radiusMiles?: number;
   filterPresets?: Partial<PropertySearchPresetFilters>;
+  listingType?: "active" | "my" | "rental";
 }
 
 export function buildListingsMapHref({
@@ -240,6 +241,7 @@ export function buildListingsMapHref({
   centerLng,
   radiusMiles,
   filterPresets,
+  listingType,
 }: BuildListingsMapHrefParams): string {
   const searchParams = new URLSearchParams();
   const resolvedPresets = {
@@ -261,6 +263,10 @@ export function buildListingsMapHref({
 
   if (typeof radiusMiles === "number" && radiusMiles > 0) {
     searchParams.set("radiusMiles", String(radiusMiles));
+  }
+
+  if (listingType && listingType !== "active") {
+    searchParams.set("listingType", listingType);
   }
 
   if (resolvedPresets.pricePreset !== "any") {

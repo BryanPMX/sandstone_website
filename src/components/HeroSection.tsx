@@ -77,8 +77,11 @@ export function HeroSection() {
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
-  const [filters, setFilters] = useState<PropertySearchPresetFilters>(
-    DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS
+  const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" | "my" }>(
+    {
+      ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+      listingType: "active",
+    }
   );
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState<PlaceSuggestion | null>(null);
@@ -182,6 +185,7 @@ export function HeroSection() {
     const href = buildListingsMapHref({
       ...params,
       filterPresets: filters,
+      listingType: filters.listingType,
     });
 
     setIsNavigatingToMap(true);
@@ -305,33 +309,51 @@ export function HeroSection() {
               <div className="flex flex-col items-center">
                 <div className="rounded-[1.55rem] bg-white px-6 py-2.5 shadow-[0_16px_36px_-28px_rgba(17,24,61,0.68)]">
                   <div className="inline-flex items-center gap-3 border-b border-[var(--sandstone-charcoal)]/48 pb-1">
-                    <span className="border-b-[2px] border-[var(--sandstone-charcoal)] pb-0.5 font-heading text-[0.94rem] font-semibold tracking-[0.01em] text-[var(--sandstone-charcoal)]">
+                    <button
+                      type="button"
+                      onClick={() => setFilters((prev) => ({ ...prev, listingType: "active" }))}
+                      className={`border-b-[2px] pb-0.5 font-heading text-[0.94rem] font-semibold tracking-[0.01em] transition ${
+                        filters.listingType === "active"
+                          ? "border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
+                          : "border-transparent text-[var(--sandstone-charcoal)]/58 hover:text-[var(--sandstone-charcoal)]"
+                      }`}
+                    >
                       Buy
-                    </span>
+                    </button>
                     <span
                       aria-hidden
                       className="text-[1.2rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
                     >
                       |
                     </span>
-                    <Link
-                      href="/rent"
-                      className="font-heading text-[0.94rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)]/58 transition hover:text-[var(--sandstone-charcoal)]"
+                    <button
+                      type="button"
+                      onClick={() => setFilters((prev) => ({ ...prev, listingType: "rental" }))}
+                      className={`pb-0.5 font-heading text-[0.94rem] font-medium tracking-[0.01em] transition ${
+                        filters.listingType === "rental"
+                          ? "border-b-[2px] border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
+                          : "text-[var(--sandstone-charcoal)]/58 hover:text-[var(--sandstone-charcoal)]"
+                      }`}
                     >
                       Rent
-                    </Link>
+                    </button>
                     <span
                       aria-hidden
                       className="text-[1.2rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
                     >
                       |
                     </span>
-                    <Link
-                      href="/sell"
-                      className="font-heading text-[0.94rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)]/58 transition hover:text-[var(--sandstone-charcoal)]"
+                    <button
+                      type="button"
+                      onClick={() => setFilters((prev) => ({ ...prev, listingType: "my" }))}
+                      className={`pb-0.5 font-heading text-[0.94rem] font-medium tracking-[0.01em] transition ${
+                        filters.listingType === "my"
+                          ? "border-b-[2px] border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
+                          : "text-[var(--sandstone-charcoal)]/58 hover:text-[var(--sandstone-charcoal)]"
+                      }`}
                     >
                       Sell
-                    </Link>
+                    </button>
                   </div>
                 </div>
 
@@ -378,7 +400,7 @@ export function HeroSection() {
 
                 <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
                   <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                    <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                       <span>{getSelectedOptionLabel(PROPERTY_SEARCH_PRICE_OPTIONS, filters.pricePreset)}</span>
                       <ChevronDown
                         aria-hidden
@@ -406,7 +428,7 @@ export function HeroSection() {
                   </div>
 
                   <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                    <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                       <span>{getSelectedOptionLabel(PROPERTY_SEARCH_BED_OPTIONS, filters.bedsPreset)}</span>
                       <ChevronDown
                         aria-hidden
@@ -434,7 +456,7 @@ export function HeroSection() {
                   </div>
 
                   <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                    <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                       <span>{getSelectedOptionLabel(PROPERTY_SEARCH_BATH_OPTIONS, filters.bathsPreset)}</span>
                       <ChevronDown
                         aria-hidden
@@ -482,13 +504,39 @@ export function HeroSection() {
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
           <div className="mx-auto flex max-w-sm items-center justify-center gap-4 text-sm font-semibold text-white/72">
-            <span className="border-b-2 border-white pb-1 text-white">Buy</span>
-            <Link href="/rent" className="transition hover:text-white">
+            <button
+              type="button"
+              onClick={() => setFilters((prev) => ({ ...prev, listingType: "active" }))}
+              className={`pb-1 transition ${
+                filters.listingType === "active"
+                  ? "border-b-2 border-white text-white"
+                  : "hover:text-white"
+              }`}
+            >
+              Buy
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilters((prev) => ({ ...prev, listingType: "rental" }))}
+              className={`pb-1 transition ${
+                filters.listingType === "rental"
+                  ? "border-b-2 border-white text-white"
+                  : "hover:text-white"
+              }`}
+            >
               Rent
-            </Link>
-            <Link href="/sell" className="transition hover:text-white">
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilters((prev) => ({ ...prev, listingType: "my" }))}
+              className={`pb-1 transition ${
+                filters.listingType === "my"
+                  ? "border-b-2 border-white text-white"
+                  : "hover:text-white"
+              }`}
+            >
               Sell
-            </Link>
+            </button>
           </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
             <input
