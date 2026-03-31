@@ -199,6 +199,7 @@ export function HeroSection() {
     const trimmed = searchValue.trim();
 
     if (!trimmed) {
+      navigateToMap({});
       return;
     }
 
