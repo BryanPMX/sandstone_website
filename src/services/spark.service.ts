@@ -310,6 +310,7 @@ function buildSparkListingDetailPath(path: string, id: string): string {
 }
 
 function getSparkPathForTarget(target: SparkLookupTarget): string {
+  if (target === "rental") return getSparkRentalListingsPath();
   return target === "active" ? getSparkListingsPath() : getSparkMyListingsPath();
 }
 
