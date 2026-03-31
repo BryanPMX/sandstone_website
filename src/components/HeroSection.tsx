@@ -77,7 +77,7 @@ export function HeroSection() {
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
-  const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" | "my" }>(
+  const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" }>(
     {
       ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
       listingType: "active",
@@ -92,7 +92,6 @@ export function HeroSection() {
   useEffect(() => {
     router.prefetch(LISTINGS_MAP_PATH);
     router.prefetch("/rent");
-    router.prefetch("/sell");
   }, [router]);
 
   useEffect(() => {
@@ -337,23 +336,6 @@ export function HeroSection() {
                     >
                       Rent
                     </button>
-                    <span
-                      aria-hidden
-                      className="text-[1.2rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
-                    >
-                      |
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setFilters((prev) => ({ ...prev, listingType: "my" }))}
-                      className={`pb-0.5 font-heading text-[0.94rem] font-medium tracking-[0.01em] transition ${
-                        filters.listingType === "my"
-                          ? "border-b-[2px] border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
-                          : "text-[var(--sandstone-charcoal)]/58 hover:text-[var(--sandstone-charcoal)]"
-                      }`}
-                    >
-                      Sell
-                    </button>
                   </div>
                 </div>
 
@@ -525,17 +507,6 @@ export function HeroSection() {
               }`}
             >
               Rent
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilters((prev) => ({ ...prev, listingType: "my" }))}
-              className={`pb-1 transition ${
-                filters.listingType === "my"
-                  ? "border-b-2 border-white text-white"
-                  : "hover:text-white"
-              }`}
-            >
-              Sell
             </button>
           </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">

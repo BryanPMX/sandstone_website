@@ -20,13 +20,13 @@ export default function ListingsMapPage() {
   const [loading, setLoading] = useState(true);
   
   // Get initial filters from URL params
-  const initialListingType = (searchParams.get("listingType") || "active") as "active" | "my" | "rental";
+  const initialListingType = (searchParams.get("listingType") || "active") as "active" | "rental";
   const initialPricePreset = (searchParams.get("price") || "any") as PropertySearchPresetFilters["pricePreset"];
   const initialBedsPreset = (searchParams.get("beds") || "any") as PropertySearchPresetFilters["bedsPreset"];
   const initialBathsPreset = (searchParams.get("baths") || "any") as PropertySearchPresetFilters["bathsPreset"];
   
   const [filters, setFilters] = useState<{
-    listingType: "active" | "my" | "rental";
+    listingType: "active" | "rental";
     pricePreset: PropertySearchPresetFilters["pricePreset"];
     bedsPreset: PropertySearchPresetFilters["bedsPreset"];
     bathsPreset: PropertySearchPresetFilters["bathsPreset"];
@@ -129,7 +129,7 @@ export default function ListingsMapPage() {
 
           <div className="mt-6">
             <div className="flex flex-wrap items-center gap-3 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
-              {/* Buy/Sell/Rent Buttons */}
+              {/* Buy/Rent Buttons */}
               <div className="flex rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] p-1">
                 <button
                   type="button"
@@ -152,17 +152,6 @@ export default function ListingsMapPage() {
                   }`}
                 >
                   Rent
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFilters(prev => ({ ...prev, listingType: "my" }))}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                    filters.listingType === "my"
-                      ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
-                      : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
-                  }`}
-                >
-                  Sell
                 </button>
               </div>
 

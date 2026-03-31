@@ -13,13 +13,13 @@ import {
 
 interface SearchToolbarProps {
   onFiltersChange: (filters: {
-    listingType: "active" | "my";
+    listingType: "active" | "rental";
     pricePreset: PropertySearchPresetFilters["pricePreset"];
     bedsPreset: PropertySearchPresetFilters["bedsPreset"];
     bathsPreset: PropertySearchPresetFilters["bathsPreset"];
   }) => void;
   initialFilters?: {
-    listingType: "active" | "my";
+    listingType: "active" | "rental";
     pricePreset: PropertySearchPresetFilters["pricePreset"];
     bedsPreset: PropertySearchPresetFilters["bedsPreset"];
     bathsPreset: PropertySearchPresetFilters["bathsPreset"];
@@ -28,7 +28,7 @@ interface SearchToolbarProps {
 
 export function SearchToolbar({ onFiltersChange, initialFilters }: SearchToolbarProps) {
   const router = useRouter();
-  const [listingType, setListingType] = useState<"active" | "my">(
+  const [listingType, setListingType] = useState<"active" | "rental">(
     initialFilters?.listingType ?? "active"
   );
   const [pricePreset, setPricePreset] = useState<PropertySearchPresetFilters["pricePreset"]>(
@@ -56,7 +56,7 @@ export function SearchToolbar({ onFiltersChange, initialFilters }: SearchToolbar
 
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
-      {/* Buy/Sell Toggle Buttons */}
+      {/* Buy/Rent Toggle Buttons */}
       <div className="flex rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] p-1">
         <button
           type="button"
@@ -71,14 +71,14 @@ export function SearchToolbar({ onFiltersChange, initialFilters }: SearchToolbar
         </button>
         <button
           type="button"
-          onClick={() => setListingType("my")}
+          onClick={() => setListingType("rental")}
           className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-            listingType === "my"
+            listingType === "rental"
               ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
               : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
           }`}
         >
-          Sell
+          Rent
         </button>
       </div>
 
