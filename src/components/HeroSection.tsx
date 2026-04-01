@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ChevronDown, Search } from "lucide-react";
@@ -77,7 +76,8 @@ export function HeroSection() {
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
-  const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" | "my" }>(
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" }>(
     {
       ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
       listingType: "active",
@@ -92,7 +92,6 @@ export function HeroSection() {
   useEffect(() => {
     router.prefetch(LISTINGS_MAP_PATH);
     router.prefetch("/rent");
-    router.prefetch("/sell");
   }, [router]);
 
   useEffect(() => {
@@ -343,17 +342,6 @@ export function HeroSection() {
                     >
                       |
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setFilters((prev) => ({ ...prev, listingType: "my" }))}
-                      className={`pb-0.5 font-heading text-[0.94rem] font-medium tracking-[0.01em] transition ${
-                        filters.listingType === "my"
-                          ? "border-b-[2px] border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
-                          : "text-[var(--sandstone-charcoal)]/58 hover:text-[var(--sandstone-charcoal)]"
-                      }`}
-                    >
-                      Sell
-                    </button>
                   </div>
                 </div>
 
@@ -503,14 +491,14 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
-          <div className="mx-auto flex max-w-sm items-center justify-center gap-4 text-sm font-semibold text-white/72">
+          <div className="mx-auto flex w-full max-w-sm items-center justify-center gap-4 text-sm font-semibold">
             <button
               type="button"
               onClick={() => setFilters((prev) => ({ ...prev, listingType: "active" }))}
-              className={`pb-1 transition ${
+              className={`px-2 py-1 transition ${
                 filters.listingType === "active"
                   ? "border-b-2 border-white text-white"
-                  : "hover:text-white"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               Buy
@@ -518,24 +506,13 @@ export function HeroSection() {
             <button
               type="button"
               onClick={() => setFilters((prev) => ({ ...prev, listingType: "rental" }))}
-              className={`pb-1 transition ${
+              className={`px-2 py-1 transition ${
                 filters.listingType === "rental"
                   ? "border-b-2 border-white text-white"
-                  : "hover:text-white"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               Rent
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilters((prev) => ({ ...prev, listingType: "my" }))}
-              className={`pb-1 transition ${
-                filters.listingType === "my"
-                  ? "border-b-2 border-white text-white"
-                  : "hover:text-white"
-              }`}
-            >
-              Sell
             </button>
           </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
@@ -556,6 +533,127 @@ export function HeroSection() {
               Search
             </button>
           </form>
+
+          <button
+            type="button"
+            onClick={() => setShowMobileFilters((prev) => !prev)}
+            className="mx-auto mt-3 flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/20"
+          >
+            <span>{showMobileFilters ? "Hide" : "Show"} Filters</span>
+            <ChevronDown
+              className={`h-3.5 w-3.5 transition-transform ${showMobileFilters ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {showMobileFilters ? (
+            <div className="mx-auto mt-4 w-full max-w-sm space-y-3">
+              <div className="space-y-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70">Price</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {PROPERTY_SEARCH_PRICE_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          pricePreset: option.value,
+                        }))
+                      }
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                        filters.pricePreset === option.value
+                          ? "bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)]"
+                          : "border border-white/30 bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    >
+                      {option.value === "any" ? "Any" : option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70">Beds</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          bedsPreset: option.value,
+                        }))
+                      }
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                        filters.bedsPreset === option.value
+                          ? "bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)]"
+                          : "border border-white/30 bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    >
+                      {option.value === "any" ? "Any" : option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70">Baths</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          bathsPreset: option.value,
+                        }))
+                      }
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                        filters.bathsPreset === option.value
+                          ? "bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)]"
+                          : "border border-white/30 bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    >
+                      {option.value === "any" ? "Any" : option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t border-white/20 pt-3">
+                <div className="flex flex-wrap justify-center gap-4 text-center">
+                  <button
+                    type="button"
+                    onClick={() => router.push("/listings")}
+                    className="text-xs font-semibold text-white/80 transition hover:text-white"
+                  >
+                    All Listings
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push("/listings/map")}
+                    className="text-xs font-semibold text-white/80 transition hover:text-white"
+                  >
+                    Map Search
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFilters({
+                        ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+                        listingType: "active",
+                      })
+                    }
+                    className="text-xs font-semibold text-white/80 transition hover:text-white"
+                  >
+                    Reset Filters
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
 

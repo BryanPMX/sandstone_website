@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SearchToolbar } from "@/components/SearchToolbar";
 import { ListingsMapPanel, ListingsMapSidebar } from "@/components/properties";
 import {
   filterPropertyCardsWithFilters,
