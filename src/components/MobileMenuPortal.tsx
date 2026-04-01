@@ -48,7 +48,7 @@ export function MobileMenuPortal({
   };
 
   const content = (
-    <div className="md:hidden" style={overlayStyle} onClick={onClose} role="presentation">
+    <div className="lg:hidden" style={overlayStyle} onClick={onClose} role="presentation">
       <div
         id="mobile-nav"
         role="dialog"

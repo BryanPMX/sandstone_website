@@ -113,12 +113,12 @@ export function SiteHeader({
 
       <div
         className={cn(
-          "mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:px-6",
+          "mx-auto flex w-full max-w-6xl flex-col px-4 lg:flex-row lg:px-6",
           isHeroHeader
-            ? "lg:h-28 lg:items-start lg:pt-3"
+            ? "py-1 lg:h-28 lg:items-start lg:pt-3"
             : isLeadHeader
-              ? "lg:h-[92px]"
-              : "lg:h-[92px]"
+              ? "py-1 lg:h-[92px]"
+              : "py-1 lg:h-[92px]"
         )}
       >
         <div className="flex w-full items-center gap-3 lg:hidden">

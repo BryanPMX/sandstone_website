@@ -100,9 +100,10 @@ export function getSparkActiveListingsFilter(): string {
   }
   
   const statusFilter = "MlsStatus Eq 'Active'";
+  const nonRentalFilter = "RentalCalendar Ne true";
   const teamFilter = getSparkTeamFilter();
   
-  return `(${statusFilter}) And (${teamFilter})`;
+  return `(${statusFilter}) And (${nonRentalFilter}) And (${teamFilter})`;
 }
 
 export function getSparkMyListingsFilter(): string {
@@ -113,9 +114,10 @@ export function getSparkMyListingsFilter(): string {
   }
   
   const statusFilter = "MlsStatus Eq 'Active'";
+  const nonRentalFilter = "RentalCalendar Ne true";
   const teamFilter = getSparkTeamFilter();
   
-  return `(${statusFilter}) And (${teamFilter})`;
+  return `(${statusFilter}) And (${nonRentalFilter}) And (${teamFilter})`;
 }
 
 export function getSparkRentalListingsPath(): string {
