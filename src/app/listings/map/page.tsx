@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SearchToolbar } from "@/components/SearchToolbar";
 import { ListingsMapPanel, ListingsMapSidebar } from "@/components/properties";
+import { MobileListingsFilters } from "@/components/MobileListingsFilters";
 import {
   filterPropertyCardsWithFilters,
   resolvePresetFiltersToNumeric,
@@ -128,7 +128,8 @@ export default function ListingsMapPage() {
           </div>
 
           <div className="mt-6">
-            <div className="flex flex-wrap items-center gap-3 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
+            {/* Desktop Filter Bar - Hidden on mobile */}
+            <div className="hidden md:flex flex-wrap items-center gap-3 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
               {/* Buy/Rent Buttons */}
               <div className="flex rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] p-1">
                 <button
@@ -206,6 +207,20 @@ export default function ListingsMapPage() {
                 <option value="3">3+ Baths</option>
                 <option value="4">4+ Baths</option>
               </select>
+            </div>
+
+            {/* Mobile Filter Panel - Visible only on mobile */}
+            <div className="md:hidden">
+              <MobileListingsFilters
+                listingType={filters.listingType}
+                pricePreset={filters.pricePreset}
+                bedsPreset={filters.bedsPreset}
+                bathsPreset={filters.bathsPreset}
+                onListingTypeChange={(type) => setFilters(prev => ({ ...prev, listingType: type }))}
+                onPriceChange={(price) => setFilters(prev => ({ ...prev, pricePreset: price }))}
+                onBedsChange={(beds) => setFilters(prev => ({ ...prev, bedsPreset: beds }))}
+                onBathsChange={(baths) => setFilters(prev => ({ ...prev, bathsPreset: baths }))}
+              />
             </div>
           </div>
         </section>
