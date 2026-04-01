@@ -336,12 +336,6 @@ export function HeroSection() {
                     >
                       Rent
                     </button>
-                    <span
-                      aria-hidden
-                      className="text-[1.2rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
-                    >
-                      |
-                    </span>
                   </div>
                 </div>
 

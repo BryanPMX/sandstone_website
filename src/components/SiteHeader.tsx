@@ -85,7 +85,7 @@ export function SiteHeader({
       className={cn(
         "left-0 right-0 z-[80]",
         overlayDesktop
-          ? "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)] lg:sticky lg:top-[40px] lg:border-none lg:bg-transparent"
+          ? "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)] lg:absolute lg:top-[40px] lg:border-none lg:bg-transparent"
           : cn(
               "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]",
               isLeadHeader && "shadow-[0_10px_24px_-20px_rgba(17,24,61,0.85)]"
