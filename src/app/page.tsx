@@ -7,6 +7,9 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { fetchActivePropertyCards } from "@/services";
 import { isAlejandroListing } from "@/lib";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Home() {
   const properties = await fetchActivePropertyCards();
   const alejandroSparkProperties = properties.filter(
