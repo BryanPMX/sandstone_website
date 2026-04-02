@@ -4,14 +4,13 @@ import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsS
 import { PrimaryActionTiles } from "@/components/sections/PrimaryActionTiles";
 import { ContactForm } from "@/components/ContactForm";
 import { SiteFooter } from "@/components/SiteFooter";
-import { fetchActivePropertyCards } from "@/services";
+import { fetchMyPropertyCards } from "@/services";
 import { isAlejandroListing } from "@/lib";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 300;
 
 export default async function Home() {
-  const properties = await fetchActivePropertyCards();
+  const properties = await fetchMyPropertyCards();
   const alejandroSparkProperties = properties.filter(
     (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
   );

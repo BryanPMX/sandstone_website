@@ -338,7 +338,11 @@ function getDistanceInMiles(
   return R * c;
 }
 
-function parsePriceToNumber(price: string): number | null {
+function parsePriceToNumber(price?: string): number | null {
+  if (typeof price !== "string") {
+    return null;
+  }
+
   const normalized = price.replace(/[^\d.]/g, "");
   if (!normalized) return null;
   const value = Number(normalized);
@@ -371,7 +375,7 @@ export function resolvePropertyListingType(
     return "rental";
   }
 
-  if (property.sparkSource === "active" || property.sparkSource === "my") {
+  if (property.sparkSource === "active") {
     return "active";
   }
 

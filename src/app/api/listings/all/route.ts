@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { fetchActivePropertyCards, fetchMyPropertyCards, fetchRentalPropertyCards } from "@/services";
-import { isAlejandroListing } from "@/lib";
+import { fetchMyPropertyCards } from "@/services";
+import { isAlejandroListing, resolvePropertyListingType } from "@/lib";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -36,33 +36,32 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const listingType = resolveListingTypeQuery(url.searchParams.get("listingType"));
-    const activeFetches = [fetchActivePropertyCards(), fetchMyPropertyCards()] as const;
-    let allProperties;
-
-    if (listingType === "rental") {
-      allProperties = await fetchRentalPropertyCards();
-    } else if (listingType === "active") {
-      const [activeProperties, myProperties] = await Promise.all(activeFetches);
-      allProperties = [...activeProperties, ...myProperties];
-    } else {
-      const [activeProperties, myProperties, rentalProperties] = await Promise.all([
-        ...activeFetches,
-        fetchRentalPropertyCards(),
-      ]);
-
-      allProperties = [...activeProperties, ...myProperties, ...rentalProperties];
-    }
-
-    const filteredProperties = dedupeProperties(allProperties).filter(
+    const myProperties = await fetchMyPropertyCards();
+    const alejandroSparkProperties = dedupeProperties(myProperties).filter(
       (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
     );
 
-    return NextResponse.json(filteredProperties);
+    const filteredProperties = listingType === "all"
+      ? alejandroSparkProperties
+      : alejandroSparkProperties.filter(
+          (property) => resolvePropertyListingType(property) === listingType
+        );
+
+    return NextResponse.json(filteredProperties, {
+      headers: {
+        "Cache-Control": "s-maxage=60, stale-while-revalidate=300",
+      },
+    });
   } catch (error) {
     console.error("Failed to fetch listings:", error);
     return NextResponse.json(
       { error: "Failed to fetch listings" },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
     );
   }
 }

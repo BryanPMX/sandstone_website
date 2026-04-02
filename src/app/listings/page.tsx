@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingCard } from "@/components/properties";
-import { fetchActivePropertyCards } from "@/services";
+import { fetchMyPropertyCards } from "@/services";
 import { filterPropertyCards, isAlejandroListing } from "@/lib";
 import { getSparkListingsPageSize } from "@/config";
 
@@ -67,7 +67,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
     : 1;
   const pageSize = getSparkListingsPageSize();
 
-  const allAlejandroProperties = (await fetchActivePropertyCards()).filter(
+  const allAlejandroProperties = (await fetchMyPropertyCards()).filter(
     (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
   );
 
