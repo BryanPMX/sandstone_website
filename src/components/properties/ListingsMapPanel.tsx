@@ -202,7 +202,7 @@ function loadGoogleMaps(apiKey: string): Promise<void> {
     const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
       apiKey
-    )}&v=weekly&libraries=places`;
+    )}&v=weekly`;
     script.async = true;
     script.defer = true;
     script.onload = () => resolve();

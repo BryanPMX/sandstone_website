@@ -1467,6 +1467,7 @@ function getSparkHeaders(accessToken: string): HeadersInit {
   return {
     Accept: "application/json",
     Authorization: `Bearer ${accessToken}`,
+    "User-Agent": "sandstone-website/1.0",
   };
 }
 
@@ -1537,6 +1538,16 @@ async function fetchSparkResults(
   };
 }
 
+function isSparkFilterSyntaxError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+
+  return (
+    message.includes("Code\\\":1040") ||
+    message.toLowerCase().includes("syntax of your _filter parameter is invalid") ||
+    message.toLowerCase().includes("sparkql")
+  );
+}
+
 async function fetchAllSparkPropertyCards(
   path: string,
   filter?: string,
@@ -1544,42 +1555,56 @@ async function fetchAllSparkPropertyCards(
   sparkSource?: SparkLookupTarget
 ): Promise<PropertyCard[]> {
   const requestPageSize = resolveSparkRequestLimit();
-  const properties: PropertyCard[] = [];
-  const seenIds = new Set<string>();
-  let page = 1;
-  let totalPages: number | undefined;
 
-  while (page <= (totalPages ?? MAX_SPARK_PAGES)) {
-    const { properties: pageProperties, pagination } =
-      await fetchSparkCollectionPage({
-        path,
-        filter,
-        page,
-      }, options, sparkSource);
+  const loadAllPages = async (effectiveFilter?: string): Promise<PropertyCard[]> => {
+    const properties: PropertyCard[] = [];
+    const seenIds = new Set<string>();
+    let page = 1;
+    let totalPages: number | undefined;
 
-    for (const property of pageProperties) {
-      if (seenIds.has(property.id)) {
-        continue;
+    while (page <= (totalPages ?? MAX_SPARK_PAGES)) {
+      const { properties: pageProperties, pagination } =
+        await fetchSparkCollectionPage({
+          path,
+          filter: effectiveFilter,
+          page,
+        }, options, sparkSource);
+
+      for (const property of pageProperties) {
+        if (seenIds.has(property.id)) {
+          continue;
+        }
+
+        seenIds.add(property.id);
+        properties.push(property);
       }
 
-      seenIds.add(property.id);
-      properties.push(property);
+      totalPages = pagination?.totalPages ?? totalPages;
+
+      const hasMorePages = totalPages
+        ? page < totalPages
+        : pageProperties.length === requestPageSize;
+
+      if (!hasMorePages) {
+        break;
+      }
+
+      page += 1;
     }
 
-    totalPages = pagination?.totalPages ?? totalPages;
+    return properties;
+  };
 
-    const hasMorePages = totalPages
-      ? page < totalPages
-      : pageProperties.length === requestPageSize;
-
-    if (!hasMorePages) {
-      break;
+  try {
+    return await loadAllPages(filter);
+  } catch (error) {
+    if (filter && isSparkFilterSyntaxError(error)) {
+      console.warn("[Spark] Invalid filter syntax detected. Retrying collection without _filter.");
+      return loadAllPages(undefined);
     }
 
-    page += 1;
+    throw error;
   }
-
-  return properties;
 }
 
 function buildIdentifierFilters(
@@ -1812,77 +1837,92 @@ export async function fetchActiveSparkPropertyCardsPage(
   const path = getSparkListingsPath();
   const filter = getSparkActiveListingsFilter();
 
-  let resolvedPage = requestedPage;
+  const resolvePageWithFilter = async (
+    effectiveFilter?: string
+  ): Promise<SparkPropertyCardsPage> => {
+    let resolvedPage = requestedPage;
 
-  while (true) {
-    const offset = (resolvedPage - 1) * displayPageSize;
-    const startingSparkPage = Math.floor(offset / requestPageSize) + 1;
-    let skip = offset % requestPageSize;
-    let sparkPage = startingSparkPage;
-    let totalRows: number | undefined;
-    let totalSparkPages: number | undefined;
-    const properties: PropertyCard[] = [];
+    while (true) {
+      const offset = (resolvedPage - 1) * displayPageSize;
+      const startingSparkPage = Math.floor(offset / requestPageSize) + 1;
+      let skip = offset % requestPageSize;
+      let sparkPage = startingSparkPage;
+      let totalRows: number | undefined;
+      let totalSparkPages: number | undefined;
+      const properties: PropertyCard[] = [];
 
-    while (
-      properties.length < displayPageSize &&
-      (totalSparkPages == null || sparkPage <= totalSparkPages)
-    ) {
-      const { properties: sparkPageProperties, pagination } = await fetchSparkCollectionPage(
-        {
-          path,
-          filter,
-          page: sparkPage,
-        },
-        options,
-        "active"
-      );
+      while (
+        properties.length < displayPageSize &&
+        (totalSparkPages == null || sparkPage <= totalSparkPages)
+      ) {
+        const { properties: sparkPageProperties, pagination } = await fetchSparkCollectionPage(
+          {
+            path,
+            filter: effectiveFilter,
+            page: sparkPage,
+          },
+          options,
+          "active"
+        );
 
-      totalRows = pagination?.totalRows ?? totalRows;
-      totalSparkPages = pagination?.totalPages ?? totalSparkPages;
+        totalRows = pagination?.totalRows ?? totalRows;
+        totalSparkPages = pagination?.totalPages ?? totalSparkPages;
 
-      const visibleProperties = skip > 0
-        ? sparkPageProperties.slice(skip)
-        : sparkPageProperties;
+        const visibleProperties = skip > 0
+          ? sparkPageProperties.slice(skip)
+          : sparkPageProperties;
 
-      properties.push(
-        ...visibleProperties.slice(0, displayPageSize - properties.length)
-      );
+        properties.push(
+          ...visibleProperties.slice(0, displayPageSize - properties.length)
+        );
 
-      const hasMoreSparkPages = totalSparkPages != null
-        ? sparkPage < totalSparkPages
-        : sparkPageProperties.length === requestPageSize;
+        const hasMoreSparkPages = totalSparkPages != null
+          ? sparkPage < totalSparkPages
+          : sparkPageProperties.length === requestPageSize;
 
-      if (!hasMoreSparkPages) {
-        break;
+        if (!hasMoreSparkPages) {
+          break;
+        }
+
+        skip = 0;
+        sparkPage += 1;
       }
 
-      skip = 0;
-      sparkPage += 1;
+      const totalPages = totalRows != null
+        ? Math.max(1, Math.ceil(totalRows / displayPageSize))
+        : properties.length < displayPageSize
+          ? resolvedPage
+          : resolvedPage + 1;
+      const effectiveTotalRows = totalRows ?? (
+        properties.length < displayPageSize
+          ? offset + properties.length
+          : offset + properties.length + 1
+      );
+
+      if (resolvedPage > totalPages) {
+        resolvedPage = totalPages;
+        continue;
+      }
+
+      return {
+        properties,
+        currentPage: resolvedPage,
+        totalPages,
+        totalRows: effectiveTotalRows,
+        pageSize: displayPageSize,
+      };
+    }
+  };
+
+  try {
+    return await resolvePageWithFilter(filter);
+  } catch (error) {
+    if (filter && isSparkFilterSyntaxError(error)) {
+      console.warn("[Spark] Invalid active filter syntax detected. Retrying page lookup without _filter.");
+      return resolvePageWithFilter(undefined);
     }
 
-    const totalPages = totalRows != null
-      ? Math.max(1, Math.ceil(totalRows / displayPageSize))
-      : properties.length < displayPageSize
-        ? resolvedPage
-        : resolvedPage + 1;
-    const effectiveTotalRows = totalRows ?? (
-      properties.length < displayPageSize
-        ? offset + properties.length
-        : offset + properties.length + 1
-    );
-
-    if (resolvedPage > totalPages) {
-      resolvedPage = totalPages;
-      continue;
-    }
-
-    return {
-      properties,
-      currentPage: resolvedPage,
-      totalPages,
-      totalRows: effectiveTotalRows,
-      pageSize: displayPageSize,
-    };
+    throw error;
   }
 }
 

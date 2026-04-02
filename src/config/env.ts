@@ -68,7 +68,11 @@ export function getMslFeedUrl(): string | undefined {
  * Server-only Spark access token. Keep this secret and never expose it to the client.
  */
 export function getSparkAccessToken(): string | undefined {
-  return getEnv("SPARK_ACCESS_TOKEN") ?? getEnv("SPARK_API_TOKEN");
+  return (
+    getEnv("SPARK_ACCESS_TOKEN") ??
+    getEnv("SPARK_API_TOKEN") ??
+    getEnv("SPARK_API_KEY")
+  );
 }
 
 export function hasSparkAccessToken(): boolean {
@@ -88,7 +92,7 @@ export function getSparkMyListingsPath(): string {
 }
 
 export function getSparkTeamFilter(): string {
-  return getEnv("SPARK_TEAM_FILTER") ?? "ListingAgent Eq 'Alejandro Gamboa'";
+  return getEnv("SPARK_TEAM_FILTER") ?? "ListOfficeName Eq 'Sandstone Real Estate Team El Paso'";
 }
 
 export function getSparkActiveListingsFilter(): string {
@@ -98,12 +102,8 @@ export function getSparkActiveListingsFilter(): string {
   if (customFilter) {
     return customFilter;
   }
-  
-  const statusFilter = "MlsStatus Eq 'Active'";
-  const nonRentalFilter = "RentalCalendar Ne true";
-  const teamFilter = getSparkTeamFilter();
-  
-  return `(${statusFilter}) And (${nonRentalFilter}) And (${teamFilter})`;
+
+  return "MlsStatus Eq 'Active'";
 }
 
 export function getSparkMyListingsFilter(): string {
@@ -112,12 +112,8 @@ export function getSparkMyListingsFilter(): string {
   if (customFilter) {
     return customFilter;
   }
-  
-  const statusFilter = "MlsStatus Eq 'Active'";
-  const nonRentalFilter = "RentalCalendar Ne true";
-  const teamFilter = getSparkTeamFilter();
-  
-  return `(${statusFilter}) And (${nonRentalFilter}) And (${teamFilter})`;
+
+  return "MlsStatus Eq 'Active'";
 }
 
 export function getSparkRentalListingsPath(): string {
@@ -130,11 +126,10 @@ export function getSparkRentalListingsFilter(): string {
   if (customFilter) {
     return customFilter;
   }
-  
-  const rentalFilter = "RentalCalendar Eq true";
-  const teamFilter = getSparkTeamFilter();
-  
-  return `(${rentalFilter}) And (${teamFilter})`;
+
+  // Default to active inventory when a dedicated rental filter is unknown.
+  // Set SPARK_RENTAL_LISTINGS_FILTER in .env.local for your MLS-specific rental field.
+  return "MlsStatus Eq 'Active'";
 }
 
 export function getSparkListingsPageSize(): number {
