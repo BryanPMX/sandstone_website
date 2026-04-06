@@ -2,6 +2,7 @@ export { cn, shouldBypassNextImageOptimization } from "./utils";
 export { buildLeadWebhookPayload } from "./lead-payload";
 export { zodIssuesToFieldErrors } from "./zod";
 export {
+  ALEJANDRO_GAMBOA_NAME,
   LISTINGS_MAP_PATH,
   DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
   PROPERTY_SEARCH_PRICE_OPTIONS,
@@ -10,7 +11,9 @@ export {
   buildListingsMapHref,
   filterPropertyCards,
   filterPropertyCardsWithFilters,
+  isAlejandroListing,
   parseListingsMapSearchParams,
+  resolvePropertyListingType,
   resolvePresetFiltersToNumeric,
   type PropertySearchFilters,
   type PropertySearchCountPreset,

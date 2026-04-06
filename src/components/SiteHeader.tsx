@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { SITE_NAV } from "@/constants/site";
 import { cn } from "@/lib/utils";
+import { MobileMenuPortal } from "@/components/MobileMenuPortal";
 
 interface SiteHeaderProps {
   overlayDesktop?: boolean;
@@ -21,6 +23,7 @@ export function SiteHeader({
   logoOnly = false,
 }: SiteHeaderProps) {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const desktopLeftNav = SITE_NAV.slice(0, 2);
   const desktopRightNav = SITE_NAV.slice(2);
   const isHeroHeader = overlayDesktop;
@@ -28,11 +31,27 @@ export function SiteHeader({
   const desktopLogoSrc = "/desktop-hero-logo.webp";
   const mobileLogoSrc = "/mobile-header-logo.webp";
   const showLeadCenteredDesktopNav = isLeadHeader && !showDesktopCenterLogo;
-  const mobileQuickLinks = [{ label: "Home", href: "/" }, ...SITE_NAV] as const;
   const isActiveNavItem = (href: string) => {
     if (href.includes("#")) return false;
     return pathname === href;
   };
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
   if (logoOnly) {
     return (
@@ -144,27 +163,23 @@ export function SiteHeader({
             </div>
           </Link>
 
-          <nav
-            aria-label="Mobile quick links"
-            className="min-w-0 flex-1 px-1 py-1"
-          >
-            <ul className="grid w-full grid-cols-5 items-center gap-1">
-              {mobileQuickLinks.map((item) => (
-                <li key={item.href} className="text-center">
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "inline-flex w-full items-center justify-center px-0.5 py-1 text-[10px] font-bold uppercase tracking-[0.07em] text-[var(--sandstone-sand-gold)] transition hover:text-white",
-                      isActiveNavItem(item.href) &&
-                        "text-white underline decoration-2 underline-offset-4"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <div className="ml-auto">
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((previous) => !previous)}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-nav"
+              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 text-[11px] font-bold uppercase tracking-[0.09em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+            >
+              <span aria-hidden className="inline-flex flex-col gap-1">
+                <span className="block h-0.5 w-4 rounded-full bg-current" />
+                <span className="block h-0.5 w-4 rounded-full bg-current" />
+                <span className="block h-0.5 w-4 rounded-full bg-current" />
+              </span>
+              {isMobileMenuOpen ? "Close" : "Menu"}
+            </button>
+          </div>
         </div>
 
         <div
@@ -347,6 +362,12 @@ export function SiteHeader({
           )}
         </div>
       </div>
+
+      <MobileMenuPortal
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        navItems={SITE_NAV}
+      />
 
     </header>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -14,19 +14,32 @@ import {
 } from "@/lib";
 import type { PropertyCard } from "@/types";
 
+type ListingType = "active" | "rental";
+
 export default function ListingsMapPage() {
   const searchParams = useSearchParams();
-  const [allProperties, setAllProperties] = useState<PropertyCard[]>([]);
+  const [propertiesByType, setPropertiesByType] = useState<Record<ListingType, PropertyCard[]>>({
+    active: [],
+    rental: [],
+  });
+  const [loadedTypes, setLoadedTypes] = useState<Record<ListingType, boolean>>({
+    active: false,
+    rental: false,
+  });
   const [loading, setLoading] = useState(true);
+  const [loadingType, setLoadingType] = useState<ListingType | null>(null);
+  const inflightTypesRef = useRef<Set<ListingType>>(new Set());
+  const idleCallbackIdRef = useRef<number | null>(null);
+  const idleTimeoutIdRef = useRef<number | null>(null);
   
   // Get initial filters from URL params
-  const initialListingType = (searchParams.get("listingType") || "active") as "active" | "rental";
+  const initialListingType = (searchParams.get("listingType") || "active") as ListingType;
   const initialPricePreset = (searchParams.get("price") || "any") as PropertySearchPresetFilters["pricePreset"];
   const initialBedsPreset = (searchParams.get("beds") || "any") as PropertySearchPresetFilters["bedsPreset"];
   const initialBathsPreset = (searchParams.get("baths") || "any") as PropertySearchPresetFilters["bathsPreset"];
   
   const [filters, setFilters] = useState<{
-    listingType: "active" | "rental";
+    listingType: ListingType;
     pricePreset: PropertySearchPresetFilters["pricePreset"];
     bedsPreset: PropertySearchPresetFilters["bedsPreset"];
     bathsPreset: PropertySearchPresetFilters["bathsPreset"];
@@ -37,26 +50,113 @@ export default function ListingsMapPage() {
     bathsPreset: initialBathsPreset,
   });
 
-  useEffect(() => {
-    const loadProperties = async () => {
+  const loadListingsType = useCallback(
+    async (listingType: ListingType, isInitialLoad = false) => {
+      if (inflightTypesRef.current.has(listingType) || loadedTypes[listingType]) {
+        if (isInitialLoad) {
+          setLoading(false);
+        }
+
+        return;
+      }
+
+      inflightTypesRef.current.add(listingType);
+      setLoadingType(listingType);
+
       try {
-        const response = await fetch("/api/listings/all");
+        const response = await fetch(`/api/listings/all?listingType=${listingType}`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch listings");
         }
 
         const properties: PropertyCard[] = await response.json();
-        setAllProperties(properties);
+
+        setPropertiesByType((previous) => ({
+          ...previous,
+          [listingType]: properties,
+        }));
+        setLoadedTypes((previous) => ({
+          ...previous,
+          [listingType]: true,
+        }));
       } catch (error) {
-        console.error("Failed to load properties:", error);
+        console.error(`Failed to load ${listingType} properties:`, error);
       } finally {
-        setLoading(false);
+        inflightTypesRef.current.delete(listingType);
+        setLoadingType((previous) => (previous === listingType ? null : previous));
+
+        if (isInitialLoad) {
+          setLoading(false);
+        }
       }
+    },
+    [loadedTypes]
+  );
+
+  useEffect(() => {
+    loadListingsType(initialListingType, true);
+  }, [initialListingType, loadListingsType]);
+
+  useEffect(() => {
+    if (!loadedTypes[filters.listingType]) {
+      loadListingsType(filters.listingType);
+    }
+  }, [filters.listingType, loadListingsType, loadedTypes]);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    const secondaryType: ListingType = initialListingType === "active" ? "rental" : "active";
+
+    if (loadedTypes[secondaryType] || inflightTypesRef.current.has(secondaryType)) {
+      return;
+    }
+
+    const preload = () => {
+      void loadListingsType(secondaryType);
     };
 
-    loadProperties();
-  }, []);
+    const win = window as Window & {
+      requestIdleCallback?: (
+        callback: IdleRequestCallback,
+        options?: IdleRequestOptions
+      ) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (typeof win.requestIdleCallback === "function") {
+      idleCallbackIdRef.current = win.requestIdleCallback(preload, { timeout: 1200 });
+    } else {
+      idleTimeoutIdRef.current = window.setTimeout(preload, 250);
+    }
+
+    return () => {
+      if (
+        idleCallbackIdRef.current != null &&
+        typeof win.cancelIdleCallback === "function"
+      ) {
+        win.cancelIdleCallback(idleCallbackIdRef.current);
+      }
+
+      if (idleTimeoutIdRef.current != null) {
+        window.clearTimeout(idleTimeoutIdRef.current);
+      }
+
+      idleCallbackIdRef.current = null;
+      idleTimeoutIdRef.current = null;
+    };
+  }, [initialListingType, loadListingsType, loadedTypes, loading]);
+
+  const allProperties = useMemo(
+    () => [...propertiesByType.active, ...propertiesByType.rental],
+    [propertiesByType]
+  );
+
+  const isCurrentTypeLoading =
+    loadingType === filters.listingType && !loadedTypes[filters.listingType];
 
   const filteredProperties = useMemo(() => {
     const numericFilters = resolvePresetFiltersToNumeric({
@@ -226,7 +326,14 @@ export default function ListingsMapPage() {
         </section>
 
         <section className="container mx-auto max-w-[1360px] px-4 pb-3 lg:px-6">
-          {filteredProperties.length === 0 ? (
+          {isCurrentTypeLoading ? (
+            <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white p-8 text-center">
+              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-[var(--sandstone-sand-gold)] border-t-transparent" />
+              <p className="mt-4 text-[var(--sandstone-charcoal)]/75">
+                Loading {filters.listingType === "rental" ? "rental" : "sale"} listings...
+              </p>
+            </div>
+          ) : filteredProperties.length === 0 ? (
             <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white p-8 text-center">
               <p className="text-[var(--sandstone-charcoal)]/85">
                 No listings match the current filters.

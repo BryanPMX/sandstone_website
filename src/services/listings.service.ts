@@ -32,6 +32,14 @@ type PaginatedListingsResolution = ListingsResolution & {
   pageSize: number;
 };
 
+type SparkStaleCacheEntry = {
+  properties: PropertyCard[];
+  updatedAt: number;
+};
+
+const SPARK_STALE_CACHE_MAX_AGE_MS = 15 * 60 * 1000;
+const sparkStaleListingsCache = new Map<ListingsTarget, SparkStaleCacheEntry>();
+
 export interface ListingsDiagnostics {
   target: ListingsTarget;
   source: ListingsSource;
@@ -113,6 +121,32 @@ function formatError(error: unknown): string {
   } catch {
     return "Unknown error";
   }
+}
+
+function setSparkStaleCache(target: ListingsTarget, properties: PropertyCard[]): void {
+  if (properties.length === 0) {
+    return;
+  }
+
+  sparkStaleListingsCache.set(target, {
+    properties,
+    updatedAt: Date.now(),
+  });
+}
+
+function getSparkStaleCache(target: ListingsTarget): PropertyCard[] | null {
+  const entry = sparkStaleListingsCache.get(target);
+
+  if (!entry) {
+    return null;
+  }
+
+  if (Date.now() - entry.updatedAt > SPARK_STALE_CACHE_MAX_AGE_MS) {
+    sparkStaleListingsCache.delete(target);
+    return null;
+  }
+
+  return entry.properties;
 }
 
 function mapFallbackCardToDetail(property: PropertyCard): PropertyDetail {
@@ -221,6 +255,8 @@ async function resolvePropertyCards(
           ? await fetchAllRentalSparkPropertyCards(options)
           : await fetchMySparkPropertyCards(options);
 
+      setSparkStaleCache(target, properties);
+
       return {
         source: "spark",
         properties,
@@ -231,6 +267,20 @@ async function resolvePropertyCards(
         `[Listings] ${target === "active" ? "Active" : target === "rental" ? "Rental" : "My"} Spark listings failed, falling back.`,
         error
       );
+
+      const staleSparkProperties = getSparkStaleCache(target);
+
+      if (staleSparkProperties) {
+        console.warn(
+          `[Listings] Serving stale Spark cache for ${target} listings after Spark failure.`
+        );
+
+        return {
+          source: "spark",
+          properties: staleSparkProperties,
+          sparkError,
+        };
+      }
 
       const fallback = await fetchLegacyPropertyCardsOrFallback(options);
 

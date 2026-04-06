@@ -1,6 +1,7 @@
 import type { PropertyCard } from "@/types";
 
 export const LISTINGS_MAP_PATH = "/listings/map";
+export const ALEJANDRO_GAMBOA_NAME = "alejandro gamboa";
 
 export type PropertySearchPricePreset =
   | "any"
@@ -337,11 +338,54 @@ function getDistanceInMiles(
   return R * c;
 }
 
-function parsePriceToNumber(price: string): number | null {
+function parsePriceToNumber(price?: string): number | null {
+  if (typeof price !== "string") {
+    return null;
+  }
+
   const normalized = price.replace(/[^\d.]/g, "");
   if (!normalized) return null;
   const value = Number(normalized);
   return Number.isFinite(value) ? value : null;
+}
+
+function normalizeName(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function isAlejandroListing(property: Pick<PropertyCard, "listingAgentName">): boolean {
+  const agentName = property.listingAgentName;
+
+  if (!agentName) {
+    return false;
+  }
+
+  return normalizeName(agentName).includes(ALEJANDRO_GAMBOA_NAME);
+}
+
+export function resolvePropertyListingType(
+  property: Pick<PropertyCard, "sparkSource" | "price">
+): "active" | "rental" {
+  if (property.sparkSource === "rental") {
+    return "rental";
+  }
+
+  if (property.sparkSource === "active") {
+    return "active";
+  }
+
+  const numericPrice = parsePriceToNumber(property.price);
+
+  if (numericPrice != null && numericPrice < 10_000) {
+    return "rental";
+  }
+
+  return "active";
 }
 
 /**
@@ -378,8 +422,14 @@ export function filterPropertyCardsWithFilters(
   const normalizedQuery = search?.trim().toLowerCase() ?? "";
 
   return properties.filter((property) => {
-    if (listingType && property.sparkSource !== listingType) {
-      return false;
+    if (listingType) {
+      if (listingType === "my") {
+        if (property.sparkSource !== "my") {
+          return false;
+        }
+      } else if (resolvePropertyListingType(property) !== listingType) {
+        return false;
+      }
     }
 
     if (hasRadiusFilter) {
