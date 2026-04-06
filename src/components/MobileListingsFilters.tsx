@@ -2,7 +2,7 @@
 
 import type { PropertySearchPresetFilters } from "@/lib";
 import {
-  PROPERTY_SEARCH_PRICE_OPTIONS,
+  getPropertySearchPriceOptions,
   PROPERTY_SEARCH_BED_OPTIONS,
   PROPERTY_SEARCH_BATH_OPTIONS,
 } from "@/lib";
@@ -28,6 +28,8 @@ export function MobileListingsFilters({
   onBedsChange,
   onBathsChange,
 }: MobileListingsFiltersProps) {
+  const priceOptions = getPropertySearchPriceOptions(listingType);
+
   return (
     <div className="space-y-4 rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
       {/* Buy/Rent Filter - Always visible */}
@@ -67,7 +69,7 @@ export function MobileListingsFilters({
           Price Range
         </label>
         <div className="flex flex-wrap gap-2">
-          {PROPERTY_SEARCH_PRICE_OPTIONS.map((option) => (
+          {priceOptions.map((option) => (
             <button
               key={option.value}
               type="button"
