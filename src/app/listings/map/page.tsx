@@ -3,6 +3,7 @@ import { fetchActivePropertyCards, fetchRentalPropertyCards } from "@/services";
 import type { PropertyCard } from "@/types";
 
 export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 function dedupeProperties<T extends { id: string; routeId: string; sparkId?: string }>(
   properties: T[]
