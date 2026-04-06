@@ -63,6 +63,15 @@ interface GoogleMapsWithPlaces {
   };
 }
 
+declare global {
+  interface Window {
+    google?: {
+      maps?: GoogleMapsWithPlaces;
+    };
+    __sandstoneGoogleMapsPromise?: Promise<void>;
+  }
+}
+
 function getSelectedOptionLabel<T extends string>(
   options: Array<{ value: T; label: string }>,
   value: T
