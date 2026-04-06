@@ -5,10 +5,15 @@ export const ALEJANDRO_GAMBOA_NAME = "alejandro gamboa";
 
 export type PropertySearchPricePreset =
   | "any"
-  | "0-250"
+  | "under-150"
+  | "150-250"
   | "250-500"
   | "500-750"
-  | "750-plus";
+  | "750-plus"
+  | "rent-under-1000"
+  | "rent-1000-2500"
+  | "rent-2500-5000"
+  | "rent-5000-plus";
 export type PropertySearchCountPreset = "any" | "1" | "2" | "3" | "4";
 
 export interface PropertySearchPresetFilters {
@@ -43,10 +48,15 @@ export interface ParsedListingsMapSearchParams {
 
 const PROPERTY_SEARCH_PRICE_PRESETS = new Set<PropertySearchPricePreset>([
   "any",
-  "0-250",
+  "under-150",
+  "150-250",
   "250-500",
   "500-750",
   "750-plus",
+  "rent-under-1000",
+  "rent-1000-2500",
+  "rent-2500-5000",
+  "rent-5000-plus",
 ]);
 const PROPERTY_SEARCH_COUNT_PRESETS = new Set<PropertySearchCountPreset>([
   "any",
@@ -67,11 +77,32 @@ export const PROPERTY_SEARCH_PRICE_OPTIONS: Array<{
   label: string;
 }> = [
   { value: "any", label: "Price" },
-  { value: "0-250", label: "Under $250k" },
+  { value: "under-150", label: "Less than $150,000" },
+  { value: "150-250", label: "$150,000 - $250,000" },
   { value: "250-500", label: "$250k - $500k" },
   { value: "500-750", label: "$500k - $750k" },
   { value: "750-plus", label: "$750k+" },
 ];
+
+export const PROPERTY_SEARCH_RENT_PRICE_OPTIONS: Array<{
+  value: PropertySearchPricePreset;
+  label: string;
+}> = [
+  { value: "any", label: "Price" },
+  { value: "rent-under-1000", label: "Under $1,000" },
+  { value: "rent-1000-2500", label: "$1,000 - $2,500" },
+  { value: "rent-2500-5000", label: "$2,500 - $5,000" },
+  { value: "rent-5000-plus", label: "$5,000+" },
+];
+
+export function getPropertySearchPriceOptions(listingType: "active" | "rental"): Array<{
+  value: PropertySearchPricePreset;
+  label: string;
+}> {
+  return listingType === "rental"
+    ? PROPERTY_SEARCH_RENT_PRICE_OPTIONS
+    : PROPERTY_SEARCH_PRICE_OPTIONS;
+}
 
 export const PROPERTY_SEARCH_BED_OPTIONS: Array<{
   value: PropertySearchCountPreset;
@@ -121,8 +152,12 @@ function inferPricePresetFromNumericRange(
   minPrice?: number,
   maxPrice?: number
 ): PropertySearchPricePreset {
-  if (minPrice === 0 && maxPrice === 250_000) {
-    return "0-250";
+  if (minPrice === 0 && maxPrice === 150_000) {
+    return "under-150";
+  }
+
+  if (minPrice === 150_000 && maxPrice === 250_000) {
+    return "150-250";
   }
 
   if (minPrice === 250_000 && maxPrice === 500_000) {
@@ -137,6 +172,22 @@ function inferPricePresetFromNumericRange(
     return "750-plus";
   }
 
+  if (minPrice === 0 && maxPrice === 1_000) {
+    return "rent-under-1000";
+  }
+
+  if (minPrice === 1_000 && maxPrice === 2_500) {
+    return "rent-1000-2500";
+  }
+
+  if (minPrice === 2_500 && maxPrice === 5_000) {
+    return "rent-2500-5000";
+  }
+
+  if (minPrice === 5_000 && maxPrice == null) {
+    return "rent-5000-plus";
+  }
+
   return "any";
 }
 
@@ -147,8 +198,12 @@ export function resolvePresetFiltersToNumeric(
   let maxPrice: number | undefined;
 
   switch (filters.pricePreset) {
-    case "0-250":
+    case "under-150":
       minPrice = 0;
+      maxPrice = 150_000;
+      break;
+    case "150-250":
+      minPrice = 150_000;
       maxPrice = 250_000;
       break;
     case "250-500":
@@ -161,6 +216,21 @@ export function resolvePresetFiltersToNumeric(
       break;
     case "750-plus":
       minPrice = 750_000;
+      break;
+    case "rent-under-1000":
+      minPrice = 0;
+      maxPrice = 1_000;
+      break;
+    case "rent-1000-2500":
+      minPrice = 1_000;
+      maxPrice = 2_500;
+      break;
+    case "rent-2500-5000":
+      minPrice = 2_500;
+      maxPrice = 5_000;
+      break;
+    case "rent-5000-plus":
+      minPrice = 5_000;
       break;
     default:
       break;
@@ -371,18 +441,18 @@ export function isAlejandroListing(property: Pick<PropertyCard, "listingAgentNam
 export function resolvePropertyListingType(
   property: Pick<PropertyCard, "sparkSource" | "price">
 ): "active" | "rental" {
+  const numericPrice = parsePriceToNumber(property.price);
+
+  if (numericPrice != null && numericPrice < 10_000) {
+    return "rental";
+  }
+
   if (property.sparkSource === "rental") {
     return "rental";
   }
 
   if (property.sparkSource === "active") {
     return "active";
-  }
-
-  const numericPrice = parsePriceToNumber(property.price);
-
-  if (numericPrice != null && numericPrice < 10_000) {
-    return "rental";
   }
 
   return "active";

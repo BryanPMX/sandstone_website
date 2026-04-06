@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import type { PropertyCard } from "@/types";
 import { ListingCard } from "./ListingCard";
 
 const SIDEBAR_PAGE_SIZE = 12;
 const MAX_VISIBLE_PAGE_BUTTONS = 5;
+const INITIAL_RENDERED_CARDS = 6;
+const CARD_RENDER_BATCH_SIZE = 3;
 
 function buildVisiblePageWindow(currentPage: number, totalPages: number): number[] {
   if (totalPages <= MAX_VISIBLE_PAGE_BUTTONS) {
@@ -26,16 +28,22 @@ function buildVisiblePageWindow(currentPage: number, totalPages: number): number
 
 interface ListingsMapSidebarProps {
   properties: PropertyCard[];
+  mapContextQuery?: Record<string, string | undefined>;
 }
 
-export function ListingsMapSidebar({ properties }: ListingsMapSidebarProps) {
+export function ListingsMapSidebar({
+  properties,
+  mapContextQuery,
+}: ListingsMapSidebarProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [renderedCardCount, setRenderedCardCount] = useState(SIDEBAR_PAGE_SIZE);
   const containerRef = useRef<HTMLElement>(null);
-  const totalPages = Math.max(1, Math.ceil(properties.length / SIDEBAR_PAGE_SIZE));
+  const deferredProperties = useDeferredValue(properties);
+  const totalPages = Math.max(1, Math.ceil(deferredProperties.length / SIDEBAR_PAGE_SIZE));
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [properties]);
+  }, [deferredProperties]);
 
   useEffect(() => {
     setCurrentPage((previousPage) => Math.min(previousPage, totalPages));
@@ -43,14 +51,55 @@ export function ListingsMapSidebar({ properties }: ListingsMapSidebarProps) {
 
   const firstVisibleIndex = (currentPage - 1) * SIDEBAR_PAGE_SIZE;
   const visibleProperties = useMemo(
-    () => properties.slice(firstVisibleIndex, firstVisibleIndex + SIDEBAR_PAGE_SIZE),
-    [firstVisibleIndex, properties]
+    () => deferredProperties.slice(firstVisibleIndex, firstVisibleIndex + SIDEBAR_PAGE_SIZE),
+    [deferredProperties, firstVisibleIndex]
   );
+
+  useEffect(() => {
+    const totalVisible = visibleProperties.length;
+
+    if (totalVisible <= INITIAL_RENDERED_CARDS) {
+      setRenderedCardCount(totalVisible);
+      return;
+    }
+
+    setRenderedCardCount(INITIAL_RENDERED_CARDS);
+
+    let cancelled = false;
+
+    const paintNextBatch = () => {
+      if (cancelled) {
+        return;
+      }
+
+      setRenderedCardCount((previous) => {
+        const next = Math.min(previous + CARD_RENDER_BATCH_SIZE, totalVisible);
+
+        if (next < totalVisible) {
+          window.setTimeout(paintNextBatch, 28);
+        }
+
+        return next;
+      });
+    };
+
+    window.setTimeout(paintNextBatch, 18);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [visibleProperties]);
+
+  const renderedProperties = useMemo(
+    () => visibleProperties.slice(0, renderedCardCount),
+    [renderedCardCount, visibleProperties]
+  );
+
   const visiblePageButtons = useMemo(
     () => buildVisiblePageWindow(currentPage, totalPages),
     [currentPage, totalPages]
   );
-  const visibleStart = properties.length === 0 ? 0 : firstVisibleIndex + 1;
+  const visibleStart = deferredProperties.length === 0 ? 0 : firstVisibleIndex + 1;
   const visibleEnd = firstVisibleIndex + visibleProperties.length;
 
   const handlePageChange = (page: number) => {
@@ -75,20 +124,27 @@ export function ListingsMapSidebar({ properties }: ListingsMapSidebarProps) {
           aria-live="polite"
           className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-charcoal)]/70"
         >
-          Showing {visibleStart}-{visibleEnd} of {properties.length}
+          Showing {visibleStart}-{visibleEnd} of {deferredProperties.length}
         </p>
         <p className="text-xs text-[var(--sandstone-charcoal)]/65">Page {currentPage} of {totalPages}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2">
-        {visibleProperties.map((property, index) => (
+        {renderedProperties.map((property, index) => (
           <ListingCard
             key={property.id}
             property={property}
             priority={currentPage === 1 && index < 2}
+            extraQueryParams={mapContextQuery}
           />
         ))}
       </div>
+
+      {renderedCardCount < visibleProperties.length && (
+        <p className="mt-3 text-center text-xs text-[var(--sandstone-charcoal)]/60">
+          Rendering listing cards...
+        </p>
+      )}
 
       {totalPages > 1 && (
         <nav className="mt-5 flex flex-wrap items-center justify-center gap-2" aria-label="Listing pages">

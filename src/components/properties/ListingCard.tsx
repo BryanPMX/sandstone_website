@@ -10,12 +10,17 @@ import { shouldBypassNextImageOptimization } from "@/lib";
 interface ListingCardProps {
   property: PropertyCard;
   priority?: boolean;
+  extraQueryParams?: Record<string, string | undefined>;
 }
 
 /**
  * Presentational listing card used across listing surfaces.
  */
-export function ListingCard({ property, priority = false }: ListingCardProps) {
+export function ListingCard({
+  property,
+  priority = false,
+  extraQueryParams,
+}: ListingCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isNavigating, setIsNavigating] = useState(false);
@@ -37,6 +42,14 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
 
     if (property.sparkSource) {
       searchParams.set("src", property.sparkSource);
+    }
+
+    if (extraQueryParams) {
+      Object.entries(extraQueryParams).forEach(([key, value]) => {
+        if (typeof value === "string" && value.trim()) {
+          searchParams.set(key, value);
+        }
+      });
     }
 
     const queryString = searchParams.toString();
