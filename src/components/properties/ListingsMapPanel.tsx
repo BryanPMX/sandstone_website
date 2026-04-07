@@ -21,11 +21,23 @@ const ListingsMapPanelClient = dynamic(
 interface ListingsMapPanelProps {
   properties: PropertyCard[];
   mapContextQuery?: Record<string, string | undefined>;
+  initialCenter?: [number, number];
+  initialZoom?: number;
+  onViewportChange?: (viewport: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+    zoom: number;
+  }) => void;
 }
 
 export function ListingsMapPanel({
   properties,
   mapContextQuery,
+  initialCenter,
+  initialZoom,
+  onViewportChange,
 }: ListingsMapPanelProps) {
   const containerRef = useRef<HTMLElement>(null);
   const [shouldRenderMap, setShouldRenderMap] = useState(false);
@@ -88,6 +100,9 @@ export function ListingsMapPanel({
         <ListingsMapPanelClient
           properties={properties}
           mapContextQuery={mapContextQuery}
+          initialCenter={initialCenter}
+          initialZoom={initialZoom}
+          onViewportChange={onViewportChange}
         />
       ) : (
         <section className="relative h-[56vh] min-h-[420px] overflow-hidden rounded-[1.65rem] border border-[var(--sandstone-navy)]/12 bg-white shadow-[0_24px_64px_-34px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:h-[calc(100vh-9.25rem)]">

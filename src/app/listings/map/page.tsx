@@ -1,9 +1,17 @@
 import { ListingsMapClient } from "./ListingsMapClient";
-import { fetchActivePropertyCards, fetchRentalPropertyCards } from "@/services";
+import {
+  fetchActivePropertyCards,
+  fetchMyPropertyCards,
+  fetchRentalPropertyCards,
+} from "@/services";
 import type { PropertyCard } from "@/types";
 
 export const revalidate = 300;
-export const dynamic = "force-dynamic";
+const MAP_LISTINGS_CACHE_TTL_MS = revalidate * 1000;
+
+let cachedMapClientProperties: PropertyCard[] | null = null;
+let cachedMapClientPropertiesAt = 0;
+let inFlightMapListingsPromise: Promise<PropertyCard[]> | null = null;
 
 function dedupeProperties<T extends { id: string; routeId: string; sparkId?: string }>(
   properties: T[]
@@ -23,16 +31,61 @@ function dedupeProperties<T extends { id: string; routeId: string; sparkId?: str
 }
 
 async function fetchMapListings(): Promise<PropertyCard[]> {
-  const [active, rental] = await Promise.all([
+  const [active, my, rental] = await Promise.all([
     fetchActivePropertyCards(),
+    fetchMyPropertyCards(),
     fetchRentalPropertyCards(),
   ]);
 
-  return dedupeProperties([...active, ...rental]);
+  return dedupeProperties([...active, ...my, ...rental]);
+}
+
+function toMapClientProperty(property: PropertyCard): PropertyCard {
+  return {
+    id: property.id,
+    routeId: property.routeId,
+    sparkId: property.sparkId,
+    sparkSource: property.sparkSource,
+    title: property.title,
+    location: property.location,
+    mapAddress: property.mapAddress,
+    latitude: property.latitude,
+    longitude: property.longitude,
+    price: property.price,
+    image: property.image,
+    beds: property.beds,
+    baths: property.baths,
+    sqft: property.sqft,
+  };
+}
+
+async function fetchCachedMapClientProperties(): Promise<PropertyCard[]> {
+  const isFresh =
+    cachedMapClientProperties != null &&
+    Date.now() - cachedMapClientPropertiesAt <= MAP_LISTINGS_CACHE_TTL_MS;
+
+  if (isFresh && cachedMapClientProperties) {
+    return cachedMapClientProperties;
+  }
+
+  if (!inFlightMapListingsPromise) {
+    inFlightMapListingsPromise = fetchMapListings()
+      .then((properties) => properties.map(toMapClientProperty))
+      .then((mapClientProperties) => {
+        cachedMapClientProperties = mapClientProperties;
+        cachedMapClientPropertiesAt = Date.now();
+        return mapClientProperties;
+      })
+      .finally(() => {
+        inFlightMapListingsPromise = null;
+      });
+  }
+
+  return inFlightMapListingsPromise;
 }
 
 export default async function ListingsMapPage() {
-  const properties = await fetchMapListings();
+  const mapClientProperties = await fetchCachedMapClientProperties();
 
-  return <ListingsMapClient properties={properties} />;
+  return <ListingsMapClient properties={mapClientProperties} />;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
@@ -21,6 +21,25 @@ const EL_PASO_LAT_MIN = 31.58;
 const EL_PASO_LAT_MAX = 31.95;
 const EL_PASO_LNG_MIN = -106.72;
 const EL_PASO_LNG_MAX = -106.23;
+const DEFAULT_MAP_ZOOM = 11;
+const SINGLE_MARKER_ZOOM = 13;
+const VIEWPORT_DEBOUNCE_MS = 240;
+
+interface MapViewport {
+  north: number;
+  south: number;
+  east: number;
+  west: number;
+  zoom: number;
+}
+
+const DEFAULT_VIEWPORT: MapViewport = {
+  north: EL_PASO_LAT_MAX,
+  south: EL_PASO_LAT_MIN,
+  east: EL_PASO_LNG_MAX,
+  west: EL_PASO_LNG_MIN,
+  zoom: DEFAULT_MAP_ZOOM,
+};
 
 function isWithinElPasoBounds(lat: number, lng: number): boolean {
   return (
@@ -105,12 +124,101 @@ function resolveCountPresetParam(
   return "any";
 }
 
+function parseOptionalNumber(value: string | null): number | undefined {
+  if (value == null || value.trim() === "") {
+    return undefined;
+  }
+
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : undefined;
+}
+
+function normalizeMapSearchQuery(value: string): string {
+  const normalized = value.trim();
+
+  if (!normalized) {
+    return "";
+  }
+
+  const lower = normalized.toLowerCase();
+
+  if (lower === "all" || lower === "any" || lower === "*") {
+    return "";
+  }
+
+  return normalized;
+}
+
+function extractZipTokens(value: string): string[] {
+  const matches = value.match(/\b\d{5}(?:-\d{4})?\b/g);
+  return matches ?? [];
+}
+
+function matchesAddressOrZip(property: PropertyCard, searchQuery: string): boolean {
+  const normalizedQuery = normalizeMapSearchQuery(searchQuery).toLowerCase();
+
+  if (!normalizedQuery) {
+    return true;
+  }
+
+  const searchableAddress = [property.location, property.mapAddress]
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+    .join(" ")
+    .toLowerCase();
+
+  if (searchableAddress.includes(normalizedQuery)) {
+    return true;
+  }
+
+  const zipTokens = [
+    ...extractZipTokens(property.location ?? ""),
+    ...extractZipTokens(property.mapAddress ?? ""),
+  ];
+
+  return zipTokens.some((zip) => zip.toLowerCase().includes(normalizedQuery));
+}
+
+function isWithinViewportBounds(property: PropertyCard, viewport: MapViewport): boolean {
+  if (
+    typeof property.latitude !== "number" ||
+    !Number.isFinite(property.latitude) ||
+    typeof property.longitude !== "number" ||
+    !Number.isFinite(property.longitude)
+  ) {
+    return false;
+  }
+
+  const withinLatitude =
+    property.latitude >= viewport.south && property.latitude <= viewport.north;
+
+  if (viewport.west <= viewport.east) {
+    return (
+      withinLatitude &&
+      property.longitude >= viewport.west &&
+      property.longitude <= viewport.east
+    );
+  }
+
+  return (
+    withinLatitude &&
+    (property.longitude >= viewport.west || property.longitude <= viewport.east)
+  );
+}
+
 interface ListingsMapClientProps {
   properties: PropertyCard[];
 }
 
 export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const searchParams = useSearchParams();
+  const searchQuery = normalizeMapSearchQuery(searchParams.get("search") ?? "");
+  const initialCenterLat = parseOptionalNumber(searchParams.get("lat"));
+  const initialCenterLng = parseOptionalNumber(searchParams.get("lng"));
+  const initialMapCenter =
+    typeof initialCenterLat === "number" && typeof initialCenterLng === "number"
+      ? ([initialCenterLat, initialCenterLng] as [number, number])
+      : undefined;
+  const initialMapZoom = initialMapCenter ? SINGLE_MARKER_ZOOM : DEFAULT_MAP_ZOOM;
 
   const initialListingType = resolveListingTypeParam(searchParams.get("listingType"));
   const initialPricePreset = normalizePricePresetForListingType(
@@ -131,6 +239,18 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
     bedsPreset: initialBedsPreset,
     bathsPreset: initialBathsPreset,
   });
+  const [viewport, setViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
+  const [debouncedViewport, setDebouncedViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedViewport(viewport);
+    }, VIEWPORT_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [viewport]);
 
   const elPasoOnlyProperties = useMemo(
     () => properties.filter((property) => isElPasoListing(property)),
@@ -144,11 +264,16 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
       bathsPreset: filters.bathsPreset,
     });
 
-    return filterPropertyCardsWithFilters(elPasoOnlyProperties, {
+    const numericFiltered = filterPropertyCardsWithFilters(elPasoOnlyProperties, {
       ...numericFilters,
       listingType: filters.listingType,
+      search: undefined,
     });
-  }, [elPasoOnlyProperties, filters]);
+
+    return numericFiltered
+      .filter((property) => matchesAddressOrZip(property, searchQuery))
+      .filter((property) => isWithinViewportBounds(property, debouncedViewport));
+  }, [debouncedViewport, elPasoOnlyProperties, filters, searchQuery]);
 
   const priceOptions = useMemo(
     () => getPropertySearchPriceOptions(filters.listingType),
@@ -158,12 +283,13 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const mapContextQuery = useMemo(
     () => ({
       from: "map",
+      search: searchQuery || undefined,
       listingType: filters.listingType,
       price: filters.pricePreset === "any" ? undefined : filters.pricePreset,
       beds: filters.bedsPreset === "any" ? undefined : filters.bedsPreset,
       baths: filters.bathsPreset === "any" ? undefined : filters.bathsPreset,
     }),
-    [filters]
+    [filters, searchQuery]
   );
 
   const totalCount = filteredProperties.length;
@@ -298,35 +424,19 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
         </section>
 
         <section className="container mx-auto max-w-[1360px] px-4 pb-3 lg:px-6">
-          {filteredProperties.length === 0 ? (
-            <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white p-8 text-center">
-              <p className="text-[var(--sandstone-charcoal)]/85">
-                No El Paso listings match the current filters.
-              </p>
-              <button
-                onClick={() => setFilters({
-                  listingType: "active",
-                  pricePreset: "any",
-                  bedsPreset: "any",
-                  bathsPreset: "any",
-                })}
-                className="mt-4 inline-block rounded-full bg-[var(--sandstone-navy)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95"
-              >
-                Clear filters
-              </button>
-            </div>
-          ) : (
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(340px,0.95fr)]">
-              <ListingsMapPanel
-                properties={filteredProperties}
-                mapContextQuery={mapContextQuery}
-              />
-              <ListingsMapSidebar
-                properties={filteredProperties}
-                mapContextQuery={mapContextQuery}
-              />
-            </div>
-          )}
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(340px,0.95fr)]">
+            <ListingsMapPanel
+              properties={filteredProperties}
+              mapContextQuery={mapContextQuery}
+              initialCenter={initialMapCenter}
+              initialZoom={initialMapZoom}
+              onViewportChange={setViewport}
+            />
+            <ListingsMapSidebar
+              properties={filteredProperties}
+              mapContextQuery={mapContextQuery}
+            />
+          </div>
         </section>
       </main>
       <SiteFooter />
