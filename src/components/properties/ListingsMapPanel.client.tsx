@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import {
   MapContainer,
@@ -8,19 +8,15 @@ import {
   Popup,
   TileLayer,
   useMap,
+  useMapEvents,
 } from "react-leaflet";
 import L, { type DivIcon, type LatLngBoundsExpression } from "leaflet";
 import type { PropertyCard } from "@/types";
+import { useSuperclusterMarkers } from "@/hooks/useSuperclusterMarkers";
 
 const DEFAULT_CENTER: [number, number] = [31.7619, -106.485];
 const DEFAULT_MAP_ZOOM = 11;
-const SINGLE_MARKER_ZOOM = 13;
 const SANDSTONE_SAND_GOLD_HEX = "#b79678";
-const MOBILE_MAX_WIDTH_MEDIA_QUERY = "(max-width: 1023px)";
-const MOBILE_INITIAL_MARKER_COUNT = 30;
-const DESKTOP_INITIAL_MARKER_COUNT = 90;
-const MOBILE_MARKER_BATCH_SIZE = 22;
-const DESKTOP_MARKER_BATCH_SIZE = 60;
 const EL_PASO_BOUNDS: LatLngBoundsExpression = [
   [31.58, -106.72],
   [31.95, -106.23],
@@ -97,51 +93,202 @@ function createPriceMarkerIcon(price: string): DivIcon {
   });
 }
 
-function isMobileViewport(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-    return false;
-  }
+function createClusterIcon(count: number): DivIcon {
+  const diameter = count >= 100 ? 52 : count >= 30 ? 46 : 40;
 
-  return window.matchMedia(MOBILE_MAX_WIDTH_MEDIA_QUERY).matches;
+  return L.divIcon({
+    html: `<div style="height:${diameter}px;width:${diameter}px;border-radius:999px;background:${SANDSTONE_SAND_GOLD_HEX};border:2px solid #ffffff;color:#ffffff;display:flex;align-items:center;justify-content:center;font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:12px;box-shadow:0 10px 28px -16px rgba(17,24,61,0.6);">${count}</div>`,
+    className: "sandstone-cluster-marker",
+    iconSize: [diameter, diameter],
+    iconAnchor: [diameter / 2, diameter / 2],
+  });
 }
 
-function MapViewportController({ points }: { points: Array<[number, number]> }) {
+interface MapViewportControllerProps {
+  onViewportChange?: (viewport: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+    zoom: number;
+  }) => void;
+}
+
+function MapViewportController({ onViewportChange }: MapViewportControllerProps) {
   const map = useMap();
+  const hasInitializedViewRef = useRef(false);
+
+  const emitViewport = useCallback(() => {
+    if (!onViewportChange) {
+      return;
+    }
+
+    const bounds = map.getBounds();
+    onViewportChange({
+      north: bounds.getNorth(),
+      south: bounds.getSouth(),
+      east: bounds.getEast(),
+      west: bounds.getWest(),
+      zoom: map.getZoom(),
+    });
+  }, [map, onViewportChange]);
 
   useEffect(() => {
     map.setMaxBounds(EL_PASO_BOUNDS);
     map.setMinZoom(10);
     map.setMaxZoom(17);
-  }, [map]);
-
-  useEffect(() => {
-    if (points.length === 0) {
-      map.setView(DEFAULT_CENTER, DEFAULT_MAP_ZOOM);
-      return;
+    if (!hasInitializedViewRef.current) {
+      hasInitializedViewRef.current = true;
+      window.setTimeout(emitViewport, 0);
     }
+  }, [emitViewport, map]);
 
-    if (points.length === 1) {
-      map.setView(points[0], SINGLE_MARKER_ZOOM);
-      return;
-    }
-
-    const bounds = L.latLngBounds(points);
-    map.fitBounds(bounds, { padding: [28, 28], maxZoom: SINGLE_MARKER_ZOOM });
-  }, [map, points]);
+  useMapEvents({
+    moveend: emitViewport,
+    zoomend: emitViewport,
+  });
 
   return null;
+}
+
+interface ClusteredMarkersProps {
+  mappableProperties: MappableProperty[];
+  mapContextQuery?: Record<string, string | undefined>;
+}
+
+function ClusteredMarkers({ mappableProperties, mapContextQuery }: ClusteredMarkersProps) {
+  const map = useMap();
+  const { items, getClusterExpansionZoom } = useSuperclusterMarkers({
+    map,
+    markers: mappableProperties,
+    radius: 64,
+    maxZoom: 17,
+    minPoints: 2,
+    debounceMs: 300,
+  });
+
+  const markerIcons = useMemo(() => {
+    const iconByPrice = new Map<string, DivIcon>();
+
+    mappableProperties.forEach((property) => {
+      if (!iconByPrice.has(property.price)) {
+        iconByPrice.set(property.price, createPriceMarkerIcon(property.price));
+      }
+    });
+
+    return iconByPrice;
+  }, [mappableProperties]);
+
+  const clusterIconByCount = useMemo(() => new Map<number, DivIcon>(), []);
+
+  return (
+    <>
+      {items.map((item) => {
+        if (item.type === "cluster") {
+          const count = item.pointCount;
+          const clusterId = item.id;
+          let icon = clusterIconByCount.get(count);
+
+          if (!icon) {
+            icon = createClusterIcon(count);
+            clusterIconByCount.set(count, icon);
+          }
+
+          return (
+            <Marker
+              key={`cluster-${clusterId}`}
+              position={[item.latitude, item.longitude]}
+              icon={icon}
+              eventHandlers={{
+                click: () => {
+                  const expansionZoom = getClusterExpansionZoom(clusterId);
+                  map.setView([item.latitude, item.longitude], Math.min(expansionZoom, 17), {
+                    animate: true,
+                  });
+                },
+              }}
+            />
+          );
+        }
+
+        const property = item.marker;
+        const markerIcon = markerIcons.get(property.price);
+
+        if (!markerIcon) {
+          return null;
+        }
+
+        const detailUrl = (() => {
+          const baseUrl = new URL(buildDetailHref(property), "https://sandstone.local");
+
+          if (mapContextQuery) {
+            Object.entries(mapContextQuery).forEach(([key, value]) => {
+              if (typeof value === "string" && value.trim()) {
+                baseUrl.searchParams.set(key, value);
+              }
+            });
+          }
+
+          return `${baseUrl.pathname}${baseUrl.search}`;
+        })();
+        const primaryImage = sanitizeExternalImageUrl(property.image ?? "");
+
+        return (
+          <Marker
+            key={property.id}
+            position={[item.latitude, item.longitude]}
+            icon={markerIcon}
+          >
+            <Popup minWidth={220}>
+              <div className="space-y-2 font-sans">
+                {primaryImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={primaryImage}
+                    alt={property.title}
+                    className="h-28 w-full rounded-lg object-cover"
+                    loading="lazy"
+                  />
+                ) : null}
+                <p className="text-sm font-semibold text-[var(--sandstone-sand-gold)]">{property.price}</p>
+                <p className="line-clamp-2 text-sm font-semibold text-[var(--sandstone-charcoal)]">{property.title}</p>
+                <p className="line-clamp-1 text-xs text-[var(--sandstone-charcoal)]/75">{property.location}</p>
+                <Link
+                  href={detailUrl}
+                  className="text-sm font-semibold text-[var(--sandstone-sand-gold)] underline"
+                >
+                  View listing
+                </Link>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
+    </>
+  );
 }
 
 interface ListingsMapPanelClientProps {
   properties: PropertyCard[];
   mapContextQuery?: Record<string, string | undefined>;
+  initialCenter?: [number, number];
+  initialZoom?: number;
+  onViewportChange?: (viewport: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+    zoom: number;
+  }) => void;
 }
 
 export function ListingsMapPanelClient({
   properties,
   mapContextQuery,
+  initialCenter,
+  initialZoom,
+  onViewportChange,
 }: ListingsMapPanelClientProps) {
-  const [visibleMarkerCount, setVisibleMarkerCount] = useState(0);
   const mappableProperties = useMemo(
     () =>
       properties.filter(
@@ -151,74 +298,11 @@ export function ListingsMapPanelClient({
     [properties]
   );
 
-  const points = useMemo(
-    () => mappableProperties.map((property) => [property.latitude, property.longitude] as [number, number]),
-    [mappableProperties]
-  );
-
-  const visibleMappableProperties = useMemo(
-    () => mappableProperties.slice(0, visibleMarkerCount),
-    [mappableProperties, visibleMarkerCount]
-  );
-
-  const markerIcons = useMemo(() => {
-    const iconByPrice = new Map<string, DivIcon>();
-
-    visibleMappableProperties.forEach((property) => {
-      if (!iconByPrice.has(property.price)) {
-        iconByPrice.set(property.price, createPriceMarkerIcon(property.price));
-      }
-    });
-
-    return iconByPrice;
-  }, [visibleMappableProperties]);
-
-  useEffect(() => {
-    const total = mappableProperties.length;
-
-    if (total === 0) {
-      setVisibleMarkerCount(0);
-      return;
-    }
-
-    const mobile = isMobileViewport();
-    const initialCount = mobile ? MOBILE_INITIAL_MARKER_COUNT : DESKTOP_INITIAL_MARKER_COUNT;
-    const batchSize = mobile ? MOBILE_MARKER_BATCH_SIZE : DESKTOP_MARKER_BATCH_SIZE;
-
-    setVisibleMarkerCount(Math.min(initialCount, total));
-
-    let cancelled = false;
-
-    const scheduleNextBatch = () => {
-      if (cancelled) {
-        return;
-      }
-
-      setVisibleMarkerCount((previous) => {
-        const next = Math.min(previous + batchSize, total);
-
-        if (next < total) {
-          window.setTimeout(scheduleNextBatch, 34);
-        }
-
-        return next;
-      });
-    };
-
-    if (initialCount < total) {
-      window.setTimeout(scheduleNextBatch, 16);
-    }
-
-    return () => {
-      cancelled = true;
-    };
-  }, [mappableProperties]);
-
   return (
     <section className="relative h-[56vh] min-h-[420px] overflow-hidden rounded-[1.65rem] border border-[var(--sandstone-navy)]/12 bg-white shadow-[0_24px_64px_-34px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:h-[calc(100vh-9.25rem)]">
       <MapContainer
-        center={DEFAULT_CENTER}
-        zoom={DEFAULT_MAP_ZOOM}
+        center={initialCenter ?? DEFAULT_CENTER}
+        zoom={initialZoom ?? DEFAULT_MAP_ZOOM}
         maxBounds={EL_PASO_BOUNDS}
         className="h-full w-full"
         scrollWheelZoom
@@ -228,74 +312,13 @@ export function ListingsMapPanelClient({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        <MapViewportController points={points} />
+        <MapViewportController onViewportChange={onViewportChange} />
 
-        {visibleMappableProperties.map((property) => {
-          const markerIcon = markerIcons.get(property.price);
-
-          if (!markerIcon) {
-            return null;
-          }
-
-          const detailUrl = (() => {
-            const baseUrl = new URL(buildDetailHref(property), "https://sandstone.local");
-
-            if (mapContextQuery) {
-              Object.entries(mapContextQuery).forEach(([key, value]) => {
-                if (typeof value === "string" && value.trim()) {
-                  baseUrl.searchParams.set(key, value);
-                }
-              });
-            }
-
-            return `${baseUrl.pathname}${baseUrl.search}`;
-          })();
-          const primaryImage = sanitizeExternalImageUrl(property.image);
-
-          return (
-            <Marker
-              key={property.id}
-              position={[property.latitude, property.longitude]}
-              icon={markerIcon}
-            >
-              <Popup minWidth={220}>
-                <div className="space-y-2 font-sans">
-                  {primaryImage ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={primaryImage}
-                      alt={property.title}
-                      className="h-28 w-full rounded-lg object-cover"
-                      loading="lazy"
-                    />
-                  ) : null}
-                  <p className="text-sm font-semibold text-[var(--sandstone-sand-gold)]">{property.price}</p>
-                  <p className="line-clamp-2 text-sm font-semibold text-[var(--sandstone-charcoal)]">{property.title}</p>
-                  <p className="line-clamp-1 text-xs text-[var(--sandstone-charcoal)]/75">{property.location}</p>
-                  <Link
-                    href={detailUrl}
-                    className="text-sm font-semibold text-[var(--sandstone-sand-gold)] underline"
-                  >
-                    View listing
-                  </Link>
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
+        <ClusteredMarkers
+          mappableProperties={mappableProperties}
+          mapContextQuery={mapContextQuery}
+        />
       </MapContainer>
-
-      {mappableProperties.length === 0 && (
-        <div className="absolute inset-4 flex items-center justify-center rounded-2xl border border-[var(--sandstone-navy)]/14 bg-white/94 px-6 text-center text-sm text-[var(--sandstone-charcoal)]/85 shadow-[0_14px_26px_-22px_rgba(17,24,61,0.55)]">
-          No mappable coordinates were returned for the current filters.
-        </div>
-      )}
-
-      {mappableProperties.length > 0 && visibleMarkerCount < mappableProperties.length && (
-        <div className="absolute inset-x-4 top-4 rounded-xl border border-white/70 bg-white/92 px-4 py-3 text-sm font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_26px_-22px_rgba(17,24,61,0.55)]">
-          Rendering map pins... {visibleMarkerCount}/{mappableProperties.length}
-        </div>
-      )}
     </section>
   );
 }
