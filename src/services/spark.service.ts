@@ -1644,10 +1644,12 @@ async function fetchSparkListingRecordByDirectPath(
   options?: SparkListingLookupOptions,
   preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
-  for (const path of getSparkLookupPaths(
+  const triedPaths = getSparkLookupPaths(
     preferredTarget,
     options?.restrictToPreferredTarget ?? false
-  )) {
+  );
+
+  for (const path of triedPaths) {
     const response = await fetchSparkPayload(
       buildSparkUrl({
         path: buildSparkListingDetailPath(path, id),
@@ -1673,6 +1675,34 @@ async function fetchSparkListingRecordByDirectPath(
       throw new Error(
         `[Spark] Listing request failed (${response.status}): ${responseText.slice(0, 400)}`
       );
+    }
+  }
+
+  // Fallback: when collection paths are /v1/my/listings, detail records for spark ids
+  // may only resolve through the canonical /v1/listings/{id} endpoint.
+  const canonicalListingsPath = "/v1/listings";
+
+  if (!triedPaths.includes(canonicalListingsPath)) {
+    try {
+      const response = await fetchSparkPayload(
+        buildSparkUrl({
+          path: buildSparkListingDetailPath(canonicalListingsPath, id),
+          limit: 1,
+          expand: DETAIL_EXPANSIONS,
+        }),
+        options
+      );
+
+      if (response.ok) {
+        const payload = (await response.json()) as unknown;
+        const record = extractFirstSparkRecord(payload);
+
+        if (record) {
+          return record;
+        }
+      }
+    } catch {
+      // ignore — fallback exhausted
     }
   }
 
@@ -1713,6 +1743,38 @@ async function fetchSparkListingPhotosByDirectPath(
       throw new Error(
         `[Spark] Photos request failed (${response.status}): ${responseText.slice(0, 400)}`
       );
+    }
+  }
+
+  // Fallback: Spark photo records live under /v1/listings even when the collection
+  // was fetched via /v1/my/listings. /v1/my/listings/{id}/photos returns 404 on
+  // sparkapi.com (no 403 retry), so we explicitly try the canonical listings path.
+  // fetchSparkPayload auto-retries /v1/listings/{id}/photos on replication.sparkapi.com
+  // when sparkapi.com responds with 403 Code 1021.
+  const canonicalPhotosPath = "/v1/listings";
+  const triedPaths = getSparkLookupPaths(preferredTarget, options?.restrictToPreferredTarget ?? false);
+
+  if (!triedPaths.includes(canonicalPhotosPath)) {
+    try {
+      const response = await fetchSparkPayload(
+        buildSparkUrl({
+          path: `${canonicalPhotosPath}/${encodeURIComponent(id)}/photos`,
+          limit: 50,
+          expand: [],
+        }),
+        options
+      );
+
+      if (response.ok) {
+        const payload = (await response.json()) as unknown;
+        const imageUrls = extractImageUrlsFromPayload(payload);
+
+        if (imageUrls.length > 0) {
+          return imageUrls;
+        }
+      }
+    } catch {
+      // ignore — fallback exhausted
     }
   }
 
@@ -1955,6 +2017,7 @@ export async function fetchSparkPropertyDetailById(
         {
           ...options,
           preferDirectLookup: true,
+          restrictToPreferredTarget: false,
         },
         options?.preferredTarget
       );
@@ -1975,7 +2038,10 @@ export async function fetchSparkPropertyDetailById(
     try {
       const images = await fetchSparkListingPhotosByDirectPath(
         candidateId,
-        options,
+        {
+          ...options,
+          restrictToPreferredTarget: false,
+        },
         options?.preferredTarget
       );
 
