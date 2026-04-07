@@ -7,20 +7,29 @@ import { useRouter } from "next/navigation";
 import type { PropertyCard } from "@/types";
 import { shouldBypassNextImageOptimization } from "@/lib";
 
+const FALLBACK_LISTING_IMAGE_DATA_URI =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900' viewBox='0 0 1200 900'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ece5dc'/%3E%3Cstop offset='100%25' stop-color='%23d4c4b3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='900' fill='url(%23g)'/%3E%3C/svg%3E";
+
 interface ListingCardProps {
   property: PropertyCard;
   priority?: boolean;
+  extraQueryParams?: Record<string, string | undefined>;
 }
 
 /**
  * Presentational listing card used across listing surfaces.
  */
-export function ListingCard({ property, priority = false }: ListingCardProps) {
+export function ListingCard({
+  property,
+  priority = false,
+  extraQueryParams,
+}: ListingCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isNavigating, setIsNavigating] = useState(false);
   const shouldShowTransitionOverlay = property.sparkSource === "active";
-  const bypassOptimization = shouldBypassNextImageOptimization(property.image);
+  const resolvedImageSrc = property.image?.trim() || FALLBACK_LISTING_IMAGE_DATA_URI;
+  const bypassOptimization = shouldBypassNextImageOptimization(resolvedImageSrc);
   const details = [
     property.beds != null && `${property.beds} beds`,
     property.baths != null && `${property.baths} baths`,
@@ -37,6 +46,14 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
 
     if (property.sparkSource) {
       searchParams.set("src", property.sparkSource);
+    }
+
+    if (extraQueryParams) {
+      Object.entries(extraQueryParams).forEach(([key, value]) => {
+        if (typeof value === "string" && value.trim()) {
+          searchParams.set(key, value);
+        }
+      });
     }
 
     const queryString = searchParams.toString();
@@ -95,7 +112,7 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
       >
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
-            src={property.image}
+            src={resolvedImageSrc}
             alt={property.title}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"

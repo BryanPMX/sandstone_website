@@ -54,6 +54,7 @@ type SparkListingLookupOptions = SparkFetchOptions & {
 
 const SPARK_REVALIDATE_SECONDS = 300;
 const REPLICATION_SPARK_API_BASE_URL = "https://replication.sparkapi.com";
+const SPARK_DEBUG_LOOKUPS = process.env.SPARK_DEBUG_LOOKUPS === "1";
 const SPARK_MAX_API_PAGE_SIZE = 25;
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80";
@@ -87,6 +88,14 @@ const PHOTO_URL_PATHS: PathSegment[][] = [
   ["url"],
   ["StandardFields", "url"],
 ];
+
+function logSparkLookupDebug(message: string): void {
+  if (!SPARK_DEBUG_LOOKUPS) {
+    return;
+  }
+
+  console.info(`[Spark][LookupDebug] ${message}`);
+}
 
 function getRecord(value: unknown): UnknownRecord | null {
   return value && typeof value === "object" && !Array.isArray(value)
@@ -1467,6 +1476,7 @@ function getSparkHeaders(accessToken: string): HeadersInit {
   return {
     Accept: "application/json",
     Authorization: `Bearer ${accessToken}`,
+    "User-Agent": "sandstone-website/1.0",
   };
 }
 
@@ -1537,6 +1547,16 @@ async function fetchSparkResults(
   };
 }
 
+function isSparkFilterSyntaxError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+
+  return (
+    message.includes("Code\\\":1040") ||
+    message.toLowerCase().includes("syntax of your _filter parameter is invalid") ||
+    message.toLowerCase().includes("sparkql")
+  );
+}
+
 async function fetchAllSparkPropertyCards(
   path: string,
   filter?: string,
@@ -1544,42 +1564,56 @@ async function fetchAllSparkPropertyCards(
   sparkSource?: SparkLookupTarget
 ): Promise<PropertyCard[]> {
   const requestPageSize = resolveSparkRequestLimit();
-  const properties: PropertyCard[] = [];
-  const seenIds = new Set<string>();
-  let page = 1;
-  let totalPages: number | undefined;
 
-  while (page <= (totalPages ?? MAX_SPARK_PAGES)) {
-    const { properties: pageProperties, pagination } =
-      await fetchSparkCollectionPage({
-        path,
-        filter,
-        page,
-      }, options, sparkSource);
+  const loadAllPages = async (effectiveFilter?: string): Promise<PropertyCard[]> => {
+    const properties: PropertyCard[] = [];
+    const seenIds = new Set<string>();
+    let page = 1;
+    let totalPages: number | undefined;
 
-    for (const property of pageProperties) {
-      if (seenIds.has(property.id)) {
-        continue;
+    while (page <= (totalPages ?? MAX_SPARK_PAGES)) {
+      const { properties: pageProperties, pagination } =
+        await fetchSparkCollectionPage({
+          path,
+          filter: effectiveFilter,
+          page,
+        }, options, sparkSource);
+
+      for (const property of pageProperties) {
+        if (seenIds.has(property.id)) {
+          continue;
+        }
+
+        seenIds.add(property.id);
+        properties.push(property);
       }
 
-      seenIds.add(property.id);
-      properties.push(property);
+      totalPages = pagination?.totalPages ?? totalPages;
+
+      const hasMorePages = totalPages
+        ? page < totalPages
+        : pageProperties.length === requestPageSize;
+
+      if (!hasMorePages) {
+        break;
+      }
+
+      page += 1;
     }
 
-    totalPages = pagination?.totalPages ?? totalPages;
+    return properties;
+  };
 
-    const hasMorePages = totalPages
-      ? page < totalPages
-      : pageProperties.length === requestPageSize;
-
-    if (!hasMorePages) {
-      break;
+  try {
+    return await loadAllPages(filter);
+  } catch (error) {
+    if (filter && isSparkFilterSyntaxError(error)) {
+      console.warn("[Spark] Invalid filter syntax detected. Retrying collection without _filter.");
+      return loadAllPages(undefined);
     }
 
-    page += 1;
+    throw error;
   }
-
-  return properties;
 }
 
 function buildIdentifierFilters(
@@ -1594,45 +1628,55 @@ function buildIdentifierFilters(
 
   const escaped = trimmed.replace(/'/g, "''");
 
+  const filters: string[] = [];
+
+  const addFilter = (filter: string) => {
+    if (!filters.includes(filter)) {
+      filters.push(filter);
+    }
+  };
+
+  // Prefer top-level fields first because some Spark accounts reject StandardFields.* in _filter.
   if (identifierHint === "spark-id") {
-    return [
-      `StandardFields.Id Eq '${escaped}'`,
-      `Id Eq '${escaped}'`,
-      `StandardFields.ListingKey Eq '${escaped}'`,
-      `ListingKey Eq '${escaped}'`,
-    ];
+    addFilter(`Id Eq '${escaped}'`);
+    addFilter(`ListingKey Eq '${escaped}'`);
+    addFilter(`StandardFields.Id Eq '${escaped}'`);
+    addFilter(`StandardFields.ListingKey Eq '${escaped}'`);
+    return filters;
   }
 
   if (identifierHint === "listing-id") {
-    return [
-      `StandardFields.ListingId Eq ${trimmed}`,
-      `StandardFields.ListingId Eq '${escaped}'`,
-      `ListingId Eq ${trimmed}`,
-      `ListingId Eq '${escaped}'`,
-    ];
+    addFilter(`ListingId Eq '${escaped}'`);
+    if (/^\d+$/.test(trimmed)) {
+      addFilter(`ListingId Eq ${trimmed}`);
+    }
+    addFilter(`StandardFields.ListingId Eq '${escaped}'`);
+    if (/^\d+$/.test(trimmed)) {
+      addFilter(`StandardFields.ListingId Eq ${trimmed}`);
+    }
+    return filters;
   }
 
   if (/^\d+$/.test(trimmed)) {
-    return [
-      `StandardFields.ListingId Eq ${trimmed}`,
-      `StandardFields.ListingId Eq '${escaped}'`,
-      `ListingId Eq ${trimmed}`,
-      `ListingId Eq '${escaped}'`,
-      `StandardFields.Id Eq '${escaped}'`,
-      `Id Eq '${escaped}'`,
-      `StandardFields.ListingKey Eq '${escaped}'`,
-      `ListingKey Eq '${escaped}'`,
-    ];
+    addFilter(`ListingId Eq '${escaped}'`);
+    addFilter(`ListingId Eq ${trimmed}`);
+    addFilter(`Id Eq '${escaped}'`);
+    addFilter(`ListingKey Eq '${escaped}'`);
+    addFilter(`StandardFields.ListingId Eq '${escaped}'`);
+    addFilter(`StandardFields.ListingId Eq ${trimmed}`);
+    addFilter(`StandardFields.Id Eq '${escaped}'`);
+    addFilter(`StandardFields.ListingKey Eq '${escaped}'`);
+    return filters;
   }
 
-  return [
-    `StandardFields.ListingKey Eq '${escaped}'`,
-    `ListingKey Eq '${escaped}'`,
-    `StandardFields.Id Eq '${escaped}'`,
-    `Id Eq '${escaped}'`,
-    `StandardFields.ListingId Eq '${escaped}'`,
-    `ListingId Eq '${escaped}'`,
-  ];
+  addFilter(`ListingKey Eq '${escaped}'`);
+  addFilter(`Id Eq '${escaped}'`);
+  addFilter(`ListingId Eq '${escaped}'`);
+  addFilter(`StandardFields.ListingKey Eq '${escaped}'`);
+  addFilter(`StandardFields.Id Eq '${escaped}'`);
+  addFilter(`StandardFields.ListingId Eq '${escaped}'`);
+
+  return filters;
 }
 
 function isNumericRouteId(id: string): boolean {
@@ -1664,6 +1708,9 @@ async function fetchSparkListingRecordByDirectPath(
       const record = extractFirstSparkRecord(payload);
 
       if (record) {
+        logSparkLookupDebug(
+          `Direct-path match for id='${id}' on path='${path}'.`
+        );
         return record;
       }
 
@@ -1786,29 +1833,57 @@ async function fetchSparkListingRecordByFilters(
   options?: SparkListingLookupOptions,
   preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
+  let lastError: unknown;
+
   for (const filter of buildIdentifierFilters(id, options?.identifierHint)) {
-    const records = await Promise.all(
-      getSparkLookupPaths(
-        preferredTarget,
-        options?.restrictToPreferredTarget ?? false
-      ).map((path) =>
-        fetchSparkListingRecord(
-          {
-            path,
-            filter,
-            limit: 1,
-            expand: DETAIL_EXPANSIONS,
-          },
-          options
-        )
-      )
+    let records: Array<{ path: string; record: UnknownRecord | null }> = [];
+    const lookupPaths = getSparkLookupPaths(
+      preferredTarget,
+      options?.restrictToPreferredTarget ?? false
     );
 
-    const match = records.find((record): record is UnknownRecord => Boolean(record));
+    try {
+      records = await Promise.all(
+        lookupPaths.map(async (path) => ({
+          path,
+          record: await fetchSparkListingRecord(
+            {
+              path,
+              filter,
+              limit: 1,
+              expand: DETAIL_EXPANSIONS,
+            },
+            options
+          ),
+        }))
+      );
+    } catch (error) {
+      lastError = error;
+
+      if (isSparkFilterSyntaxError(error)) {
+        console.warn(
+          `[Spark] Identifier filter rejected by SparkQL, trying next candidate: ${filter}`
+        );
+        continue;
+      }
+
+      throw error;
+    }
+
+    const match = records.find((result) => Boolean(result.record));
 
     if (match) {
-      return match;
+      logSparkLookupDebug(
+        `Filter match for id='${id}' using filter="${filter}" on path='${match.path}'.`
+      );
+      return match.record;
     }
+  }
+
+  if (lastError && isSparkFilterSyntaxError(lastError)) {
+    console.warn(
+      "[Spark] All identifier filters failed SparkQL validation for this lookup."
+    );
   }
 
   return null;
@@ -1874,77 +1949,92 @@ export async function fetchActiveSparkPropertyCardsPage(
   const path = getSparkListingsPath();
   const filter = getSparkActiveListingsFilter();
 
-  let resolvedPage = requestedPage;
+  const resolvePageWithFilter = async (
+    effectiveFilter?: string
+  ): Promise<SparkPropertyCardsPage> => {
+    let resolvedPage = requestedPage;
 
-  while (true) {
-    const offset = (resolvedPage - 1) * displayPageSize;
-    const startingSparkPage = Math.floor(offset / requestPageSize) + 1;
-    let skip = offset % requestPageSize;
-    let sparkPage = startingSparkPage;
-    let totalRows: number | undefined;
-    let totalSparkPages: number | undefined;
-    const properties: PropertyCard[] = [];
+    while (true) {
+      const offset = (resolvedPage - 1) * displayPageSize;
+      const startingSparkPage = Math.floor(offset / requestPageSize) + 1;
+      let skip = offset % requestPageSize;
+      let sparkPage = startingSparkPage;
+      let totalRows: number | undefined;
+      let totalSparkPages: number | undefined;
+      const properties: PropertyCard[] = [];
 
-    while (
-      properties.length < displayPageSize &&
-      (totalSparkPages == null || sparkPage <= totalSparkPages)
-    ) {
-      const { properties: sparkPageProperties, pagination } = await fetchSparkCollectionPage(
-        {
-          path,
-          filter,
-          page: sparkPage,
-        },
-        options,
-        "active"
-      );
+      while (
+        properties.length < displayPageSize &&
+        (totalSparkPages == null || sparkPage <= totalSparkPages)
+      ) {
+        const { properties: sparkPageProperties, pagination } = await fetchSparkCollectionPage(
+          {
+            path,
+            filter: effectiveFilter,
+            page: sparkPage,
+          },
+          options,
+          "active"
+        );
 
-      totalRows = pagination?.totalRows ?? totalRows;
-      totalSparkPages = pagination?.totalPages ?? totalSparkPages;
+        totalRows = pagination?.totalRows ?? totalRows;
+        totalSparkPages = pagination?.totalPages ?? totalSparkPages;
 
-      const visibleProperties = skip > 0
-        ? sparkPageProperties.slice(skip)
-        : sparkPageProperties;
+        const visibleProperties = skip > 0
+          ? sparkPageProperties.slice(skip)
+          : sparkPageProperties;
 
-      properties.push(
-        ...visibleProperties.slice(0, displayPageSize - properties.length)
-      );
+        properties.push(
+          ...visibleProperties.slice(0, displayPageSize - properties.length)
+        );
 
-      const hasMoreSparkPages = totalSparkPages != null
-        ? sparkPage < totalSparkPages
-        : sparkPageProperties.length === requestPageSize;
+        const hasMoreSparkPages = totalSparkPages != null
+          ? sparkPage < totalSparkPages
+          : sparkPageProperties.length === requestPageSize;
 
-      if (!hasMoreSparkPages) {
-        break;
+        if (!hasMoreSparkPages) {
+          break;
+        }
+
+        skip = 0;
+        sparkPage += 1;
       }
 
-      skip = 0;
-      sparkPage += 1;
+      const totalPages = totalRows != null
+        ? Math.max(1, Math.ceil(totalRows / displayPageSize))
+        : properties.length < displayPageSize
+          ? resolvedPage
+          : resolvedPage + 1;
+      const effectiveTotalRows = totalRows ?? (
+        properties.length < displayPageSize
+          ? offset + properties.length
+          : offset + properties.length + 1
+      );
+
+      if (resolvedPage > totalPages) {
+        resolvedPage = totalPages;
+        continue;
+      }
+
+      return {
+        properties,
+        currentPage: resolvedPage,
+        totalPages,
+        totalRows: effectiveTotalRows,
+        pageSize: displayPageSize,
+      };
+    }
+  };
+
+  try {
+    return await resolvePageWithFilter(filter);
+  } catch (error) {
+    if (filter && isSparkFilterSyntaxError(error)) {
+      console.warn("[Spark] Invalid active filter syntax detected. Retrying page lookup without _filter.");
+      return resolvePageWithFilter(undefined);
     }
 
-    const totalPages = totalRows != null
-      ? Math.max(1, Math.ceil(totalRows / displayPageSize))
-      : properties.length < displayPageSize
-        ? resolvedPage
-        : resolvedPage + 1;
-    const effectiveTotalRows = totalRows ?? (
-      properties.length < displayPageSize
-        ? offset + properties.length
-        : offset + properties.length + 1
-    );
-
-    if (resolvedPage > totalPages) {
-      resolvedPage = totalPages;
-      continue;
-    }
-
-    return {
-      properties,
-      currentPage: resolvedPage,
-      totalPages,
-      totalRows: effectiveTotalRows,
-      pageSize: displayPageSize,
-    };
+    throw error;
   }
 }
 

@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
 import { SITE_NAV } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { MobileMenuPortal } from "@/components/MobileMenuPortal";
@@ -23,62 +22,10 @@ export function SiteHeader({
   showDesktopCenterLogo = true,
   logoOnly = false,
 }: SiteHeaderProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const scrollPositionRef = useRef(0);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const desktopLeftNav = SITE_NAV.slice(0, 2);
   const desktopRightNav = SITE_NAV.slice(2);
-
-  useEffect(() => {
-    if (!isMenuOpen) return;
-    scrollPositionRef.current = window.scrollY;
-    const { style } = document.body;
-    const orig = {
-      overflow: style.overflow,
-      position: style.position,
-      top: style.top,
-      left: style.left,
-      right: style.right,
-      width: style.width,
-    };
-    style.overflow = "hidden";
-    style.position = "fixed";
-    style.top = `-${scrollPositionRef.current}px`;
-    style.left = "0";
-    style.right = "0";
-    style.width = "100%";
-    return () => {
-      Object.assign(style, orig);
-      requestAnimationFrame(() => window.scrollTo(0, scrollPositionRef.current));
-    };
-  }, [isMenuOpen]);
-
-  useEffect(() => {
-    if (!isMenuOpen) return;
-    const closeOnDesktop = () => {
-      if (window.innerWidth >= 1024) setIsMenuOpen(false);
-    };
-    window.addEventListener("resize", closeOnDesktop);
-    return () => window.removeEventListener("resize", closeOnDesktop);
-  }, [isMenuOpen]);
-
-  useEffect(() => {
-    const closeOnHashChange = () => setIsMenuOpen(false);
-    window.addEventListener("hashchange", closeOnHashChange);
-    return () => window.removeEventListener("hashchange", closeOnHashChange);
-  }, []);
-
-  const prevMenuOpenRef = useRef(false);
-  useEffect(() => {
-    if (prevMenuOpenRef.current && !isMenuOpen) {
-      requestAnimationFrame(() => menuButtonRef.current?.focus({ preventScroll: true }));
-    }
-    prevMenuOpenRef.current = isMenuOpen;
-  }, [isMenuOpen]);
-
-  const closeMenu = () => setIsMenuOpen(false);
-  const toggleMenu = () => setIsMenuOpen((open) => !open);
   const isHeroHeader = overlayDesktop;
   const isLeadHeader = !overlayDesktop && variant === "lead";
   const desktopLogoSrc = "/desktop-hero-logo.webp";
@@ -88,6 +35,23 @@ export function SiteHeader({
     if (href.includes("#")) return false;
     return pathname === href;
   };
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
   if (logoOnly) {
     return (
@@ -140,7 +104,7 @@ export function SiteHeader({
       className={cn(
         "left-0 right-0 z-[80]",
         overlayDesktop
-          ? "sticky top-[40px] border-b border-white/10 bg-[var(--sandstone-navy)] lg:absolute lg:top-[40px] lg:border-none lg:bg-transparent"
+          ? "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)] lg:absolute lg:top-[40px] lg:border-none lg:bg-transparent"
           : cn(
               "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]",
               isLeadHeader && "shadow-[0_10px_24px_-20px_rgba(17,24,61,0.85)]"
@@ -168,15 +132,15 @@ export function SiteHeader({
 
       <div
         className={cn(
-          "mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:px-6",
+          "mx-auto flex w-full max-w-6xl flex-col px-4 lg:flex-row lg:px-6",
           isHeroHeader
-            ? "lg:h-28 lg:items-start lg:pt-3"
+            ? "py-1 lg:h-28 lg:items-start lg:pt-3"
             : isLeadHeader
-              ? "lg:h-[92px]"
-              : "lg:h-[92px]"
+              ? "py-1 lg:h-[92px]"
+              : "py-1 lg:h-[92px]"
         )}
       >
-        <div className="flex w-full items-center justify-between lg:hidden">
+        <div className="flex w-full items-center gap-3 lg:hidden">
           <Link
             href="/"
             className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
@@ -199,20 +163,23 @@ export function SiteHeader({
             </div>
           </Link>
 
-          <button
-            ref={menuButtonRef}
-            type="button"
-            className={cn(
-              "p-2 text-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]",
-              isHeroHeader && "lg:absolute lg:right-6 lg:top-[180px]"
-            )}
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-nav"
-            onClick={toggleMenu}
-          >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          <div className="ml-auto">
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((previous) => !previous)}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-nav"
+              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 text-[11px] font-bold uppercase tracking-[0.09em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+            >
+              <span aria-hidden className="inline-flex flex-col gap-1">
+                <span className="block h-0.5 w-4 rounded-full bg-current" />
+                <span className="block h-0.5 w-4 rounded-full bg-current" />
+                <span className="block h-0.5 w-4 rounded-full bg-current" />
+              </span>
+              {isMobileMenuOpen ? "Close" : "Menu"}
+            </button>
+          </div>
         </div>
 
         <div
@@ -397,10 +364,11 @@ export function SiteHeader({
       </div>
 
       <MobileMenuPortal
-        isOpen={isMenuOpen}
-        onClose={closeMenu}
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
         navItems={SITE_NAV}
       />
+
     </header>
   );
 }

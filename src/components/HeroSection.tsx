@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ChevronDown, Search } from "lucide-react";
@@ -8,7 +7,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import {
   LISTINGS_MAP_PATH,
   DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
-  PROPERTY_SEARCH_PRICE_OPTIONS,
+  getPropertySearchPriceOptions,
   PROPERTY_SEARCH_BED_OPTIONS,
   PROPERTY_SEARCH_BATH_OPTIONS,
   buildListingsMapHref,
@@ -64,6 +63,15 @@ interface GoogleMapsWithPlaces {
   };
 }
 
+declare global {
+  interface Window {
+    google?: {
+      maps?: GoogleMapsWithPlaces;
+    };
+    __sandstoneGoogleMapsPromise?: Promise<void>;
+  }
+}
+
 function getSelectedOptionLabel<T extends string>(
   options: Array<{ value: T; label: string }>,
   value: T
@@ -77,6 +85,7 @@ export function HeroSection() {
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" }>(
     {
       ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
@@ -278,6 +287,7 @@ export function HeroSection() {
   };
 
   const showTransition = isNavigatingToMap || isPending;
+  const priceOptions = getPropertySearchPriceOptions(filters.listingType);
 
   return (
     <>
@@ -311,7 +321,13 @@ export function HeroSection() {
                   <div className="inline-flex items-center gap-3 border-b border-[var(--sandstone-charcoal)]/48 pb-1">
                     <button
                       type="button"
-                      onClick={() => setFilters((prev) => ({ ...prev, listingType: "active" }))}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          listingType: "active",
+                          pricePreset: "any",
+                        }))
+                      }
                       className={`border-b-[2px] pb-0.5 font-heading text-[0.94rem] font-semibold tracking-[0.01em] transition ${
                         filters.listingType === "active"
                           ? "border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
@@ -328,7 +344,13 @@ export function HeroSection() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => setFilters((prev) => ({ ...prev, listingType: "rental" }))}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          listingType: "rental",
+                          pricePreset: "any",
+                        }))
+                      }
                       className={`pb-0.5 font-heading text-[0.94rem] font-medium tracking-[0.01em] transition ${
                         filters.listingType === "rental"
                           ? "border-b-[2px] border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
@@ -384,7 +406,7 @@ export function HeroSection() {
                 <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
                   <div className="relative focus-within:outline-none">
                     <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
-                      <span>{getSelectedOptionLabel(PROPERTY_SEARCH_PRICE_OPTIONS, filters.pricePreset)}</span>
+                      <span>{getSelectedOptionLabel(priceOptions, filters.pricePreset)}</span>
                       <ChevronDown
                         aria-hidden
                         className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
@@ -402,7 +424,7 @@ export function HeroSection() {
                         }))
                       }
                     >
-                      {PROPERTY_SEARCH_PRICE_OPTIONS.map((option) => (
+                      {priceOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
                         </option>
@@ -486,25 +508,37 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
-          <div className="mx-auto flex max-w-sm items-center justify-center gap-4 text-sm font-semibold text-white/72">
+          <div className="mx-auto flex w-full max-w-sm items-center justify-center gap-4 text-sm font-semibold">
             <button
               type="button"
-              onClick={() => setFilters((prev) => ({ ...prev, listingType: "active" }))}
-              className={`pb-1 transition ${
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  listingType: "active",
+                  pricePreset: "any",
+                }))
+              }
+              className={`px-2 py-1 transition ${
                 filters.listingType === "active"
                   ? "border-b-2 border-white text-white"
-                  : "hover:text-white"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               Buy
             </button>
             <button
               type="button"
-              onClick={() => setFilters((prev) => ({ ...prev, listingType: "rental" }))}
-              className={`pb-1 transition ${
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  listingType: "rental",
+                  pricePreset: "any",
+                }))
+              }
+              className={`px-2 py-1 transition ${
                 filters.listingType === "rental"
                   ? "border-b-2 border-white text-white"
-                  : "hover:text-white"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               Rent
@@ -528,6 +562,127 @@ export function HeroSection() {
               Search
             </button>
           </form>
+
+          <button
+            type="button"
+            onClick={() => setShowMobileFilters((prev) => !prev)}
+            className="mx-auto mt-3 flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/20"
+          >
+            <span>{showMobileFilters ? "Hide" : "Show"} Filters</span>
+            <ChevronDown
+              className={`h-3.5 w-3.5 transition-transform ${showMobileFilters ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {showMobileFilters ? (
+            <div className="mx-auto mt-4 w-full max-w-sm space-y-3">
+              <div className="space-y-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70">Price</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {priceOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          pricePreset: option.value,
+                        }))
+                      }
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                        filters.pricePreset === option.value
+                          ? "bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)]"
+                          : "border border-white/30 bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    >
+                      {option.value === "any" ? "Any" : option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70">Beds</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          bedsPreset: option.value,
+                        }))
+                      }
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                        filters.bedsPreset === option.value
+                          ? "bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)]"
+                          : "border border-white/30 bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    >
+                      {option.value === "any" ? "Any" : option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70">Baths</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          bathsPreset: option.value,
+                        }))
+                      }
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                        filters.bathsPreset === option.value
+                          ? "bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)]"
+                          : "border border-white/30 bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    >
+                      {option.value === "any" ? "Any" : option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t border-white/20 pt-3">
+                <div className="flex flex-wrap justify-center gap-4 text-center">
+                  <button
+                    type="button"
+                    onClick={() => router.push("/listings")}
+                    className="text-xs font-semibold text-white/80 transition hover:text-white"
+                  >
+                    All Listings
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push("/listings/map")}
+                    className="text-xs font-semibold text-white/80 transition hover:text-white"
+                  >
+                    Map Search
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFilters({
+                        ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+                        listingType: "active",
+                      })
+                    }
+                    className="text-xs font-semibold text-white/80 transition hover:text-white"
+                  >
+                    Reset Filters
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
 

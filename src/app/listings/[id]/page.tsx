@@ -6,16 +6,59 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
 import { fetchPropertyDetailById } from "@/services";
 import { SITE_CONTACT } from "@/constants";
+import { buildListingsMapHref, type PropertySearchPresetFilters } from "@/lib";
 
 interface PageProps {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ sparkId?: string; src?: string }>;
+  searchParams: Promise<{
+    sparkId?: string;
+    src?: string;
+    from?: string;
+    listingType?: string;
+    price?: string;
+    beds?: string;
+    baths?: string;
+  }>;
 }
 
 function resolveDetailSourceHint(
   value: string | undefined
 ): "active" | "my" | undefined {
   return value === "active" || value === "my" ? value : undefined;
+}
+
+function resolveListingTypeForMap(value: string | undefined): "active" | "rental" {
+  return value === "rental" ? "rental" : "active";
+}
+
+function resolveMapPricePreset(
+  value: string | undefined
+): PropertySearchPresetFilters["pricePreset"] | undefined {
+  const allowed: Array<PropertySearchPresetFilters["pricePreset"]> = [
+    "under-150",
+    "150-250",
+    "250-500",
+    "500-750",
+    "750-plus",
+    "rent-under-1000",
+    "rent-1000-2500",
+    "rent-2500-5000",
+    "rent-5000-plus",
+  ];
+
+  return allowed.includes(value as PropertySearchPresetFilters["pricePreset"])
+    ? (value as PropertySearchPresetFilters["pricePreset"])
+    : undefined;
+}
+
+function resolveMapCountPreset(
+  value: string | undefined
+): PropertySearchPresetFilters["bedsPreset"] | undefined {
+  if (value === "1" || value === "2" || value === "3" || value === "4") {
+    return value;
+  }
+
+  return undefined;
 }
 
 function formatFactNumber(value: number): string {
@@ -118,6 +161,18 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
 
     return queryString ? `${basePath}?${queryString}` : basePath;
   })();
+  const mapBackHref = query.from === "map"
+    ? buildListingsMapHref({
+        listingType: resolveListingTypeForMap(query.listingType),
+        filterPresets: {
+          pricePreset: resolveMapPricePreset(query.price),
+          bedsPreset: resolveMapCountPreset(query.beds),
+          bathsPreset: resolveMapCountPreset(query.baths),
+        },
+      })
+    : null;
+  const backHref = mapBackHref ?? "/listings";
+  const backLabel = mapBackHref ? "\u2190 Back to map results" : "\u2190 Back to listings";
   const dialTarget = normalizeDialTarget(property.specs.listingAgentPhone) || SITE_CONTACT.phoneRaw;
   const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
     ? `1${dialTarget.replace(/^\+/, "")}`
@@ -132,10 +187,10 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <div className="container mx-auto max-w-6xl px-4 pt-8">
           <Link
-            href="/listings"
+            href={backHref}
             className="text-sm font-medium text-[var(--sandstone-sand-gold)] hover:underline"
           >
-            ← Back to listings
+            {backLabel}
           </Link>
 
           <section className="mt-6 rounded-[2rem] border border-white/70 bg-white px-4 py-5 shadow-[0_24px_70px_-36px_rgba(37,52,113,0.42)] md:px-6 md:py-7">

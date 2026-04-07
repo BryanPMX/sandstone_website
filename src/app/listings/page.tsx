@@ -2,8 +2,9 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingCard } from "@/components/properties";
-import { fetchActivePropertyCards, fetchActivePropertyCardsPage } from "@/services";
-import { filterPropertyCards } from "@/lib";
+import { fetchMyPropertyCards } from "@/services";
+import { filterPropertyCards, isAlejandroListing } from "@/lib";
+import { getSparkListingsPageSize } from "@/config";
 
 export const metadata = {
   title: "Listings | Sandstone Real Estate Group",
@@ -11,8 +12,26 @@ export const metadata = {
     "Browse listings curated by Sandstone Real Estate Group in El Paso and the Southwest.",
 };
 
+export const dynamic = "force-dynamic";
+
 interface ListingsPageProps {
   searchParams: Promise<{ search?: string; page?: string }>;
+}
+
+function paginateProperties<T>(items: T[], page: number, pageSize: number): {
+  pageItems: T[];
+  currentPage: number;
+  totalPages: number;
+} {
+  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const startIndex = (currentPage - 1) * pageSize;
+
+  return {
+    pageItems: items.slice(startIndex, startIndex + pageSize),
+    currentPage,
+    totalPages,
+  };
 }
 
 function buildVisiblePageItems(currentPage: number, totalPages: number): Array<number | "ellipsis"> {
@@ -48,16 +67,22 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const currentPage = Number.isFinite(requestedPage) && requestedPage > 0
     ? requestedPage
     : 1;
+  const pageSize = getSparkListingsPageSize();
 
-  const paginatedResult = searchQuery
-    ? null
-    : await fetchActivePropertyCardsPage(currentPage);
-  const properties = searchQuery
-    ? filterPropertyCards(await fetchActivePropertyCards(), searchQuery)
-    : paginatedResult?.properties ?? [];
-  const totalPages = searchQuery ? 1 : paginatedResult?.totalPages ?? 1;
-  const resolvedPage = searchQuery ? 1 : paginatedResult?.currentPage ?? 1;
-  const hasPagination = !searchQuery && totalPages > 1;
+  const allAlejandroProperties = (await fetchMyPropertyCards()).filter(
+    (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
+  );
+
+  const searchableProperties = searchQuery
+    ? filterPropertyCards(allAlejandroProperties, searchQuery)
+    : allAlejandroProperties;
+
+  const paginated = paginateProperties(searchableProperties, currentPage, pageSize);
+
+  const properties = paginated.pageItems;
+  const totalPages = paginated.totalPages;
+  const resolvedPage = paginated.currentPage;
+  const hasPagination = totalPages > 1;
   const visiblePageItems = hasPagination
     ? buildVisiblePageItems(resolvedPage, totalPages)
     : [];
