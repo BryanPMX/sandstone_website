@@ -6,7 +6,6 @@ import {
   MapContainer,
   Marker,
   Popup,
-  TileLayer,
   useMap,
   useMapEvents,
 } from "react-leaflet";
@@ -147,6 +146,40 @@ function MapViewportController({ onViewportChange }: MapViewportControllerProps)
     moveend: emitViewport,
     zoomend: emitViewport,
   });
+
+  return null;
+}
+
+function SafeTileLayer() {
+  const map = useMap();
+
+  useEffect(() => {
+    let cancelled = false;
+    let tileLayer: L.TileLayer | null = null;
+
+    const mountLayer = () => {
+      if (cancelled) {
+        return;
+      }
+
+      tileLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      });
+
+      tileLayer.addTo(map);
+    };
+
+    map.whenReady(mountLayer);
+
+    return () => {
+      cancelled = true;
+
+      if (tileLayer && map.hasLayer(tileLayer)) {
+        map.removeLayer(tileLayer);
+      }
+    };
+  }, [map]);
 
   return null;
 }
@@ -307,10 +340,7 @@ export function ListingsMapPanelClient({
         className="h-full w-full"
         scrollWheelZoom
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <SafeTileLayer />
 
         <MapViewportController onViewportChange={onViewportChange} />
 

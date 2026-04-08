@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { PropertyCard } from "@/types";
 
+const MAP_MOUNT_DELAY_MS = 60;
+const MAP_MOUNT_FALLBACK_MS = 1200;
+
 const ListingsMapPanelClient = dynamic(
   () => import("./ListingsMapPanel.client").then((module) => module.ListingsMapPanelClient),
   {
@@ -23,6 +26,7 @@ interface ListingsMapPanelProps {
   mapContextQuery?: Record<string, string | undefined>;
   initialCenter?: [number, number];
   initialZoom?: number;
+  isRefreshing?: boolean;
   onViewportChange?: (viewport: {
     north: number;
     south: number;
@@ -37,6 +41,7 @@ export function ListingsMapPanel({
   mapContextQuery,
   initialCenter,
   initialZoom,
+  isRefreshing = false,
   onViewportChange,
 }: ListingsMapPanelProps) {
   const containerRef = useRef<HTMLElement>(null);
@@ -49,8 +54,13 @@ export function ListingsMapPanel({
       return;
     }
 
+    // Warm up map chunk as early as possible to keep above-the-fold mount snappy.
+    void import("./ListingsMapPanel.client");
+
     let cancelled = false;
     let idleTimer: number | null = null;
+    let fallbackTimer: number | null = null;
+    let observer: IntersectionObserver | null = null;
 
     const enableMap = () => {
       if (!cancelled) {
@@ -59,14 +69,27 @@ export function ListingsMapPanel({
     };
 
     const initializeSoon = () => {
-      idleTimer = window.setTimeout(enableMap, 120);
+      if (idleTimer != null) {
+        window.clearTimeout(idleTimer);
+      }
+
+      idleTimer = window.setTimeout(enableMap, MAP_MOUNT_DELAY_MS);
     };
 
+    fallbackTimer = window.setTimeout(enableMap, MAP_MOUNT_FALLBACK_MS);
+
+    const rect = container.getBoundingClientRect();
+    const isNearViewport = rect.top < window.innerHeight + 220 && rect.bottom > -220;
+
+    if (isNearViewport) {
+      initializeSoon();
+    }
+
     if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
+      observer = new IntersectionObserver(
         (entries) => {
           if (entries.some((entry) => entry.isIntersecting)) {
-            observer.disconnect();
+            observer?.disconnect();
             initializeSoon();
           }
         },
@@ -74,28 +97,26 @@ export function ListingsMapPanel({
       );
 
       observer.observe(container);
-
-      return () => {
-        cancelled = true;
-        observer.disconnect();
-        if (idleTimer != null) {
-          window.clearTimeout(idleTimer);
-        }
-      };
+    } else if (!isNearViewport) {
+      initializeSoon();
     }
-
-    initializeSoon();
 
     return () => {
       cancelled = true;
+      observer?.disconnect();
+
       if (idleTimer != null) {
         window.clearTimeout(idleTimer);
+      }
+
+      if (fallbackTimer != null) {
+        window.clearTimeout(fallbackTimer);
       }
     };
   }, []);
 
   return (
-    <section ref={containerRef}>
+    <section ref={containerRef} className="relative">
       {shouldRenderMap ? (
         <ListingsMapPanelClient
           properties={properties}
@@ -111,6 +132,16 @@ export function ListingsMapPanel({
           </div>
         </section>
       )}
+
+      {isRefreshing ? (
+        <div className="pointer-events-none absolute right-3 top-3 z-[500] inline-flex items-center gap-2 rounded-full border border-[var(--sandstone-navy)]/18 bg-white/95 px-3 py-1.5 text-xs font-semibold text-[var(--sandstone-charcoal)] shadow-[0_10px_24px_-14px_rgba(17,24,61,0.45)]">
+          <span
+            aria-hidden
+            className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-[var(--sandstone-sand-gold)]/35 border-t-[var(--sandstone-sand-gold)]"
+          />
+          Updating map
+        </div>
+      ) : null}
     </section>
   );
 }
