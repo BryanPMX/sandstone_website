@@ -24,6 +24,8 @@ const EL_PASO_LNG_MAX = -106.23;
 const DEFAULT_MAP_ZOOM = 11;
 const SINGLE_MARKER_ZOOM = 13;
 const VIEWPORT_DEBOUNCE_MS = 240;
+const MAP_REFRESH_INITIAL_DELAY_MS = 2_000;
+const MAP_REFRESH_INTERVAL_MS = 20_000;
 
 interface MapViewport {
   north: number;
@@ -40,6 +42,60 @@ const DEFAULT_VIEWPORT: MapViewport = {
   west: EL_PASO_LNG_MIN,
   zoom: DEFAULT_MAP_ZOOM,
 };
+
+function dedupeProperties<T extends { id: string; routeId: string; sparkId?: string }>(
+  properties: T[]
+): T[] {
+  const seen = new Set<string>();
+
+  return properties.filter((property) => {
+    const key = property.sparkId ?? property.routeId ?? property.id;
+
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
+function resolvePropertyIdentity(property: { id: string; routeId: string; sparkId?: string }): string {
+  return property.sparkId ?? property.routeId ?? property.id;
+}
+
+function haveSamePropertyIdentities(current: PropertyCard[], next: PropertyCard[]): boolean {
+  if (current.length !== next.length) {
+    return false;
+  }
+
+  for (let index = 0; index < current.length; index += 1) {
+    if (resolvePropertyIdentity(current[index]) !== resolvePropertyIdentity(next[index])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+async function fetchLatestMapProperties(signal: AbortSignal): Promise<PropertyCard[] | null> {
+  const response = await fetch("/api/listings/map", {
+    method: "GET",
+    signal,
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const payload = (await response.json()) as unknown;
+
+  if (!Array.isArray(payload)) {
+    return null;
+  }
+
+  return dedupeProperties(payload as PropertyCard[]);
+}
 
 function isWithinElPasoBounds(lat: number, lng: number): boolean {
   return (
@@ -211,6 +267,7 @@ interface ListingsMapClientProps {
 
 export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const searchParams = useSearchParams();
+  const [liveProperties, setLiveProperties] = useState<PropertyCard[]>(() => properties);
   const searchQuery = normalizeMapSearchQuery(searchParams.get("search") ?? "");
   const initialCenterLat = parseOptionalNumber(searchParams.get("lat"));
   const initialCenterLng = parseOptionalNumber(searchParams.get("lng"));
@@ -241,6 +298,11 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   });
   const [viewport, setViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
   const [debouncedViewport, setDebouncedViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
+  const [isMapRefreshing, setIsMapRefreshing] = useState(false);
+
+  useEffect(() => {
+    setLiveProperties(properties);
+  }, [properties]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -252,9 +314,75 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
     };
   }, [viewport]);
 
+  useEffect(() => {
+    let pollTimer: number | null = null;
+    let cancelled = false;
+    let activeController: AbortController | null = null;
+
+    const refreshOnce = async () => {
+      if (cancelled || typeof document !== "undefined" && document.visibilityState === "hidden") {
+        return;
+      }
+
+      if (activeController) {
+        activeController.abort();
+      }
+
+      activeController = new AbortController();
+      setIsMapRefreshing(true);
+
+      try {
+        const latest = await fetchLatestMapProperties(activeController.signal);
+
+        if (cancelled || !latest) {
+          return;
+        }
+
+        setLiveProperties((current) =>
+          haveSamePropertyIdentities(current, latest) ? current : latest
+        );
+      } catch {
+        // Keep existing data when refresh fails.
+      } finally {
+        if (!cancelled) {
+          setIsMapRefreshing(false);
+        }
+      }
+    };
+
+    const scheduleNextRefresh = (delayMs: number) => {
+      pollTimer = window.setTimeout(async () => {
+        await refreshOnce();
+        scheduleNextRefresh(MAP_REFRESH_INTERVAL_MS);
+      }, delayMs);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void refreshOnce();
+      }
+    };
+
+    scheduleNextRefresh(MAP_REFRESH_INITIAL_DELAY_MS);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
+      if (pollTimer != null) {
+        window.clearTimeout(pollTimer);
+      }
+
+      if (activeController) {
+        activeController.abort();
+      }
+    };
+  }, []);
+
   const elPasoOnlyProperties = useMemo(
-    () => properties.filter((property) => isElPasoListing(property)),
-    [properties]
+    () => liveProperties.filter((property) => isElPasoListing(property)),
+    [liveProperties]
   );
 
   const filteredProperties = useMemo(() => {
@@ -431,6 +559,7 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
               initialCenter={initialMapCenter}
               initialZoom={initialMapZoom}
               onViewportChange={setViewport}
+              isRefreshing={isMapRefreshing}
             />
             <ListingsMapSidebar
               properties={filteredProperties}
