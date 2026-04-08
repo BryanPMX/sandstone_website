@@ -139,38 +139,36 @@ export default function SellPage() {
 
         <section
           id="seller-plan"
-          className="bg-[var(--sandstone-off-white)] py-14 sm:py-16 lg:py-20"
+          className="relative overflow-hidden py-14 sm:py-16 lg:py-20"
+          style={{
+            backgroundImage: "url('/Sell_A_Property_Imgs/sandstone-sellers-banner1.webp')",
+            backgroundSize: 'cover',
+            backgroundPosition: '40% center',
+            backgroundRepeat: 'no-repeat',
+          }}
         >
-          <div className="mx-auto grid max-w-6xl gap-8 px-4 lg:grid-cols-2 lg:items-center lg:gap-10">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-lg">
-              <Image
-                src="/Sell_A_Property_Imgs/sandstone-sellers-banner1.webp"
-                alt="Sandstone listing presentation for home sellers"
-                fill
-                sizes="(max-width: 1023px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
+          <div className="absolute inset-0 bg-black/10" />
 
-            <div>
-              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-                Request Our Exclusive Marketing Plan
-              </h2>
-              <p className="mt-4 text-base text-[var(--sandstone-charcoal)]/85">
-                We&apos;ll walk you through the strategy we use to position homes
-                for strong offers, standout exposure, and a smoother selling
-                experience.
-              </p>
-              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/72">
-                Share your property details and we&apos;ll send the right next
-                steps with your consultation.
-              </p>
-              <Link
-                href="#sell-lead"
-                className="mt-6 inline-flex items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3 text-sm font-semibold text-white shadow-lg transition hover:opacity-95"
-              >
-                Request the Full Marketing Plan
-              </Link>
+          <div className="relative mx-auto grid min-h-[420px] max-w-6xl px-4 lg:grid-cols-[0.4fr_0.6fr] lg:items-center lg:gap-12">
+            <div className="hidden lg:block min-h-[420px]" />
+
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-full lg:max-w-xl text-center">
+                <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] sm:text-4xl">
+                  Download Our Exclusive Marketing Plan
+                </h2>
+                <p className="mt-6 text-base text-[var(--sandstone-charcoal)]/85">
+                  Get our proven strategies to sell your home for
+                  <br />top dollar.
+                </p>
+                <a
+                  href="/Listing_Presentation.pdf"
+                  download="Listing_Presentation.pdf"
+                  className="mt-8 inline-flex items-center rounded-full bg-red-600 px-8 py-3 text-sm font-semibold text-white shadow-lg transition duration-200 hover:bg-red-700 hover:scale-105"
+                >
+                  Download PDF
+                </a>
+              </div>
             </div>
           </div>
         </section>
