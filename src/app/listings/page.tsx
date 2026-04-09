@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingCard } from "@/components/properties";
-import { fetchActivePropertyCards } from "@/services";
+import { fetchActivePropertyCards, fetchActivePropertyCardsPage } from "@/services";
 import { filterPropertyCards } from "@/lib";
 import { getSparkListingsPageSize } from "@/config";
 
@@ -69,15 +69,15 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
     : 1;
   const pageSize = getSparkListingsPageSize();
 
-  const allActiveProperties = await fetchActivePropertyCards();
+  const paginated = searchQuery
+    ? paginateProperties(
+        filterPropertyCards(await fetchActivePropertyCards(), searchQuery),
+        currentPage,
+        pageSize
+      )
+    : await fetchActivePropertyCardsPage(currentPage);
 
-  const searchableProperties = searchQuery
-    ? filterPropertyCards(allActiveProperties, searchQuery)
-    : allActiveProperties;
-
-  const paginated = paginateProperties(searchableProperties, currentPage, pageSize);
-
-  const properties = paginated.pageItems;
+  const properties = paginated.properties ?? paginated.pageItems;
   const totalPages = paginated.totalPages;
   const resolvedPage = paginated.currentPage;
   const hasPagination = totalPages > 1;
