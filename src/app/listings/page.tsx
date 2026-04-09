@@ -69,17 +69,27 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
     : 1;
   const pageSize = getSparkListingsPageSize();
 
-  const paginated = searchQuery
-    ? paginateProperties(
-        filterPropertyCards(await fetchActivePropertyCards(), searchQuery),
-        currentPage,
-        pageSize
-      )
-    : await fetchActivePropertyCardsPage(currentPage);
+  let properties;
+  let totalPages;
+  let resolvedPage;
 
-  const properties = paginated.properties ?? paginated.pageItems;
-  const totalPages = paginated.totalPages;
-  const resolvedPage = paginated.currentPage;
+  if (searchQuery) {
+    const searched = paginateProperties(
+      filterPropertyCards(await fetchActivePropertyCards(), searchQuery),
+      currentPage,
+      pageSize
+    );
+
+    properties = searched.pageItems;
+    totalPages = searched.totalPages;
+    resolvedPage = searched.currentPage;
+  } else {
+    const paginated = await fetchActivePropertyCardsPage(currentPage);
+    properties = paginated.properties;
+    totalPages = paginated.totalPages;
+    resolvedPage = paginated.currentPage;
+  }
+
   const hasPagination = totalPages > 1;
   const visiblePageItems = hasPagination
     ? buildVisiblePageItems(resolvedPage, totalPages)
