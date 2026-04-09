@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
+import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
 import { fetchPropertyDetailById } from "@/services";
 import { SITE_CONTACT } from "@/constants";
 import { buildListingsMapHref, type PropertySearchPresetFilters } from "@/lib";
@@ -14,6 +15,7 @@ interface PageProps {
     sparkId?: string;
     src?: string;
     from?: string;
+    search?: string;
     listingType?: string;
     price?: string;
     beds?: string;
@@ -163,6 +165,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
   })();
   const mapBackHref = query.from === "map"
     ? buildListingsMapHref({
+        search: query.search?.trim() || undefined,
         listingType: resolveListingTypeForMap(query.listingType),
         filterPresets: {
           pricePreset: resolveMapPricePreset(query.price),
@@ -171,8 +174,6 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
         },
       })
     : null;
-  const backHref = mapBackHref ?? "/listings";
-  const backLabel = mapBackHref ? "\u2190 Back to map results" : "\u2190 Back to listings";
   const dialTarget = normalizeDialTarget(property.specs.listingAgentPhone) || SITE_CONTACT.phoneRaw;
   const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
     ? `1${dialTarget.replace(/^\+/, "")}`
@@ -186,12 +187,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <div className="container mx-auto max-w-6xl px-4 pt-8">
-          <Link
-            href={backHref}
-            className="text-sm font-medium text-[var(--sandstone-sand-gold)] hover:underline"
-          >
-            {backLabel}
-          </Link>
+          <ListingBackLink mapBackHref={mapBackHref} fallbackHref="/listings" />
 
           <section className="mt-6 rounded-[2rem] border border-white/70 bg-white px-4 py-5 shadow-[0_24px_70px_-36px_rgba(37,52,113,0.42)] md:px-6 md:py-7">
             <h1 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
