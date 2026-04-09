@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { PropertyCard } from "@/types";
 import { ListingCarousel } from "@/components/properties";
 
@@ -23,7 +22,7 @@ export function FeaturedListingsSection({
           </h2>
           {searchQuery ? (
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--sandstone-charcoal)]/70 md:text-base">
-              {`Showing matches from my Flexmls listings for "${searchQuery}".`}
+              {`Showing matches from Keller Williams & Sandstone Flexmls listings for "${searchQuery}".`}
             </p>
           ) : null}
         </div>
@@ -38,12 +37,12 @@ export function FeaturedListingsSection({
 
         {properties.length > 0 && (
           <div className="mt-10 flex justify-center md:mt-12">
-            <Link
-              href="/listings"
+            <a
+              href="/listings?page=1"
               className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3 text-sm font-semibold text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
             >
               View all active listings
-            </Link>
+            </a>
           </div>
         )}
       </div>

@@ -2,8 +2,8 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingCard } from "@/components/properties";
-import { fetchMyPropertyCards } from "@/services";
-import { filterPropertyCards, isAlejandroListing } from "@/lib";
+import { fetchActivePropertyCards } from "@/services";
+import { filterPropertyCards } from "@/lib";
 import { getSparkListingsPageSize } from "@/config";
 
 export const metadata = {
@@ -69,13 +69,11 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
     : 1;
   const pageSize = getSparkListingsPageSize();
 
-  const allAlejandroProperties = (await fetchMyPropertyCards()).filter(
-    (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
-  );
+  const allActiveProperties = await fetchActivePropertyCards();
 
   const searchableProperties = searchQuery
-    ? filterPropertyCards(allAlejandroProperties, searchQuery)
-    : allAlejandroProperties;
+    ? filterPropertyCards(allActiveProperties, searchQuery)
+    : allActiveProperties;
 
   const paginated = paginateProperties(searchableProperties, currentPage, pageSize);
 

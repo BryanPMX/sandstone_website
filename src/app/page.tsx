@@ -4,24 +4,20 @@ import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsS
 import { PrimaryActionTiles } from "@/components/sections/PrimaryActionTiles";
 import { ContactForm } from "@/components/ContactForm";
 import { SiteFooter } from "@/components/SiteFooter";
-import { fetchMyPropertyCards } from "@/services";
-import { isAlejandroListing } from "@/lib";
+import { fetchActivePropertyCardsPage } from "@/services";
 
 export const revalidate = 300;
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const properties = await fetchMyPropertyCards();
-  const alejandroSparkProperties = properties.filter(
-    (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
-  );
+  const { properties } = await fetchActivePropertyCardsPage(1);
 
   return (
     <>
       <SiteHeader overlayDesktop />
       <main className="min-h-screen">
         <HeroSection />
-        <FeaturedListingsSection properties={alejandroSparkProperties} />
+        <FeaturedListingsSection properties={properties} />
         <PrimaryActionTiles />
         <ContactForm />
       </main>
