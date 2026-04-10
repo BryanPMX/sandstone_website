@@ -1,6 +1,7 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsSection";
+import { PcsEntrySection } from "@/components/sections/PcsEntrySection";
 import { PrimaryActionTiles } from "@/components/sections/PrimaryActionTiles";
 import { ContactForm } from "@/components/ContactForm";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -23,6 +24,7 @@ export default async function Home() {
         <HeroSection />
         <FeaturedListingsSection properties={alejandroSparkProperties} />
         <PrimaryActionTiles />
+        <PcsEntrySection />
         <ContactForm />
       </main>
       <SiteFooter />

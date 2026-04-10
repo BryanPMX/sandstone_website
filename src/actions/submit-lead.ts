@@ -23,6 +23,7 @@ export async function submitLeadForForm(
     phone: formData.get("phone") ?? "",
     address: formData.get("address") ?? "",
     message: formData.get("message") ?? "",
+    source: formData.get("source") ?? "",
     acceptTransactionalSms: formData.get("acceptTransactionalSms") === "on",
     acceptMarketingSms: formData.get("acceptMarketingSms") === "on",
   };
@@ -98,13 +99,20 @@ export async function submitLeadForForm(
     };
   }
 
+  const normalizedSource = String(raw.source ?? "").trim();
+  const sourceTag = normalizedSource ? `[source:${normalizedSource}]` : "";
+  const enrichedMessage = [sourceTag, parsed.data.message]
+    .filter((value) => Boolean(value && value.trim()))
+    .join(" ")
+    .trim();
+
   const leadPayload = buildLeadWebhookPayload(formType, {
     firstName: parsed.data.firstName,
     lastName: parsed.data.lastName,
     email: parsed.data.email,
     phone: parsed.data.phone,
     address: parsed.data.address,
-    message: parsed.data.message,
+    message: enrichedMessage,
     acceptTransactionalSms: parsed.data.acceptTransactionalSms,
     acceptMarketingSms: parsed.data.acceptMarketingSms,
   });

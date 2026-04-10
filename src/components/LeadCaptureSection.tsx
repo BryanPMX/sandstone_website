@@ -111,6 +111,7 @@ function TurnstileWidget({
 export interface LeadCaptureSectionProps {
   formType: LeadFormType;
   sectionId?: string;
+  leadSource?: string;
   heading: string;
   headingTag?: "h1" | "h2";
   subheading: string;
@@ -134,6 +135,7 @@ export interface LeadCaptureSectionProps {
 export function LeadCaptureSection({
   formType,
   sectionId,
+  leadSource,
   heading,
   headingTag = "h2",
   subheading,
@@ -168,6 +170,8 @@ export function LeadCaptureSection({
       className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6"
     >
       <form action={formAction} className={isHero ? "space-y-3.5" : "space-y-4"}>
+        {leadSource ? <input type="hidden" name="source" value={leadSource} /> : null}
+
         {state?.success === true && (
           <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
             {state.message}
