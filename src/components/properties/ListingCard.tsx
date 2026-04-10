@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { PropertyCard } from "@/types";
 import { shouldBypassNextImageOptimization } from "@/lib";
@@ -27,6 +27,7 @@ export function ListingCard({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isNavigating, setIsNavigating] = useState(false);
+  const hasPrefetchedRef = useRef(false);
   const shouldShowTransitionOverlay = property.sparkSource === "active";
   const resolvedImageSrc = property.image?.trim() || FALLBACK_LISTING_IMAGE_DATA_URI;
   const bypassOptimization = shouldBypassNextImageOptimization(resolvedImageSrc);
@@ -100,13 +101,26 @@ export function ListingCard({
     });
   };
 
+  const prefetchDetailOnIntent = useCallback(() => {
+    if (hasPrefetchedRef.current) {
+      return;
+    }
+
+    hasPrefetchedRef.current = true;
+    void router.prefetch(detailHref);
+  }, [detailHref, router]);
+
   const showOverlay = shouldShowTransitionOverlay && (isNavigating || isPending);
 
   return (
     <>
       <Link
         href={detailHref}
+        prefetch={false}
         onClick={handleClick}
+        onMouseEnter={prefetchDetailOnIntent}
+        onFocus={prefetchDetailOnIntent}
+        onTouchStart={prefetchDetailOnIntent}
         aria-busy={showOverlay}
         className="group block overflow-hidden rounded-2xl border border-white/65 bg-white/72 shadow-[0_18px_36px_-24px_rgba(37,52,113,0.55)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_rgba(37,52,113,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
       >
