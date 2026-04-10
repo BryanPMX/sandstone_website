@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ChevronLeft, Search } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingsMapPanel, ListingsMapSidebar } from "@/components/properties";
@@ -266,9 +266,13 @@ interface ListingsMapClientProps {
 }
 
 export function ListingsMapClient({ properties }: ListingsMapClientProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const searchParamsString = searchParams.toString();
   const [liveProperties, setLiveProperties] = useState<PropertyCard[]>(() => properties);
   const searchQuery = normalizeMapSearchQuery(searchParams.get("search") ?? "");
+  const [searchInput, setSearchInput] = useState(searchQuery);
   const initialCenterLat = parseOptionalNumber(searchParams.get("lat"));
   const initialCenterLng = parseOptionalNumber(searchParams.get("lng"));
   const initialMapCenter =
@@ -299,6 +303,19 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const [viewport, setViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
   const [debouncedViewport, setDebouncedViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
   const [isMapRefreshing, setIsMapRefreshing] = useState(false);
+
+  useEffect(() => {
+    try {
+      const href = searchParamsString ? `${pathname}?${searchParamsString}` : pathname;
+      window.sessionStorage.setItem("sandstone:last-map-href", href);
+    } catch {
+      // Ignore storage failures in constrained browsing modes.
+    }
+  }, [pathname, searchParamsString]);
+
+  useEffect(() => {
+    setSearchInput(searchQuery);
+  }, [searchQuery]);
 
   useEffect(() => {
     setLiveProperties(properties);
@@ -420,6 +437,22 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
     [filters, searchQuery]
   );
 
+  const handleMapSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const nextParams = new URLSearchParams(searchParams.toString());
+    const normalizedSearch = normalizeMapSearchQuery(searchInput);
+
+    if (normalizedSearch) {
+      nextParams.set("search", normalizedSearch);
+    } else {
+      nextParams.delete("search");
+    }
+
+    const nextQueryString = nextParams.toString();
+    router.replace(nextQueryString ? `${pathname}?${nextQueryString}` : pathname, { scroll: false });
+  };
+
   const totalCount = filteredProperties.length;
 
   return (
@@ -444,6 +477,26 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
               Showing {totalCount} listing{totalCount === 1 ? "" : "s"} on the map
             </p>
           </div>
+
+          <form onSubmit={handleMapSearchSubmit} className="mt-5 max-w-xl">
+            <div className="flex items-center gap-2 rounded-full border border-[var(--sandstone-navy)]/15 bg-white/90 p-1.5 shadow-[0_16px_38px_-30px_rgba(37,52,113,0.48)]">
+              <input
+                type="search"
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.currentTarget.value)}
+                placeholder="Search address or ZIP"
+                className="h-11 w-full rounded-full border-none bg-transparent px-4 text-sm text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/46 focus:outline-none"
+                aria-label="Search map listings by address or ZIP"
+              />
+              <button
+                type="submit"
+                className="inline-flex h-10 items-center justify-center gap-1 rounded-full bg-[var(--sandstone-navy)] px-4 text-sm font-semibold text-white transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
+              >
+                <Search aria-hidden className="h-4 w-4" />
+                <span>Apply</span>
+              </button>
+            </div>
+          </form>
 
           <div className="mt-6">
             <div className="hidden md:flex flex-wrap items-center gap-3 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
