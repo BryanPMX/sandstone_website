@@ -23,7 +23,7 @@ export function FeaturedListingsSection({
           </h2>
           {searchQuery ? (
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--sandstone-charcoal)]/70 md:text-base">
-              {`Showing matches from Keller Williams & Sandstone Flexmls listings for "${searchQuery}".`}
+              {`Showing matches from my Flexmls listings for "${searchQuery}".`}
             </p>
           ) : null}
         </div>

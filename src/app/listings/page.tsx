@@ -2,8 +2,8 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingCard } from "@/components/properties";
-import { fetchActivePropertyCards, fetchActivePropertyCardsPage } from "@/services";
-import { filterPropertyCards } from "@/lib";
+import { fetchMyPropertyCards } from "@/services";
+import { filterPropertyCards, isAlejandroListing } from "@/lib";
 import { getSparkListingsPageSize } from "@/config";
 
 export const metadata = {
@@ -69,26 +69,19 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
     : 1;
   const pageSize = getSparkListingsPageSize();
 
-  let properties;
-  let totalPages;
-  let resolvedPage;
+  const allAlejandroProperties = (await fetchMyPropertyCards()).filter(
+    (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
+  );
 
-  if (searchQuery) {
-    const searched = paginateProperties(
-      filterPropertyCards(await fetchActivePropertyCards(), searchQuery),
-      currentPage,
-      pageSize
-    );
+  const searchableProperties = searchQuery
+    ? filterPropertyCards(allAlejandroProperties, searchQuery)
+    : allAlejandroProperties;
 
-    properties = searched.pageItems;
-    totalPages = searched.totalPages;
-    resolvedPage = searched.currentPage;
-  } else {
-    const paginated = await fetchActivePropertyCardsPage(currentPage);
-    properties = paginated.properties;
-    totalPages = paginated.totalPages;
-    resolvedPage = paginated.currentPage;
-  }
+  const paginated = paginateProperties(searchableProperties, currentPage, pageSize);
+
+  const properties = paginated.pageItems;
+  const totalPages = paginated.totalPages;
+  const resolvedPage = paginated.currentPage;
 
   const hasPagination = totalPages > 1;
   const visiblePageItems = hasPagination
