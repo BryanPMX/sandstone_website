@@ -162,7 +162,7 @@ export function LeadCaptureSection({
   const requiresAddress = formType === "sell" || formType === "rent";
   const showMessageField = formType !== "join";
   const isSellerForm = formType === "sell";
-  const hideMessageField = isSellerForm;
+  const hideMessageField = isSellerForm
   const isHero = hero && Boolean(heroBackgroundUrl);
   const HeadingTag = headingTag;
 
