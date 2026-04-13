@@ -307,6 +307,7 @@ export function LeadCaptureSection({
               placeholder={messagePlaceholder}
               rows={2}
               disabled={isPending}
+              defaultValue=""
               className={
                 `${
                   state?.success === false && state.fieldErrors?.message
