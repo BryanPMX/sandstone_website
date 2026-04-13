@@ -220,7 +220,7 @@ export function SiteHeader({
                 )}
                 aria-label="Home"
               >
-                Hom
+                HOME
               </Link>
 
               <nav aria-label="Primary right" className="flex-1">
