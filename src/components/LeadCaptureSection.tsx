@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
@@ -155,11 +155,14 @@ export function LeadCaptureSection({
 }: LeadCaptureSectionProps) {
   const action = submitLeadForForm.bind(null, formType);
   const [state, formAction, isPending] = useActionState(action, initialState);
+  const [smsExpanded, setSmsExpanded] = useState(false);
   const hasCaptchaError =
     state?.success === false && Boolean(state.fieldErrors?.captcha);
   const id = (field: string) => `${formType}-${field}`;
   const requiresAddress = formType === "sell" || formType === "rent";
   const showMessageField = formType !== "join";
+  const hideMessageField = true;
+  const isSellerForm = formType === "sell";
   const isHero = hero && Boolean(heroBackgroundUrl);
   const HeadingTag = headingTag;
 
@@ -299,7 +302,7 @@ export function LeadCaptureSection({
         ) : null}
 
         {showMessageField ? (
-          <div className="space-y-1">
+          <div className={`space-y-1 ${hideMessageField ? "hidden" : ""}`}>
             <Label htmlFor={id("message")}>Message</Label>
             <Textarea
               id={id("message")}
@@ -353,7 +356,26 @@ export function LeadCaptureSection({
             )}
           </div>
 
-          <fieldset className="space-y-2.5">
+          {isSellerForm && (
+            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
+              <span>By submitting, you agree to receive SMS updates.</span>
+              <button
+                type="button"
+                aria-expanded={smsExpanded}
+                aria-controls={`${formType}-sms-preferences`}
+                onClick={() => setSmsExpanded((prev) => !prev)}
+                className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
+              >
+                {smsExpanded ? "Show less" : "Show more"}
+              </button>
+            </div>
+          )}
+
+          <div
+            id={`${formType}-sms-preferences`}
+            className={isSellerForm && !smsExpanded ? "hidden" : ""}
+          >
+            <fieldset className="space-y-2.5">
             <legend className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
               Text Message Preferences
             </legend>
@@ -427,6 +449,7 @@ export function LeadCaptureSection({
             </p>
           </fieldset>
         </div>
+      </div>
 
         <Button
           type="submit"
