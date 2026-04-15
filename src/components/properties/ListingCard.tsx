@@ -149,13 +149,8 @@ export function ListingCard({
             <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
               {details}
             </p>
-            {details && (
-              <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
-                {details}
-              </p>
-            )}
-          </div>
-        </Link>
+          )}
+        </div>
 
         <div className="absolute right-[10px] top-[10px] z-10 flex flex-col gap-2">
           <button
@@ -172,7 +167,6 @@ export function ListingCard({
           >
             <img src="/icons/facebook.png" alt="Facebook" className="h-5 w-5" />
           </button>
-          )}
         </div>
       </Link>
 

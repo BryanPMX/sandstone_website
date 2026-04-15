@@ -2,6 +2,7 @@ import Image from "next/image";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import { MortgageCalculator } from "@/components/MortgageCalculator";
 import { getTurnstileSiteKey } from "@/config";
 
 const marketingFeatures = [
@@ -98,6 +99,8 @@ export default function SellPage() {
           messagePlaceholder="Share your address, timing, and any details about the property..."
           turnstileSiteKey={turnstileSiteKey}
         />
+
+        <MortgageCalculator />
 
         <section className="bg-white py-14 sm:py-16 lg:py-20">
           <div className="mx-auto max-w-6xl px-4 text-center">
