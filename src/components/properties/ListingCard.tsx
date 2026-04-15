@@ -111,22 +111,21 @@ export function ListingCard({
   }, [detailHref, router]);
 
   const showOverlay = shouldShowTransitionOverlay && (isNavigating || isPending);
+  const url = `${window.location.origin}/listings/${property.routeId}`;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 
   return (
     <>
       <Link
         href={detailHref}
-        prefetch={false}
         onClick={handleClick}
-        onMouseEnter={prefetchDetailOnIntent}
-        onFocus={prefetchDetailOnIntent}
-        onTouchStart={prefetchDetailOnIntent}
         aria-busy={showOverlay}
         className="group block overflow-hidden rounded-2xl border border-white/65 bg-white/72 shadow-[0_18px_36px_-24px_rgba(37,52,113,0.55)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_rgba(37,52,113,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
       >
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
-            src={resolvedImageSrc}
+            src={property.image}
             alt={property.title}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
