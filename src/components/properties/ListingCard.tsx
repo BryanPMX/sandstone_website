@@ -111,9 +111,6 @@ export function ListingCard({
   }, [detailHref, router]);
 
   const showOverlay = shouldShowTransitionOverlay && (isNavigating || isPending);
-  const url = `${window.location.origin}/listings/${property.routeId}`;
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 
   return (
     <>
@@ -152,6 +149,29 @@ export function ListingCard({
             <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
               {details}
             </p>
+            {details && (
+              <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
+                {details}
+              </p>
+            )}
+          </div>
+        </Link>
+
+        <div className="absolute right-[10px] top-[10px] z-10 flex flex-col gap-2">
+          <button
+            type="button"
+            aria-label="Share on WhatsApp"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+          >
+            <img src="/icons/whatsapp.png" alt="WhatsApp" className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            aria-label="Share on Facebook"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+          >
+            <img src="/icons/facebook.png" alt="Facebook" className="h-5 w-5" />
+          </button>
           )}
         </div>
       </Link>
