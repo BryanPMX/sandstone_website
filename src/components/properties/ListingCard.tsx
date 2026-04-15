@@ -84,9 +84,6 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
   };
 
   const showOverlay = shouldShowTransitionOverlay && (isNavigating || isPending);
-  const url = `${window.location.origin}${detailHref}`;
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 
   return (
     <>
@@ -131,24 +128,20 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
         </Link>
 
         <div className="absolute right-[10px] top-[10px] z-10 flex flex-col gap-2">
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
             aria-label="Share on WhatsApp"
             className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
           >
-            <img src="/icons/whatsapp.png" alt="Share on WhatsApp" className="h-5 w-5" />
-          </a>
-          <a
-            href={facebookUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            <img src="/icons/whatsapp.png" alt="WhatsApp" className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
             aria-label="Share on Facebook"
             className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
           >
-            <img src="/icons/facebook.png" alt="Share on Facebook" className="h-5 w-5" />
-          </a>
+            <img src="/icons/facebook.png" alt="Facebook" className="h-5 w-5" />
+          </button>
         </div>
       </div>
 
