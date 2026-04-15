@@ -84,7 +84,7 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
   };
 
   const showOverlay = shouldShowTransitionOverlay && (isNavigating || isPending);
-  const url = `${window.location.origin}/listings/${property.routeId}`;
+  const url = `${window.location.origin}${detailHref}`;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 
@@ -136,7 +136,7 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Share on WhatsApp"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
           >
             <img src="/icons/whatsapp.png" alt="Share on WhatsApp" className="h-5 w-5" />
           </a>
@@ -145,7 +145,7 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Share on Facebook"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
           >
             <img src="/icons/facebook.png" alt="Share on Facebook" className="h-5 w-5" />
           </a>
