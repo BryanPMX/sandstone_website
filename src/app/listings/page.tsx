@@ -12,6 +12,8 @@ export const metadata = {
     "Browse listings curated by Sandstone Real Estate Group in El Paso and the Southwest.",
 };
 
+export const dynamic = "force-dynamic";
+
 interface ListingsPageProps {
   searchParams: Promise<{ search?: string; page?: string }>;
 }
@@ -80,6 +82,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const properties = paginated.pageItems;
   const totalPages = paginated.totalPages;
   const resolvedPage = paginated.currentPage;
+
   const hasPagination = totalPages > 1;
   const visiblePageItems = hasPagination
     ? buildVisiblePageItems(resolvedPage, totalPages)

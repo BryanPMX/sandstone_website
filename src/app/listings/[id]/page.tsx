@@ -4,18 +4,63 @@ import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
+import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
 import { fetchPropertyDetailById } from "@/services";
 import { SITE_CONTACT } from "@/constants";
+import { buildListingsMapHref, type PropertySearchPresetFilters } from "@/lib";
 
 interface PageProps {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ sparkId?: string; src?: string }>;
+  searchParams: Promise<{
+    sparkId?: string;
+    src?: string;
+    from?: string;
+    search?: string;
+    listingType?: string;
+    price?: string;
+    beds?: string;
+    baths?: string;
+  }>;
 }
 
 function resolveDetailSourceHint(
   value: string | undefined
 ): "active" | "my" | undefined {
   return value === "active" || value === "my" ? value : undefined;
+}
+
+function resolveListingTypeForMap(value: string | undefined): "active" | "rental" {
+  return value === "rental" ? "rental" : "active";
+}
+
+function resolveMapPricePreset(
+  value: string | undefined
+): PropertySearchPresetFilters["pricePreset"] | undefined {
+  const allowed: Array<PropertySearchPresetFilters["pricePreset"]> = [
+    "under-150",
+    "150-250",
+    "250-500",
+    "500-750",
+    "750-plus",
+    "rent-under-1000",
+    "rent-1000-2500",
+    "rent-2500-5000",
+    "rent-5000-plus",
+  ];
+
+  return allowed.includes(value as PropertySearchPresetFilters["pricePreset"])
+    ? (value as PropertySearchPresetFilters["pricePreset"])
+    : undefined;
+}
+
+function resolveMapCountPreset(
+  value: string | undefined
+): PropertySearchPresetFilters["bedsPreset"] | undefined {
+  if (value === "1" || value === "2" || value === "3" || value === "4") {
+    return value;
+  }
+
+  return undefined;
 }
 
 function formatFactNumber(value: number): string {
@@ -118,6 +163,17 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
 
     return queryString ? `${basePath}?${queryString}` : basePath;
   })();
+  const mapBackHref = query.from === "map"
+    ? buildListingsMapHref({
+        search: query.search?.trim() || undefined,
+        listingType: resolveListingTypeForMap(query.listingType),
+        filterPresets: {
+          pricePreset: resolveMapPricePreset(query.price),
+          bedsPreset: resolveMapCountPreset(query.beds),
+          bathsPreset: resolveMapCountPreset(query.baths),
+        },
+      })
+    : null;
   const dialTarget = normalizeDialTarget(property.specs.listingAgentPhone) || SITE_CONTACT.phoneRaw;
   const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
     ? `1${dialTarget.replace(/^\+/, "")}`
@@ -131,12 +187,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <div className="container mx-auto max-w-6xl px-4 pt-8">
-          <Link
-            href="/listings"
-            className="text-sm font-medium text-[var(--sandstone-sand-gold)] hover:underline"
-          >
-            ← Back to listings
-          </Link>
+          <ListingBackLink mapBackHref={mapBackHref} fallbackHref="/listings" />
 
           <section className="mt-6 rounded-[2rem] border border-white/70 bg-white px-4 py-5 shadow-[0_24px_70px_-36px_rgba(37,52,113,0.42)] md:px-6 md:py-7">
             <h1 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
