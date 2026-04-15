@@ -84,47 +84,73 @@ export function ListingCard({ property, priority = false }: ListingCardProps) {
   };
 
   const showOverlay = shouldShowTransitionOverlay && (isNavigating || isPending);
+  const url = `${window.location.origin}/listings/${property.routeId}`;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 
   return (
     <>
-      <Link
-        href={detailHref}
-        onClick={handleClick}
-        aria-busy={showOverlay}
-        className="group block overflow-hidden rounded-2xl border border-white/65 bg-white/72 shadow-[0_18px_36px_-24px_rgba(37,52,113,0.55)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_rgba(37,52,113,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
-      >
-        <div className="relative aspect-[4/3] overflow-hidden">
-          <Image
-            src={property.image}
-            alt={property.title}
-            fill
-            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-            className="object-cover transition duration-300 group-hover:scale-105"
-            priority={priority && !bypassOptimization}
-            unoptimized={bypassOptimization}
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/70 via-transparent to-transparent"
-            aria-hidden
-          />
-          <p className="absolute left-3 top-3 rounded-full bg-[var(--sandstone-sand-gold)] px-3 py-1 text-xs font-semibold text-white">
-            {property.price}
-          </p>
-        </div>
-        <div className="p-4">
-          <h3 className="font-heading text-base font-bold text-[var(--sandstone-navy)] md:text-lg">
-            {property.title}
-          </h3>
-          <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/80">
-            {property.location}
-          </p>
-          {details && (
-            <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
-              {details}
+      <div className="relative">
+        <Link
+          href={detailHref}
+          onClick={handleClick}
+          aria-busy={showOverlay}
+          className="group block overflow-hidden rounded-2xl border border-white/65 bg-white/72 shadow-[0_18px_36px_-24px_rgba(37,52,113,0.55)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_rgba(37,52,113,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
+        >
+          <div className="relative aspect-[4/3] overflow-hidden">
+            <Image
+              src={property.image}
+              alt={property.title}
+              fill
+              sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+              className="object-cover transition duration-300 group-hover:scale-105"
+              priority={priority && !bypassOptimization}
+              unoptimized={bypassOptimization}
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/70 via-transparent to-transparent"
+              aria-hidden
+            />
+            <p className="absolute left-3 top-3 rounded-full bg-[var(--sandstone-sand-gold)] px-3 py-1 text-xs font-semibold text-white">
+              {property.price}
             </p>
-          )}
+          </div>
+          <div className="p-4">
+            <h3 className="font-heading text-base font-bold text-[var(--sandstone-navy)] md:text-lg">
+              {property.title}
+            </h3>
+            <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/80">
+              {property.location}
+            </p>
+            {details && (
+              <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
+                {details}
+              </p>
+            )}
+          </div>
+        </Link>
+
+        <div className="absolute right-[10px] top-[10px] z-10 flex flex-col gap-2">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Share on WhatsApp"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+          >
+            <img src="/icons/whatsapp.png" alt="Share on WhatsApp" className="h-5 w-5" />
+          </a>
+          <a
+            href={facebookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Share on Facebook"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+          >
+            <img src="/icons/facebook.png" alt="Share on Facebook" className="h-5 w-5" />
+          </a>
         </div>
-      </Link>
+      </div>
 
       {showOverlay && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[color:rgba(248,246,243,0.82)] backdrop-blur-md">
