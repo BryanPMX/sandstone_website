@@ -39,7 +39,8 @@ export function FeaturedListingsSection({
         {properties.length > 0 && (
           <div className="mt-10 flex justify-center md:mt-12">
             <Link
-              href="/listings"
+              href="/listings?page=1"
+              prefetch={false}
               className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3 text-sm font-semibold text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
             >
               View all active listings
