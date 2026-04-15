@@ -82,6 +82,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const properties = paginated.pageItems;
   const totalPages = paginated.totalPages;
   const resolvedPage = paginated.currentPage;
+
   const hasPagination = totalPages > 1;
   const visiblePageItems = hasPagination
     ? buildVisiblePageItems(resolvedPage, totalPages)

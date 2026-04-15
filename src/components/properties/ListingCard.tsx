@@ -116,17 +116,13 @@ export function ListingCard({
     <>
       <Link
         href={detailHref}
-        prefetch={false}
         onClick={handleClick}
-        onMouseEnter={prefetchDetailOnIntent}
-        onFocus={prefetchDetailOnIntent}
-        onTouchStart={prefetchDetailOnIntent}
         aria-busy={showOverlay}
         className="group block overflow-hidden rounded-2xl border border-white/65 bg-white/72 shadow-[0_18px_36px_-24px_rgba(37,52,113,0.55)] backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-[0_24px_48px_-24px_rgba(37,52,113,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2"
       >
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
-            src={resolvedImageSrc}
+            src={property.image}
             alt={property.title}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
@@ -154,6 +150,23 @@ export function ListingCard({
               {details}
             </p>
           )}
+        </div>
+
+        <div className="absolute right-[10px] top-[10px] z-10 flex flex-col gap-2">
+          <button
+            type="button"
+            aria-label="Share on WhatsApp"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+          >
+            <img src="/icons/whatsapp.png" alt="WhatsApp" className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            aria-label="Share on Facebook"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+          >
+            <img src="/icons/facebook.png" alt="Facebook" className="h-5 w-5" />
+          </button>
         </div>
       </Link>
 
