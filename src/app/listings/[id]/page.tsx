@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, MessageCircle } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
@@ -105,6 +106,26 @@ function buildMapUrls(input: {
   };
 }
 
+function getSiteBaseUrl(): string {
+  const envBaseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.SITE_URL?.trim();
+
+  if (envBaseUrl) {
+    return envBaseUrl.replace(/\/+$/, "");
+  }
+
+  const requestHeaders = headers();
+  const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host");
+  const protocol = requestHeaders.get("x-forwarded-proto") || "https";
+
+  if (host) {
+    return `${protocol}://${host}`;
+  }
+
+  return "https://sandstone.homes";
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
 
@@ -178,8 +199,10 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
   const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
     ? `1${dialTarget.replace(/^\+/, "")}`
     : dialTarget.replace(/^\+/, "");
+  const listingShareUrl = `${getSiteBaseUrl()}${listingPath}`;
+  const facebookShareHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(listingShareUrl)}`;
   const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    `Hi, I would like to schedule a tour for ${property.title}.`
+    `Hi, I would like to schedule a tour for ${property.title}. ${listingShareUrl}`
   )}`;
 
   return (
@@ -211,6 +234,27 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                   {item}
                 </p>
               ))}
+
+              <div className="ml-auto flex items-center gap-2">
+                <Link
+                  href={facebookShareHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Share this listing on Facebook"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877f2] text-lg font-bold text-white transition hover:brightness-95"
+                >
+                  <span aria-hidden>f</span>
+                </Link>
+                <Link
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Share this listing on WhatsApp"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#21b94f] text-white transition hover:brightness-95"
+                >
+                  <MessageCircle size={19} />
+                </Link>
+              </div>
             </div>
             <div className="mt-4 border-t border-[var(--sandstone-navy)]/20" />
 
@@ -292,7 +336,6 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 listingPath={listingPath}
                 listingPrice={property.price}
                 listingAgentName={agentName}
-                whatsappHref={whatsappHref}
               />
             </div>
           </section>
