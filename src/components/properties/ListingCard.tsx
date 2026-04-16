@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { PropertyCard } from "@/types";
 import { shouldBypassNextImageOptimization } from "@/lib";
@@ -27,7 +27,6 @@ export function ListingCard({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isNavigating, setIsNavigating] = useState(false);
-  const hasPrefetchedRef = useRef(false);
   const shouldShowTransitionOverlay = property.sparkSource === "active";
   const resolvedImageSrc = property.image?.trim() || FALLBACK_LISTING_IMAGE_DATA_URI;
   const bypassOptimization = shouldBypassNextImageOptimization(resolvedImageSrc);
@@ -101,15 +100,6 @@ export function ListingCard({
     });
   };
 
-  const prefetchDetailOnIntent = useCallback(() => {
-    if (hasPrefetchedRef.current) {
-      return;
-    }
-
-    hasPrefetchedRef.current = true;
-    void router.prefetch(detailHref);
-  }, [detailHref, router]);
-
   const showOverlay = shouldShowTransitionOverlay && (isNavigating || isPending);
 
   return (
@@ -122,7 +112,7 @@ export function ListingCard({
       >
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
-            src={property.image}
+            src={resolvedImageSrc}
             alt={property.title}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"

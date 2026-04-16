@@ -106,7 +106,7 @@ function buildMapUrls(input: {
   };
 }
 
-function getSiteBaseUrl(): string {
+async function getSiteBaseUrl(): Promise<string> {
   const envBaseUrl =
     process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
     process.env.SITE_URL?.trim();
@@ -115,7 +115,7 @@ function getSiteBaseUrl(): string {
     return envBaseUrl.replace(/\/+$/, "");
   }
 
-  const requestHeaders = headers();
+  const requestHeaders = await headers();
   const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host");
   const protocol = requestHeaders.get("x-forwarded-proto") || "https";
 
@@ -199,7 +199,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
   const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
     ? `1${dialTarget.replace(/^\+/, "")}`
     : dialTarget.replace(/^\+/, "");
-  const listingShareUrl = `${getSiteBaseUrl()}${listingPath}`;
+  const listingShareUrl = `${await getSiteBaseUrl()}${listingPath}`;
   const facebookShareHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(listingShareUrl)}`;
   const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     `Hi, I would like to schedule a tour for ${property.title}. ${listingShareUrl}`
