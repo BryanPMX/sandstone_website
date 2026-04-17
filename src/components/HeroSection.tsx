@@ -18,6 +18,7 @@ const SEARCH_PLACEHOLDER = "Enter an address, ZIP…";
 
 const LOCATION_OPTIONS = [
   { value: "El Paso", label: "El Paso" },
+  { value: "Midland", label: "Midland" },
   { value: "Odessa", label: "Odessa" },
 ] as const;
 
@@ -189,6 +190,7 @@ export function HeroSection() {
 
   const navigateToMap = (params: {
     search?: string;
+    location?: string;
     centerLat?: number;
     centerLng?: number;
     radiusMiles?: number;
@@ -214,16 +216,15 @@ export function HeroSection() {
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = searchValue.trim();
-    const combinedSearch = [trimmed, locationFilter].filter(Boolean).join(" ");
-
-    if (!combinedSearch) {
-      navigateToMap({});
+    if (!trimmed) {
+      navigateToMap({ location: locationFilter });
       return;
     }
 
     const goToMap = (center?: { lat: number; lng: number }) => {
       navigateToMap({
-        search: combinedSearch,
+        search: trimmed,
+        location: locationFilter,
         centerLat: center?.lat,
         centerLng: center?.lng,
         radiusMiles: 5,
@@ -326,11 +327,28 @@ export function HeroSection() {
               className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
             >
               <div className="flex flex-col items-center">
-                <div className="mb-3 flex justify-center">
-                  <div className="rounded-full border border-[var(--sandstone-charcoal)]/20 bg-white px-4 py-2 text-sm font-semibold text-[var(--sandstone-charcoal)] shadow-sm">
-                    Search for your ideal home here!
-                  </div>
-                </div>
+                <div className="mb-3 flex items-center justify-center gap-3 text-sm font-semibold text-white">
+                {LOCATION_OPTIONS.map((option, index) => (
+                  <span key={option.value} className="inline-flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setLocationFilter(option.value)}
+                      className={`rounded-full px-3 py-2 text-base font-semibold transition duration-150 ${
+                        locationFilter === option.value
+                          ? "text-white underline underline-offset-4 decoration-[var(--sandstone-sand-gold)] decoration-2"
+                          : "text-white/70 hover:text-white"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                    {index < LOCATION_OPTIONS.length - 1 && (
+                      <span className="inline-flex h-6 items-center text-white/90 text-xl font-semibold leading-none">
+                        |
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </div>
 
                 <div className="relative w-full max-w-[670px]">
                   <div className="rounded-[999px] bg-white p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)]">
@@ -346,27 +364,6 @@ export function HeroSection() {
                         autoComplete="off"
                       />
 
-                      <div className="absolute right-[4.6rem] top-1/2 -translate-y-1/2">
-                        <div className="relative flex h-[54px] w-[120px] items-center rounded-2xl border-2 border-black bg-white px-3 shadow-sm">
-                          <label htmlFor="location" className="sr-only">
-                            Location
-                          </label>
-                          <select
-                            id="location"
-                            name="location"
-                            value={locationFilter}
-                            onChange={(e) => setLocationFilter(e.target.value as typeof locationFilter)}
-                            className="h-full w-full appearance-none bg-transparent pr-6 text-[0.82rem] font-medium text-[var(--sandstone-charcoal)] outline-none"
-                          >
-                            {LOCATION_OPTIONS.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown className="pointer-events-none absolute right-3 h-4 w-4 text-[var(--sandstone-charcoal)]/60" />
-                        </div>
-                      </div>
 
                       <button
                         type="submit"
@@ -537,8 +534,27 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
-          <div className="mx-auto w-full max-w-sm rounded-full border border-white/30 bg-white px-4 py-3 text-center text-sm font-semibold text-[var(--sandstone-navy)] shadow-sm">
-            Search for your ideal home here!
+          <div className="mx-auto flex flex-wrap items-center justify-center gap-2 text-white">
+            {LOCATION_OPTIONS.map((option, index) => (
+              <span key={option.value} className="inline-flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setLocationFilter(option.value)}
+                  className={`rounded-full px-3 py-2 text-base font-semibold transition duration-150 ${
+                    locationFilter === option.value
+                      ? "text-white underline underline-offset-4 decoration-[var(--sandstone-sand-gold)] decoration-2"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  {option.label}
+                </button>
+                {index < LOCATION_OPTIONS.length - 1 && (
+                  <span className="inline-flex h-6 items-center text-white/90 text-xl font-semibold leading-none">
+                    |
+                  </span>
+                )}
+              </span>
+            ))}
           </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
             <input
@@ -552,26 +568,6 @@ export function HeroSection() {
             />
 
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-              <label htmlFor="mobile-location" className="sr-only">
-                Location
-              </label>
-              <div className="relative min-w-[110px]">
-                <select
-                  id="mobile-location"
-                  name="location"
-                  value={locationFilter}
-                  onChange={(e) => setLocationFilter(e.target.value as typeof locationFilter)}
-                  className="h-[44px] w-full rounded-2xl border-2 border-black bg-white px-4 pr-10 text-sm font-medium text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] outline-none"
-                >
-                  {LOCATION_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sandstone-charcoal)]/60" />
-              </div>
-
               <button
                 type="submit"
                 className="rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/50"
