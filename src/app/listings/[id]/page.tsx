@@ -229,13 +229,13 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 >
                   <span aria-hidden>f</span>
                 </Link>
-                <Link
+                <a
                   href={emailShareHref}
                   aria-label="Share this listing by email"
                   className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white transition hover:brightness-95"
                 >
                   <Mail size={18} />
-                </Link>
+                </a>
               </div>
             </div>
             <div className="mt-4 border-t border-[var(--sandstone-navy)]/20" />
