@@ -327,28 +327,11 @@ export function HeroSection() {
               className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
             >
               <div className="flex flex-col items-center">
-                <div className="mb-3 flex items-center justify-center gap-3 text-sm font-semibold text-white">
-                {LOCATION_OPTIONS.map((option, index) => (
-                  <span key={option.value} className="inline-flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => setLocationFilter(option.value)}
-                      className={`rounded-full px-3 py-2 text-base font-semibold transition duration-150 ${
-                        locationFilter === option.value
-                          ? "text-white underline underline-offset-4 decoration-[var(--sandstone-sand-gold)] decoration-2"
-                          : "text-white/70 hover:text-white"
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                    {index < LOCATION_OPTIONS.length - 1 && (
-                      <span className="inline-flex h-6 items-center text-white/90 text-xl font-semibold leading-none">
-                        |
-                      </span>
-                    )}
-                  </span>
-                ))}
-              </div>
+                <div className="mb-3 flex justify-center">
+                  <div className="bg-transparent px-1 py-1 text-base font-bold text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
+                    Search for your ideal home here!
+                  </div>
+                </div>
 
                 <div className="relative w-full max-w-[670px]">
                   <div className="rounded-[999px] bg-white p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)]">
@@ -534,27 +517,8 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
-          <div className="mx-auto flex flex-wrap items-center justify-center gap-2 text-white">
-            {LOCATION_OPTIONS.map((option, index) => (
-              <span key={option.value} className="inline-flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setLocationFilter(option.value)}
-                  className={`rounded-full px-3 py-2 text-base font-semibold transition duration-150 ${
-                    locationFilter === option.value
-                      ? "text-white underline underline-offset-4 decoration-[var(--sandstone-sand-gold)] decoration-2"
-                      : "text-white/70 hover:text-white"
-                  }`}
-                >
-                  {option.label}
-                </button>
-                {index < LOCATION_OPTIONS.length - 1 && (
-                  <span className="inline-flex h-6 items-center text-white/90 text-xl font-semibold leading-none">
-                    |
-                  </span>
-                )}
-              </span>
-            ))}
+          <div className="mx-auto w-full max-w-sm bg-transparent px-1 py-1 text-center text-base font-bold text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
+            Search for your ideal home here!
           </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
             <input
