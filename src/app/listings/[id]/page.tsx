@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { ChevronRight, Mail } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
 import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
+import { ListingShareActions } from "@/components/properties/ListingShareActions.client";
 import { fetchPropertyDetailById } from "@/services";
-import { SITE_CONTACT } from "@/constants";
 import {
   buildListingsMapHref,
   resolvePropertySearchMarket,
@@ -219,24 +219,11 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 </p>
               ))}
 
-              <div className="ml-auto flex items-center gap-2">
-                <Link
-                  href={facebookShareHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Share this listing on Facebook"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877f2] text-lg font-bold text-white transition hover:brightness-95"
-                >
-                  <span aria-hidden>f</span>
-                </Link>
-                <a
-                  href={emailShareHref}
-                  aria-label="Share this listing by email"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white transition hover:brightness-95"
-                >
-                  <Mail size={18} />
-                </a>
-              </div>
+              <ListingShareActions
+                facebookShareHref={facebookShareHref}
+                emailShareHref={emailShareHref}
+                listingShareUrl={listingShareUrl}
+              />
             </div>
             <div className="mt-4 border-t border-[var(--sandstone-navy)]/20" />
 
