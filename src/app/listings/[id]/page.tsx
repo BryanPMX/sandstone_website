@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { ChevronRight, MessageCircle } from "lucide-react";
+import { ChevronRight, Mail } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
@@ -71,26 +71,6 @@ function resolveMapCountPreset(
 
 function formatFactNumber(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
-}
-
-function normalizeDialTarget(value: string | undefined): string | undefined {
-  if (!value) {
-    return undefined;
-  }
-
-  const trimmed = value.trim();
-
-  if (!trimmed) {
-    return undefined;
-  }
-
-  if (trimmed.startsWith("+")) {
-    const digits = trimmed.slice(1).replace(/\D/g, "");
-    return digits ? `+${digits}` : undefined;
-  }
-
-  const digits = trimmed.replace(/\D/g, "");
-  return digits || undefined;
 }
 
 function buildMapUrls(input: {
@@ -201,14 +181,12 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
         },
       })
     : null;
-  const dialTarget = normalizeDialTarget(property.specs.listingAgentPhone) || SITE_CONTACT.phoneRaw;
-  const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
-    ? `1${dialTarget.replace(/^\+/, "")}`
-    : dialTarget.replace(/^\+/, "");
   const listingShareUrl = `${await getSiteBaseUrl()}${listingPath}`;
   const facebookShareHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(listingShareUrl)}`;
-  const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    `Hi, I would like to schedule a tour for ${property.title}. ${listingShareUrl}`
+  const emailShareHref = `mailto:?subject=${encodeURIComponent(
+    `Check out this property: ${property.title}`
+  )}&body=${encodeURIComponent(
+    `I thought you might like this listing:\n\n${property.title}\n${listingShareUrl}`
   )}`;
 
   return (
@@ -252,13 +230,11 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                   <span aria-hidden>f</span>
                 </Link>
                 <Link
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Share this listing on WhatsApp"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#21b94f] text-white transition hover:brightness-95"
+                  href={emailShareHref}
+                  aria-label="Share this listing by email"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white transition hover:brightness-95"
                 >
-                  <MessageCircle size={19} />
+                  <Mail size={18} />
                 </Link>
               </div>
             </div>
