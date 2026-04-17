@@ -15,6 +15,7 @@ export type PropertySearchPricePreset =
   | "rent-2500-5000"
   | "rent-5000-plus";
 export type PropertySearchCountPreset = "any" | "1" | "2" | "3" | "4";
+export type PropertySearchMarket = "el-paso" | "midland" | "odessa";
 
 export interface PropertySearchPresetFilters {
   pricePreset: PropertySearchPricePreset;
@@ -24,6 +25,7 @@ export interface PropertySearchPresetFilters {
 
 interface ListingsMapSearchQuery {
   search?: string | string[];
+  market?: string | string[];
   lat?: string | string[];
   lng?: string | string[];
   radiusMiles?: string | string[];
@@ -36,6 +38,7 @@ interface ListingsMapSearchQuery {
 
 export interface ParsedListingsMapSearchParams {
   searchQuery: string;
+  market: PropertySearchMarket;
   centerLat?: number;
   centerLng?: number;
   radiusMiles?: number;
@@ -71,6 +74,17 @@ export const DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS: PropertySearchPresetFilters
   bedsPreset: "any",
   bathsPreset: "any",
 };
+
+export const DEFAULT_PROPERTY_SEARCH_MARKET: PropertySearchMarket = "el-paso";
+
+export const PROPERTY_SEARCH_MARKET_OPTIONS: Array<{
+  value: PropertySearchMarket;
+  label: string;
+}> = [
+  { value: "el-paso", label: "El Paso" },
+  { value: "midland", label: "Midland" },
+  { value: "odessa", label: "Odessa" },
+];
 
 export const PROPERTY_SEARCH_PRICE_OPTIONS: Array<{
   value: PropertySearchPricePreset;
@@ -146,6 +160,101 @@ function isPricePreset(value?: string): value is PropertySearchPricePreset {
 
 function isCountPreset(value?: string): value is PropertySearchCountPreset {
   return value != null && PROPERTY_SEARCH_COUNT_PRESETS.has(value as PropertySearchCountPreset);
+}
+
+function isPropertySearchMarket(value?: string | null): value is PropertySearchMarket {
+  return value === "el-paso" || value === "midland" || value === "odessa";
+}
+
+export function resolvePropertySearchMarket(value?: string | null): PropertySearchMarket {
+  return isPropertySearchMarket(value) ? value : DEFAULT_PROPERTY_SEARCH_MARKET;
+}
+
+const MIDLAND_ZIP_CODES = new Set([
+  "79701",
+  "79702",
+  "79703",
+  "79704",
+  "79705",
+  "79706",
+  "79707",
+  "79708",
+  "79710",
+  "79711",
+]);
+
+const ODESSA_ZIP_CODES = new Set([
+  "79760",
+  "79761",
+  "79762",
+  "79763",
+  "79764",
+  "79765",
+  "79766",
+  "79767",
+  "79768",
+  "79769",
+]);
+
+export function inferPropertySearchMarketFromInput(
+  value: string
+): PropertySearchMarket | null {
+  const normalized = value.trim().toLowerCase();
+
+  if (!normalized) {
+    return null;
+  }
+
+  if (normalized.includes("midland")) {
+    return "midland";
+  }
+
+  if (normalized.includes("odessa")) {
+    return "odessa";
+  }
+
+  if (normalized.includes("el paso") || normalized.includes("elpaso")) {
+    return "el-paso";
+  }
+
+  const zipMatches = normalized.match(/\b\d{5}(?:-\d{4})?\b/g) ?? [];
+
+  for (const zipMatch of zipMatches) {
+    const zip = zipMatch.slice(0, 5);
+
+    if (zip.startsWith("799") || zip.startsWith("885")) {
+      return "el-paso";
+    }
+
+    if (ODESSA_ZIP_CODES.has(zip)) {
+      return "odessa";
+    }
+
+    if (MIDLAND_ZIP_CODES.has(zip)) {
+      return "midland";
+    }
+
+    if (zip.startsWith("797")) {
+      const suffix = Number.parseInt(zip.slice(3), 10);
+
+      if (suffix >= 60 && suffix <= 69) {
+        return "odessa";
+      }
+
+      if (suffix >= 1 && suffix <= 8) {
+        return "midland";
+      }
+    }
+  }
+
+  return null;
+}
+
+export function getPropertySearchMarketLabel(market: PropertySearchMarket): string {
+  return (
+    PROPERTY_SEARCH_MARKET_OPTIONS.find((option) => option.value === market)?.label ??
+    PROPERTY_SEARCH_MARKET_OPTIONS[0].label
+  );
 }
 
 function inferPricePresetFromNumericRange(
@@ -257,6 +366,7 @@ export function parseListingsMapSearchParams(
   params: ListingsMapSearchQuery
 ): ParsedListingsMapSearchParams {
   const searchQuery = getFirstQueryValue(params.search)?.trim() ?? "";
+  const market = resolvePropertySearchMarket(getFirstQueryValue(params.market));
   const centerLat = parseOptionalNumber(getFirstQueryValue(params.lat));
   const centerLng = parseOptionalNumber(getFirstQueryValue(params.lng));
   const radiusMiles = parseOptionalNumber(getFirstQueryValue(params.radiusMiles));
@@ -284,6 +394,7 @@ export function parseListingsMapSearchParams(
 
   return {
     searchQuery,
+    market,
     centerLat,
     centerLng,
     radiusMiles,
@@ -299,6 +410,7 @@ export function parseListingsMapSearchParams(
 
 interface BuildListingsMapHrefParams {
   search?: string;
+  market?: PropertySearchMarket;
   centerLat?: number;
   centerLng?: number;
   radiusMiles?: number;
@@ -308,6 +420,7 @@ interface BuildListingsMapHrefParams {
 
 export function buildListingsMapHref({
   search,
+  market,
   centerLat,
   centerLng,
   radiusMiles,
@@ -322,6 +435,10 @@ export function buildListingsMapHref({
 
   if (search?.trim()) {
     searchParams.set("search", search.trim());
+  }
+
+  if (market) {
+    searchParams.set("market", market);
   }
 
   if (typeof centerLat === "number" && Number.isFinite(centerLat)) {

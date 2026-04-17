@@ -8,7 +8,11 @@ import { ListingDetailGallery, ListingInquiryCard } from "@/components/propertie
 import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
 import { fetchPropertyDetailById } from "@/services";
 import { SITE_CONTACT } from "@/constants";
-import { buildListingsMapHref, type PropertySearchPresetFilters } from "@/lib";
+import {
+  buildListingsMapHref,
+  resolvePropertySearchMarket,
+  type PropertySearchPresetFilters,
+} from "@/lib";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -17,6 +21,7 @@ interface PageProps {
     src?: string;
     from?: string;
     search?: string;
+    market?: string;
     listingType?: string;
     price?: string;
     beds?: string;
@@ -187,6 +192,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
   const mapBackHref = query.from === "map"
     ? buildListingsMapHref({
         search: query.search?.trim() || undefined,
+        market: resolvePropertySearchMarket(query.market),
         listingType: resolveListingTypeForMap(query.listingType),
         filterPresets: {
           pricePreset: resolveMapPricePreset(query.price),

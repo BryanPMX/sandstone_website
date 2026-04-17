@@ -6,21 +6,20 @@ import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import {
   LISTINGS_MAP_PATH,
+  DEFAULT_PROPERTY_SEARCH_MARKET,
   DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+  PROPERTY_SEARCH_MARKET_OPTIONS,
+  inferPropertySearchMarketFromInput,
+  getPropertySearchMarketLabel,
   getPropertySearchPriceOptions,
   PROPERTY_SEARCH_BED_OPTIONS,
   PROPERTY_SEARCH_BATH_OPTIONS,
   buildListingsMapHref,
+  type PropertySearchMarket,
   type PropertySearchPresetFilters,
 } from "@/lib";
 
 const SEARCH_PLACEHOLDER = "Enter an address, ZIP…";
-
-const LOCATION_OPTIONS = [
-  { value: "El Paso", label: "El Paso" },
-  { value: "Midland", label: "Midland" },
-  { value: "Odessa", label: "Odessa" },
-] as const;
 
 interface PlaceSuggestion {
   description: string;
@@ -91,9 +90,9 @@ export function HeroSection() {
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
-  const [locationFilter, setLocationFilter] = useState<
-    (typeof LOCATION_OPTIONS)[number]["value"]
-  >(LOCATION_OPTIONS[0].value);
+  const [locationFilter, setLocationFilter] = useState<PropertySearchMarket>(
+    DEFAULT_PROPERTY_SEARCH_MARKET
+  );
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" }>(
     {
@@ -201,6 +200,7 @@ export function HeroSection() {
     hasTriggeredRedirectRef.current = true;
     const href = buildListingsMapHref({
       ...params,
+      market: locationFilter,
       filterPresets: filters,
       listingType: filters.listingType,
     });
@@ -215,7 +215,7 @@ export function HeroSection() {
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = searchValue.trim();
-    const combinedSearch = [trimmed, locationFilter].filter(Boolean).join(" ");
+    const combinedSearch = trimmed;
 
     if (!combinedSearch) {
       navigateToMap({});
@@ -262,6 +262,11 @@ export function HeroSection() {
     setSearchValue(value);
     setSelectedSuggestion(null);
 
+    const inferredMarket = inferPropertySearchMarketFromInput(value);
+    if (inferredMarket && inferredMarket !== locationFilter) {
+      setLocationFilter(inferredMarket);
+    }
+
     if (!value.trim() || !mapsReady || !autocompleteServiceRef.current) {
       setSuggestions([]);
       return;
@@ -293,6 +298,12 @@ export function HeroSection() {
   const handleSuggestionClick = (suggestion: PlaceSuggestion) => {
     setSearchValue(suggestion.description);
     setSelectedSuggestion(suggestion);
+
+    const inferredMarket = inferPropertySearchMarketFromInput(suggestion.description);
+    if (inferredMarket && inferredMarket !== locationFilter) {
+      setLocationFilter(inferredMarket);
+    }
+
     setSuggestions([]);
   };
 
@@ -333,7 +344,7 @@ export function HeroSection() {
                     role="group"
                     aria-label="Choose market"
                   >
-                    {LOCATION_OPTIONS.map((option) => (
+                    {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
                       <button
                         key={option.value}
                         type="button"
@@ -539,7 +550,7 @@ export function HeroSection() {
             role="group"
             aria-label="Choose market"
           >
-            {LOCATION_OPTIONS.map((option) => (
+            {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
               <button
                 key={option.value}
                 type="button"
@@ -705,14 +716,29 @@ export function HeroSection() {
                 <div className="flex flex-wrap justify-center gap-4 text-center">
                   <button
                     type="button"
-                    onClick={() => router.push("/listings")}
+                    onClick={() =>
+                      router.push(
+                        locationFilter === DEFAULT_PROPERTY_SEARCH_MARKET
+                          ? "/listings"
+                          : `/listings?market=${locationFilter}`
+                      )
+                    }
                     className="text-xs font-semibold text-white/80 transition hover:text-white"
                   >
                     All Listings
                   </button>
                   <button
                     type="button"
-                    onClick={() => router.push("/listings/map")}
+                    onClick={() =>
+                      router.push(
+                        buildListingsMapHref({
+                          search: searchValue.trim() || undefined,
+                          market: locationFilter,
+                          filterPresets: filters,
+                          listingType: filters.listingType,
+                        })
+                      )
+                    }
                     className="text-xs font-semibold text-white/80 transition hover:text-white"
                   >
                     Map Search
@@ -747,7 +773,7 @@ export function HeroSection() {
               Opening map search
             </p>
             <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/74">
-              Loading available homes near El Paso.
+              Loading available homes near {getPropertySearchMarketLabel(locationFilter)}.
             </p>
           </div>
         </div>
