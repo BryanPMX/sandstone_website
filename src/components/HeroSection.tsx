@@ -18,6 +18,7 @@ const SEARCH_PLACEHOLDER = "Enter an address, ZIP…";
 
 const LOCATION_OPTIONS = [
   { value: "El Paso", label: "El Paso" },
+  { value: "Midland", label: "Midland" },
   { value: "Odessa", label: "Odessa" },
 ] as const;
 
@@ -327,8 +328,26 @@ export function HeroSection() {
             >
               <div className="flex flex-col items-center">
                 <div className="mb-3 flex justify-center">
-                  <div className="bg-transparent px-1 py-1 text-base font-bold text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
-                    Search for your ideal home here!
+                  <div
+                    className="inline-flex items-center rounded-full border border-white/30 bg-white/14 p-1 backdrop-blur-sm"
+                    role="group"
+                    aria-label="Choose market"
+                  >
+                    {LOCATION_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setLocationFilter(option.value)}
+                        className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                          locationFilter === option.value
+                            ? "bg-white text-[var(--sandstone-navy)] shadow-[0_8px_20px_-12px_rgba(0,0,0,0.6)]"
+                            : "text-white/90 hover:bg-white/20"
+                        }`}
+                        aria-pressed={locationFilter === option.value}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
@@ -341,32 +360,10 @@ export function HeroSection() {
                         value={searchValue}
                         onChange={handleInputChange}
                         placeholder={SEARCH_PLACEHOLDER}
-                        className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-[12rem] font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
+                        className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-14 font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
                         aria-label="Search by address or ZIP code"
                         autoComplete="off"
                       />
-
-                      <div className="absolute right-[4.6rem] top-1/2 -translate-y-1/2">
-                        <div className="relative flex h-[54px] w-[120px] items-center rounded-2xl border-2 border-black bg-white px-3 shadow-sm">
-                          <label htmlFor="location" className="sr-only">
-                            Location
-                          </label>
-                          <select
-                            id="location"
-                            name="location"
-                            value={locationFilter}
-                            onChange={(e) => setLocationFilter(e.target.value as typeof locationFilter)}
-                            className="h-full w-full appearance-none bg-transparent pr-6 text-[0.82rem] font-medium text-[var(--sandstone-charcoal)] outline-none"
-                          >
-                            {LOCATION_OPTIONS.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown className="pointer-events-none absolute right-3 h-4 w-4 text-[var(--sandstone-charcoal)]/60" />
-                        </div>
-                      </div>
 
                       <button
                         type="submit"
@@ -537,10 +534,28 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
-          <div className="mx-auto w-full max-w-sm bg-transparent px-1 py-1 text-center text-base font-bold text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
-            Search for your ideal home here!
+          <div
+            className="mx-auto inline-flex w-full max-w-sm items-center justify-center rounded-full border border-white/30 bg-white/14 p-1"
+            role="group"
+            aria-label="Choose market"
+          >
+            {LOCATION_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setLocationFilter(option.value)}
+                className={`rounded-full px-3 py-2 text-xs font-semibold transition ${
+                  locationFilter === option.value
+                    ? "bg-white text-[var(--sandstone-navy)]"
+                    : "text-white/90 hover:bg-white/20"
+                }`}
+                aria-pressed={locationFilter === option.value}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
-          <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
+          <form onSubmit={handleSearchSubmit} className="mx-auto mt-4 w-full max-w-sm">
             <input
               type="search"
               name="search"
@@ -551,27 +566,7 @@ export function HeroSection() {
               aria-label="Search by address or ZIP code"
             />
 
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-              <label htmlFor="mobile-location" className="sr-only">
-                Location
-              </label>
-              <div className="relative min-w-[110px]">
-                <select
-                  id="mobile-location"
-                  name="location"
-                  value={locationFilter}
-                  onChange={(e) => setLocationFilter(e.target.value as typeof locationFilter)}
-                  className="h-[44px] w-full rounded-2xl border-2 border-black bg-white px-4 pr-10 text-sm font-medium text-[var(--sandstone-charcoal)] shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] outline-none"
-                >
-                  {LOCATION_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--sandstone-charcoal)]/60" />
-              </div>
-
+            <div className="mt-3 flex flex-wrap items-center justify-end gap-3">
               <button
                 type="submit"
                 className="rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/50"
