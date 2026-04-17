@@ -327,7 +327,7 @@ export function HeroSection() {
             >
               <div className="flex flex-col items-center">
                 <div className="mb-3 flex justify-center">
-                  <div className="rounded-full border border-[var(--sandstone-charcoal)]/20 bg-white px-4 py-2 text-sm font-semibold text-[var(--sandstone-charcoal)] shadow-sm">
+                  <div className="bg-transparent px-1 py-1 text-base font-bold text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
                     Search for your ideal home here!
                   </div>
                 </div>
@@ -537,7 +537,7 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
-          <div className="mx-auto w-full max-w-sm rounded-full border border-white/30 bg-white px-4 py-3 text-center text-sm font-semibold text-[var(--sandstone-navy)] shadow-sm">
+          <div className="mx-auto w-full max-w-sm bg-transparent px-1 py-1 text-center text-base font-bold text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
             Search for your ideal home here!
           </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
