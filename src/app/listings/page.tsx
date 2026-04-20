@@ -3,7 +3,14 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingCard } from "@/components/properties";
 import { fetchMyPropertyCards } from "@/services";
-import { filterPropertyCards, isAlejandroListing } from "@/lib";
+import {
+  DEFAULT_PROPERTY_SEARCH_MARKET,
+  PROPERTY_SEARCH_MARKET_OPTIONS,
+  filterPropertyCards,
+  getPropertySearchMarketLabel,
+  isAlejandroListing,
+  resolvePropertySearchMarket,
+} from "@/lib";
 import { getSparkListingsPageSize } from "@/config";
 
 export const metadata = {
@@ -15,7 +22,7 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 interface ListingsPageProps {
-  searchParams: Promise<{ search?: string; page?: string }>;
+  searchParams: Promise<{ search?: string; page?: string; market?: string }>;
 }
 
 function paginateProperties<T>(items: T[], page: number, pageSize: number): {
@@ -63,6 +70,7 @@ function buildVisiblePageItems(currentPage: number, totalPages: number): Array<n
 export default async function ListingsPage({ searchParams }: ListingsPageProps) {
   const params = await searchParams;
   const searchQuery = (params.search ?? "").trim();
+  const market = resolvePropertySearchMarket(params.market);
   const requestedPage = Number.parseInt(params.page ?? "1", 10);
   const currentPage = Number.isFinite(requestedPage) && requestedPage > 0
     ? requestedPage
@@ -76,6 +84,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const searchableProperties = searchQuery
     ? filterPropertyCards(allAlejandroProperties, searchQuery)
     : allAlejandroProperties;
+  const totalMatchingCount = searchableProperties.length;
 
   const paginated = paginateProperties(searchableProperties, currentPage, pageSize);
 
@@ -89,8 +98,19 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
     : [];
 
   const buildPageHref = (page: number) => {
+    const nextParams = new URLSearchParams();
     const targetPage = Math.max(1, page);
-    return `/listings?page=${targetPage}`;
+    nextParams.set("page", String(targetPage));
+
+    if (searchQuery) {
+      nextParams.set("search", searchQuery);
+    }
+
+    if (market !== DEFAULT_PROPERTY_SEARCH_MARKET) {
+      nextParams.set("market", market);
+    }
+
+    return `/listings?${nextParams.toString()}`;
   };
 
   return (
@@ -107,6 +127,47 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
           <h1 className="mt-4 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
             Sandstone All Listings
           </h1>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <p className="text-sm text-[var(--sandstone-charcoal)]/70">
+              Showing {totalMatchingCount} listing{totalMatchingCount === 1 ? "" : "s"}
+            </p>
+            <span className="inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/35 bg-[var(--sandstone-sand-gold)]/12 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-[var(--sandstone-charcoal)]/80">
+              {getPropertySearchMarketLabel(market)}
+            </span>
+          </div>
+          <div className="mt-4 flex max-w-xl items-center rounded-full border border-[var(--sandstone-navy)]/16 bg-white p-1.5 shadow-sm">
+            {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => {
+              const nextParams = new URLSearchParams();
+              if (searchQuery) {
+                nextParams.set("search", searchQuery);
+              }
+              if (option.value !== DEFAULT_PROPERTY_SEARCH_MARKET) {
+                nextParams.set("market", option.value);
+              }
+
+              const href = nextParams.toString() ? `/listings?${nextParams.toString()}` : "/listings";
+
+              return (
+                <Link
+                  key={option.value}
+                  href={href}
+                  aria-current={market === option.value ? "page" : undefined}
+                  className={`flex-1 rounded-full px-4 py-2 text-center text-sm font-semibold transition ${
+                    market === option.value
+                      ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                      : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                  }`}
+                >
+                  {option.label}
+                </Link>
+              );
+            })}
+          </div>
+          {market !== "el-paso" ? (
+            <p className="mt-3 max-w-2xl rounded-2xl border border-[var(--sandstone-sand-gold)]/35 bg-[var(--sandstone-sand-gold)]/12 px-4 py-3 text-sm text-[var(--sandstone-charcoal)]/85">
+              {getPropertySearchMarketLabel(market)} inventory is coming soon. El Paso listings are shown for now.
+            </p>
+          ) : null}
           {searchQuery ? (
             <p className="mt-2 max-w-2xl text-[var(--sandstone-charcoal)]/80">
               {`Results for "${searchQuery}".`}
@@ -119,7 +180,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
                 No listings matched <strong>{searchQuery}</strong>.
               </p>
               <Link
-                href="/listings"
+                href={market === DEFAULT_PROPERTY_SEARCH_MARKET ? "/listings" : `/listings?market=${market}`}
                 className="mt-4 inline-block rounded-full bg-[var(--sandstone-navy)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95"
               >
                 Clear search

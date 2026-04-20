@@ -9,9 +9,15 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { ListingsMapPanel, ListingsMapSidebar } from "@/components/properties";
 import { MobileListingsFilters } from "@/components/MobileListingsFilters";
 import {
+  DEFAULT_PROPERTY_SEARCH_MARKET,
   filterPropertyCardsWithFilters,
+  getPropertySearchMarketLabel,
+  inferPropertySearchMarketFromInput,
+  PROPERTY_SEARCH_MARKET_OPTIONS,
   getPropertySearchPriceOptions,
+  resolvePropertySearchMarket,
   resolvePresetFiltersToNumeric,
+  type PropertySearchMarket,
   type PropertySearchPresetFilters,
 } from "@/lib";
 import type { PropertyCard } from "@/types";
@@ -275,6 +281,7 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const [searchInput, setSearchInput] = useState(searchQuery);
   const initialCenterLat = parseOptionalNumber(searchParams.get("lat"));
   const initialCenterLng = parseOptionalNumber(searchParams.get("lng"));
+  const market = resolvePropertySearchMarket(searchParams.get("market"));
   const initialMapCenter =
     typeof initialCenterLat === "number" && typeof initialCenterLng === "number"
       ? ([initialCenterLat, initialCenterLng] as [number, number])
@@ -316,6 +323,23 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   useEffect(() => {
     setSearchInput(searchQuery);
   }, [searchQuery]);
+
+  const handleMarketChange = (nextMarket: PropertySearchMarket) => {
+    if (nextMarket === market) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams.toString());
+
+    if (nextMarket === DEFAULT_PROPERTY_SEARCH_MARKET) {
+      nextParams.delete("market");
+    } else {
+      nextParams.set("market", nextMarket);
+    }
+
+    const nextQueryString = nextParams.toString();
+    router.replace(nextQueryString ? `${pathname}?${nextQueryString}` : pathname, { scroll: false });
+  };
 
   useEffect(() => {
     setLiveProperties(properties);
@@ -429,12 +453,13 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
     () => ({
       from: "map",
       search: searchQuery || undefined,
+      market,
       listingType: filters.listingType,
       price: filters.pricePreset === "any" ? undefined : filters.pricePreset,
       beds: filters.bedsPreset === "any" ? undefined : filters.bedsPreset,
       baths: filters.bathsPreset === "any" ? undefined : filters.bathsPreset,
     }),
-    [filters, searchQuery]
+    [filters, market, searchQuery]
   );
 
   const handleMapSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -451,6 +476,16 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
 
     const nextQueryString = nextParams.toString();
     router.replace(nextQueryString ? `${pathname}?${nextQueryString}` : pathname, { scroll: false });
+  };
+
+  const handleMapSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.currentTarget.value;
+    setSearchInput(nextValue);
+
+    const inferredMarket = inferPropertySearchMarketFromInput(nextValue);
+    if (inferredMarket && inferredMarket !== market) {
+      handleMarketChange(inferredMarket);
+    }
   };
 
   const totalCount = filteredProperties.length;
@@ -473,17 +508,46 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
                 Search by Map
               </h1>
             </div>
-            <p className="text-sm text-[var(--sandstone-charcoal)]/70">
-              Showing {totalCount} listing{totalCount === 1 ? "" : "s"} on the map
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-[var(--sandstone-charcoal)]/70">
+                Showing {totalCount} listing{totalCount === 1 ? "" : "s"} on the map
+              </p>
+              <span className="inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/35 bg-[var(--sandstone-sand-gold)]/12 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-[var(--sandstone-charcoal)]/80">
+                {getPropertySearchMarketLabel(market)}
+              </span>
+            </div>
           </div>
+
+          <div className="mt-5 flex max-w-xl items-center rounded-full border border-[var(--sandstone-navy)]/16 bg-white/90 p-1.5 shadow-[0_16px_38px_-30px_rgba(37,52,113,0.48)]">
+            {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => handleMarketChange(option.value)}
+                aria-pressed={market === option.value}
+                className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  market === option.value
+                    ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                    : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          {market !== "el-paso" ? (
+            <p className="mt-3 max-w-2xl rounded-2xl border border-[var(--sandstone-sand-gold)]/35 bg-[var(--sandstone-sand-gold)]/12 px-4 py-3 text-sm text-[var(--sandstone-charcoal)]/85">
+              {getPropertySearchMarketLabel(market)} inventory is coming soon. Search and filters are saved, and El Paso listings are still shown for now.
+            </p>
+          ) : null}
 
           <form onSubmit={handleMapSearchSubmit} className="mt-5 max-w-xl">
             <div className="flex items-center gap-2 rounded-full border border-[var(--sandstone-navy)]/15 bg-white/90 p-1.5 shadow-[0_16px_38px_-30px_rgba(37,52,113,0.48)]">
               <input
                 type="search"
                 value={searchInput}
-                onChange={(event) => setSearchInput(event.currentTarget.value)}
+                onChange={handleMapSearchInputChange}
                 placeholder="Search address or ZIP"
                 className="h-11 w-full rounded-full border-none bg-transparent px-4 text-sm text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/46 focus:outline-none"
                 aria-label="Search map listings by address or ZIP"
@@ -587,10 +651,12 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
 
             <div className="md:hidden">
               <MobileListingsFilters
+                market={market}
                 listingType={filters.listingType}
                 pricePreset={filters.pricePreset}
                 bedsPreset={filters.bedsPreset}
                 bathsPreset={filters.bathsPreset}
+                onMarketChange={handleMarketChange}
                 onListingTypeChange={(type) => setFilters(prev => ({
                   ...prev,
                   listingType: type,

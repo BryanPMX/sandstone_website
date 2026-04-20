@@ -1,14 +1,18 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { ChevronRight, MessageCircle } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
 import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
+import { ListingShareActions } from "@/components/properties/ListingShareActions.client";
 import { fetchPropertyDetailById } from "@/services";
-import { SITE_CONTACT } from "@/constants";
-import { buildListingsMapHref, type PropertySearchPresetFilters } from "@/lib";
+import {
+  buildListingsMapHref,
+  resolvePropertySearchMarket,
+  type PropertySearchPresetFilters,
+} from "@/lib";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -17,6 +21,7 @@ interface PageProps {
     src?: string;
     from?: string;
     search?: string;
+    market?: string;
     listingType?: string;
     price?: string;
     beds?: string;
@@ -66,26 +71,6 @@ function resolveMapCountPreset(
 
 function formatFactNumber(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
-}
-
-function normalizeDialTarget(value: string | undefined): string | undefined {
-  if (!value) {
-    return undefined;
-  }
-
-  const trimmed = value.trim();
-
-  if (!trimmed) {
-    return undefined;
-  }
-
-  if (trimmed.startsWith("+")) {
-    const digits = trimmed.slice(1).replace(/\D/g, "");
-    return digits ? `+${digits}` : undefined;
-  }
-
-  const digits = trimmed.replace(/\D/g, "");
-  return digits || undefined;
 }
 
 function buildMapUrls(input: {
@@ -187,6 +172,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
   const mapBackHref = query.from === "map"
     ? buildListingsMapHref({
         search: query.search?.trim() || undefined,
+        market: resolvePropertySearchMarket(query.market),
         listingType: resolveListingTypeForMap(query.listingType),
         filterPresets: {
           pricePreset: resolveMapPricePreset(query.price),
@@ -195,14 +181,12 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
         },
       })
     : null;
-  const dialTarget = normalizeDialTarget(property.specs.listingAgentPhone) || SITE_CONTACT.phoneRaw;
-  const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
-    ? `1${dialTarget.replace(/^\+/, "")}`
-    : dialTarget.replace(/^\+/, "");
   const listingShareUrl = `${await getSiteBaseUrl()}${listingPath}`;
   const facebookShareHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(listingShareUrl)}`;
-  const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    `Hi, I would like to schedule a tour for ${property.title}. ${listingShareUrl}`
+  const emailShareHref = `mailto:?subject=${encodeURIComponent(
+    `Check out this property: ${property.title}`
+  )}&body=${encodeURIComponent(
+    `I thought you might like this listing:\n\n${property.title}\n${listingShareUrl}`
   )}`;
 
   return (
@@ -235,26 +219,11 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 </p>
               ))}
 
-              <div className="ml-auto flex items-center gap-2">
-                <Link
-                  href={facebookShareHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Share this listing on Facebook"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877f2] text-lg font-bold text-white transition hover:brightness-95"
-                >
-                  <span aria-hidden>f</span>
-                </Link>
-                <Link
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Share this listing on WhatsApp"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#21b94f] text-white transition hover:brightness-95"
-                >
-                  <MessageCircle size={19} />
-                </Link>
-              </div>
+              <ListingShareActions
+                facebookShareHref={facebookShareHref}
+                emailShareHref={emailShareHref}
+                listingShareUrl={listingShareUrl}
+              />
             </div>
             <div className="mt-4 border-t border-[var(--sandstone-navy)]/20" />
 

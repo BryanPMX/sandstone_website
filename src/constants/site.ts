@@ -13,8 +13,8 @@ export const SITE_BRAND = "Sandstone Real Estate Group";
 export const SMS_DISCLOSURE_BRAND = `${SITE_BRAND} by Keller Williams`;
 
 export const SITE_CONTACT = {
-  phone: "+1 (915) 328-9799",
-  phoneRaw: "9153289799",
+  phone: "+1 (915) 277-6707",
+  phoneRaw: "9152776707",
   email: "agamboa@kw.com",
 } as const;
 

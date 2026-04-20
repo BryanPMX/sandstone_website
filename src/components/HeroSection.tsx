@@ -6,21 +6,20 @@ import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import {
   LISTINGS_MAP_PATH,
+  DEFAULT_PROPERTY_SEARCH_MARKET,
   DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+  PROPERTY_SEARCH_MARKET_OPTIONS,
+  inferPropertySearchMarketFromInput,
+  getPropertySearchMarketLabel,
   getPropertySearchPriceOptions,
   PROPERTY_SEARCH_BED_OPTIONS,
   PROPERTY_SEARCH_BATH_OPTIONS,
   buildListingsMapHref,
+  type PropertySearchMarket,
   type PropertySearchPresetFilters,
 } from "@/lib";
 
 const SEARCH_PLACEHOLDER = "Enter an address, ZIP…";
-
-const LOCATION_OPTIONS = [
-  { value: "El Paso", label: "El Paso" },
-  { value: "Midland", label: "Midland" },
-  { value: "Odessa", label: "Odessa" },
-] as const;
 
 interface PlaceSuggestion {
   description: string;
@@ -91,9 +90,9 @@ export function HeroSection() {
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
-  const [locationFilter, setLocationFilter] = useState<
-    (typeof LOCATION_OPTIONS)[number]["value"]
-  >(LOCATION_OPTIONS[0].value);
+  const [locationFilter, setLocationFilter] = useState<PropertySearchMarket>(
+    DEFAULT_PROPERTY_SEARCH_MARKET
+  );
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" }>(
     {
@@ -190,7 +189,6 @@ export function HeroSection() {
 
   const navigateToMap = (params: {
     search?: string;
-    location?: string;
     centerLat?: number;
     centerLng?: number;
     radiusMiles?: number;
@@ -202,6 +200,7 @@ export function HeroSection() {
     hasTriggeredRedirectRef.current = true;
     const href = buildListingsMapHref({
       ...params,
+      market: locationFilter,
       filterPresets: filters,
       listingType: filters.listingType,
     });
@@ -216,15 +215,16 @@ export function HeroSection() {
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = searchValue.trim();
-    if (!trimmed) {
-      navigateToMap({ location: locationFilter });
+    const combinedSearch = trimmed;
+
+    if (!combinedSearch) {
+      navigateToMap({});
       return;
     }
 
     const goToMap = (center?: { lat: number; lng: number }) => {
       navigateToMap({
-        search: trimmed,
-        location: locationFilter,
+        search: combinedSearch,
         centerLat: center?.lat,
         centerLng: center?.lng,
         radiusMiles: 5,
@@ -262,6 +262,11 @@ export function HeroSection() {
     setSearchValue(value);
     setSelectedSuggestion(null);
 
+    const inferredMarket = inferPropertySearchMarketFromInput(value);
+    if (inferredMarket && inferredMarket !== locationFilter) {
+      setLocationFilter(inferredMarket);
+    }
+
     if (!value.trim() || !mapsReady || !autocompleteServiceRef.current) {
       setSuggestions([]);
       return;
@@ -293,6 +298,12 @@ export function HeroSection() {
   const handleSuggestionClick = (suggestion: PlaceSuggestion) => {
     setSearchValue(suggestion.description);
     setSelectedSuggestion(suggestion);
+
+    const inferredMarket = inferPropertySearchMarketFromInput(suggestion.description);
+    if (inferredMarket && inferredMarket !== locationFilter) {
+      setLocationFilter(inferredMarket);
+    }
+
     setSuggestions([]);
   };
 
@@ -328,8 +339,26 @@ export function HeroSection() {
             >
               <div className="flex flex-col items-center">
                 <div className="mb-3 flex justify-center">
-                  <div className="bg-transparent px-1 py-1 text-base font-bold text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
-                    Search for your ideal home here!
+                  <div
+                    className="inline-flex items-center rounded-full border border-white/30 bg-white/14 p-1 backdrop-blur-sm"
+                    role="group"
+                    aria-label="Choose market"
+                  >
+                    {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setLocationFilter(option.value)}
+                        className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                          locationFilter === option.value
+                            ? "bg-white text-[var(--sandstone-navy)] shadow-[0_8px_20px_-12px_rgba(0,0,0,0.6)]"
+                            : "text-white/90 hover:bg-white/20"
+                        }`}
+                        aria-pressed={locationFilter === option.value}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
@@ -342,11 +371,10 @@ export function HeroSection() {
                         value={searchValue}
                         onChange={handleInputChange}
                         placeholder={SEARCH_PLACEHOLDER}
-                        className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-[12rem] font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
+                        className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-14 font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
                         aria-label="Search by address or ZIP code"
                         autoComplete="off"
                       />
-
 
                       <button
                         type="submit"
@@ -517,10 +545,28 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
-          <div className="mx-auto w-full max-w-sm bg-transparent px-1 py-1 text-center text-base font-bold text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
-            Search for your ideal home here!
+          <div
+            className="mx-auto inline-flex w-full max-w-sm items-center justify-center rounded-full border border-white/30 bg-white/14 p-1"
+            role="group"
+            aria-label="Choose market"
+          >
+            {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setLocationFilter(option.value)}
+                className={`rounded-full px-3 py-2 text-xs font-semibold transition ${
+                  locationFilter === option.value
+                    ? "bg-white text-[var(--sandstone-navy)]"
+                    : "text-white/90 hover:bg-white/20"
+                }`}
+                aria-pressed={locationFilter === option.value}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
-          <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
+          <form onSubmit={handleSearchSubmit} className="mx-auto mt-4 w-full max-w-sm">
             <input
               type="search"
               name="search"
@@ -531,7 +577,7 @@ export function HeroSection() {
               aria-label="Search by address or ZIP code"
             />
 
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="mt-3 flex flex-wrap items-center justify-end gap-3">
               <button
                 type="submit"
                 className="rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/50"
@@ -670,14 +716,29 @@ export function HeroSection() {
                 <div className="flex flex-wrap justify-center gap-4 text-center">
                   <button
                     type="button"
-                    onClick={() => router.push("/listings")}
+                    onClick={() =>
+                      router.push(
+                        locationFilter === DEFAULT_PROPERTY_SEARCH_MARKET
+                          ? "/listings"
+                          : `/listings?market=${locationFilter}`
+                      )
+                    }
                     className="text-xs font-semibold text-white/80 transition hover:text-white"
                   >
                     All Listings
                   </button>
                   <button
                     type="button"
-                    onClick={() => router.push("/listings/map")}
+                    onClick={() =>
+                      router.push(
+                        buildListingsMapHref({
+                          search: searchValue.trim() || undefined,
+                          market: locationFilter,
+                          filterPresets: filters,
+                          listingType: filters.listingType,
+                        })
+                      )
+                    }
                     className="text-xs font-semibold text-white/80 transition hover:text-white"
                   >
                     Map Search
@@ -712,7 +773,7 @@ export function HeroSection() {
               Opening map search
             </p>
             <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/74">
-              Loading available homes near El Paso.
+              Loading available homes near {getPropertySearchMarketLabel(locationFilter)}.
             </p>
           </div>
         </div>

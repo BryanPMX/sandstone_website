@@ -2,16 +2,20 @@
 
 import type { PropertySearchPresetFilters } from "@/lib";
 import {
+  PROPERTY_SEARCH_MARKET_OPTIONS,
   getPropertySearchPriceOptions,
+  type PropertySearchMarket,
   PROPERTY_SEARCH_BED_OPTIONS,
   PROPERTY_SEARCH_BATH_OPTIONS,
 } from "@/lib";
 
 interface MobileListingsFiltersProps {
+  market: PropertySearchMarket;
   listingType: "active" | "rental";
   pricePreset: PropertySearchPresetFilters["pricePreset"];
   bedsPreset: PropertySearchPresetFilters["bedsPreset"];
   bathsPreset: PropertySearchPresetFilters["bathsPreset"];
+  onMarketChange: (market: PropertySearchMarket) => void;
   onListingTypeChange: (type: "active" | "rental") => void;
   onPriceChange: (price: PropertySearchPresetFilters["pricePreset"]) => void;
   onBedsChange: (beds: PropertySearchPresetFilters["bedsPreset"]) => void;
@@ -19,10 +23,12 @@ interface MobileListingsFiltersProps {
 }
 
 export function MobileListingsFilters({
+  market,
   listingType,
   pricePreset,
   bedsPreset,
   bathsPreset,
+  onMarketChange,
   onListingTypeChange,
   onPriceChange,
   onBedsChange,
@@ -32,6 +38,29 @@ export function MobileListingsFilters({
 
   return (
     <div className="space-y-4 rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
+      <div className="space-y-2">
+        <label className="text-xs font-bold uppercase tracking-wider text-[var(--sandstone-charcoal)]">
+          Market
+        </label>
+        <div className="flex gap-2">
+          {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onMarketChange(option.value)}
+              className={`flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all ${
+                market === option.value
+                  ? "bg-[var(--sandstone-navy)] text-white shadow-[0_4px_12px_rgba(37,52,113,0.3)]"
+                  : "border-2 border-[var(--sandstone-navy)]/20 bg-white text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/40"
+              }`}
+              aria-pressed={market === option.value}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Buy/Rent Filter - Always visible */}
       <div className="space-y-2">
         <label className="text-xs font-bold uppercase tracking-wider text-[var(--sandstone-charcoal)]">
