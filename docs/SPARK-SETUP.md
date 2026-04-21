@@ -23,6 +23,7 @@ SPARK_ACCESS_TOKEN=your_server_only_token
 SPARK_API_BASE_URL=https://sparkapi.com
 SPARK_API_LISTINGS_PATH=/v1/listings
 SPARK_API_MY_LISTINGS_PATH=/v1/my/listings
+SPARK_API_RENTAL_LISTINGS_PATH=/v1/listings
 SPARK_PAGE_SIZE=27
 SPARK_ACTIVE_LISTINGS_FILTER=MlsStatus Eq 'Active'
 ```
@@ -31,7 +32,19 @@ Optional:
 
 ```bash
 SPARK_MY_LISTINGS_FILTER=MlsStatus Eq 'Active'
+SPARK_RENTAL_LISTINGS_FILTER=MlsStatus Eq 'Active'
+SPARK_TEAM_FILTER=ListOfficeName Eq 'Sandstone Real Estate Team El Paso'
 MSL_FEED_URL=https://example.com/legacy-listings-feed
+SPARK_DEBUG_LOOKUPS=1
+```
+
+Legacy aliases accepted by the app:
+
+```bash
+SPARK_API_TOKEN=...
+SPARK_API_KEY=...
+SPARK_LISTINGS_FILTER=...
+SPARK_LISTINGS_LIMIT=...
 ```
 
 If Spark responds with key restriction error `1021`, switch `SPARK_API_BASE_URL` to:
@@ -44,8 +57,10 @@ SPARK_API_BASE_URL=https://replication.sparkapi.com
 
 - The app sends the token in the `Authorization` header from the server.
 - The app automatically retries on `replication.sparkapi.com` when Spark returns restriction code `1021`.
-- `/listings` paginates through all active listings from Spark and can assemble larger UI pages even though standard Spark requests cap `_limit` per page at `25`.
-- The home page uses Spark `my/listings` for the carousel.
+- Spark collection requests are capped to Spark's `_limit` max of `25` per request, and the app paginates across pages server-side.
+- `/listings` currently uses `fetchMyPropertyCards()` with curation/filtering in the page layer.
+- `/api/listings/active` combines active + my listings for API consumers.
+- `/api/listings/rent` is served from the rental target/filter path.
 - If Spark is unavailable, the app can fall back to `MSL_FEED_URL`.
 - Listing payloads are normalized into the internal `PropertyCard` contract before reaching the UI.
 - Spark-hosted photo URLs are normalized to `https` when possible.
