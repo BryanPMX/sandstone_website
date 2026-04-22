@@ -275,26 +275,26 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const searchParamsString = searchParams.toString();
+  const searchParamsString = searchParams?.toString() ?? "";
   const [liveProperties, setLiveProperties] = useState<PropertyCard[]>(() => properties);
-  const searchQuery = normalizeMapSearchQuery(searchParams.get("search") ?? "");
+  const searchQuery = normalizeMapSearchQuery(searchParams?.get("search") ?? "");
   const [searchInput, setSearchInput] = useState(searchQuery);
-  const initialCenterLat = parseOptionalNumber(searchParams.get("lat"));
-  const initialCenterLng = parseOptionalNumber(searchParams.get("lng"));
-  const market = resolvePropertySearchMarket(searchParams.get("market"));
+  const initialCenterLat = parseOptionalNumber(searchParams?.get("lat") ?? null);
+  const initialCenterLng = parseOptionalNumber(searchParams?.get("lng") ?? null);
+  const market = resolvePropertySearchMarket(searchParams?.get("market") ?? null);
   const initialMapCenter =
     typeof initialCenterLat === "number" && typeof initialCenterLng === "number"
       ? ([initialCenterLat, initialCenterLng] as [number, number])
       : undefined;
   const initialMapZoom = initialMapCenter ? SINGLE_MARKER_ZOOM : DEFAULT_MAP_ZOOM;
 
-  const initialListingType = resolveListingTypeParam(searchParams.get("listingType"));
+  const initialListingType = resolveListingTypeParam(searchParams?.get("listingType") ?? null);
   const initialPricePreset = normalizePricePresetForListingType(
     initialListingType,
-    resolvePricePresetParam(searchParams.get("price"))
+    resolvePricePresetParam(searchParams?.get("price") ?? null)
   );
-  const initialBedsPreset = resolveCountPresetParam(searchParams.get("beds"));
-  const initialBathsPreset = resolveCountPresetParam(searchParams.get("baths"));
+  const initialBedsPreset = resolveCountPresetParam(searchParams?.get("beds") ?? null);
+  const initialBathsPreset = resolveCountPresetParam(searchParams?.get("baths") ?? null);
 
   const [filters, setFilters] = useState<{
     listingType: ListingType;
@@ -313,7 +313,8 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
 
   useEffect(() => {
     try {
-      const href = searchParamsString ? `${pathname}?${searchParamsString}` : pathname;
+      const currentPath = pathname ?? "/";
+      const href = searchParamsString ? `${currentPath}?${searchParamsString}` : currentPath;
       window.sessionStorage.setItem("sandstone:last-map-href", href);
     } catch {
       // Ignore storage failures in constrained browsing modes.
@@ -329,7 +330,8 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
       return;
     }
 
-    const nextParams = new URLSearchParams(searchParams.toString());
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? "");
+    const currentPath = pathname ?? "/";
 
     if (nextMarket === DEFAULT_PROPERTY_SEARCH_MARKET) {
       nextParams.delete("market");
@@ -338,7 +340,7 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
     }
 
     const nextQueryString = nextParams.toString();
-    router.replace(nextQueryString ? `${pathname}?${nextQueryString}` : pathname, { scroll: false });
+    router.replace(nextQueryString ? `${currentPath}?${nextQueryString}` : currentPath, { scroll: false });
   };
 
   useEffect(() => {
@@ -465,8 +467,9 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const handleMapSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const nextParams = new URLSearchParams(searchParams.toString());
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? "");
     const normalizedSearch = normalizeMapSearchQuery(searchInput);
+    const currentPath = pathname ?? "/";
 
     if (normalizedSearch) {
       nextParams.set("search", normalizedSearch);
@@ -475,7 +478,7 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
     }
 
     const nextQueryString = nextParams.toString();
-    router.replace(nextQueryString ? `${pathname}?${nextQueryString}` : pathname, { scroll: false });
+    router.replace(nextQueryString ? `${currentPath}?${nextQueryString}` : currentPath, { scroll: false });
   };
 
   const handleMapSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
