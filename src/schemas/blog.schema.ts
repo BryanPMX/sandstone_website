@@ -1,11 +1,20 @@
 import { z } from "zod";
 
-const BlogDateSchema = z
-  .string()
-  .min(1, "Date is required")
-  .refine((value) => !Number.isNaN(Date.parse(value)), {
-    message: "Date must be a valid ISO/date string",
-  });
+const BlogDateSchema = z.preprocess(
+  (value) => {
+    if (value instanceof Date) {
+      return value.toISOString();
+    }
+
+    return value;
+  },
+  z
+    .string()
+    .min(1, "Date is required")
+    .refine((value) => !Number.isNaN(Date.parse(value)), {
+      message: "Date must be a valid ISO/date string",
+    })
+);
 
 /**
  * Validation contract for blog markdown frontmatter.
