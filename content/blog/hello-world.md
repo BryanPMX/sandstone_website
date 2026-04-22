@@ -1,8 +1,9 @@
 ---
-title: "Welcome to the Sandstone Blog"
-date: "2026-04-22"
-excerpt: "Market updates, buying tips, and local real estate insights from Sandstone Real Estate Group."
-coverImage: "/mobile-header-logo.webp"
+title: This is a test
+date: 2026-04-22
+excerpt: Market updates, buying tips, and local real estate insights from
+  Sandstone Real Estate Group.
+coverImage: /mobile-header-logo.webp
 ---
 
 ## Hello, El Paso
