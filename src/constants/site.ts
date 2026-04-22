@@ -5,6 +5,7 @@
 export const SITE_NAV = [
   { label: "Sell a property", href: "/sell" },
   { label: "Rent a property", href: "/rent" },
+  { label: "Blog", href: "/blog" },
   { label: "Join the Team", href: "/join" },
   { label: "Contact Us", href: "/#contact" },
 ] as const;

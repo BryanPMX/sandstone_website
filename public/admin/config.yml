@@ -1,0 +1,24 @@
+backend:
+  name: github
+  repo: BryanPMX/sandstone_website
+  branch: main
+  base_url: https://www.sandstone.homes
+  auth_endpoint: /api/decap/auth
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: blog
+    label: Blog
+    folder: content/blog
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime }
+      - { label: Excerpt, name: excerpt, widget: text }
+      - { label: Cover Image, name: coverImage, widget: image }
+      - { label: Body, name: body, widget: markdown }
