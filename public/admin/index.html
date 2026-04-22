@@ -16,6 +16,15 @@
           ? window.location.origin
           : "https://www.sandstone.homes";
 
+      window.addEventListener("message", function (event) {
+        if (typeof event.data === "string" && event.data.indexOf("authorization:github:") === 0) {
+          console.log("[Decap OAuth] message received", {
+            origin: event.origin,
+            dataPrefix: event.data.split(":").slice(0, 3).join(":"),
+          });
+        }
+      });
+
       CMS.init({
         config: {
           backend: {

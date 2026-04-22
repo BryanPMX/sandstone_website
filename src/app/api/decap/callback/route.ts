@@ -73,10 +73,12 @@ function buildCallbackHtml(options: {
       (function () {
         var targetOrigins = ${JSON.stringify(options.targetOrigins)};
         var message = ${JSON.stringify(messagePrefix)} + ${JSON.stringify(serializedPayload)};
-        var posted = false;
         var hasOpener = window.opener && typeof window.opener.postMessage === "function";
+        var isSuccess = ${JSON.stringify(options.status)} === "success";
+        var title = document.getElementById("title");
+        var detail = document.getElementById("detail");
 
-        function postToOpener() {
+        function postToTargets(payload) {
           if (!hasOpener) {
             return false;
           }
@@ -87,7 +89,7 @@ function buildCallbackHtml(options: {
             var targetOrigin = targetOrigins[i];
 
             try {
-              window.opener.postMessage(message, targetOrigin);
+              window.opener.postMessage(payload, targetOrigin);
               didPost = true;
             } catch (error) {
               // Ignore and continue trying other expected origins.
@@ -95,7 +97,7 @@ function buildCallbackHtml(options: {
           }
 
           try {
-            window.opener.postMessage(message, "*");
+            window.opener.postMessage(payload, "*");
             didPost = true;
           } catch (error) {
             // Ignore wildcard fallback failure.
@@ -104,34 +106,54 @@ function buildCallbackHtml(options: {
           return didPost;
         }
 
-        posted = postToOpener() || posted;
-        setTimeout(function () {
-          posted = postToOpener() || posted;
-        }, 100);
-        setTimeout(function () {
-          posted = postToOpener() || posted;
-        }, 350);
-        setTimeout(function () {
-          posted = postToOpener() || posted;
-        }, 900);
-
-        var isSuccess = ${JSON.stringify(options.status)} === "success";
-        var title = document.getElementById("title");
-        var detail = document.getElementById("detail");
-
-        if (title && detail) {
-          if (isSuccess && posted) {
-            title.textContent = "Login complete";
-            title.className = "ok";
-            detail.innerHTML = "Authorization was sent to the CMS window. This tab can stay open; Decap should close it automatically once processed.";
-          } else {
-            title.textContent = isSuccess ? "Login token sent" : "Login failed";
-            title.className = isSuccess ? "ok" : "err";
-            detail.textContent = posted
-              ? "A response was sent to the CMS window. Switch back to /admin."
-              : "Could not find the opener window. Return to /admin and retry login.";
+        function renderStatus(text, className, detailText) {
+          if (!title || !detail) {
+            return;
           }
+
+          title.textContent = text;
+          title.className = className;
+          detail.textContent = detailText;
         }
+
+        function sendAuthorizationResult() {
+          var sent = postToTargets(message);
+          if (sent) {
+            renderStatus(
+              isSuccess ? "Login complete" : "Login failed",
+              isSuccess ? "ok" : "err",
+              isSuccess
+                ? "Authorization was sent to the CMS window."
+                : "Authorization error sent to CMS."
+            );
+          }
+          return sent;
+        }
+
+        if (!hasOpener) {
+          renderStatus("Login failed", "err", "No opener window found. Return to /admin and retry login.");
+          return;
+        }
+
+        var receivedHandshake = false;
+
+        function receiveMessage() {
+          receivedHandshake = true;
+          sendAuthorizationResult();
+          window.removeEventListener("message", receiveMessage, false);
+        }
+
+        window.addEventListener("message", receiveMessage, false);
+        postToTargets("authorizing:github");
+
+        // Fallback in case the opener misses or skips the handshake response.
+        setTimeout(function () {
+          if (!receivedHandshake) {
+            sendAuthorizationResult();
+          }
+        }, 1000);
+
+        renderStatus("Completing login...", "", "Waiting for CMS handshake...");
       })();
     </script>
   </body>
