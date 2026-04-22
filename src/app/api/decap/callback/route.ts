@@ -94,6 +94,13 @@ function buildCallbackHtml(options: {
             }
           }
 
+          try {
+            window.opener.postMessage(message, "*");
+            didPost = true;
+          } catch (error) {
+            // Ignore wildcard fallback failure.
+          }
+
           return didPost;
         }
 
