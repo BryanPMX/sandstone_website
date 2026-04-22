@@ -11,13 +11,18 @@
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
+      const cmsBaseUrl =
+        window.location.hostname === "localhost"
+          ? window.location.origin
+          : "https://www.sandstone.homes";
+
       CMS.init({
         config: {
           backend: {
             name: "github",
             repo: "BryanPMX/sandstone_website",
             branch: "main",
-            base_url: window.location.origin,
+            base_url: cmsBaseUrl,
             auth_endpoint: "/api/decap/auth",
           },
           media_folder: "public/uploads",

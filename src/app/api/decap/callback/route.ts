@@ -74,19 +74,39 @@ function buildCallbackHtml(options: {
         var targetOrigins = ${JSON.stringify(options.targetOrigins)};
         var message = ${JSON.stringify(messagePrefix)} + ${JSON.stringify(serializedPayload)};
         var posted = false;
+        var hasOpener = window.opener && typeof window.opener.postMessage === "function";
 
-        if (window.opener && typeof window.opener.postMessage === "function") {
+        function postToOpener() {
+          if (!hasOpener) {
+            return false;
+          }
+
+          var didPost = false;
+
           for (var i = 0; i < targetOrigins.length; i++) {
             var targetOrigin = targetOrigins[i];
 
             try {
               window.opener.postMessage(message, targetOrigin);
-              posted = true;
+              didPost = true;
             } catch (error) {
               // Ignore and continue trying other expected origins.
             }
           }
+
+          return didPost;
         }
+
+        posted = postToOpener() || posted;
+        setTimeout(function () {
+          posted = postToOpener() || posted;
+        }, 100);
+        setTimeout(function () {
+          posted = postToOpener() || posted;
+        }, 350);
+        setTimeout(function () {
+          posted = postToOpener() || posted;
+        }, 900);
 
         var isSuccess = ${JSON.stringify(options.status)} === "success";
         var title = document.getElementById("title");
@@ -96,10 +116,7 @@ function buildCallbackHtml(options: {
           if (isSuccess && posted) {
             title.textContent = "Login complete";
             title.className = "ok";
-            detail.innerHTML = "You can close this window. If it does not close automatically, return to <code>/admin</code>.";
-            setTimeout(function () {
-              window.close();
-            }, 250);
+            detail.innerHTML = "Authorization was sent to the CMS window. This tab can stay open; Decap should close it automatically once processed.";
           } else {
             title.textContent = isSuccess ? "Login token sent" : "Login failed";
             title.className = isSuccess ? "ok" : "err";
