@@ -43,7 +43,7 @@ function signStatePayload(payload: {
 }
 
 function buildCallbackHtml(options: {
-  targetOrigin: string;
+  targetOrigins: string[];
   status: "success" | "error";
   payload: Record<string, string>;
 }): string {
@@ -55,21 +55,78 @@ function buildCallbackHtml(options: {
 
   return `<!doctype html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sandstone CMS Auth</title>
+    <style>
+      body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; line-height: 1.5; }
+      .ok { color: #166534; }
+      .err { color: #991b1b; }
+      code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
+    </style>
+  </head>
   <body>
+    <h1 id="title">Completing login...</h1>
+    <p id="detail">Sending authorization result back to the CMS window.</p>
     <script>
       (function () {
-        var targetOrigin = ${JSON.stringify(options.targetOrigin)};
+        var targetOrigins = ${JSON.stringify(options.targetOrigins)};
         var message = ${JSON.stringify(messagePrefix)} + ${JSON.stringify(serializedPayload)};
+        var posted = false;
 
         if (window.opener && typeof window.opener.postMessage === "function") {
-          window.opener.postMessage(message, targetOrigin);
+          for (var i = 0; i < targetOrigins.length; i++) {
+            var targetOrigin = targetOrigins[i];
+
+            try {
+              window.opener.postMessage(message, targetOrigin);
+              posted = true;
+            } catch (error) {
+              // Ignore and continue trying other expected origins.
+            }
+          }
         }
 
-        window.close();
+        var isSuccess = ${JSON.stringify(options.status)} === "success";
+        var title = document.getElementById("title");
+        var detail = document.getElementById("detail");
+
+        if (title && detail) {
+          if (isSuccess && posted) {
+            title.textContent = "Login complete";
+            title.className = "ok";
+            detail.innerHTML = "You can close this window. If it does not close automatically, return to <code>/admin</code>.";
+            setTimeout(function () {
+              window.close();
+            }, 250);
+          } else {
+            title.textContent = isSuccess ? "Login token sent" : "Login failed";
+            title.className = isSuccess ? "ok" : "err";
+            detail.textContent = posted
+              ? "A response was sent to the CMS window. Switch back to /admin."
+              : "Could not find the opener window. Return to /admin and retry login.";
+          }
+        }
       })();
     </script>
   </body>
 </html>`;
+}
+
+function uniqueOrigins(values: Array<string | undefined>): string[] {
+  const origins = values
+    .filter((value): value is string => Boolean(value))
+    .map((value) => {
+      try {
+        return new URL(value).origin;
+      } catch {
+        return null;
+      }
+    })
+    .filter((value): value is string => value !== null);
+
+  return Array.from(new Set(origins));
 }
 
 function decodeState(state: string): OAuthStatePayload | null {
@@ -129,9 +186,11 @@ export async function GET(request: Request): Promise<Response> {
   ).origin;
 
   if (!code || !state) {
+    const targetOrigins = uniqueOrigins([fallbackOrigin]);
+
     return new NextResponse(
       buildCallbackHtml({
-        targetOrigin: fallbackOrigin,
+        targetOrigins,
         status: "error",
         payload: { error: "Missing code or state" },
       }),
@@ -145,9 +204,11 @@ export async function GET(request: Request): Promise<Response> {
   const parsedState = decodeState(state);
 
   if (!parsedState || !isValidState(parsedState)) {
+    const targetOrigins = uniqueOrigins([fallbackOrigin]);
+
     return new NextResponse(
       buildCallbackHtml({
-        targetOrigin: fallbackOrigin,
+        targetOrigins,
         status: "error",
         payload: { error: "State validation failed" },
       }),
@@ -159,6 +220,12 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const targetOrigin = parsedState?.origin || fallbackOrigin;
+  const targetOrigins = uniqueOrigins([
+    targetOrigin,
+    fallbackOrigin,
+    requestUrl.origin,
+    process.env.CMS_ALLOWED_ORIGIN?.trim(),
+  ]);
 
   const cookieStore = await cookies();
   const storedState = cookieStore.get(STATE_COOKIE_NAME)?.value;
@@ -166,7 +233,7 @@ export async function GET(request: Request): Promise<Response> {
   if (storedState && storedState !== state) {
     const response = new NextResponse(
       buildCallbackHtml({
-        targetOrigin,
+        targetOrigins,
         status: "error",
         payload: { error: "State mismatch" },
       }),
@@ -203,7 +270,7 @@ export async function GET(request: Request): Promise<Response> {
 
     const response = new NextResponse(
       buildCallbackHtml({
-        targetOrigin,
+        targetOrigins,
         status: "error",
         payload: { error: errorMessage },
       }),
@@ -219,7 +286,7 @@ export async function GET(request: Request): Promise<Response> {
 
   const response = new NextResponse(
     buildCallbackHtml({
-      targetOrigin,
+      targetOrigins,
       status: "success",
       payload: { token: tokenData.access_token, provider: "github" },
     }),
