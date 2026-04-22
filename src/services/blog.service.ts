@@ -23,6 +23,9 @@ async function readBlogFilenames(): Promise<string[]> {
       .map((entry) => entry.name);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      console.warn(
+        "[BlogService] content/blog directory was not found at runtime. Ensure markdown files are included in deployment output tracing."
+      );
       return [];
     }
 

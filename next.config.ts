@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
+  outputFileTracingIncludes: {
+    "/*": ["./content/blog/**/*"],
+  },
 };
 
 export default nextConfig;
