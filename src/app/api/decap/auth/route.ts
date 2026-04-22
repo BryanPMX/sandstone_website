@@ -1,9 +1,11 @@
-import { randomUUID } from "node:crypto";
+import { createHmac, randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 
 type OAuthStatePayload = {
   nonce: string;
   origin: string;
+  issuedAt: number;
+  signature: string;
 };
 
 const STATE_COOKIE_NAME = "decap_oauth_state";
@@ -17,6 +19,20 @@ function getRequiredEnv(name: string): string {
   }
 
   return value;
+}
+
+function getStateSigningSecret(): string {
+  return process.env.CMS_OAUTH_STATE_SECRET?.trim() || getRequiredEnv("GITHUB_CLIENT_SECRET");
+}
+
+function signStatePayload(payload: {
+  nonce: string;
+  origin: string;
+  issuedAt: number;
+}): string {
+  return createHmac("sha256", getStateSigningSecret())
+    .update(`${payload.nonce}.${payload.origin}.${payload.issuedAt}`)
+    .digest("hex");
 }
 
 export async function GET(request: Request): Promise<Response> {
@@ -37,9 +53,15 @@ export async function GET(request: Request): Promise<Response> {
     }
   }
 
-  const statePayload: OAuthStatePayload = {
+  const issuedAt = Date.now();
+  const unsignedStatePayload = {
     nonce: randomUUID(),
     origin: targetOrigin,
+    issuedAt,
+  };
+  const statePayload: OAuthStatePayload = {
+    ...unsignedStatePayload,
+    signature: signStatePayload(unsignedStatePayload),
   };
   const encodedState = Buffer.from(JSON.stringify(statePayload)).toString("base64url");
 

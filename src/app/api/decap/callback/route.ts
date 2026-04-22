@@ -1,9 +1,12 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 type OAuthStatePayload = {
   nonce: string;
   origin: string;
+  issuedAt: number;
+  signature: string;
 };
 
 type GitHubTokenResponse = {
@@ -13,6 +16,7 @@ type GitHubTokenResponse = {
 };
 
 const STATE_COOKIE_NAME = "decap_oauth_state";
+const STATE_MAX_AGE_MS = 10 * 60 * 1000;
 
 function getRequiredEnv(name: string): string {
   const value = process.env[name]?.trim();
@@ -22,6 +26,20 @@ function getRequiredEnv(name: string): string {
   }
 
   return value;
+}
+
+function getStateSigningSecret(): string {
+  return process.env.CMS_OAUTH_STATE_SECRET?.trim() || getRequiredEnv("GITHUB_CLIENT_SECRET");
+}
+
+function signStatePayload(payload: {
+  nonce: string;
+  origin: string;
+  issuedAt: number;
+}): string {
+  return createHmac("sha256", getStateSigningSecret())
+    .update(`${payload.nonce}.${payload.origin}.${payload.issuedAt}`)
+    .digest("hex");
 }
 
 function buildCallbackHtml(options: {
@@ -59,17 +77,47 @@ function decodeState(state: string): OAuthStatePayload | null {
     const decoded = Buffer.from(state, "base64url").toString("utf8");
     const parsed = JSON.parse(decoded) as Partial<OAuthStatePayload>;
 
-    if (!parsed.origin || !parsed.nonce) {
+    if (
+      !parsed.origin ||
+      !parsed.nonce ||
+      typeof parsed.issuedAt !== "number" ||
+      !parsed.signature
+    ) {
       return null;
     }
 
     return {
       nonce: parsed.nonce,
       origin: parsed.origin,
+      issuedAt: parsed.issuedAt,
+      signature: parsed.signature,
     };
   } catch {
     return null;
   }
+}
+
+function isValidState(parsedState: OAuthStatePayload): boolean {
+  const age = Date.now() - parsedState.issuedAt;
+
+  if (age < 0 || age > STATE_MAX_AGE_MS) {
+    return false;
+  }
+
+  const expectedSignature = signStatePayload({
+    nonce: parsedState.nonce,
+    origin: parsedState.origin,
+    issuedAt: parsedState.issuedAt,
+  });
+
+  const expected = Buffer.from(expectedSignature, "utf8");
+  const actual = Buffer.from(parsedState.signature, "utf8");
+
+  if (expected.length !== actual.length) {
+    return false;
+  }
+
+  return timingSafeEqual(actual, expected);
 }
 
 export async function GET(request: Request): Promise<Response> {
@@ -92,10 +140,9 @@ export async function GET(request: Request): Promise<Response> {
     );
   }
 
-  const cookieStore = await cookies();
-  const storedState = cookieStore.get(STATE_COOKIE_NAME)?.value;
+  const parsedState = decodeState(state);
 
-  if (!storedState || storedState !== state) {
+  if (!parsedState || !isValidState(parsedState)) {
     return new NextResponse(
       buildCallbackHtml({
         targetOrigin: fallbackOrigin,
@@ -109,8 +156,27 @@ export async function GET(request: Request): Promise<Response> {
     );
   }
 
-  const parsedState = decodeState(state);
   const targetOrigin = parsedState?.origin || fallbackOrigin;
+
+  const cookieStore = await cookies();
+  const storedState = cookieStore.get(STATE_COOKIE_NAME)?.value;
+
+  if (storedState && storedState !== state) {
+    const response = new NextResponse(
+      buildCallbackHtml({
+        targetOrigin,
+        status: "error",
+        payload: { error: "State mismatch" },
+      }),
+      {
+        status: 400,
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      }
+    );
+
+    response.cookies.delete(STATE_COOKIE_NAME);
+    return response;
+  }
 
   const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
     method: "POST",
