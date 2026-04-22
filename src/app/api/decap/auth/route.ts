@@ -40,7 +40,9 @@ export async function GET(request: Request): Promise<Response> {
   const allowedOrigin = process.env.CMS_ALLOWED_ORIGIN?.trim();
   const requestedOrigin = requestUrl.searchParams.get("origin")?.trim();
 
-  const targetOrigin = requestedOrigin || allowedOrigin || requestUrl.origin;
+  const targetOrigin = new URL(
+    requestedOrigin || allowedOrigin || requestUrl.origin
+  ).origin;
 
   if (allowedOrigin) {
     const normalizedAllowedOrigin = new URL(allowedOrigin).origin;

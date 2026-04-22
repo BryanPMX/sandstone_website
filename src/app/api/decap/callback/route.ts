@@ -124,7 +124,9 @@ export async function GET(request: Request): Promise<Response> {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code")?.trim();
   const state = requestUrl.searchParams.get("state")?.trim();
-  const fallbackOrigin = process.env.CMS_ALLOWED_ORIGIN?.trim() || requestUrl.origin;
+  const fallbackOrigin = new URL(
+    process.env.CMS_ALLOWED_ORIGIN?.trim() || requestUrl.origin
+  ).origin;
 
   if (!code || !state) {
     return new NextResponse(
