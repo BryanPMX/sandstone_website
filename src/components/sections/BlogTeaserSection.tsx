@@ -16,7 +16,7 @@ function formatBlogDate(value: string): string {
 
 export function BlogTeaserSection({ posts }: BlogTeaserSectionProps) {
   return (
-    <section className="bg-gradient-to-b from-white via-[var(--sandstone-off-white)] to-white py-16 md:py-20">
+    <section className="bg-gradient-to-b from-white via-[var(--sandstone-off-white)] to-white pb-16 pt-0 md:pb-20 md:pt-0">
       <div className="container mx-auto max-w-6xl px-4">
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div>
