@@ -9,16 +9,18 @@ Marketing and lead-generation site for Sandstone Real Estate Group, built with N
 - Listings grid page and map-first browsing experience
 - Listing detail pages with inquiry form
 - Lead capture flows for contact, sell, rent, join, and giveaway
+- Blog index and article pages with Markdown-driven content
 - Cloudflare Turnstile verification on lead forms
 - Spark-backed listings with automatic fallback to legacy feed/demo data
 
 ## Tech Stack
 
 - Next.js 15 + React 19 + TypeScript
-- Tailwind CSS
+- Tailwind CSS with @tailwindcss/typography and tailwindcss-animate
 - Zod for schema validation
 - Leaflet + react-leaflet + supercluster (map rendering and marker clustering)
 - Framer Motion
+- Markdown-based blog rendering using gray-matter, remark, and remark-html
 
 ## App Routes
 
@@ -26,6 +28,8 @@ Marketing and lead-generation site for Sandstone Real Estate Group, built with N
 - `/listings` listings grid + paging + search
 - `/listings/map` interactive map browsing
 - `/listings/[id]` listing detail page
+- `/blog` blog index and article listing page
+- `/blog/[slug]` blog article detail pages
 - `/sell` seller page + lead capture
 - `/rent` rental page + lead capture
 - `/join` recruiting page + lead capture
