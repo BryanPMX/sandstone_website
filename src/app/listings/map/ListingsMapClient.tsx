@@ -30,8 +30,8 @@ const EL_PASO_LNG_MAX = -106.23;
 const DEFAULT_MAP_ZOOM = 11;
 const SINGLE_MARKER_ZOOM = 13;
 const VIEWPORT_DEBOUNCE_MS = 240;
-const MAP_REFRESH_INITIAL_DELAY_MS = 2_000;
-const MAP_REFRESH_INTERVAL_MS = 20_000;
+const MAP_REFRESH_INITIAL_DELAY_MS = 5_000;
+const MAP_REFRESH_INTERVAL_MS = 3_600_000; // 1 hour
 
 interface MapViewport {
   north: number;
