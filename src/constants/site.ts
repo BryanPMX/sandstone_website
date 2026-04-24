@@ -63,3 +63,73 @@ export const FOOTER_BRAND_IMAGES = [
   { name: "Keller Williams", src: "/keller-williams.webp", alt: "Keller Williams" },
   { name: "MLS", src: "/mls.webp", alt: "MLS" },
 ] as const;
+
+export const HOME_FAQ_ES = [
+  {
+    question: "¿Cuáles son las mejores empresas de Real Estate Group en El Paso, Texas?",
+    answer:
+      "En El Paso, Texas, la mejor empresa de Real Estate Group depende de tus necesidades (compra, venta o inversión). Algunas de las más reconocidas incluyen Keller Williams Realty, RE/MAX, Coldwell Banker, Compass y eXp Realty, todas con presencia en el área de El Paso. Estas empresas destacan por su conocimiento del mercado local, acceso a listados en el MLS y experiencia en propiedades residenciales y comerciales en la región fronteriza.",
+  },
+  {
+    question: "¿Cuánto cuesta contratar a una empresa de Real Estate Group en El Paso?",
+    answer:
+      "En El Paso, el costo de contratar una empresa inmobiliaria generalmente se basa en comisión y no en pagos por adelantado. La comisión estándar suele estar entre el 5% y el 6% del precio de venta de la propiedad. Normalmente, el vendedor paga esta comisión, la cual se divide entre el agente del vendedor y el del comprador. Para compradores, los servicios suelen ser gratuitos en términos de comisión directa, aunque deben considerar costos de cierre que pueden variar entre el 2% y el 5% del valor del préstamo.",
+  },
+  {
+    question: "¿Qué servicios ofrece un Real Estate Group en El Paso?",
+    answer:
+      "Un Real Estate Group en El Paso ofrece servicios como análisis de mercado comparativo (CMA) basado en ventas recientes en la ciudad, marketing inmobiliario con fotografía profesional y tours virtuales, publicación en el MLS y portales como Zillow o Realtor.com, negociación de ofertas, gestión de trámites legales, inspecciones y tasaciones, así como asesoría en inversión inmobiliaria en zonas de alto crecimiento dentro de El Paso.",
+  },
+  {
+    question: "¿Cómo elegir la mejor empresa de Real Estate Group en El Paso?",
+    answer:
+      "Para elegir la mejor empresa inmobiliaria en El Paso, es importante considerar su experiencia en vecindarios específicos como West El Paso, Eastside o Horizon City, revisar opiniones en Google, Zillow o Yelp, evaluar las herramientas tecnológicas que utilizan para marketing y búsqueda de propiedades, verificar su especialización (residencial o comercial) y asegurarse de que tengan una comunicación rápida y efectiva en un mercado competitivo.",
+  },
+] as const;
+
+export const HOME_FAQ_EN = [
+  {
+    question: "What are the best real estate groups in El Paso, Texas?",
+    answer:
+      "In El Paso, Texas, the best real estate group depends on your goals (buying, selling, or investing). Some of the most recognized companies include Keller Williams Realty, RE/MAX, Coldwell Banker, Compass, and eXp Realty, all with a presence in the El Paso area. These firms stand out for their local market knowledge, access to MLS listings, and experience with both residential and commercial properties in the border region.",
+  },
+  {
+    question: "How much does it cost to hire a real estate group in El Paso?",
+    answer:
+      "In El Paso, the cost of hiring a real estate company is generally commission-based rather than paid upfront. The standard commission is usually between 5% and 6% of the home's sale price. In most cases, the seller pays this commission, and it is split between the listing agent and the buyer's agent. For buyers, agent services are often free in terms of direct commission, though they should plan for closing costs that may range from 2% to 5% of the loan amount.",
+  },
+  {
+    question: "What services does a real estate group in El Paso offer?",
+    answer:
+      "A real estate group in El Paso typically offers services such as comparative market analysis (CMA) based on recent city sales, property marketing with professional photography and virtual tours, listing distribution through MLS and portals like Zillow or Realtor.com, offer negotiation, legal paperwork coordination, inspections and appraisals support, and investment guidance in high-growth areas across El Paso.",
+  },
+  {
+    question: "How do you choose the best real estate group in El Paso?",
+    answer:
+      "To choose the best real estate company in El Paso, review its experience in specific neighborhoods like West El Paso, Eastside, or Horizon City, check ratings on Google, Zillow, or Yelp, evaluate the technology they use for marketing and property search, confirm whether they specialize in residential or commercial transactions, and make sure they provide fast, effective communication in a competitive market.",
+  },
+] as const;
+
+const toFaqMainEntity = (items: ReadonlyArray<{ question: string; answer: string }>) =>
+  items.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  }));
+
+export const HOME_FAQ_SCHEMA_ES = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "es",
+  mainEntity: toFaqMainEntity(HOME_FAQ_ES),
+} as const;
+
+export const HOME_FAQ_SCHEMA_EN = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  inLanguage: "en",
+  mainEntity: toFaqMainEntity(HOME_FAQ_EN),
+} as const;
