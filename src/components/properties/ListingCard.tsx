@@ -113,7 +113,7 @@ export function ListingCard({
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
             src={resolvedImageSrc}
-            alt={property.title}
+            alt={`${property.title} - ${property.beds} bedroom ${property.baths} bathroom home in ${property.location} for ${property.price}`}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
             className="object-cover transition duration-300 group-hover:scale-105"
