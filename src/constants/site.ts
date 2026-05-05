@@ -4,8 +4,9 @@
  */
 export const SITE_NAV = [
   { label: "Sell a property", href: "/sell" },
-  { label: "Rent a property", href: "/rent" },
   { label: "Military PCS", href: "/pcs" },
+  { label: "Rent a property", href: "/rent" },
+  { label: "Blog", href: "/blog" },
   { label: "Join the Team", href: "/join" },
   { label: "Contact Us", href: "/#contact" },
 ] as const;
@@ -60,6 +61,14 @@ export const FOOTER_ABOUT =
 
 /** Compliance logos for footer (in /public) */
 export const FOOTER_BRAND_IMAGES = [
-  { name: "Keller Williams", src: "/keller-williams.webp", alt: "Keller Williams" },
-  { name: "MLS", src: "/mls.webp", alt: "MLS" },
+  {
+    name: "Keller Williams",
+    src: "/PCS_Section_Imgs/kellerwilliams_gray.webp",
+    alt: "Keller Williams",
+  },
+  {
+    name: "Equal Housing Opportunity",
+    src: "/PCS_Section_Imgs/Layer%207%20copy.webp",
+    alt: "Equal Housing Opportunity",
+  },
 ] as const;

@@ -13,6 +13,7 @@ import {
   buildListingsMapHref,
   type PropertySearchPresetFilters,
 } from "@/lib";
+import { cn } from "@/lib/utils";
 
 const SEARCH_PLACEHOLDER = "Enter an address, ZIP…";
 
@@ -79,18 +80,40 @@ function getSelectedOptionLabel<T extends string>(
   return options.find((option) => option.value === value)?.label ?? options[0]?.label ?? "";
 }
 
-export function HeroSection() {
+interface HeroSectionProps {
+  desktopImageSrc?: string;
+  mobileImageSrc?: string;
+  imageAlt?: string;
+  imagePositionClassName?: string;
+  initialFilters?: Partial<PropertySearchPresetFilters & { listingType: "active" | "rental" }>;
+  initialSearchValue?: string;
+  recommendationText?: string;
+}
+
+export function HeroSection({
+  desktopImageSrc = "/desktop%20hero.webp",
+  mobileImageSrc = "/mobile%20hero.webp",
+  imageAlt = "",
+  imagePositionClassName = "object-[center_45%] lg:object-[center_40%]",
+  initialFilters,
+  initialSearchValue = "",
+  recommendationText,
+}: HeroSectionProps) {
   const router = useRouter();
+  const resolvedInitialFilters: PropertySearchPresetFilters & {
+    listingType: "active" | "rental";
+  } = {
+    ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+    listingType: "active",
+    ...initialFilters,
+  };
   const [isNavigatingToMap, setIsNavigatingToMap] = useState(false);
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(initialSearchValue);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" }>(
-    {
-      ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
-      listingType: "active",
-    }
+    resolvedInitialFilters
   );
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState<PlaceSuggestion | null>(null);
@@ -297,13 +320,16 @@ export function HeroSection() {
             <picture className="absolute inset-0 block h-full w-full">
               <source
                 media="(min-width: 1024px)"
-                srcSet="/desktop%20hero.webp"
+                srcSet={desktopImageSrc}
                 type="image/webp"
               />
               <img
-                src="/mobile%20hero.webp"
-                alt=""
-                className="h-full w-full object-cover object-[center_45%] lg:object-[center_40%]"
+                src={mobileImageSrc}
+                alt={imageAlt}
+                className={cn(
+                  "h-full w-full object-cover",
+                  imagePositionClassName
+                )}
                 fetchPriority="high"
               />
             </picture>
@@ -318,6 +344,12 @@ export function HeroSection() {
             >
               <div className="flex flex-col items-center">
                 <div className="rounded-[1.55rem] bg-white px-6 py-2.5 shadow-[0_16px_36px_-28px_rgba(17,24,61,0.68)]">
+                  {recommendationText ? (
+                    <p className="mb-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.09em] text-[var(--sandstone-navy)]/72">
+                      {recommendationText}
+                    </p>
+                  ) : null}
+
                   <div className="inline-flex items-center gap-3 border-b border-[var(--sandstone-charcoal)]/48 pb-1">
                     <button
                       type="button"
@@ -545,6 +577,12 @@ export function HeroSection() {
             </button>
           </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
+            {recommendationText ? (
+              <p className="mb-2 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-white/88">
+                {recommendationText}
+              </p>
+            ) : null}
+
             <input
               type="search"
               name="search"

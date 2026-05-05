@@ -14,6 +14,10 @@ interface SiteHeaderProps {
   showDesktopCenterLogo?: boolean;
   /** When true, only the logo (far left) is shown; no nav links or menu. Used for giveaway. */
   logoOnly?: boolean;
+  desktopLogoSrc?: string;
+  mobileLogoSrc?: string;
+  logoAlt?: string;
+  wideDesktopLogo?: boolean;
 }
 
 export function SiteHeader({
@@ -21,16 +25,32 @@ export function SiteHeader({
   variant = "default",
   showDesktopCenterLogo = true,
   logoOnly = false,
+  desktopLogoSrc = "/desktop-hero-logo.webp",
+  mobileLogoSrc = "/mobile-header-logo.webp",
+  logoAlt = "Sandstone Real Estate Group",
+  wideDesktopLogo = false,
 }: SiteHeaderProps) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const desktopLeftNav = SITE_NAV.slice(0, 2);
-  const desktopRightNav = SITE_NAV.slice(2);
+  const desktopNavSplitIndex = Math.ceil(SITE_NAV.length / 2);
+  const desktopLeftNav = SITE_NAV.slice(0, desktopNavSplitIndex);
+  const desktopRightNav = SITE_NAV.slice(desktopNavSplitIndex);
   const isHeroHeader = overlayDesktop;
   const isLeadHeader = !overlayDesktop && variant === "lead";
-  const desktopLogoSrc = "/desktop-hero-logo.webp";
-  const mobileLogoSrc = "/mobile-header-logo.webp";
   const showLeadCenteredDesktopNav = isLeadHeader && !showDesktopCenterLogo;
+  const mobileLogoSizeClasses = wideDesktopLogo ? "h-8 w-24" : "h-9 w-9";
+  const mobileLogoSizes = wideDesktopLogo ? "96px" : "36px";
+  const desktopLogoSizeClasses = wideDesktopLogo
+    ? isHeroHeader
+      ? "h-[100px] w-[280px]"
+      : isLeadHeader
+        ? "h-[98px] w-[276px]"
+        : "h-[74px] w-[220px]"
+    : isHeroHeader
+      ? "h-[118px] w-[184px]"
+      : isLeadHeader
+        ? "h-[118px] w-[184px]"
+        : "h-[86px] w-[144px]";
   const isActiveNavItem = (href: string) => {
     if (href.includes("#")) return false;
     return pathname === href;
@@ -65,13 +85,13 @@ export function SiteHeader({
           className="absolute left-4 top-1/2 z-[85] hidden -translate-y-1/2 items-center text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)] lg:inline-flex"
           aria-label="Sandstone Real Estate Group - Home"
         >
-          <div className="relative h-9 w-9 shrink-0">
+          <div className={cn("relative shrink-0", mobileLogoSizeClasses)}>
             <Image
               src={mobileLogoSrc}
-              alt="Sandstone Real Estate Group"
+              alt={logoAlt}
               fill
               className="object-contain brightness-110 contrast-110"
-              sizes="36px"
+              sizes={mobileLogoSizes}
               priority
             />
           </div>
@@ -117,13 +137,13 @@ export function SiteHeader({
           className="absolute left-4 top-1/2 z-[85] hidden -translate-y-1/2 items-center text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)] lg:inline-flex"
           aria-label="Sandstone Real Estate Group - Home"
         >
-          <div className="relative h-9 w-9 shrink-0">
+            <div className={cn("relative shrink-0", mobileLogoSizeClasses)}>
             <Image
               src={mobileLogoSrc}
-              alt="Sandstone Real Estate Group"
+              alt={logoAlt}
               fill
               className="object-contain brightness-110 contrast-110"
-              sizes="36px"
+                sizes={mobileLogoSizes}
               priority
             />
           </div>
@@ -146,18 +166,13 @@ export function SiteHeader({
             className="flex items-center gap-2 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
             aria-label="Sandstone Real Estate Group - Home"
           >
-            <div
-              className={cn(
-                "relative shrink-0",
-                "h-9 w-9"
-              )}
-            >
+            <div className={cn("relative shrink-0", mobileLogoSizeClasses)}>
               <Image
                 src={mobileLogoSrc}
-                alt="Sandstone Real Estate Group"
+                alt={logoAlt}
                 fill
                 className="object-contain brightness-110 contrast-110"
-                sizes="36px"
+                sizes={mobileLogoSizes}
                 priority
               />
             </div>
@@ -245,10 +260,10 @@ export function SiteHeader({
             </>
           ) : (
             <>
-              <nav aria-label="Primary left">
+              <nav aria-label="Primary left" className="flex-1">
                 <ul
                   className={cn(
-                    "flex items-center gap-6",
+                    "flex items-center justify-end gap-6",
                     isLeadHeader && "gap-2.5",
                     isHeroHeader ? "pt-1" : "pt-0"
                   )}
@@ -292,16 +307,12 @@ export function SiteHeader({
                   <div
                     className={cn(
                       "relative shrink-0",
-                      isHeroHeader
-                        ? "h-[118px] w-[184px]"
-                        : isLeadHeader
-                          ? "h-[118px] w-[184px]"
-                          : "h-[86px] w-[144px]"
+                      desktopLogoSizeClasses
                     )}
                   >
                     <Image
                       src={desktopLogoSrc}
-                      alt="Sandstone Real Estate Group"
+                      alt={logoAlt}
                       fill
                       className={cn(
                         "object-contain",
@@ -321,19 +332,15 @@ export function SiteHeader({
                   aria-hidden
                   className={cn(
                     "shrink-0",
-                    isHeroHeader
-                      ? "h-[118px] w-[184px]"
-                      : isLeadHeader
-                        ? "h-[118px] w-[184px]"
-                        : "h-[86px] w-[144px]"
+                    desktopLogoSizeClasses
                   )}
                 />
               )}
 
-              <nav aria-label="Primary right">
+              <nav aria-label="Primary right" className="flex-1">
                 <ul
                   className={cn(
-                    "flex items-center gap-6",
+                    "flex items-center justify-start gap-6",
                     isLeadHeader && "gap-2.5",
                     isHeroHeader ? "pt-1" : "pt-0"
                   )}
