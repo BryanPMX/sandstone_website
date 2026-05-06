@@ -3,18 +3,30 @@
  * Single source of truth for labels, legal links, and static copy.
  */
 export const SITE_NAV = [
+  { label: "PCS", href: "/pcs" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact Us", href: "/#contact" },
+] as const;
+
+export const CONTACT_US_MENU = [
   { label: "Sell a property", href: "/sell" },
   { label: "Rent a property", href: "/rent" },
   { label: "Join the Team", href: "/join" },
   { label: "Contact Us", href: "/#contact" },
 ] as const;
 
+export const FOOTER_NAV = [
+  { label: "PCS", href: "/pcs" },
+  ...CONTACT_US_MENU,
+  { label: "Blog", href: "/blog" },
+] as const;
+
 export const SITE_BRAND = "Sandstone Real Estate Group";
 export const SMS_DISCLOSURE_BRAND = `${SITE_BRAND} by Keller Williams`;
 
 export const SITE_CONTACT = {
-  phone: "+1 (915) 328-9799",
-  phoneRaw: "9153289799",
+  phone: "+1 (915) 277-6707",
+  phoneRaw: "9152776707",
   email: "agamboa@kw.com",
 } as const;
 

@@ -7,8 +7,8 @@ import {
 } from "@/services";
 import type { PropertyCard } from "@/types";
 
-const MAP_LISTINGS_CACHE_TTL_MS = 60_000;
-const MAP_LISTINGS_REFRESH_COOLDOWN_MS = 12_000;
+const MAP_LISTINGS_CACHE_TTL_MS = 3_600_000; // 1 hour
+const MAP_LISTINGS_REFRESH_COOLDOWN_MS = 30_000; // 30 seconds
 
 let cachedMapListings: PropertyCard[] | null = null;
 let cachedMapListingsAt = 0;

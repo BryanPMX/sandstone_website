@@ -1,122 +1,66 @@
 # Sandstone Real Estate Group Website
 
-Next.js 15 (App Router) marketing website for Sandstone Real Estate Group.
+Marketing and lead-generation site for Sandstone Real Estate Group, built with Next.js App Router.
 
-## Overview
+## What This App Includes
 
-The site is a brand-forward real estate experience with:
-
-- Responsive landing page (desktop + mobile)
-- Hero search with Google Places-assisted address lookup and persistent price/bed/bath filters
-- Searchable listings feed with dynamic detail pages
-- Lead capture form wired to Rolu webhook
-- View-only Privacy Policy and Terms pages
-- This is a test!
-
-Core design direction is defined by brand tokens in `src/app/globals.css` and Montserrat loaded in `src/app/layout.tsx`.
+- Brand-forward responsive marketing pages
+- Home hero search with Google Places autocomplete
+- Listings grid page and map-first browsing experience
+- Listing detail pages with inquiry form
+- Lead capture flows for contact, sell, rent, join, and giveaway
+- Blog index and article pages with Markdown-driven content
+- Cloudflare Turnstile verification on lead forms
+- Spark-backed listings with automatic fallback to legacy feed/demo data
 
 ## Tech Stack
 
 - Next.js 15 + React 19 + TypeScript
-- Tailwind CSS
-- Zod validation
-- Framer Motion (contact animations)
-- Mammoth (DOCX to HTML conversion for legal docs)
+- Tailwind CSS with @tailwindcss/typography and tailwindcss-animate
+- Zod for schema validation
+- Leaflet + react-leaflet + supercluster (map rendering and marker clustering)
+- Framer Motion
+- Markdown-based blog rendering using gray-matter, remark, and remark-html
 
-## Architecture
+## App Routes
 
-The project is organized by responsibility:
+- `/` home page
+- `/listings` listings grid + paging + search
+- `/listings/map` interactive map browsing
+- `/listings/[id]` listing detail page
+- `/blog` blog index and article listing page
+- `/blog/[slug]` blog article detail pages
+- `/sell` seller page + lead capture
+- `/rent` rental page + lead capture
+- `/join` recruiting page + lead capture
+- `/giveaway` QR-focused hidden giveaway form (noindex)
+- `/privacy-policy` legal page
+- `/terms-and-conditions` legal page
 
-- `src/app`: routes and page composition
-- `src/components`: UI sections and reusable components
-- `src/actions`: server actions (orchestration only)
-- `src/services`: external I/O (Spark listings, legacy feed fallback, lead webhook)
-- `src/schemas`: validation contracts
-- `src/config`: env accessors
-- `src/lib`: pure helpers/utilities
-- `src/types`: shared domain types
-- `src/constants`: static copy/links
+## API Routes
 
-### SOLID in practice
+- `/api/listings/my` curated/my listings payload
+- `/api/listings/active` active listings payload
+- `/api/listings/rent` rental listings payload
+- `/api/listings/all` filterable listings endpoint with optional bounds and limits
+- `/api/listings/map` map cache refresh/read endpoint
+- `/api/listings/diagnostics` listings source + Spark configuration diagnostics
 
-- **Single Responsibility:** each layer has one job (validation vs I/O vs composition).
-- **Open/Closed:** new CRM integrations or listing data sources can be added without rewriting UI components.
-- **Liskov Substitution:** any implementation of `ILeadSubmissionService` can replace the default one.
-- **Interface Segregation:** small focused types (`LeadInput`, `SubmitLeadState`, `PropertyCard`).
-- **Dependency Inversion:** server action depends on service interface + config functions, not direct env/fetch logic.
+## Data Flow (High Level)
 
-## Routes
+1. Server services pull listings from Spark when configured.
+2. On Spark failure or missing token, the app falls back to legacy feed (`MSL_FEED_URL`) and then demo listings.
+3. Listings are normalized to shared `PropertyCard` / `PropertyDetail` contracts before rendering.
+4. Lead server actions validate with Zod, resolve the correct webhook per form type, and submit through `leadSubmissionService`.
 
-- `/`: home page
-- `/listings`: all listings, optional `?search=` filter
-- `/listings/map`: map-first listings search with preserved address, radius, price, bed, and bath filters
-- `/listings/[id]`: listing details
-- `/sell`: service stub page
-- `/rent`: service stub page
-- `/join`: recruiting stub page
-- `/privacy-policy`: view-only legal page
-- `/terms-and-conditions`: view-only legal page
+## Scripts
 
-## Home Page Composition
-
-`src/app/page.tsx` composes:
-
-1. `SiteHeader`
-2. `HeroSection` (compact centered search UI with content-fit filter pills that routes buy searches to `/listings/map` and links rent/sell tabs to their dedicated routes)
-3. `FeaturedListingsSection` (first 4 filtered listings)
-4. `PrimaryActionTiles`
-5. `AboutSection`
-6. `ContactForm`
-7. `SiteFooter`
-
-## Listings Flow
-
-1. `fetchMyPropertyCards()` powers the home page carousel from Spark `my/listings`.
-2. `fetchActivePropertyCards()` powers `/listings` by paginating through all active Spark listings.
-3. `buildListingsMapHref()` in `src/lib/properties.ts` normalizes hero search state into a shared query-string format.
-4. `parseListingsMapSearchParams()` in `src/lib/properties.ts` hydrates `/listings/map` from `searchParams`, preserving filter state on Enter submits.
-5. `fetchActivePropertyCards()` also powers `/listings/map`, where coordinates are rendered as map markers.
-6. `fetchPropertyCardById()` loads listing detail pages directly by listing id.
-7. If Spark is not configured or fails, the app falls back to the legacy `MSL_FEED_URL` JSON feed.
-8. If neither source is available, curated demo listings keep the UI hydrated.
-9. `filterPropertyCards()` and `filterPropertyCardsWithFilters()` in `src/lib/properties.ts` apply search query and preset filter logic.
-
-## Lead Form Flow
-
-1. User submits `ContactForm`.
-2. `submitLead` server action validates input using `LeadSchema`.
-3. Action reads the form-specific Rolu webhook URL from config.
-4. `leadSubmissionService.submit(...)` posts payload to webhook.
-5. UI shows success/error + field errors.
-
-## Environment Variables
-
-- `SPARK_ACCESS_TOKEN`: preferred server-only Spark access token
-- `SPARK_API_BASE_URL`: optional override, defaults to `https://sparkapi.com`; replication-restricted keys should use `https://replication.sparkapi.com`
-- `SPARK_API_LISTINGS_PATH`: optional override, defaults to `/v1/listings`
-- `SPARK_API_MY_LISTINGS_PATH`: optional override, defaults to `/v1/my/listings`
-- `SPARK_ACTIVE_LISTINGS_FILTER`: Spark `_filter` for the full listings page, defaults to `MlsStatus Eq 'Active'`
-- `SPARK_MY_LISTINGS_FILTER`: optional home-page `my/listings` filter, defaults to the active filter
-- `SPARK_PAGE_SIZE`: Spark per-page fetch size, defaults to `27`
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: required for the interactive `/listings/map` Google map
-- `ROLU_WEBHOOK_URL`: backward-compatible contact webhook fallback
-- `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`, `ROLU_WEBHOOK_GIVEAWAY_URL`, `ROLU_WEBHOOK_LISTING_INQUIRY_URL`: preferred lead webhook envs
-- `TURNSTILE_SECRET_KEY`: required for server-side captcha verification
-- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`: required for the Turnstile widget
-- `MSL_FEED_URL`: optional legacy listings feed fallback
-
-## Spark Setup
-
-Spark access should be provisioned from the Spark dashboard as documented at [Set Up Access](https://sparkplatform.com/docs/overview/set_up_access). The current app expects the access token to be stored only in a server env var (`SPARK_ACCESS_TOKEN`) and sends it from the server in the `Authorization` header when requesting listings.
-
-Recommended rollout:
-
-1. Request Spark API access for the correct MLS/account from the Spark dashboard.
-2. Copy the issued access token/API key into `SPARK_ACCESS_TOKEN` in your deployment environment.
-3. Keep the token server-only. Do not expose it with a `NEXT_PUBLIC_` prefix and do not call Spark directly from client components.
-4. If Spark returns key restriction error `1021`, set `SPARK_API_BASE_URL=https://replication.sparkapi.com`.
-5. Set `SPARK_ACTIVE_LISTINGS_FILTER` and, if needed, `SPARK_MY_LISTINGS_FILTER` to match your MLS status fields.
-6. Leave `MSL_FEED_URL` unset once Spark is validated, or keep it temporarily as a fallback during cutover.
+- `npm run dev` start development server (Turbopack)
+- `npm run build` production build
+- `npm run start` run built app
+- `npm run lint` lint the codebase
+- `npm run vercel:build` run Vercel build
+- `npm run vercel:deploy` deploy via Vercel CLI
 
 ## Local Development
 
@@ -125,79 +69,80 @@ npm install
 npm run dev
 ```
 
-Build and checks:
+Open `http://localhost:3000`.
+
+## Environment Variables
+
+### Core Listings (Spark)
+
+- `SPARK_ACCESS_TOKEN` (preferred)
+- `SPARK_API_TOKEN` (legacy alias)
+- `SPARK_API_KEY` (legacy alias)
+- `SPARK_API_BASE_URL` (default: `https://sparkapi.com`)
+- `SPARK_API_LISTINGS_PATH` (default: `/v1/listings`)
+- `SPARK_API_MY_LISTINGS_PATH` (default: `/v1/my/listings`)
+- `SPARK_API_RENTAL_LISTINGS_PATH` (default: `/v1/listings`)
+- `SPARK_ACTIVE_LISTINGS_FILTER` (fallback alias: `SPARK_LISTINGS_FILTER`)
+- `SPARK_MY_LISTINGS_FILTER`
+- `SPARK_RENTAL_LISTINGS_FILTER`
+- `SPARK_TEAM_FILTER`
+- `SPARK_PAGE_SIZE` (fallback alias: `SPARK_LISTINGS_LIMIT`)
+- `SPARK_DEBUG_LOOKUPS=1` (optional diagnostics logging)
+
+If your key is replication-restricted (Spark error code `1021`), use:
 
 ```bash
-npm run lint
-npm run build
+SPARK_API_BASE_URL=https://replication.sparkapi.com
 ```
 
-## Project Structure
+### Lead + Captcha
 
-```text
-src/
-├── actions/
-│   └── submit-lead.ts
-├── app/
-│   ├── globals.css
-│   ├── join/page.tsx
-│   ├── layout.tsx
-│   ├── listings/
-│   │   ├── [id]/page.tsx
-│   │   └── page.tsx
-│   ├── page.tsx
-│   ├── privacy-policy/page.tsx
-│   ├── rent/page.tsx
-│   ├── sell/page.tsx
-│   └── terms-and-conditions/page.tsx
-├── components/
-│   ├── properties/
-│   │   ├── index.ts
-│   │   └── ListingCard.tsx
-│   ├── sections/
-│   │   ├── AboutSection.tsx
-│   │   ├── FeaturedListingsSection.tsx
-│   │   └── PrimaryActionTiles.tsx
-│   ├── ui/
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── input.tsx
-│   │   ├── label.tsx
-│   │   └── textarea.tsx
-│   ├── ContactForm.tsx
-│   ├── HeroSection.tsx
-│   ├── LegalDocumentLayout.tsx
-│   ├── MobileMenuPortal.tsx
-│   ├── SiteFooter.tsx
-│   ├── SiteHeader.tsx
-├── config/
-│   ├── env.ts
-│   └── index.ts
-├── constants/
-│   ├── index.ts
-│   └── site.ts
-├── lib/
-│   ├── index.ts
-│   ├── properties.ts
-│   ├── utils.ts
-│   └── zod.ts
-├── schemas/
-│   ├── index.ts
-│   └── lead.ts
-├── services/
-│   ├── index.ts
-│   ├── lead.service.ts
-│   ├── listings.service.ts
-│   ├── msl.service.ts
-│   └── spark.service.ts
-└── types/
-    ├── index.ts
-    ├── lead.ts
-    └── property.ts
+- `ROLU_WEBHOOK_URL` (legacy global fallback)
+- `ROLU_WEBHOOK_CONTACT_URL`
+- `ROLU_WEBHOOK_SELL_URL`
+- `ROLU_WEBHOOK_RENT_URL`
+- `ROLU_WEBHOOK_JOIN_URL`
+- `ROLU_WEBHOOK_GIVEAWAY_URL`
+- `ROLU_WEBHOOK_LISTING_INQUIRY_URL`
+- `TURNSTILE_SECRET_KEY`
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+
+### Frontend/URL + Legacy Fallback
+
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (for hero autocomplete and place details)
+- `NEXT_PUBLIC_SITE_URL` or `SITE_URL` (canonical listing share links)
+- `MSL_FEED_URL` (legacy feed fallback)
+
+## Suggested .env.local Starter
+
+```bash
+SPARK_ACCESS_TOKEN=your_server_only_token
+SPARK_API_BASE_URL=https://sparkapi.com
+SPARK_API_LISTINGS_PATH=/v1/listings
+SPARK_API_MY_LISTINGS_PATH=/v1/my/listings
+SPARK_ACTIVE_LISTINGS_FILTER=MlsStatus Eq 'Active'
+SPARK_PAGE_SIZE=27
+
+ROLU_WEBHOOK_CONTACT_URL=https://example.com/contact-webhook
+TURNSTILE_SECRET_KEY=your_turnstile_secret
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_turnstile_site_key
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
 ```
 
-## Additional Docs
+## Project Organization
+
+- `src/app` routes and route-level composition
+- `src/components` reusable UI and page sections
+- `src/actions` server actions for form submissions
+- `src/services` data access and external integrations
+- `src/config` environment variable accessors
+- `src/lib` pure helpers, filtering, map/listing utilities
+- `src/schemas` Zod schemas
+- `src/types` shared domain types
+
+## Additional Documentation
 
 - `docs/ARCHITECTURE.md`
 - `docs/ROLU-WORKFLOW.md`
 - `docs/SPARK-SETUP.md`
+- `docs/TODO-LISTING-INQUIRY-FORM.md`

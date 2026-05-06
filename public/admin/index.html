@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sandstone CMS</title>
+    <script>
+      window.CMS_MANUAL_INIT = true;
+    </script>
+  </head>
+  <body>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script>
+      const cmsBaseUrl =
+        window.location.hostname === "localhost"
+          ? window.location.origin
+          : "https://www.sandstone.homes";
+
+      window.addEventListener("message", function (event) {
+        if (typeof event.data === "string" && event.data.indexOf("authorization:github:") === 0) {
+          console.log("[Decap OAuth] message received", {
+            origin: event.origin,
+            dataPrefix: event.data.split(":").slice(0, 3).join(":"),
+          });
+        }
+      });
+
+      CMS.init({
+        config: {
+          backend: {
+            name: "github",
+            repo: "BryanPMX/sandstone_website",
+            branch: "main",
+            base_url: cmsBaseUrl,
+            auth_endpoint: "/api/decap/auth",
+          },
+          media_folder: "public/uploads",
+          public_folder: "/uploads",
+          collections: [
+            {
+              name: "blog",
+              label: "Blog",
+              folder: "content/blog",
+              create: true,
+              slug: "{{slug}}",
+              extension: "md",
+              format: "frontmatter",
+              fields: [
+                { label: "Title", name: "title", widget: "string" },
+                { label: "Date", name: "date", widget: "datetime" },
+                { label: "Excerpt", name: "excerpt", widget: "text" },
+                { label: "Cover Image", name: "coverImage", widget: "image" },
+                { label: "Body", name: "body", widget: "markdown" },
+              ],
+            },
+          ],
+        },
+      });
+    </script>
+  </body>
+</html>

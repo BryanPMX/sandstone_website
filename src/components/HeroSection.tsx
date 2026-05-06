@@ -6,11 +6,16 @@ import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import {
   LISTINGS_MAP_PATH,
+  DEFAULT_PROPERTY_SEARCH_MARKET,
   DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+  PROPERTY_SEARCH_MARKET_OPTIONS,
+  inferPropertySearchMarketFromInput,
+  getPropertySearchMarketLabel,
   getPropertySearchPriceOptions,
   PROPERTY_SEARCH_BED_OPTIONS,
   PROPERTY_SEARCH_BATH_OPTIONS,
   buildListingsMapHref,
+  type PropertySearchMarket,
   type PropertySearchPresetFilters,
 } from "@/lib";
 
@@ -85,6 +90,9 @@ export function HeroSection() {
   const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
+  const [locationFilter, setLocationFilter] = useState<PropertySearchMarket>(
+    DEFAULT_PROPERTY_SEARCH_MARKET
+  );
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" }>(
     {
@@ -192,6 +200,7 @@ export function HeroSection() {
     hasTriggeredRedirectRef.current = true;
     const href = buildListingsMapHref({
       ...params,
+      market: locationFilter,
       filterPresets: filters,
       listingType: filters.listingType,
     });
@@ -206,15 +215,16 @@ export function HeroSection() {
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmed = searchValue.trim();
+    const combinedSearch = trimmed;
 
-    if (!trimmed) {
+    if (!combinedSearch) {
       navigateToMap({});
       return;
     }
 
     const goToMap = (center?: { lat: number; lng: number }) => {
       navigateToMap({
-        search: trimmed,
+        search: combinedSearch,
         centerLat: center?.lat,
         centerLng: center?.lng,
         radiusMiles: 5,
@@ -252,6 +262,11 @@ export function HeroSection() {
     setSearchValue(value);
     setSelectedSuggestion(null);
 
+    const inferredMarket = inferPropertySearchMarketFromInput(value);
+    if (inferredMarket && inferredMarket !== locationFilter) {
+      setLocationFilter(inferredMarket);
+    }
+
     if (!value.trim() || !mapsReady || !autocompleteServiceRef.current) {
       setSuggestions([]);
       return;
@@ -283,6 +298,12 @@ export function HeroSection() {
   const handleSuggestionClick = (suggestion: PlaceSuggestion) => {
     setSearchValue(suggestion.description);
     setSelectedSuggestion(suggestion);
+
+    const inferredMarket = inferPropertySearchMarketFromInput(suggestion.description);
+    if (inferredMarket && inferredMarket !== locationFilter) {
+      setLocationFilter(inferredMarket);
+    }
+
     setSuggestions([]);
   };
 
@@ -317,52 +338,31 @@ export function HeroSection() {
               className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
             >
               <div className="flex flex-col items-center">
-                <div className="rounded-[1.55rem] bg-white px-6 py-2.5 shadow-[0_16px_36px_-28px_rgba(17,24,61,0.68)]">
-                  <div className="inline-flex items-center gap-3 border-b border-[var(--sandstone-charcoal)]/48 pb-1">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          listingType: "active",
-                          pricePreset: "any",
-                        }))
-                      }
-                      className={`border-b-[2px] pb-0.5 font-heading text-[0.94rem] font-semibold tracking-[0.01em] transition ${
-                        filters.listingType === "active"
-                          ? "border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
-                          : "border-transparent text-[var(--sandstone-charcoal)]/58 hover:text-[var(--sandstone-charcoal)]"
-                      }`}
-                    >
-                      Buy
-                    </button>
-                    <span
-                      aria-hidden
-                      className="text-[1.2rem] font-light leading-none text-[var(--sandstone-charcoal)]/48"
-                    >
-                      |
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          listingType: "rental",
-                          pricePreset: "any",
-                        }))
-                      }
-                      className={`pb-0.5 font-heading text-[0.94rem] font-medium tracking-[0.01em] transition ${
-                        filters.listingType === "rental"
-                          ? "border-b-[2px] border-[var(--sandstone-charcoal)] text-[var(--sandstone-charcoal)]"
-                          : "text-[var(--sandstone-charcoal)]/58 hover:text-[var(--sandstone-charcoal)]"
-                      }`}
-                    >
-                      Rent
-                    </button>
+                <div className="mb-3 flex justify-center">
+                  <div
+                    className="inline-flex items-center rounded-full border border-white/30 bg-white/14 p-1 backdrop-blur-sm"
+                    role="group"
+                    aria-label="Choose market"
+                  >
+                    {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setLocationFilter(option.value)}
+                        className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                          locationFilter === option.value
+                            ? "bg-white text-[var(--sandstone-navy)] shadow-[0_8px_20px_-12px_rgba(0,0,0,0.6)]"
+                            : "text-white/90 hover:bg-white/20"
+                        }`}
+                        aria-pressed={locationFilter === option.value}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                <div className="relative mt-3.5 w-full max-w-[670px]">
+                <div className="relative w-full max-w-[670px]">
                   <div className="rounded-[999px] bg-white p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)]">
                     <div className="relative">
                       <input
@@ -371,7 +371,7 @@ export function HeroSection() {
                         value={searchValue}
                         onChange={handleInputChange}
                         placeholder={SEARCH_PLACEHOLDER}
-                        className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-[4.4rem] font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
+                        className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-14 font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
                         aria-label="Search by address or ZIP code"
                         autoComplete="off"
                       />
@@ -403,7 +403,44 @@ export function HeroSection() {
                   )}
                 </div>
 
-                <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                  <div className="inline-flex items-center rounded-full border border-[var(--sandstone-charcoal)]/18 bg-[var(--sandstone-off-white)] p-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          listingType: "active",
+                          pricePreset: "any",
+                        }))
+                      }
+                      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                        filters.listingType === "active"
+                          ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                          : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                      }`}
+                    >
+                      Buy
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          listingType: "rental",
+                          pricePreset: "any",
+                        }))
+                      }
+                      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                        filters.listingType === "rental"
+                          ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                          : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                      }`}
+                    >
+                      Rent
+                    </button>
+                  </div>
+
                   <div className="relative focus-within:outline-none">
                     <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                       <span>{getSelectedOptionLabel(priceOptions, filters.pricePreset)}</span>
@@ -508,43 +545,28 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
-          <div className="mx-auto flex w-full max-w-sm items-center justify-center gap-4 text-sm font-semibold">
-            <button
-              type="button"
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  listingType: "active",
-                  pricePreset: "any",
-                }))
-              }
-              className={`px-2 py-1 transition ${
-                filters.listingType === "active"
-                  ? "border-b-2 border-white text-white"
-                  : "text-white/80 hover:text-white"
-              }`}
-            >
-              Buy
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                setFilters((prev) => ({
-                  ...prev,
-                  listingType: "rental",
-                  pricePreset: "any",
-                }))
-              }
-              className={`px-2 py-1 transition ${
-                filters.listingType === "rental"
-                  ? "border-b-2 border-white text-white"
-                  : "text-white/80 hover:text-white"
-              }`}
-            >
-              Rent
-            </button>
+          <div
+            className="mx-auto inline-flex w-full max-w-sm items-center justify-center rounded-full border border-white/30 bg-white/14 p-1"
+            role="group"
+            aria-label="Choose market"
+          >
+            {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setLocationFilter(option.value)}
+                className={`rounded-full px-3 py-2 text-xs font-semibold transition ${
+                  locationFilter === option.value
+                    ? "bg-white text-[var(--sandstone-navy)]"
+                    : "text-white/90 hover:bg-white/20"
+                }`}
+                aria-pressed={locationFilter === option.value}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
-          <form onSubmit={handleSearchSubmit} className="mx-auto mt-3 w-full max-w-sm">
+          <form onSubmit={handleSearchSubmit} className="mx-auto mt-4 w-full max-w-sm">
             <input
               type="search"
               name="search"
@@ -555,12 +577,51 @@ export function HeroSection() {
               aria-label="Search by address or ZIP code"
             />
 
-            <button
-              type="submit"
-              className="mx-auto mt-2.5 block w-[72%] max-w-[220px] rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 font-semibold text-white transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)] focus:ring-offset-2 focus:ring-offset-[var(--sandstone-navy)]"
-            >
-              Search
-            </button>
+            <div className="mt-3 flex flex-wrap items-center justify-end gap-3">
+              <button
+                type="submit"
+                className="rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_-16px_rgba(0,0,0,0.55)] transition hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/50"
+              >
+                Search
+              </button>
+            </div>
+
+            <div className="mt-3 flex items-center justify-center gap-4">
+              <button
+                type="button"
+                onClick={() =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    listingType: "active",
+                    pricePreset: "any",
+                  }))
+                }
+                className={`rounded-full border border-white/30 px-4 py-2 text-sm font-semibold transition ${
+                  filters.listingType === "active"
+                    ? "bg-white text-[var(--sandstone-navy)]"
+                    : "text-white/80 hover:bg-white/20 hover:text-white"
+                }`}
+              >
+                Buy
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    listingType: "rental",
+                    pricePreset: "any",
+                  }))
+                }
+                className={`rounded-full border border-white/30 px-4 py-2 text-sm font-semibold transition ${
+                  filters.listingType === "rental"
+                    ? "bg-white text-[var(--sandstone-navy)]"
+                    : "text-white/80 hover:bg-white/20 hover:text-white"
+                }`}
+              >
+                Rent
+              </button>
+            </div>
           </form>
 
           <button
@@ -655,14 +716,29 @@ export function HeroSection() {
                 <div className="flex flex-wrap justify-center gap-4 text-center">
                   <button
                     type="button"
-                    onClick={() => router.push("/listings")}
+                    onClick={() =>
+                      router.push(
+                        locationFilter === DEFAULT_PROPERTY_SEARCH_MARKET
+                          ? "/listings"
+                          : `/listings?market=${locationFilter}`
+                      )
+                    }
                     className="text-xs font-semibold text-white/80 transition hover:text-white"
                   >
                     All Listings
                   </button>
                   <button
                     type="button"
-                    onClick={() => router.push("/listings/map")}
+                    onClick={() =>
+                      router.push(
+                        buildListingsMapHref({
+                          search: searchValue.trim() || undefined,
+                          market: locationFilter,
+                          filterPresets: filters,
+                          listingType: filters.listingType,
+                        })
+                      )
+                    }
                     className="text-xs font-semibold text-white/80 transition hover:text-white"
                   >
                     Map Search
@@ -697,7 +773,7 @@ export function HeroSection() {
               Opening map search
             </p>
             <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/74">
-              Loading available homes near El Paso.
+              Loading available homes near {getPropertySearchMarketLabel(locationFilter)}.
             </p>
           </div>
         </div>

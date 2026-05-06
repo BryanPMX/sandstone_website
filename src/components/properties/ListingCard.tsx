@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { PropertyCard } from "@/types";
 import { shouldBypassNextImageOptimization } from "@/lib";
@@ -27,7 +27,6 @@ export function ListingCard({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isNavigating, setIsNavigating] = useState(false);
-  const hasPrefetchedRef = useRef(false);
   const shouldShowTransitionOverlay = property.sparkSource === "active";
   const resolvedImageSrc = property.image?.trim() || FALLBACK_LISTING_IMAGE_DATA_URI;
   const bypassOptimization = shouldBypassNextImageOptimization(resolvedImageSrc);
@@ -101,15 +100,6 @@ export function ListingCard({
     });
   };
 
-  const prefetchDetailOnIntent = useCallback(() => {
-    if (hasPrefetchedRef.current) {
-      return;
-    }
-
-    hasPrefetchedRef.current = true;
-    void router.prefetch(detailHref);
-  }, [detailHref, router]);
-
   const showOverlay = shouldShowTransitionOverlay && (isNavigating || isPending);
 
   return (
@@ -122,8 +112,8 @@ export function ListingCard({
       >
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
-            src={property.image}
-            alt={property.title}
+            src={resolvedImageSrc}
+            alt={`${property.title} - ${property.beds} bedroom ${property.baths} bathroom home in ${property.location} for ${property.price}`}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
             className="object-cover transition duration-300 group-hover:scale-105"
@@ -149,29 +139,6 @@ export function ListingCard({
             <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
               {details}
             </p>
-            {details && (
-              <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
-                {details}
-              </p>
-            )}
-          </div>
-        </Link>
-
-        <div className="absolute right-[10px] top-[10px] z-10 flex flex-col gap-2">
-          <button
-            type="button"
-            aria-label="Share on WhatsApp"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-          >
-            <img src="/icons/whatsapp.png" alt="WhatsApp" className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            aria-label="Share on Facebook"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/80 bg-white/90 shadow-sm transition-transform duration-200 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-          >
-            <img src="/icons/facebook.png" alt="Facebook" className="h-5 w-5" />
-          </button>
           )}
         </div>
       </Link>

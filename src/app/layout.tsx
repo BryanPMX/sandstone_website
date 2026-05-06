@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import Script from "next/script";
+import { FloatingWhatsAppBubble } from "@/components/FloatingWhatsAppBubble";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -39,6 +40,7 @@ export default function RootLayout({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <noscript><img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=927301083105505&ev=PageView&noscript=1" alt="" /></noscript>
         {children}
+        <FloatingWhatsAppBubble />
       </body>
     </html>
   );
