@@ -3,11 +3,22 @@
  * Single source of truth for labels, legal links, and static copy.
  */
 export const SITE_NAV = [
+  { label: "PCS", href: "/pcs" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact Us", href: "/#contact" },
+] as const;
+
+export const CONTACT_US_MENU = [
   { label: "Sell a property", href: "/sell" },
   { label: "Rent a property", href: "/rent" },
-  { label: "Blog", href: "/blog" },
   { label: "Join the Team", href: "/join" },
   { label: "Contact Us", href: "/#contact" },
+] as const;
+
+export const FOOTER_NAV = [
+  { label: "PCS", href: "/pcs" },
+  ...CONTACT_US_MENU,
+  { label: "Blog", href: "/blog" },
 ] as const;
 
 export const SITE_BRAND = "Sandstone Real Estate Group";
