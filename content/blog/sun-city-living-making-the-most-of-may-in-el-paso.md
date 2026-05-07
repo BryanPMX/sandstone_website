@@ -1,15 +1,13 @@
 ---
 title: "Sun City Living: Making the Most of May in El Paso"
 date: 2026-05-05T10:00:00.000-06:00
-excerpt: >-
-  There is a specific energy that hits El Paso in May. The Franklin Mountains
-  turn that perfect shade of dusty gold, the patios start filling up, and the
-  city’s social calendar officially kicks into high gear.
-
-
-  Whether you’ve lived here for generations or you’re just getting settled in after a military relocation, being a local in El Paso means knowing exactly where to find the best shade and the best views. Here is your insider guide to the Sun City this month.
+excerpt: There is a specific energy that hits El Paso in May. The Franklin
+  Mountains turn that perfect shade of dusty gold, the patios start filling up,
+  and the city’s social calendar officially kicks into high gear.
 coverImage: /uploads/sun-city-living-making-the-most-of-may-in-el-paso.png
 ---
+## Whether you’ve lived here for generations or you’re just getting settled in after a military relocation, being a local in El Paso means knowing exactly where to find the best shade and the best views. Here is your insider guide to the Sun City this month.
+
 ## The Patio Pick: Salt + Honey Bakery Cafe
 
 If you’re looking for the heart of the "Live Like a Local" lifestyle, you’ll find it at Salt + Honey in Five Points.
