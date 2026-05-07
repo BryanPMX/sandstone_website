@@ -1,16 +1,14 @@
 ---
 title: PCSing to Fort Bliss? Your 2026 "Live Like a Local" Guide to El Paso
 date: 2026-05-05T22:00:00.000-06:00
-excerpt: >-
-  Moving to a new city is a whirlwind, especially with a military relocation.
-  You aren’t just looking for a house; you’re looking for your "home base"—the
-  place where you’ll grab your morning coffee, take the kids to the park, and
-  spend your weekends.
-
-
-  At Sandstone, our mission is to help you live like a local from the moment you arrive. In this month’s community spotlight, we’re diving into the best of El Paso this May and providing a crucial update on the Fort Bliss housing market.
+excerpt: Moving to a new city is a whirlwind, especially with a military
+  relocation. You aren’t just looking for a house; you’re looking for your "home
+  base"—the place where you’ll grab your morning coffee, take the kids to the
+  park, and spend your weekends
 coverImage: /uploads/900-x-520-website-images-241772834098.webp
 ---
+##### At Sandstone, our mission is to help you live like a local from the moment you arrive. In this month’s community spotlight, we’re diving into the best of El Paso this May and providing a crucial update on the Fort Bliss housing market.
+
 ## The Morning Routine: 2Ten Coffee Roasters
 
 Every great El Paso day starts with the right fuel. If you’re house hunting on the West Side or near the East Side, you’ll likely find our team at 2Ten Coffee Roasters.
