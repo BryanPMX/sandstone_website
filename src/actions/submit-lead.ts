@@ -23,6 +23,8 @@ export async function submitLeadForForm(
     phone: formData.get("phone") ?? "",
     address: formData.get("address") ?? "",
     message: formData.get("message") ?? "",
+    mappingReference:
+      String(formData.get("mappingReference") ?? formData.get("mapping_reference") ?? ""),
     acceptTransactionalSms: formData.get("acceptTransactionalSms") === "on",
     acceptMarketingSms: formData.get("acceptMarketingSms") === "on",
   };

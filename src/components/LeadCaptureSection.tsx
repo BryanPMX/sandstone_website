@@ -128,6 +128,7 @@ export interface LeadCaptureSectionProps {
   heroBackgroundAlt?: string;
   heroCtaLabel?: string;
   heroCtaHref?: string;
+  mappingReference?: string;
   turnstileSiteKey?: string;
 }
 
@@ -151,6 +152,7 @@ export function LeadCaptureSection({
   heroBackgroundAlt = "",
   heroCtaLabel,
   heroCtaHref,
+  mappingReference,
   turnstileSiteKey = "",
 }: LeadCaptureSectionProps) {
   const action = submitLeadForForm.bind(null, formType);
@@ -168,6 +170,12 @@ export function LeadCaptureSection({
       className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6"
     >
       <form action={formAction} className={isHero ? "space-y-3.5" : "space-y-4"}>
+        {mappingReference ? (
+          <>
+            <input type="hidden" name="mappingReference" value={mappingReference} />
+            <input type="hidden" name="mapping_reference" value={mappingReference} />
+          </>
+        ) : null}
         {state?.success === true && (
           <p className="rounded-lg bg-green-100 px-4 py-3 text-sm font-medium text-green-800">
             {state.message}
