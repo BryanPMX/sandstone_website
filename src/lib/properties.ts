@@ -5,11 +5,17 @@ export const ALEJANDRO_GAMBOA_NAME = "alejandro gamboa";
 
 export type PropertySearchPricePreset =
   | "any"
-  | "0-250"
+  | "under-150"
+  | "150-250"
   | "250-500"
   | "500-750"
-  | "750-plus";
+  | "750-plus"
+  | "rent-under-1000"
+  | "rent-1000-2500"
+  | "rent-2500-5000"
+  | "rent-5000-plus";
 export type PropertySearchCountPreset = "any" | "1" | "2" | "3" | "4";
+export type PropertySearchMarket = "el-paso" | "midland" | "odessa";
 
 export interface PropertySearchPresetFilters {
   pricePreset: PropertySearchPricePreset;
@@ -19,6 +25,7 @@ export interface PropertySearchPresetFilters {
 
 interface ListingsMapSearchQuery {
   search?: string | string[];
+  market?: string | string[];
   lat?: string | string[];
   lng?: string | string[];
   radiusMiles?: string | string[];
@@ -31,6 +38,7 @@ interface ListingsMapSearchQuery {
 
 export interface ParsedListingsMapSearchParams {
   searchQuery: string;
+  market: PropertySearchMarket;
   centerLat?: number;
   centerLng?: number;
   radiusMiles?: number;
@@ -43,10 +51,15 @@ export interface ParsedListingsMapSearchParams {
 
 const PROPERTY_SEARCH_PRICE_PRESETS = new Set<PropertySearchPricePreset>([
   "any",
-  "0-250",
+  "under-150",
+  "150-250",
   "250-500",
   "500-750",
   "750-plus",
+  "rent-under-1000",
+  "rent-1000-2500",
+  "rent-2500-5000",
+  "rent-5000-plus",
 ]);
 const PROPERTY_SEARCH_COUNT_PRESETS = new Set<PropertySearchCountPreset>([
   "any",
@@ -62,16 +75,48 @@ export const DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS: PropertySearchPresetFilters
   bathsPreset: "any",
 };
 
+export const DEFAULT_PROPERTY_SEARCH_MARKET: PropertySearchMarket = "el-paso";
+
+export const PROPERTY_SEARCH_MARKET_OPTIONS: Array<{
+  value: PropertySearchMarket;
+  label: string;
+}> = [
+  { value: "el-paso", label: "El Paso" },
+  { value: "midland", label: "Midland" },
+  { value: "odessa", label: "Odessa" },
+];
+
 export const PROPERTY_SEARCH_PRICE_OPTIONS: Array<{
   value: PropertySearchPricePreset;
   label: string;
 }> = [
   { value: "any", label: "Price" },
-  { value: "0-250", label: "Under $250k" },
+  { value: "under-150", label: "Less than $150,000" },
+  { value: "150-250", label: "$150,000 - $250,000" },
   { value: "250-500", label: "$250k - $500k" },
   { value: "500-750", label: "$500k - $750k" },
   { value: "750-plus", label: "$750k+" },
 ];
+
+export const PROPERTY_SEARCH_RENT_PRICE_OPTIONS: Array<{
+  value: PropertySearchPricePreset;
+  label: string;
+}> = [
+  { value: "any", label: "Price" },
+  { value: "rent-under-1000", label: "Under $1,000" },
+  { value: "rent-1000-2500", label: "$1,000 - $2,500" },
+  { value: "rent-2500-5000", label: "$2,500 - $5,000" },
+  { value: "rent-5000-plus", label: "$5,000+" },
+];
+
+export function getPropertySearchPriceOptions(listingType: "active" | "rental"): Array<{
+  value: PropertySearchPricePreset;
+  label: string;
+}> {
+  return listingType === "rental"
+    ? PROPERTY_SEARCH_RENT_PRICE_OPTIONS
+    : PROPERTY_SEARCH_PRICE_OPTIONS;
+}
 
 export const PROPERTY_SEARCH_BED_OPTIONS: Array<{
   value: PropertySearchCountPreset;
@@ -117,12 +162,111 @@ function isCountPreset(value?: string): value is PropertySearchCountPreset {
   return value != null && PROPERTY_SEARCH_COUNT_PRESETS.has(value as PropertySearchCountPreset);
 }
 
+function isPropertySearchMarket(value?: string | null): value is PropertySearchMarket {
+  return value === "el-paso" || value === "midland" || value === "odessa";
+}
+
+export function resolvePropertySearchMarket(value?: string | null): PropertySearchMarket {
+  return isPropertySearchMarket(value) ? value : DEFAULT_PROPERTY_SEARCH_MARKET;
+}
+
+const MIDLAND_ZIP_CODES = new Set([
+  "79701",
+  "79702",
+  "79703",
+  "79704",
+  "79705",
+  "79706",
+  "79707",
+  "79708",
+  "79710",
+  "79711",
+]);
+
+const ODESSA_ZIP_CODES = new Set([
+  "79760",
+  "79761",
+  "79762",
+  "79763",
+  "79764",
+  "79765",
+  "79766",
+  "79767",
+  "79768",
+  "79769",
+]);
+
+export function inferPropertySearchMarketFromInput(
+  value: string
+): PropertySearchMarket | null {
+  const normalized = value.trim().toLowerCase();
+
+  if (!normalized) {
+    return null;
+  }
+
+  if (normalized.includes("midland")) {
+    return "midland";
+  }
+
+  if (normalized.includes("odessa")) {
+    return "odessa";
+  }
+
+  if (normalized.includes("el paso") || normalized.includes("elpaso")) {
+    return "el-paso";
+  }
+
+  const zipMatches = normalized.match(/\b\d{5}(?:-\d{4})?\b/g) ?? [];
+
+  for (const zipMatch of zipMatches) {
+    const zip = zipMatch.slice(0, 5);
+
+    if (zip.startsWith("799") || zip.startsWith("885")) {
+      return "el-paso";
+    }
+
+    if (ODESSA_ZIP_CODES.has(zip)) {
+      return "odessa";
+    }
+
+    if (MIDLAND_ZIP_CODES.has(zip)) {
+      return "midland";
+    }
+
+    if (zip.startsWith("797")) {
+      const suffix = Number.parseInt(zip.slice(3), 10);
+
+      if (suffix >= 60 && suffix <= 69) {
+        return "odessa";
+      }
+
+      if (suffix >= 1 && suffix <= 8) {
+        return "midland";
+      }
+    }
+  }
+
+  return null;
+}
+
+export function getPropertySearchMarketLabel(market: PropertySearchMarket): string {
+  return (
+    PROPERTY_SEARCH_MARKET_OPTIONS.find((option) => option.value === market)?.label ??
+    PROPERTY_SEARCH_MARKET_OPTIONS[0].label
+  );
+}
+
 function inferPricePresetFromNumericRange(
   minPrice?: number,
   maxPrice?: number
 ): PropertySearchPricePreset {
-  if (minPrice === 0 && maxPrice === 250_000) {
-    return "0-250";
+  if (minPrice === 0 && maxPrice === 150_000) {
+    return "under-150";
+  }
+
+  if (minPrice === 150_000 && maxPrice === 250_000) {
+    return "150-250";
   }
 
   if (minPrice === 250_000 && maxPrice === 500_000) {
@@ -137,6 +281,22 @@ function inferPricePresetFromNumericRange(
     return "750-plus";
   }
 
+  if (minPrice === 0 && maxPrice === 1_000) {
+    return "rent-under-1000";
+  }
+
+  if (minPrice === 1_000 && maxPrice === 2_500) {
+    return "rent-1000-2500";
+  }
+
+  if (minPrice === 2_500 && maxPrice === 5_000) {
+    return "rent-2500-5000";
+  }
+
+  if (minPrice === 5_000 && maxPrice == null) {
+    return "rent-5000-plus";
+  }
+
   return "any";
 }
 
@@ -147,8 +307,12 @@ export function resolvePresetFiltersToNumeric(
   let maxPrice: number | undefined;
 
   switch (filters.pricePreset) {
-    case "0-250":
+    case "under-150":
       minPrice = 0;
+      maxPrice = 150_000;
+      break;
+    case "150-250":
+      minPrice = 150_000;
       maxPrice = 250_000;
       break;
     case "250-500":
@@ -161,6 +325,21 @@ export function resolvePresetFiltersToNumeric(
       break;
     case "750-plus":
       minPrice = 750_000;
+      break;
+    case "rent-under-1000":
+      minPrice = 0;
+      maxPrice = 1_000;
+      break;
+    case "rent-1000-2500":
+      minPrice = 1_000;
+      maxPrice = 2_500;
+      break;
+    case "rent-2500-5000":
+      minPrice = 2_500;
+      maxPrice = 5_000;
+      break;
+    case "rent-5000-plus":
+      minPrice = 5_000;
       break;
     default:
       break;
@@ -187,6 +366,7 @@ export function parseListingsMapSearchParams(
   params: ListingsMapSearchQuery
 ): ParsedListingsMapSearchParams {
   const searchQuery = getFirstQueryValue(params.search)?.trim() ?? "";
+  const market = resolvePropertySearchMarket(getFirstQueryValue(params.market));
   const centerLat = parseOptionalNumber(getFirstQueryValue(params.lat));
   const centerLng = parseOptionalNumber(getFirstQueryValue(params.lng));
   const radiusMiles = parseOptionalNumber(getFirstQueryValue(params.radiusMiles));
@@ -214,6 +394,7 @@ export function parseListingsMapSearchParams(
 
   return {
     searchQuery,
+    market,
     centerLat,
     centerLng,
     radiusMiles,
@@ -229,6 +410,7 @@ export function parseListingsMapSearchParams(
 
 interface BuildListingsMapHrefParams {
   search?: string;
+  market?: PropertySearchMarket;
   centerLat?: number;
   centerLng?: number;
   radiusMiles?: number;
@@ -238,6 +420,7 @@ interface BuildListingsMapHrefParams {
 
 export function buildListingsMapHref({
   search,
+  market,
   centerLat,
   centerLng,
   radiusMiles,
@@ -252,6 +435,10 @@ export function buildListingsMapHref({
 
   if (search?.trim()) {
     searchParams.set("search", search.trim());
+  }
+
+  if (market) {
+    searchParams.set("market", market);
   }
 
   if (typeof centerLat === "number" && Number.isFinite(centerLat)) {
@@ -371,18 +558,18 @@ export function isAlejandroListing(property: Pick<PropertyCard, "listingAgentNam
 export function resolvePropertyListingType(
   property: Pick<PropertyCard, "sparkSource" | "price">
 ): "active" | "rental" {
+  const numericPrice = parsePriceToNumber(property.price);
+
+  if (numericPrice != null && numericPrice < 10_000) {
+    return "rental";
+  }
+
   if (property.sparkSource === "rental") {
     return "rental";
   }
 
   if (property.sparkSource === "active") {
     return "active";
-  }
-
-  const numericPrice = parsePriceToNumber(property.price);
-
-  if (numericPrice != null && numericPrice < 10_000) {
-    return "rental";
   }
 
   return "active";

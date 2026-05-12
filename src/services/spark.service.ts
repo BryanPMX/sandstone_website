@@ -54,6 +54,7 @@ type SparkListingLookupOptions = SparkFetchOptions & {
 
 const SPARK_REVALIDATE_SECONDS = 300;
 const REPLICATION_SPARK_API_BASE_URL = "https://replication.sparkapi.com";
+const SPARK_DEBUG_LOOKUPS = process.env.SPARK_DEBUG_LOOKUPS === "1";
 const SPARK_MAX_API_PAGE_SIZE = 25;
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80";
@@ -87,6 +88,14 @@ const PHOTO_URL_PATHS: PathSegment[][] = [
   ["url"],
   ["StandardFields", "url"],
 ];
+
+function logSparkLookupDebug(message: string): void {
+  if (!SPARK_DEBUG_LOOKUPS) {
+    return;
+  }
+
+  console.info(`[Spark][LookupDebug] ${message}`);
+}
 
 function getRecord(value: unknown): UnknownRecord | null {
   return value && typeof value === "object" && !Array.isArray(value)
@@ -1619,45 +1628,55 @@ function buildIdentifierFilters(
 
   const escaped = trimmed.replace(/'/g, "''");
 
+  const filters: string[] = [];
+
+  const addFilter = (filter: string) => {
+    if (!filters.includes(filter)) {
+      filters.push(filter);
+    }
+  };
+
+  // Prefer top-level fields first because some Spark accounts reject StandardFields.* in _filter.
   if (identifierHint === "spark-id") {
-    return [
-      `StandardFields.Id Eq '${escaped}'`,
-      `Id Eq '${escaped}'`,
-      `StandardFields.ListingKey Eq '${escaped}'`,
-      `ListingKey Eq '${escaped}'`,
-    ];
+    addFilter(`Id Eq '${escaped}'`);
+    addFilter(`ListingKey Eq '${escaped}'`);
+    addFilter(`StandardFields.Id Eq '${escaped}'`);
+    addFilter(`StandardFields.ListingKey Eq '${escaped}'`);
+    return filters;
   }
 
   if (identifierHint === "listing-id") {
-    return [
-      `StandardFields.ListingId Eq ${trimmed}`,
-      `StandardFields.ListingId Eq '${escaped}'`,
-      `ListingId Eq ${trimmed}`,
-      `ListingId Eq '${escaped}'`,
-    ];
+    addFilter(`ListingId Eq '${escaped}'`);
+    if (/^\d+$/.test(trimmed)) {
+      addFilter(`ListingId Eq ${trimmed}`);
+    }
+    addFilter(`StandardFields.ListingId Eq '${escaped}'`);
+    if (/^\d+$/.test(trimmed)) {
+      addFilter(`StandardFields.ListingId Eq ${trimmed}`);
+    }
+    return filters;
   }
 
   if (/^\d+$/.test(trimmed)) {
-    return [
-      `StandardFields.ListingId Eq ${trimmed}`,
-      `StandardFields.ListingId Eq '${escaped}'`,
-      `ListingId Eq ${trimmed}`,
-      `ListingId Eq '${escaped}'`,
-      `StandardFields.Id Eq '${escaped}'`,
-      `Id Eq '${escaped}'`,
-      `StandardFields.ListingKey Eq '${escaped}'`,
-      `ListingKey Eq '${escaped}'`,
-    ];
+    addFilter(`ListingId Eq '${escaped}'`);
+    addFilter(`ListingId Eq ${trimmed}`);
+    addFilter(`Id Eq '${escaped}'`);
+    addFilter(`ListingKey Eq '${escaped}'`);
+    addFilter(`StandardFields.ListingId Eq '${escaped}'`);
+    addFilter(`StandardFields.ListingId Eq ${trimmed}`);
+    addFilter(`StandardFields.Id Eq '${escaped}'`);
+    addFilter(`StandardFields.ListingKey Eq '${escaped}'`);
+    return filters;
   }
 
-  return [
-    `StandardFields.ListingKey Eq '${escaped}'`,
-    `ListingKey Eq '${escaped}'`,
-    `StandardFields.Id Eq '${escaped}'`,
-    `Id Eq '${escaped}'`,
-    `StandardFields.ListingId Eq '${escaped}'`,
-    `ListingId Eq '${escaped}'`,
-  ];
+  addFilter(`ListingKey Eq '${escaped}'`);
+  addFilter(`Id Eq '${escaped}'`);
+  addFilter(`ListingId Eq '${escaped}'`);
+  addFilter(`StandardFields.ListingKey Eq '${escaped}'`);
+  addFilter(`StandardFields.Id Eq '${escaped}'`);
+  addFilter(`StandardFields.ListingId Eq '${escaped}'`);
+
+  return filters;
 }
 
 function isNumericRouteId(id: string): boolean {
@@ -1669,10 +1688,12 @@ async function fetchSparkListingRecordByDirectPath(
   options?: SparkListingLookupOptions,
   preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
-  for (const path of getSparkLookupPaths(
+  const triedPaths = getSparkLookupPaths(
     preferredTarget,
     options?.restrictToPreferredTarget ?? false
-  )) {
+  );
+
+  for (const path of triedPaths) {
     const response = await fetchSparkPayload(
       buildSparkUrl({
         path: buildSparkListingDetailPath(path, id),
@@ -1687,6 +1708,9 @@ async function fetchSparkListingRecordByDirectPath(
       const record = extractFirstSparkRecord(payload);
 
       if (record) {
+        logSparkLookupDebug(
+          `Direct-path match for id='${id}' on path='${path}'.`
+        );
         return record;
       }
 
@@ -1698,6 +1722,34 @@ async function fetchSparkListingRecordByDirectPath(
       throw new Error(
         `[Spark] Listing request failed (${response.status}): ${responseText.slice(0, 400)}`
       );
+    }
+  }
+
+  // Fallback: when collection paths are /v1/my/listings, detail records for spark ids
+  // may only resolve through the canonical /v1/listings/{id} endpoint.
+  const canonicalListingsPath = "/v1/listings";
+
+  if (!triedPaths.includes(canonicalListingsPath)) {
+    try {
+      const response = await fetchSparkPayload(
+        buildSparkUrl({
+          path: buildSparkListingDetailPath(canonicalListingsPath, id),
+          limit: 1,
+          expand: DETAIL_EXPANSIONS,
+        }),
+        options
+      );
+
+      if (response.ok) {
+        const payload = (await response.json()) as unknown;
+        const record = extractFirstSparkRecord(payload);
+
+        if (record) {
+          return record;
+        }
+      }
+    } catch {
+      // ignore — fallback exhausted
     }
   }
 
@@ -1741,6 +1793,38 @@ async function fetchSparkListingPhotosByDirectPath(
     }
   }
 
+  // Fallback: Spark photo records live under /v1/listings even when the collection
+  // was fetched via /v1/my/listings. /v1/my/listings/{id}/photos returns 404 on
+  // sparkapi.com (no 403 retry), so we explicitly try the canonical listings path.
+  // fetchSparkPayload auto-retries /v1/listings/{id}/photos on replication.sparkapi.com
+  // when sparkapi.com responds with 403 Code 1021.
+  const canonicalPhotosPath = "/v1/listings";
+  const triedPaths = getSparkLookupPaths(preferredTarget, options?.restrictToPreferredTarget ?? false);
+
+  if (!triedPaths.includes(canonicalPhotosPath)) {
+    try {
+      const response = await fetchSparkPayload(
+        buildSparkUrl({
+          path: `${canonicalPhotosPath}/${encodeURIComponent(id)}/photos`,
+          limit: 50,
+          expand: [],
+        }),
+        options
+      );
+
+      if (response.ok) {
+        const payload = (await response.json()) as unknown;
+        const imageUrls = extractImageUrlsFromPayload(payload);
+
+        if (imageUrls.length > 0) {
+          return imageUrls;
+        }
+      }
+    } catch {
+      // ignore — fallback exhausted
+    }
+  }
+
   return [];
 }
 
@@ -1749,29 +1833,57 @@ async function fetchSparkListingRecordByFilters(
   options?: SparkListingLookupOptions,
   preferredTarget?: SparkLookupTarget
 ): Promise<UnknownRecord | null> {
+  let lastError: unknown;
+
   for (const filter of buildIdentifierFilters(id, options?.identifierHint)) {
-    const records = await Promise.all(
-      getSparkLookupPaths(
-        preferredTarget,
-        options?.restrictToPreferredTarget ?? false
-      ).map((path) =>
-        fetchSparkListingRecord(
-          {
-            path,
-            filter,
-            limit: 1,
-            expand: DETAIL_EXPANSIONS,
-          },
-          options
-        )
-      )
+    let records: Array<{ path: string; record: UnknownRecord | null }> = [];
+    const lookupPaths = getSparkLookupPaths(
+      preferredTarget,
+      options?.restrictToPreferredTarget ?? false
     );
 
-    const match = records.find((record): record is UnknownRecord => Boolean(record));
+    try {
+      records = await Promise.all(
+        lookupPaths.map(async (path) => ({
+          path,
+          record: await fetchSparkListingRecord(
+            {
+              path,
+              filter,
+              limit: 1,
+              expand: DETAIL_EXPANSIONS,
+            },
+            options
+          ),
+        }))
+      );
+    } catch (error) {
+      lastError = error;
+
+      if (isSparkFilterSyntaxError(error)) {
+        console.warn(
+          `[Spark] Identifier filter rejected by SparkQL, trying next candidate: ${filter}`
+        );
+        continue;
+      }
+
+      throw error;
+    }
+
+    const match = records.find((result) => Boolean(result.record));
 
     if (match) {
-      return match;
+      logSparkLookupDebug(
+        `Filter match for id='${id}' using filter="${filter}" on path='${match.path}'.`
+      );
+      return match.record;
     }
+  }
+
+  if (lastError && isSparkFilterSyntaxError(lastError)) {
+    console.warn(
+      "[Spark] All identifier filters failed SparkQL validation for this lookup."
+    );
   }
 
   return null;
@@ -1995,6 +2107,7 @@ export async function fetchSparkPropertyDetailById(
         {
           ...options,
           preferDirectLookup: true,
+          restrictToPreferredTarget: false,
         },
         options?.preferredTarget
       );
@@ -2015,7 +2128,10 @@ export async function fetchSparkPropertyDetailById(
     try {
       const images = await fetchSparkListingPhotosByDirectPath(
         candidateId,
-        options,
+        {
+          ...options,
+          restrictToPreferredTarget: false,
+        },
         options?.preferredTarget
       );
 

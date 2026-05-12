@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState } from "react";
-import { MessageCircle } from "lucide-react";
 import { submitListingInquiry } from "@/actions/submit-listing-inquiry";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +17,6 @@ interface ListingInquiryCardProps {
   listingPath: string;
   listingPrice: string;
   listingAgentName?: string;
-  whatsappHref: string;
 }
 
 export function ListingInquiryCard({
@@ -30,7 +27,6 @@ export function ListingInquiryCard({
   listingPath,
   listingPrice,
   listingAgentName,
-  whatsappHref,
 }: ListingInquiryCardProps) {
   const [state, formAction, isPending] = useActionState(
     submitListingInquiry,
@@ -121,18 +117,6 @@ export function ListingInquiryCard({
         >
           {isPending ? "Submitting..." : "Submit"}
         </Button>
-
-        <div className="flex justify-center pt-1">
-          <Link
-            href={whatsappHref}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Contact via WhatsApp"
-            className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#21b94f] text-white transition hover:brightness-95"
-          >
-            <MessageCircle size={22} />
-          </Link>
-        </div>
 
         <p className="text-center text-xs text-[var(--sandstone-charcoal)]/65">
           Listing Agent:{" "}

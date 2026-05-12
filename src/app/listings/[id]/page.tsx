@@ -1,15 +1,33 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import Link from "next/link";
+import Script from "next/script";
 import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
-import { fetchPropertyDetailById } from "@/services";
-import { SITE_CONTACT } from "@/constants";
+import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
+import { ListingShareActions } from "@/components/properties/ListingShareActions.client";
+import { fetchPropertyDetailById, fetchMyPropertyCards } from "@/services";
+import {
+  buildListingsMapHref,
+  resolvePropertySearchMarket,
+  type PropertySearchPresetFilters,
+} from "@/lib";
 
 interface PageProps {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ sparkId?: string; src?: string }>;
+  searchParams: Promise<{
+    sparkId?: string;
+    src?: string;
+    from?: string;
+    search?: string;
+    market?: string;
+    listingType?: string;
+    price?: string;
+    beds?: string;
+    baths?: string;
+  }>;
 }
 
 function resolveDetailSourceHint(
@@ -18,28 +36,42 @@ function resolveDetailSourceHint(
   return value === "active" || value === "my" ? value : undefined;
 }
 
-function formatFactNumber(value: number): string {
-  return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
+function resolveListingTypeForMap(value: string | undefined): "active" | "rental" {
+  return value === "rental" ? "rental" : "active";
 }
 
-function normalizeDialTarget(value: string | undefined): string | undefined {
-  if (!value) {
-    return undefined;
+function resolveMapPricePreset(
+  value: string | undefined
+): PropertySearchPresetFilters["pricePreset"] | undefined {
+  const allowed: Array<PropertySearchPresetFilters["pricePreset"]> = [
+    "under-150",
+    "150-250",
+    "250-500",
+    "500-750",
+    "750-plus",
+    "rent-under-1000",
+    "rent-1000-2500",
+    "rent-2500-5000",
+    "rent-5000-plus",
+  ];
+
+  return allowed.includes(value as PropertySearchPresetFilters["pricePreset"])
+    ? (value as PropertySearchPresetFilters["pricePreset"])
+    : undefined;
+}
+
+function resolveMapCountPreset(
+  value: string | undefined
+): PropertySearchPresetFilters["bedsPreset"] | undefined {
+  if (value === "1" || value === "2" || value === "3" || value === "4") {
+    return value;
   }
 
-  const trimmed = value.trim();
+  return undefined;
+}
 
-  if (!trimmed) {
-    return undefined;
-  }
-
-  if (trimmed.startsWith("+")) {
-    const digits = trimmed.slice(1).replace(/\D/g, "");
-    return digits ? `+${digits}` : undefined;
-  }
-
-  const digits = trimmed.replace(/\D/g, "");
-  return digits || undefined;
+function formatFactNumber(value: number): string {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
 }
 
 function buildMapUrls(input: {
@@ -60,14 +92,68 @@ function buildMapUrls(input: {
   };
 }
 
+async function getSiteBaseUrl(): Promise<string> {
+  const envBaseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.SITE_URL?.trim();
+
+  if (envBaseUrl) {
+    return envBaseUrl.replace(/\/+$/, "");
+  }
+
+  const requestHeaders = await headers();
+  const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host");
+  const protocol = requestHeaders.get("x-forwarded-proto") || "https";
+
+  if (host) {
+    return `${protocol}://${host}`;
+  }
+
+  return "https://sandstone.homes";
+}
+
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
+  const property = await fetchPropertyDetailById(
+    id,
+    undefined,
+    undefined
+  );
+
+  if (!property) {
+    return {
+      title: `Listing ${id} | Sandstone Real Estate Group`,
+      description: "Property details from Sandstone Real Estate Group.",
+    };
+  }
+
+  const stats = [
+    property.beds && `${property.beds} bed`,
+    property.baths && `${property.baths} bath`,
+    property.sqft && `${property.sqft} sq ft`
+  ].filter(Boolean).join(', ');
+
+  const title = `${property.title} | ${property.price} | ${property.location}`;
+  const description = `${stats} home in ${property.location}. ${property.title}. Listed by Sandstone Real Estate Group in El Paso.`;
 
   return {
-    title: `Listing ${id} | Sandstone Real Estate Group`,
-    description: "Property details from Sandstone Real Estate Group.",
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: property.image ? [{ url: property.image, alt: property.title }] : [],
+      type: 'website',
+    },
   };
 }
+
+export async function generateStaticParams() {
+  const properties = await fetchMyPropertyCards();
+  return properties.slice(0, 100).map((p) => ({ id: p.routeId }));
+}
+
+export const revalidate = 3600;
 
 export default async function ListingPage({ params, searchParams }: PageProps) {
   const { id } = await params;
@@ -118,25 +204,85 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
 
     return queryString ? `${basePath}?${queryString}` : basePath;
   })();
-  const dialTarget = normalizeDialTarget(property.specs.listingAgentPhone) || SITE_CONTACT.phoneRaw;
-  const whatsappNumber = dialTarget.replace(/^\+/, "").length === 10
-    ? `1${dialTarget.replace(/^\+/, "")}`
-    : dialTarget.replace(/^\+/, "");
-  const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    `Hi, I would like to schedule a tour for ${property.title}.`
+  const mapBackHref = query.from === "map"
+    ? buildListingsMapHref({
+        search: query.search?.trim() || undefined,
+        market: resolvePropertySearchMarket(query.market),
+        listingType: resolveListingTypeForMap(query.listingType),
+        filterPresets: {
+          pricePreset: resolveMapPricePreset(query.price),
+          bedsPreset: resolveMapCountPreset(query.beds),
+          bathsPreset: resolveMapCountPreset(query.baths),
+        },
+      })
+    : null;
+  const listingShareUrl = `${await getSiteBaseUrl()}${listingPath}`;
+  const facebookShareHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(listingShareUrl)}`;
+  const emailShareHref = `mailto:?subject=${encodeURIComponent(
+    `Check out this property: ${property.title}`
+  )}&body=${encodeURIComponent(
+    `I thought you might like this listing:\n\n${property.title}\n${listingShareUrl}`
   )}`;
 
   return (
     <>
+      <Script
+        id="property-structured-data"
+        type="application/ld+json"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "RealEstateListing",
+            "name": property.title,
+            "description": `${primaryStats.join(', ')} home in ${property.location}`,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "El Paso",
+              "addressRegion": "TX",
+              "addressCountry": "US"
+            },
+            "geo": property.latitude && property.longitude ? {
+              "@type": "GeoCoordinates",
+              "latitude": property.latitude,
+              "longitude": property.longitude
+            } : undefined,
+            "offers": {
+              "@type": "Offer",
+              "price": property.price.replace(/[^0-9.]/g, ''),
+              "priceCurrency": "USD"
+            },
+            "numberOfRooms": property.beds,
+            "floorSize": property.sqft ? {
+              "@type": "QuantitativeValue",
+              "value": property.sqft
+            } : undefined,
+            "provider": {
+              "@type": "RealEstateAgent",
+              "name": "Sandstone Real Estate Group",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "El Paso",
+                "addressRegion": "TX"
+              }
+            }
+          })
+        }}
+      />
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <div className="container mx-auto max-w-6xl px-4 pt-8">
-          <Link
-            href="/listings"
-            className="text-sm font-medium text-[var(--sandstone-sand-gold)] hover:underline"
-          >
-            ← Back to listings
-          </Link>
+          <ListingBackLink mapBackHref={mapBackHref} fallbackHref="/listings" />
+
+          <nav aria-label="Breadcrumb" className="mt-4">
+            <ol className="flex items-center space-x-2 text-sm">
+              <li><Link href="/" className="text-[var(--sandstone-sand-gold)] hover:underline">Home</Link></li>
+              <li className="text-[var(--sandstone-charcoal)]/50">/</li>
+              <li><Link href="/listings" className="text-[var(--sandstone-sand-gold)] hover:underline">Listings</Link></li>
+              <li className="text-[var(--sandstone-charcoal)]/50">/</li>
+              <li className="text-[var(--sandstone-charcoal)]">{property.title}</li>
+            </ol>
+          </nav>
 
           <section className="mt-6 rounded-[2rem] border border-white/70 bg-white px-4 py-5 shadow-[0_24px_70px_-36px_rgba(37,52,113,0.42)] md:px-6 md:py-7">
             <h1 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -160,6 +306,12 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                   {item}
                 </p>
               ))}
+
+              <ListingShareActions
+                facebookShareHref={facebookShareHref}
+                emailShareHref={emailShareHref}
+                listingShareUrl={listingShareUrl}
+              />
             </div>
             <div className="mt-4 border-t border-[var(--sandstone-navy)]/20" />
 
@@ -241,7 +393,6 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 listingPath={listingPath}
                 listingPrice={property.price}
                 listingAgentName={agentName}
-                whatsappHref={whatsappHref}
               />
             </div>
           </section>

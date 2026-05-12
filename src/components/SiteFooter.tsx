@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import {
-  SITE_NAV,
+  FOOTER_NAV,
   FOOTER_BRAND,
   FOOTER_TAGLINE,
   FOOTER_ABOUT,
@@ -75,7 +75,7 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
                 Menu
               </p>
               <ul className="space-y-1.5 text-sm">
-                {SITE_NAV.map((item) => (
+                {FOOTER_NAV.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
