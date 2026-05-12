@@ -22,6 +22,12 @@ async function verifyTurnstileToken(
   token: string,
   secretKey: string
 ): Promise<CaptchaVerificationResult> {
+  // Development mode: allow any token if dev key is used
+  if (process.env.NODE_ENV === "development" && secretKey.startsWith("1x")) {
+    console.log("[CaptchaService] Dev mode CAPTCHA bypass - allowing test token");
+    return { ok: true };
+  }
+
   try {
     const response = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",

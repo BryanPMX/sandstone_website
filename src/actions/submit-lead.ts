@@ -100,6 +100,8 @@ export async function submitLeadForForm(
     };
   }
 
+  console.log(`[submitLeadForForm] Webhook URL resolved for ${formType}:`, webhookUrl.substring(0, 50) + "...");
+
   const leadPayload = buildLeadWebhookPayload(formType, {
     firstName: parsed.data.firstName,
     lastName: parsed.data.lastName,
