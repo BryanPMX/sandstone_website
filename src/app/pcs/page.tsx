@@ -89,7 +89,7 @@ export default async function PCSPage() {
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         {/* HERO */}
         <section className="relative overflow-hidden bg-[var(--sandstone-navy)]">
-          <div className="relative h-[46vh] min-h-[360px] w-full lg:h-[640px] lg:min-h-[640px]">
+          <div className="relative h-[56vh] min-h-[460px] w-full lg:h-[760px] lg:min-h-[760px]">
             <picture className="absolute inset-0 block h-full w-full">
               <img
                 src="/tinified/hero.webp"
@@ -141,7 +141,7 @@ export default async function PCSPage() {
                     Estimate your Fort Bliss housing allowance and plan your budget.
                   </p>
                   <Link
-                    href="/sell"
+                    href="/sell#mortgage-calculator"
                     className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
                   >
                     Calculate now →
@@ -193,7 +193,7 @@ export default async function PCSPage() {
                     Schools, commute times, neighborhoods, and local insights for military families.
                   </p>
                   <Link
-                    href="/#contact"
+                    href="/blog"
                     className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
                   >
                     Explore guide →
@@ -268,7 +268,7 @@ export default async function PCSPage() {
                 </p>
                 <div className="mt-5">
                   <Link
-                    href="/#contact"
+                    href="/pcs/help"
                     className="inline-flex rounded-full bg-[var(--sandstone-navy)] px-5 py-3 text-xs font-extrabold uppercase tracking-[0.16em] text-white transition hover:bg-[var(--sandstone-navy-deep)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                   >
                     Get PCS help

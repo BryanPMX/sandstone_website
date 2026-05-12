@@ -50,21 +50,18 @@ export function PcsHeader() {
         <Link
           href="/"
           className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-          aria-label="Sandstone Real Estate Group - Home"
+          aria-label="Home"
         >
           <div className="relative h-12 w-12 shrink-0 lg:h-[72px] lg:w-[72px]">
             <Image
               src="/tinified/Logo.webp"
-              alt="Sandstone"
+              alt="Logo"
               fill
               sizes="72px"
               className="object-contain"
               priority
             />
           </div>
-          <span className="hidden text-xs font-extrabold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)] sm:inline">
-            Sandstone
-          </span>
         </Link>
 
         <nav aria-label="PCS navigation" className="ml-auto hidden lg:block">
