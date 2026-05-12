@@ -100,6 +100,8 @@ export async function submitLeadForForm(
     };
   }
 
+  console.log(`[submitLeadForForm] Webhook URL resolved for ${formType}:`, webhookUrl.substring(0, 50) + "...");
+
   const leadPayload = buildLeadWebhookPayload(formType, {
     firstName: parsed.data.firstName,
     lastName: parsed.data.lastName,
@@ -107,6 +109,7 @@ export async function submitLeadForForm(
     phone: parsed.data.phone,
     address: parsed.data.address,
     message: parsed.data.message,
+    mappingReference: parsed.data.mappingReference,
     acceptTransactionalSms: parsed.data.acceptTransactionalSms,
     acceptMarketingSms: parsed.data.acceptMarketingSms,
   });
