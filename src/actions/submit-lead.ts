@@ -107,6 +107,7 @@ export async function submitLeadForForm(
     phone: parsed.data.phone,
     address: parsed.data.address,
     message: parsed.data.message,
+    mappingReference: parsed.data.mappingReference,
     acceptTransactionalSms: parsed.data.acceptTransactionalSms,
     acceptMarketingSms: parsed.data.acceptMarketingSms,
   });
