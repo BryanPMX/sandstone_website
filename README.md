@@ -62,14 +62,79 @@ Marketing and lead-generation site for Sandstone Real Estate Group, built with N
 - `npm run vercel:build` run Vercel build
 - `npm run vercel:deploy` deploy via Vercel CLI
 
-## Local Development
+## New Developer: Local Setup (Step-by-Step)
+
+1. Install prerequisites
+
+- Git
+- Node.js 20 LTS (recommended) or 22 LTS
+
+2. Clone the repository
+
+```bash
+git clone <repo-url>
+cd standstone_website
+```
+
+3. Install dependencies
 
 ```bash
 npm install
+```
+
+4. Create your local environment file
+
+PowerShell:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+Command Prompt:
+
+```cmd
+copy .env.example .env.local
+```
+
+5. Fill in values in `.env.local`
+
+- Minimum for listings setup:
+	- `SPARK_ACCESS_TOKEN`
+	- `SPARK_API_BASE_URL` (default is fine for most accounts)
+	- `SPARK_API_LISTINGS_PATH`
+	- `SPARK_API_MY_LISTINGS_PATH`
+	- `SPARK_ACTIVE_LISTINGS_FILTER`
+	- `SPARK_PAGE_SIZE`
+- Required for working lead form submissions:
+	- `TURNSTILE_SECRET_KEY`
+	- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+	- One or more `ROLU_WEBHOOK_*` URLs
+- Optional but recommended:
+	- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (hero autocomplete)
+	- `MSL_FEED_URL` (legacy fallback feed)
+
+6. Start the app
+
+```bash
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+7. Open the site
+
+- `http://localhost:3000`
+
+### Useful checks
+
+```bash
+npm run lint
+npm run build
+```
+
+If Spark returns restriction error `1021`, set this in `.env.local`:
+
+```bash
+SPARK_API_BASE_URL=https://replication.sparkapi.com
+```
 
 ## Environment Variables
 
@@ -145,4 +210,5 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
 - `docs/ARCHITECTURE.md`
 - `docs/ROLU-WORKFLOW.md`
 - `docs/SPARK-SETUP.md`
-- `docs/TODO-LISTING-INQUIRY-FORM.md`
+
+This is a test

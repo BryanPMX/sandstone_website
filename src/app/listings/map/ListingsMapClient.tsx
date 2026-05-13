@@ -195,6 +195,30 @@ function parseOptionalNumber(value: string | null): number | undefined {
   return Number.isFinite(numeric) ? numeric : undefined;
 }
 
+function resolveInitialZoomFromRadius(radiusMiles?: number): number {
+  if (typeof radiusMiles !== "number" || !Number.isFinite(radiusMiles) || radiusMiles <= 0) {
+    return SINGLE_MARKER_ZOOM;
+  }
+
+  if (radiusMiles <= 3) {
+    return 13;
+  }
+
+  if (radiusMiles <= 6) {
+    return 12;
+  }
+
+  if (radiusMiles <= 9) {
+    return 11;
+  }
+
+  if (radiusMiles <= 18) {
+    return 10;
+  }
+
+  return 9;
+}
+
 function normalizeMapSearchQuery(value: string): string {
   const normalized = value.trim();
 
@@ -281,12 +305,15 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const [searchInput, setSearchInput] = useState(searchQuery);
   const initialCenterLat = parseOptionalNumber(searchParams?.get("lat") ?? null);
   const initialCenterLng = parseOptionalNumber(searchParams?.get("lng") ?? null);
+  const initialRadiusMiles = parseOptionalNumber(searchParams?.get("radiusMiles") ?? null);
   const market = resolvePropertySearchMarket(searchParams?.get("market") ?? null);
   const initialMapCenter =
     typeof initialCenterLat === "number" && typeof initialCenterLng === "number"
       ? ([initialCenterLat, initialCenterLng] as [number, number])
       : undefined;
-  const initialMapZoom = initialMapCenter ? SINGLE_MARKER_ZOOM : DEFAULT_MAP_ZOOM;
+  const initialMapZoom = initialMapCenter
+    ? resolveInitialZoomFromRadius(initialRadiusMiles)
+    : DEFAULT_MAP_ZOOM;
 
   const initialListingType = resolveListingTypeParam(searchParams?.get("listingType") ?? null);
   const initialPricePreset = normalizePricePresetForListingType(
@@ -439,12 +466,32 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
       ...numericFilters,
       listingType: filters.listingType,
       search: undefined,
+      centerLat:
+        typeof initialCenterLat === "number" && Number.isFinite(initialCenterLat)
+          ? initialCenterLat
+          : undefined,
+      centerLng:
+        typeof initialCenterLng === "number" && Number.isFinite(initialCenterLng)
+          ? initialCenterLng
+          : undefined,
+      radiusMiles:
+        typeof initialRadiusMiles === "number" && initialRadiusMiles > 0
+          ? initialRadiusMiles
+          : undefined,
     });
 
     return numericFiltered
       .filter((property) => matchesAddressOrZip(property, searchQuery))
       .filter((property) => isWithinViewportBounds(property, debouncedViewport));
-  }, [debouncedViewport, elPasoOnlyProperties, filters, searchQuery]);
+  }, [
+    debouncedViewport,
+    elPasoOnlyProperties,
+    filters,
+    initialCenterLat,
+    initialCenterLng,
+    initialRadiusMiles,
+    searchQuery,
+  ]);
 
   const priceOptions = useMemo(
     () => getPropertySearchPriceOptions(filters.listingType),
