@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 type TopNavItem = { label: string; href: string };
 
 const TOP_NAV: TopNavItem[] = [
+  { label: "Home", href: "/" },
   { label: "PCS", href: "/pcs" },
   { label: "Blog", href: "/blog" },
   { label: "Contact Us", href: "/#contact" },
@@ -45,25 +46,22 @@ export function PcsHeader() {
 
   return (
     <header className="sticky top-0 z-[90] border-b border-white/10 bg-[var(--sandstone-navy)] shadow-[0_10px_24px_-20px_rgba(17,24,61,0.85)]">
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center px-4 lg:h-[76px] lg:px-6">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center px-4 lg:h-[84px] lg:px-6">
         <Link
           href="/"
           className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-          aria-label="Sandstone Real Estate Group - Home"
+          aria-label="Home"
         >
-          <div className="relative h-11 w-11 shrink-0 lg:h-[62px] lg:w-[62px]">
+          <div className="relative h-12 w-12 shrink-0 lg:h-[72px] lg:w-[72px]">
             <Image
               src="/tinified/Logo.webp"
-              alt="Sandstone"
+              alt="Logo"
               fill
-              sizes="62px"
+              sizes="72px"
               className="object-contain"
               priority
             />
           </div>
-          <span className="hidden text-xs font-extrabold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)] sm:inline">
-            Sandstone
-          </span>
         </Link>
 
         <nav aria-label="PCS navigation" className="ml-auto hidden lg:block">
