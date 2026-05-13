@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsSection";
@@ -61,6 +62,15 @@ export default async function Home() {
       <SiteHeader overlayDesktop />
       <main className="min-h-screen">
         <HeroSection />
+        <section className="py-0">
+          <Link href="/pcs" className="block w-full">
+            <img
+              src="/Banner%20PCS.jpeg"
+              alt="Military PCS experts"
+              className="w-full h-auto object-cover"
+            />
+          </Link>
+        </section>
         <FeaturedListingsSection properties={alejandroSparkProperties} />
         <BlogTeaserSection posts={latestPosts} />
         <PrimaryActionTiles />

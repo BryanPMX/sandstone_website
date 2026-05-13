@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 type TopNavItem = { label: string; href: string };
 
 const TOP_NAV: TopNavItem[] = [
+  { label: "HOME", href: "/" },
   { label: "PCS", href: "/pcs" },
   { label: "Blog", href: "/blog" },
   { label: "Contact Us", href: "/#contact" },
@@ -61,9 +62,6 @@ export function PcsHeader() {
               priority
             />
           </div>
-          <span className="hidden text-xs font-extrabold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)] sm:inline">
-            Sandstone
-          </span>
         </Link>
 
         <nav aria-label="PCS navigation" className="ml-auto hidden lg:block">
