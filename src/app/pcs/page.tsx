@@ -167,7 +167,7 @@ export default async function PCSPage() {
                     Learn how to use your VA benefit with confidence on your PCS move.
                   </p>
                   <Link
-                    href="/#contact"
+                    href="/pcs/va-loan-guide"
                     className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
                   >
                     View guide →
