@@ -52,12 +52,12 @@ export function PcsHeader() {
           className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
           aria-label="Home"
         >
-          <div className="relative h-12 w-12 shrink-0 lg:h-[72px] lg:w-[72px]">
+          <div className="relative h-[5.5rem] w-[5.5rem] shrink-0 lg:h-[120px] lg:w-[120px]">
             <Image
               src="/tinified/Logo.webp"
               alt="Logo"
               fill
-              sizes="72px"
+              sizes="120px"
               className="object-contain"
               priority
             />
