@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Script from "next/script";
 import { SiteHeader } from "@/components/SiteHeader";
 import { HeroSection } from "@/components/HeroSection";
@@ -77,6 +78,15 @@ export default async function Home() {
       <SiteHeader overlayDesktop />
       <main className="min-h-screen">
         <HeroSection />
+        <section className="w-full">
+          <Link href="/pcs" className="block w-full">
+            <img
+              src="/uploads/Banner%20PCS.jpeg"
+              alt="Military PCS Experts — start your move"
+              className="block w-full h-auto object-cover"
+            />
+          </Link>
+        </section>
         <FeaturedListingsSection properties={alejandroSparkProperties} />
         <BlogTeaserSection posts={latestPosts} />
         <PrimaryActionTiles />
