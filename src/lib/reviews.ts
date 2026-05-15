@@ -28,17 +28,12 @@ function stripFrontMatter(content: string) {
   return match ? content.slice(match[0].length) : content;
 }
 
-function getDescription(frontMatter: Record<string, string>, body: string) {
-  if (frontMatter.description) return frontMatter.description;
-  return body.replace(/\n+/g, " ").replace(/\s+/g, " ").trim().slice(0, 140);
-}
-
 export async function getReviews(): Promise<ReviewMeta[]> {
   const postsDir = join(process.cwd(), "content", "reviews");
   let files: string[] = [];
   try {
     files = await readdir(postsDir);
-  } catch (e) {
+  } catch (_e) {
     return [];
   }
 
@@ -64,6 +59,6 @@ export async function getReviews(): Promise<ReviewMeta[]> {
   );
 
   return reviews
-    .sort((a: any, b: any) => b.updatedAt - a.updatedAt)
-    .map(({ updatedAt, ...rest }) => rest as ReviewMeta);
+    .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
+    .map(({ updatedAt: _updatedAt, ...rest }) => rest as ReviewMeta);
 }

@@ -33,7 +33,7 @@ export default function AdminReviewsPage() {
       setAuthor("");
       setRating(5);
       setBody("");
-    } catch (err) {
+    } catch (_err) {
       setStatus("Network error");
     }
   };

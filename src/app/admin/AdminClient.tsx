@@ -20,7 +20,7 @@ export default function AdminClient() {
             setToken(payload.token);
             setStatus("Logged in");
           }
-        } catch (err) {
+        } catch (_err) {
           setStatus("Login parse error");
         }
       }

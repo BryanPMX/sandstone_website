@@ -56,13 +56,14 @@ async function commitToGitHub(
     });
 
     if (!createRes.ok) {
-      const err = await createRes.json().catch(() => ({})) as any;
-      return { ok: false, error: err?.message ?? createRes.statusText };
+      const err = (await createRes.json().catch(() => ({}))) as Record<string, unknown>;
+      return { ok: false, error: String(err?.message ?? createRes.statusText) };
     }
 
     return { ok: true };
-  } catch (err: any) {
-    return { ok: false, error: err?.message ?? "GitHub API error" };
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: errMsg ?? "GitHub API error" };
   }
 }
 
@@ -112,7 +113,8 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true, filename });
-  } catch (err: any) {
-    return NextResponse.json({ error: err?.message ?? "Unexpected error" }, { status: 500 });
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: errMsg ?? "Unexpected error" }, { status: 500 });
   }
 }
