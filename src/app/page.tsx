@@ -75,6 +75,13 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(HOME_FAQ_SCHEMA_EN) }}
       />
+      {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
+        <Script
+          id="google-maps"
+          strategy="beforeInteractive"
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&v=weekly&libraries=places`}
+        />
+      ) : null}
       <SiteHeader overlayDesktop />
       <main className="min-h-screen">
         <HeroSection />

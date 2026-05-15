@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   FOOTER_NAV,
@@ -21,6 +22,7 @@ interface SiteFooterProps {
 }
 
 export function SiteFooter({ showNav = true }: SiteFooterProps) {
+  const pathname = usePathname?.() ?? "";
   return (
     <footer
       id="footer"
@@ -57,16 +59,19 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
           </div>
 
           <div className="flex items-center justify-center gap-6 md:justify-center">
-            {FOOTER_BRAND_IMAGES.map((img) => (
-              <div key={img.name} className="relative h-10 w-24 opacity-90">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  className="object-contain object-center"
-                />
-              </div>
-            ))}
+            {FOOTER_BRAND_IMAGES.map((img) => {
+              const extraClass = img.name === "MLS" && pathname.startsWith("/pcs") ? "filter invert brightness-0" : "";
+              return (
+                <div key={img.name} className="relative h-10 w-24 opacity-90">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className={`object-contain object-center ${extraClass}`}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           {showNav ? (

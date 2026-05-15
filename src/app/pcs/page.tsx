@@ -7,6 +7,7 @@ import type { PropertyCard } from "@/types";
 import { PcsHeroSearch } from "./PcsHeroSearch.client";
 import { Star } from "lucide-react";
 import { PcsHeader } from "./PcsHeader.client";
+import { getReviews } from "@/lib/reviews";
 
 export const metadata = {
   title: "PCS | Homes Near Fort Bliss",
@@ -306,6 +307,56 @@ export default async function PCSPage() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+        {/* REVIEWS (markdown-driven) */}
+        <section className="border-t border-[var(--sandstone-charcoal)]/10 bg-white py-16">
+          <div className={SECTION_MAX}>
+            <div className="text-center">
+              <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)] sm:text-3xl">
+                Reviews from military families
+              </h2>
+              <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/80">
+                Real experiences submitted by clients. To add a review, see the instructions linked below.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-6 md:grid-cols-2">
+              {/* Load reviews server-side */}
+              {await (async () => {
+                const reviews = await getReviews();
+                if (reviews.length === 0) {
+                  return (
+                    <div className="rounded-2xl border border-[var(--sandstone-charcoal)]/10 bg-[var(--sandstone-off-white)] p-6 text-center">
+                      <p className="text-sm text-[var(--sandstone-charcoal)]/80">No reviews yet.</p>
+                    </div>
+                  );
+                }
+
+                return reviews.slice(0, 6).map((r) => (
+                  <article key={r.filename} className="rounded-2xl border border-[var(--sandstone-charcoal)]/10 bg-[var(--sandstone-off-white)] p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-heading text-sm font-extrabold tracking-wide text-[var(--sandstone-navy)]">{r.title}</p>
+                        <p className="mt-1 text-xs text-[var(--sandstone-charcoal)]/70">{r.author}</p>
+                      </div>
+                      <div className="text-[var(--sandstone-sand-gold)]">
+                        {Array.from({ length: r.rating ?? 0 }).map((_, i) => (
+                          <span key={i}>★</span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/78">{r.body}</p>
+                  </article>
+                ));
+              })()}
+            </div>
+
+            <div className="mt-6 text-center">
+              <Link href="/docs/REVIEWS.md" className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline">
+                How to add a review →
+              </Link>
             </div>
           </div>
         </section>
