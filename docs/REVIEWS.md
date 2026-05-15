@@ -1,22 +1,51 @@
-How to add a review (for non-technical users)
+How to add a review
 
-You can add reviews to the PCS page using the same markdown method that powers the blog. Follow these steps (GitHub web UI):
+## Locally (dev)
+On your local machine, reviews are added via the admin form at `http://localhost:3000/admin/reviews` and committed directly to GitHub using a bot token.
 
-1. Open the repository on GitHub and click "Add file" → "Create new file".
-2. Name the file under `content/reviews/` using a short slug, e.g. `jane-doe-2026.md`.
-3. Paste frontmatter and content like the example below:
+## Production (Vercel) Setup
 
+The reviews system commits files to the GitHub repo via the API. To enable this:
+
+### 1. Create a Personal Access Token (PAT) or use a bot account
+
+- Go to GitHub → Settings → Developer settings → Personal access tokens
+- Create a new token with `repo` scope (full control of private/public repos)
+- Copy the token → set as `GITHUB_BOT_TOKEN` in Vercel environment variables
+
+### 2. Add environment variables to Vercel
+
+Go to Vercel project settings → Environment Variables and add:
+
+```
+GITHUB_BOT_TOKEN=ghp_xxxxx (your PAT or bot token)
+GITHUB_OWNER=sandstone-group
+GITHUB_REPO=sandstone_website
+GITHUB_BRANCH=main
+```
+
+### 3. Use the admin form
+
+Visit `sandstone.homes/admin` and log in with GitHub (OAuth), then navigate to **Reviews** and submit. 
+
+The review will be committed to `content/reviews/` and automatically appear on `/pcs` after the next build/redeploy.
+
+### Alternative: Bypass GitHub and edit directly in the repo
+
+You can always add reviews manually by creating files in `content/reviews/` on GitHub:
+
+1. Create a new file: `content/reviews/my-review-slug.md`
+2. Use frontmatter like:
+
+```
 ---
-title: "Amazing PCS support"
-author: "Jane Doe"
+title: "Great experience"
+author: "Your Name"
 rating: 5
-date: 2026-05-01
+date: 2026-05-15
 ---
 
-Short paragraph with the review text.
+Your review text here.
+```
 
-4. Commit directly to `main` (or create a PR if you prefer review).
-
-The site will automatically pick up new reviews on the PCS page once the file is present.
-
-If you'd like a more user-friendly interface (create PRs automatically or a simple admin form), we can add a tiny admin UI or integrate with GitHub's API—ask and I can implement that next.
+3. Commit to main branch → Vercel redeploys automatically
