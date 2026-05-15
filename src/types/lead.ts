@@ -11,12 +11,14 @@ export type LeadFormFields = {
   phone: string;
   address?: string;
   message?: string;
+  mappingReference?: string;
+  mapping_reference?: string;
   acceptTransactionalSms: boolean;
   acceptMarketingSms: boolean;
 };
 
 /** Supported lead capture form variants across the site */
-export type LeadFormType = "contact" | "sell" | "rent" | "join" | "giveaway";
+export type LeadFormType = "contact" | "sell" | "rent" | "join" | "giveaway" | "pcs";
 
 type LeadWebhookPayloadBase = {
   formType: LeadFormType;
@@ -24,12 +26,19 @@ type LeadWebhookPayloadBase = {
   lastName: string;
   email: string;
   phone: string;
+  mappingReference?: string;
+  mapping_reference?: string;
   acceptTransactionalSms: boolean;
   acceptMarketingSms: boolean;
 };
 
 export type ContactLeadWebhookPayload = LeadWebhookPayloadBase & {
   formType: "contact";
+  message: string;
+};
+
+export type PcsLeadWebhookPayload = LeadWebhookPayloadBase & {
+  formType: "pcs";
   message: string;
 };
 
@@ -59,6 +68,7 @@ export type LeadWebhookPayload =
   | ContactLeadWebhookPayload
   | SellLeadWebhookPayload
   | RentLeadWebhookPayload
+  | PcsLeadWebhookPayload
   | JoinLeadWebhookPayload
   | GiveawayLeadWebhookPayload;
 
