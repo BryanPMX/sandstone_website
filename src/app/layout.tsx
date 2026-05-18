@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import Script from "next/script";
 import { FloatingWhatsAppBubble } from "@/components/FloatingWhatsAppBubble";
-import "./globals.css";
+import "../globals.css";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
