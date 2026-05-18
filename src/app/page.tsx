@@ -88,8 +88,8 @@ export default async function Home() {
         <section className="w-full">
           <Link href="/pcs" className="block w-full">
             <img
-              src="/uploads/Banner%20PCS2.jpeg"
-              alt="Military PCS Specialists — start your move"
+              src="/uploads/Banner%20PCS3.jpeg"
+              alt="Military PCS Specialist — start your move"
               className="block w-full h-auto object-cover"
             />
           </Link>
