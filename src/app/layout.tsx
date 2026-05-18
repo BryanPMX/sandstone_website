@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import Script from "next/script";
 import { FloatingWhatsAppBubble } from "@/components/FloatingWhatsAppBubble";
-// Ignore missing type declarations for global CSS import
-// @ts-ignore
 import "./globals.css";
 
 const montserrat = Montserrat({
