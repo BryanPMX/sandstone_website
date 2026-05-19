@@ -354,9 +354,14 @@ export default async function PCSPage() {
             </div>
 
             <div className="mt-6 text-center">
-              <Link href="/docs/REVIEWS.md" className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline">
-                How to add a review →
-              </Link>
+              <a
+                href="https://www.google.com/search?rlz=1C1VDKB_enUS1070US1071&sca_esv=afc85aa92f7b31d4&sxsrf=ANbL-n7isPBHjx5thDK6cM0kRmjuxqXpjg:1779213318176&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOZfFxfbBYw-7MaCNjAL6wXXyygI1jFyQ6OGsUEJOKYif9nIT_1JaEuiSbUcC0RihHBRmnJBqBgjz-d0MI_B4lw9lLfa25JTfxstyLyM6ISXt-ktplshw95_cwYLi_uSInMZfF7I%3D&q=Sandstone+Real+Estate+Team+by+Alejandro+Gamboa+Reviews&sa=X&ved=2ahUKEwivxLyO9sWUAxUJnWoFHc8mLmQQ0bkNegQIRRAH&biw=1998&bih=1198&dpr=1.25#lrd=0x86e75794156b154d:0xfff97e3651697b6b,3,,,,"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-full border border-[var(--sandstone-sand-gold)] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] transition hover:bg-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
+              >
+                Leave a Google Review →
+              </a>
             </div>
           </div>
         </section>
