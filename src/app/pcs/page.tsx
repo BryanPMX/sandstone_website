@@ -90,7 +90,7 @@ export default async function PCSPage() {
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         {/* HERO */}
         <section className="relative overflow-hidden bg-[var(--sandstone-navy)]">
-          <div className="relative h-[56vh] min-h-[460px] w-full lg:h-[760px] lg:min-h-[760px]">
+          <div className="relative h-[36vh] min-h-[250px] w-full lg:h-[760px] lg:min-h-[760px]">
             <picture className="absolute inset-0 block h-full w-full">
               <img
                 src="/tinified/hero.webp"

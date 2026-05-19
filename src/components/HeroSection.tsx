@@ -544,7 +544,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="bg-[var(--sandstone-navy)] px-4 pb-5 pt-4 lg:hidden">
+        <div className="bg-[var(--sandstone-navy)] px-4 pb-4 pt-3 lg:hidden">
           <div
             className="mx-auto inline-flex w-full max-w-sm items-center justify-center rounded-full border border-white/30 bg-white/14 p-1"
             role="group"

@@ -90,7 +90,7 @@ export default async function Home() {
             <img
               src="/uploads/Banner%20PCS3.jpeg"
               alt="Military PCS Specialist — start your move"
-              className="block w-full h-auto object-cover"
+              className="block w-full h-[110px] object-cover object-center md:h-auto"
             />
           </Link>
         </section>
