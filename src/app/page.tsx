@@ -85,12 +85,12 @@ export default async function Home() {
       <SiteHeader overlayDesktop />
       <main className="min-h-screen">
         <HeroSection />
-        <section className="w-full">
+        <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
           <Link href="/pcs" className="block w-full">
             <img
               src="/uploads/Banner%20PCS3.jpeg"
               alt="Military PCS Specialist — start your move"
-              className="block w-full h-[50px] object-cover object-center md:h-auto"
+              className="block w-full h-[90px] object-cover object-center md:h-auto"
             />
           </Link>
         </section>
