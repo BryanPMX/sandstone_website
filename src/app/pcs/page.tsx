@@ -297,18 +297,20 @@ export default async function PCSPage() {
               </h2>
 
               <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/80">
-                See what military families are saying about Sandstone.
+                See what families are saying about Sandstone.
               </p>
             </div>
 
             <div className="mt-8">
-              <iframe
-                src="https://widget.elfsight.com/616713c5-bf72-43dd-9066-6d872efe0ce9"
-                width="100%"
-                height="600"
-                frameBorder="0"
-                className="rounded-2xl"
-              ></iframe>
+              <script
+                src="https://elfsightcdn.com/platform.js"
+                async
+              ></script>
+
+              <div
+                className="elfsight-app-616713c5-bf72-43dd-9066-6d872efe0ce9"
+                data-elfsight-app-lazy
+              ></div>
             </div>
 
             <div className="mt-6 text-center">
