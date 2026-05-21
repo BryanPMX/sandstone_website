@@ -10,14 +10,28 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
 import { HOME_FAQ_SCHEMA_EN, HOME_FAQ_SCHEMA_ES } from "@/constants/site";
-
+import { GoogleReviews } from "@/components/GoogleReviews";
 export const revalidate = 300;
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Sandstone Real Estate Group | Luxury Homes in El Paso, TX",
-  description: "Find your dream home in El Paso, Texas. Luxury real estate services from Sandstone Real Estate Group. Buy, sell, and rent properties in the Southwest.",
-  keywords: ["El Paso real estate", "Texas homes", "luxury homes El Paso", "real estate agent El Paso", "property listings El Paso"],
+  
+  description:
+    "Explore luxury homes, military relocation services, and real estate opportunities in El Paso, Texas with Sandstone Real Estate Group. Buy, sell, and rent homes near Fort Bliss and across the Southwest.",
+
+  keywords: [
+    "El Paso real estate",
+    "luxury homes El Paso",
+    "Fort Bliss homes",
+    "military relocation El Paso",
+    "PCS homes Fort Bliss",
+    "Texas homes for sale",
+    "El Paso realtor",
+    "Sandstone Real Estate Group",
+    "buy a home in El Paso",
+    "sell a home in El Paso",
+  ],
 };
 
 export default async function Home() {
@@ -90,7 +104,7 @@ export default async function Home() {
             <img
               src="/uploads/Banner%20PCS3.jpeg"
               alt="Military PCS Specialist — start your move"
-              className="block w-full h-[90px] object-cover object-[center_82%] md:h-auto"            />
+              className="block w-full h-[90px] object-cover object-[center_85%] md:h-auto"            />
           </Link>
         </section>
         <FeaturedListingsSection properties={alejandroSparkProperties} />
