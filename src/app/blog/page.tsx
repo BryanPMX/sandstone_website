@@ -48,37 +48,41 @@ export default async function BlogIndexPage() {
           ) : (
             <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => (
-                <article
+                <Link
                   key={post.slug}
-                  className="overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_20px_60px_-42px_rgba(37,52,113,0.55)]"
+                  href={`/blog/${post.slug}`}
+                  className="overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_20px_60px_-42px_rgba(37,52,113,0.55)] transition-all duration-200 hover:-translate-y-1"
                 >
-                  <div className="relative h-44 w-full bg-[var(--sandstone-navy)]/8">
-                    <Image
-                      src={post.coverImage}
-                      alt={post.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 33vw"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
-                      {formatBlogDate(post.date)}
-                    </p>
-                    <h2 className="mt-2 font-heading text-xl font-bold text-[var(--sandstone-navy)]">
-                      {post.title}
-                    </h2>
-                    <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/80">
-                      {post.excerpt}
-                    </p>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="mt-4 inline-flex items-center rounded-full bg-[var(--sandstone-navy)] px-4 py-2 text-sm font-semibold text-white hover:opacity-95"
-                    >
-                      Read article
-                    </Link>
-                  </div>
-                </article>
+
+                  <article>
+                    <div className="relative h-44 w-full bg-[var(--sandstone-navy)]/8">
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 100vw, 33vw"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
+                        {formatBlogDate(post.date)}
+                      </p>
+                      <h2 className="mt-2 font-heading text-xl font-bold text-[var(--sandstone-navy)]">
+                        {post.title}
+                      </h2>
+                      <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/80">
+                        {post.excerpt}
+                      </p>
+                      <span
+
+                        className="mt-4 inline-flex items-center rounded-full bg-[var(--sandstone-navy)] px-4 py-2 text-sm font-semibold text-white hover:opacity-95"
+                      >
+                        Read article
+                      </span>
+                    </div>
+                  </article>
+                </Link>
               ))}
             </div>
           )}
