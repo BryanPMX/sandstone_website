@@ -82,7 +82,10 @@ export default function AdminClient() {
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <a href="/admin/reviews" className="block rounded border p-4 hover:shadow">Reviews</a>
-        <a href="/admin/placeholder" className="block rounded border p-4 hover:shadow">Other admin tools</a>
+        <a href="/admin/index.html" className="block rounded border p-4 hover:shadow flex flex-col justify-center">
+          <span className="font-semibold text-lg">Blog Editor</span>
+          <span className="text-sm text-gray-500">Create and edit blog posts</span>
+        </a>
       </div>
     </div>
   );
