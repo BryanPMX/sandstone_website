@@ -6,6 +6,7 @@ export interface BlogPostFrontmatter {
   date: string;
   excerpt: string;
   coverImage: string;
+  keywords?: string[];
 }
 
 export interface BlogPostListItem extends BlogPostFrontmatter {
@@ -15,3 +16,4 @@ export interface BlogPostListItem extends BlogPostFrontmatter {
 export interface BlogPost extends BlogPostListItem {
   contentHtml: string;
 }
+

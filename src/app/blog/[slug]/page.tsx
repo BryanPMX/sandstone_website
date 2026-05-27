@@ -35,6 +35,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   return {
     title: `${post.title} | Sandstone Blog`,
     description: post.excerpt,
+    keywords: post.keywords,
   };
 }
 

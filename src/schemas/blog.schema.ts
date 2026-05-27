@@ -24,6 +24,7 @@ export const BlogSchema = z.object({
   date: BlogDateSchema,
   excerpt: z.string().min(1, "Excerpt is required").max(320),
   coverImage: z.string().min(1, "Cover image is required").max(500),
+  keywords: z.array(z.string()).optional(),
 });
 
 export type BlogSchemaType = z.infer<typeof BlogSchema>;
