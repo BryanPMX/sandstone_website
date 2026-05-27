@@ -57,13 +57,23 @@ async function readBlogFiles(): Promise<BlogFileEntry[]> {
   return files;
 }
 
-function normalizeListItem(slug: string, input: { title: string; date: string; excerpt: string; coverImage: string }): BlogPostListItem {
+function normalizeListItem(
+  slug: string,
+  input: {
+    title: string;
+    date: string;
+    excerpt: string;
+    coverImage: string;
+    keywords?: string[] // Added optional keywords
+  }
+): BlogPostListItem {
   return {
     slug,
     title: input.title,
     date: normalizeDate(input.date),
     excerpt: input.excerpt,
     coverImage: input.coverImage,
+    keywords: input.keywords || [], // Pass the data through, defaulting to empty array
   };
 }
 
