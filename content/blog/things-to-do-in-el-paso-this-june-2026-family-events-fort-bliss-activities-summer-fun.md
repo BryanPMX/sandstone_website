@@ -34,7 +34,8 @@ From outdoor adventures to family festivals and cultural nights in the city, the
 
 👉 Planning your June? Click any event title link below to view full event details.
 
-# **MON · JUN 1**
+#### **MON · JUN 1**
+
 [Family Movie Night](https://www.facebook.com/photo/?fbid=1445651744266544&set=a.230087475822983)
 
 <https://www.facebook.com/photo/?fbid=1445651744266544&set=a.230087475822983>
@@ -54,8 +55,10 @@ Bliss Bowl Jubilee
 🕒 12:00 PM
 📍 Desert Strike Lanes
 
-THU · JUN 4
-Family Place Workshops
+
+
+#### **THU · JUN 4
+Family Place Workshops**
 
 <https://www.instagram.com/p/DVgnjHdEtJT/?img_index=1>
 
@@ -69,7 +72,9 @@ Cool Canyon Nights
 🕒 6:00 PM
 📍 McKelligon Canyon Amphitheatre
 
-FRI · JUN 5
+
+
+#### FRI · JUN 5
 Movies at the Park
 
 <https://www.facebook.com/elpasotexasgov/posts/-get-ready-el-paso-movies-at-the-park-are-back-come-out-and-enjoy-a-free-summer-/1440057571498840/>
@@ -94,7 +99,7 @@ Climbing Clinic
 🕒 2:00 PM
 📍 Soldier Activity Center
 
-SAT · JUN 6
+#### SAT · JUN 6
 The Market EP
 
 <https://epmcad.org/experience-art/art-and-farmers-market>
@@ -137,7 +142,7 @@ Summer Bootcamp
 🕒 8:00 AM
 📍 Soto PFC Turf Field
 
-SUN · JUN 7
+#### SUN · JUN 7
 Low Sensory Sunday
 
 <https://elpasomom.com/event/low-sensory-sunday/2026-06-07/>
@@ -145,7 +150,9 @@ Low Sensory Sunday
 🕒 9:00 AM
 📍 Family-Friendly Event
 
-MON · JUN 8
+
+
+#### MON · JUN 8
 Kids Summer Camps – June
 
 <https://www.facebook.com/photo.php?fbid=1438394101658975&set=pb.100064651962902.-2207520000&type=3>
@@ -153,7 +160,7 @@ Kids Summer Camps – June
 🕒 Times Vary
 📍 Fort Bliss Youth Sports
 
-TUE · JUN 9
+#### TUE · JUN 9
 Summer Kickoff Kids Night
 
 <https://www.facebook.com/photo/?fbid=1447202827444769&set=a.230087475822983>
@@ -161,7 +168,7 @@ Summer Kickoff Kids Night
 🕒 4:00 PM
 📍 Texas Roadhouse Fort Bliss
 
-JUN 10 – JUN 14
+#### JUN 10 – JUN 14
 Beauty and the Beast
 
 <https://elpasolive.com/events/beauty-and-the-beast>
@@ -180,7 +187,7 @@ Dino Storytime for EFMP
 🕒 2:00 PM
 📍 Mickelsen Community Library
 
-FRI · JUN 19
+#### FRI · JUN 19
 Somos Kids Conference 2026
 
 <https://www.facebook.com/events/1642518973645479/>
@@ -195,7 +202,7 @@ El Fresco: All Stars
 🕒 6:00 PM
 📍 Convention Center Plaza
 
-SAT · JUN 20
+#### SAT · JUN 20
 The Market EP
 
 <https://epmcad.org/experience-art/art-and-farmers-market>
@@ -203,7 +210,7 @@ The Market EP
 🕒 8:00 AM
 📍 San Jacinto Plaza
 
-SUN · JUN 21
+#### SUN · JUN 21
 Father's Day Brunch
 
 <https://bliss.armymwr.com/calendar/event/centennial-and-banquet-fathers-day-brunch/7305321/110784>
@@ -216,7 +223,7 @@ Father's Day Bowling Special
 🕒 All Day
 📍 Desert Strike Lanes
 
-WED · JUN 24
+#### WED · JUN 24
 Watercolor Wednesdays
 
 <https://www.facebook.com/photo/?fbid=1034133675416479&set=a.550039227159262>
@@ -224,7 +231,9 @@ Watercolor Wednesdays
 🕒 4:30 PM
 📍 Family Art Activity
 
-THU · JUN 25
+
+
+#### THU · JUN 25
 Cool Canyon Nights
 
 https://elpasolive.com/events/cool-canyon-nights
@@ -232,7 +241,7 @@ https://elpasolive.com/events/cool-canyon-nights
 🕒 6:00 PM
 📍 McKelligon Canyon Amphitheatre
 
-FRI · JUN 26
+#### FRI · JUN 26
 Movies at the Park
 
 <https://www.facebook.com/elpasotexasgov/posts/-get-ready-el-paso-movies-at-the-park-are-back-come-out-and-enjoy-a-free-summer-/1440057571498840/>
@@ -240,7 +249,7 @@ Movies at the Park
 🕒 8:00 PM
 📍 El Paso Parks & Recreation
 
-SAT · JUN 27
+#### SAT · JUN 27
 Farmers & Crafts Market
 
 <https://www.fcmlc.org/>
