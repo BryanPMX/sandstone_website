@@ -181,16 +181,14 @@ June 12 – 8:00 PM
 June 13 – 2:00 PM & 8:00 PM
 June 14 – 1:00 PM & 6:30 PM
 
+#### \*\*WED · JUN 17
 
-#### **WED · JUN 17
-Dino Storytime for EFMP**
+Dino Storytime for EFMP\*\*
 
 <https://www.facebook.com/photo/?fbid=1443610441137341&set=pb.100064651962902.-2207520000>
 
 🕒 2:00 PM
 📍 Mickelsen Community Library
-
-
 
 #### **FRI · JUN 19**
 
