@@ -35,7 +35,7 @@ From outdoor adventures to family festivals and cultural nights in the city, the
 👉 Planning your June? Click any event title link below to view full event details.
 
 MON · JUN 1
-Family Movie Night
+[Family Movie Night](https://www.facebook.com/photo/?fbid=1445651744266544&set=a.230087475822983)
 
 <https://www.facebook.com/photo/?fbid=1445651744266544&set=a.230087475822983>
 
@@ -116,7 +116,7 @@ El Paso Zoo Fun Walk
 🕒 9:00 AM
 📍 El Paso Zoo
 
-Family Storytime
+[Family Storytime](https://events.elpasotexas.gov/event-detail.php?id=513&date=1780761600&departments[]=4)
 
 [https://events.elpasotexas.gov/event-detail.php?id=513&date=1780761600&departments\[]=4](https://events.elpasotexas.gov/event-detail.php?id=513&date=1780761600&departments[]=4)
 
