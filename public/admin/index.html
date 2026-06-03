@@ -11,13 +11,52 @@
   <body>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
-      // Dynamically handle local vs production environments
-      const cmsBaseUrl =
-        window.location.hostname === "localhost"
-          ? window.location.origin
-          : "https://www.sandstone.homes";
+      var SeoCounterControl = createClass({
+        handleChange: function(e){
+          this.props.onChange(e.target.value);
+        },
+        render: function(){
+          var value = this.props.value || '';
+          var length = value.length;
+          var fieldName = this.props.field.get('name');
 
-      // Message listener for external auth
+          //constraints
+          var min = (fieldName === 'seoTitle') ? 40 : 120;
+          var max = (fieldName === 'seoTitle') ? 60 : 155;
+
+          var borderColor = (length<min || length > max ? '#eab308' : '#22c55e');
+
+          var hintText = length + " characters. ";
+          if(length === 0){
+            hintText += "Start typing...";
+          }else if(length<min){
+            hintText += "Under range, try typing more.";
+          }else if(length <= max){
+            hintText += "Perfect Range!";
+          }else{
+            hintText += "Over range, Google will truncate this.";
+          }
+          
+          return h('div', null,
+            h('input',{
+              type: 'text',
+              value: value,
+              onChange: this.handleChange,
+              className: this.props.classNameWrapper,
+              style:{border: '2px solid ' + borderColor }
+            }),
+            h('div', {style : {marginTop: '5px', fontSize: '12px', color: borderColor}}, hintText)
+          );
+        }
+      });
+
+      CMS.registerWidget('seo-counter', SeoCounterControl);
+
+      const cmsBaseUrl = window.location.hostname === "localhost"
+        ? window.location.origin
+        : "https://www.sandstone.homes";
+
+    
       window.addEventListener("message", function (event) {
         if (typeof event.data === "string" && event.data.indexOf("authorization:github:") === 0) {
           console.log("[Decap OAuth] message received", {
@@ -53,12 +92,11 @@
                 { label: "Title", name: "title", widget: "string" },
                 { label: "Date", name: "date", widget: "datetime" },
                 { label: "Excerpt", name: "excerpt", widget: "text" },
-                { label: "SEO Title", name: "seoTitle", widget: "string"},
-                { label: "Meta Description", name: "metaDescription", widget: "text"},
+                { label: "SEO Title", name: "seoTitle", widget: "seo-counter"},
+                { label: "Meta Description", name: "metaDescription", widget: "seo-counter"},
                 { label: "Cover Image", name: "coverImage", widget: "image" },
                 { label: "Keywords", name: "keywords", widget: "list"},
                 { label: "Body", name: "body", widget: "markdown" },
-
               ],
             },
           ],
