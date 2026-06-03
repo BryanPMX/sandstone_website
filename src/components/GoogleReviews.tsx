@@ -11,7 +11,7 @@ export function GoogleReviews() {
             Google Reviews
           </h2>
           <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/80">
-            See what military families are saying about Sandstone.
+            See what families are saying about Sandstone.
           </p>
         </div>
 
@@ -31,7 +31,7 @@ export function GoogleReviews() {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-full border border-[var(--sandstone-sand-gold)] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] transition hover:bg-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
           >
-            Leave a Google Review →
+            Please Leave a Google Review →
           </a>
         </div>
       </div>
