@@ -6,6 +6,7 @@ export interface BlogPostFrontmatter {
   date: string;
   excerpt: string;
   coverImage: string;
+  coverImageAlt?: string;
   keywords?: string[];
   seoTitle?: string;
   metaDescription?: string;
