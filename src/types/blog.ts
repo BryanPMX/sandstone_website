@@ -7,6 +7,8 @@ export interface BlogPostFrontmatter {
   excerpt: string;
   coverImage: string;
   keywords?: string[];
+  seoTitle?: string;
+  metaDescription?: string;
 }
 
 export interface BlogPostListItem extends BlogPostFrontmatter {

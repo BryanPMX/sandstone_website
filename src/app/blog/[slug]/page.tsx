@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
+
   if (!post) {
     return {
       title: "Post Not Found | Sandstone Blog",
@@ -33,9 +34,10 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   }
 
   return {
-    title: `${post.title} | Sandstone Blog`,
-    description: post.excerpt,
+    title: post.seoTitle || `${post.title} | Sandstone Blog`,
+    description: post.metaDescription || post.excerpt,
     keywords: post.keywords,
+
   };
 }
 

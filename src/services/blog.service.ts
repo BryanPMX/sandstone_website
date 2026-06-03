@@ -64,7 +64,9 @@ function normalizeListItem(
     date: string;
     excerpt: string;
     coverImage: string;
-    keywords?: string[] // Added optional keywords
+    keywords?: string[];
+    seoTitle?: string;
+    metaDescription?: string;
   }
 ): BlogPostListItem {
   return {
@@ -73,7 +75,10 @@ function normalizeListItem(
     date: normalizeDate(input.date),
     excerpt: input.excerpt,
     coverImage: input.coverImage,
-    keywords: input.keywords || [], // Pass the data through, defaulting to empty array
+    keywords: input.keywords || [],
+    seoTitle: input.seoTitle,
+    metaDescription: input.metaDescription,
+
   };
 }
 
@@ -122,6 +127,8 @@ async function getPostBySlugImpl(slug: string): Promise<BlogPost | null> {
       const raw = await fs.readFile(fullPath, "utf8");
       const parsed = matter(raw);
       const frontmatter = BlogSchema.safeParse(parsed.data);
+
+
 
       if (!frontmatter.success) {
         console.error("[BlogService] Invalid frontmatter:", `${sanitizedSlug}.md`, frontmatter.error.flatten());
