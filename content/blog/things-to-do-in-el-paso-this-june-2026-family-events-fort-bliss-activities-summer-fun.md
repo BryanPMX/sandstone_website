@@ -11,6 +11,7 @@ metaDescription: Explore the best events happening in El Paso this June 2026.
   Find family activities, Fort Bliss MWR events, outdoor adventures, markets,
   movies, concerts, and Father's Day celebrations.
 coverImage: /uploads/momdaughter.webp
+coverImageAlt: a mom and her daughter having fun outdoors
 keywords:
   - El Paso events June 2026
   - Things to do in El Paso
