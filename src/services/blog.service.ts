@@ -64,6 +64,7 @@ function normalizeListItem(
     date: string;
     excerpt: string;
     coverImage: string;
+    coverImageAlt?: string;
     keywords?: string[];
     seoTitle?: string;
     metaDescription?: string;
@@ -75,6 +76,7 @@ function normalizeListItem(
     date: normalizeDate(input.date),
     excerpt: input.excerpt,
     coverImage: input.coverImage,
+    coverImageAlt: input.coverImageAlt,
     keywords: input.keywords || [],
     seoTitle: input.seoTitle,
     metaDescription: input.metaDescription,
