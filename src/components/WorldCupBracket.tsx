@@ -189,7 +189,7 @@ export default function WorldCupBracket() {
           <img
             src="/uploads/world-cup-challenge.jpeg"
             alt="Sandstone World Cup Bracket Challenge"
-            className="h-[100px] w-full object-cover"
+            className="w-full object-contain bg-white p-1"
           />
 
           <div className="p-3 text-left">
@@ -213,7 +213,7 @@ export default function WorldCupBracket() {
           <div className="relative max-h-[92vh] w-full max-w-7xl overflow-y-auto rounded-3xl bg-[#1557ff] p-5 shadow-2xl md:p-8">
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute right-5 top-5 z-10 rounded-full bg-white px-3 py-1 text-sm font-bold text-blue-700 hover:bg-blue-100"
+              className="overflow-hidden rounded-2xl bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
             >
               ✕
             </button>
