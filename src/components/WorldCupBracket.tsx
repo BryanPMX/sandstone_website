@@ -135,7 +135,7 @@ export default function WorldCupBracket() {
           className="overflow-hidden rounded-2xl bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
         >
           <img
-            src="/uploads/world-cup-challenge.jpg"
+            src="/uploads/world-cup-challenge.jpeg"
             alt="Sandstone World Cup Bracket Challenge"
             className="h-[100px] w-full object-cover"
         />
