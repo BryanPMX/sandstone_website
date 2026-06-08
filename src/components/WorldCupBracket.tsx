@@ -97,9 +97,9 @@ export default function WorldCupBracket() {
     className="overflow-hidden rounded-2xl border border-white/40 bg-white shadow-2xl transition hover:-translate-y-1 hover:shadow-3xl"
   >
     <img
-      src="/uploads/world-cup-bracket-challenge.jpeg"
-      alt="Sandstone World Cup Bracket Challenge"
-      className="h-[130px] w-full object-cover"
+        src="/uploads/WhatsApp%20Image%202026-06-08%20at%2011.01.08%20AM.jpeg"
+        alt="Sandstone World Cup Bracket Challenge"
+        className="h-[130px] w-full object-cover"
     />
 
     <div className="p-3 text-left">
