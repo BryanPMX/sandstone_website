@@ -11,12 +11,13 @@ import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
 import { HOME_FAQ_SCHEMA_EN, HOME_FAQ_SCHEMA_ES } from "@/constants/site";
 import { GoogleReviews } from "@/components/GoogleReviews";
+import WorldCupBracket from "@/components/WorldCupBracket";
 export const revalidate = 300;
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Sandstone Real Estate Group | Luxury Homes in El Paso, TX",
-  
+
   description:
     "Explore luxury homes, military relocation services, and real estate opportunities in El Paso, Texas with Sandstone Real Estate Group. Buy, sell, and rent homes near Fort Bliss and across the Southwest.",
 
@@ -37,8 +38,10 @@ export const metadata = {
 export default async function Home() {
   const properties = await fetchMyPropertyCards();
   const latestPosts = (await getSortedPosts()).slice(0, 3);
+
   const alejandroSparkProperties = properties.filter(
-    (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
+    (property) =>
+      Boolean(property.sparkSource) && isAlejandroListing(property)
   );
 
   return (
@@ -79,16 +82,23 @@ export default async function Home() {
           }),
         }}
       />
+
       <Script
         id="home-faq-schema-es"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(HOME_FAQ_SCHEMA_ES) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(HOME_FAQ_SCHEMA_ES),
+        }}
       />
+
       <Script
         id="home-faq-schema-en"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(HOME_FAQ_SCHEMA_EN) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(HOME_FAQ_SCHEMA_EN),
+        }}
       />
+
       {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
         <Script
           id="google-maps"
@@ -96,22 +106,35 @@ export default async function Home() {
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&v=weekly&libraries=places`}
         />
       ) : null}
+
       <SiteHeader overlayDesktop />
+
       <main className="min-h-screen">
         <HeroSection />
+
         <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
           <Link href="/pcs" className="block w-full">
             <img
               src="/uploads/Banner%20PCS3.jpeg"
               alt="Military PCS Specialist — start your move"
-              className="block w-full h-[90px] object-cover object-[center_85%] md:h-auto"            />
+              className="block w-full h-[90px] object-cover object-[center_85%] md:h-auto"
+            />
           </Link>
         </section>
-        <FeaturedListingsSection properties={alejandroSparkProperties} />
+
+        <WorldCupBracket />
+
+        <FeaturedListingsSection
+          properties={alejandroSparkProperties}
+        />
+
         <BlogTeaserSection posts={latestPosts} />
+
         <PrimaryActionTiles />
+
         <ContactForm />
       </main>
+
       <SiteFooter />
     </>
   );
