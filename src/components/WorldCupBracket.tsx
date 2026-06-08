@@ -13,43 +13,43 @@ const groups = [
   },
   {
     name: "Group C",
-    teams: ["Brazil", "Saudi Arabia", "Mexico", "Poland"],
+    teams: ["Brazil", "Morocco", "Haiti", "Scotland"],
   },
   {
     name: "Group D",
-    teams: ["USA", "Australia", "Denmark", "Tunisia"],
+    teams: ["USA", "Paraguay", "Australia", "Turkiye"],
   },
   {
     name: "Group E",
-    teams: ["Spain", "Costa Rica", "Germany", "Japan"],
+    teams: ["Germany", "Curaçao", "Cote d'Ivoire", "Ecuador"],
   },
   {
     name: "Group F",
-    teams: ["Belgium", "Canada", "Morocco", "Croatia"],
+    teams: ["Netherlands", "Japan", "Sweden", "Tunisia"],
   },
   {
     name: "Group G",
-    teams: ["Brazil", "Serbia", "Switzerland", "Cameroon"],
+    teams: ["Belgium", "Egypt", "IR Iran", "New Zealand"],
   },
   {
     name: "Group H",
-    teams: ["Portugal", "Ghana", "Uruguay", "South Korea"],
+    teams: ["Spain", "Cabo Verde", "Saudi Arabia", "Uruguay"],
   },
   {
     name: "Group I",
-    teams: ["Argentina", "Saudi Arabia", "Mexico", "Poland"],
+    teams: ["France", " Senegal", "Iraq", "Norway"],
   },
   {
     name: "Group J",
-    teams: ["France", "Australia", "Denmark", "Tunisia"],
+    teams: ["Argentina", "Alegeria", "Austria", "Jordan"],
   },
   {
     name: "Group K",
-    teams: ["Spain", "Costa Rica", "Germany", "Japan"],
+    teams: ["Portugal", "Congo DR", "Uzbekistan", "Colombia"],
   },
   {
     name: "Group L",
-    teams: ["Belgium", "Canada", "Morocco", "Croatia"],
+    teams: ["England", "Croatia", "Ghana", "Panama"],
   },
 ];
 
