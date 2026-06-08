@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import QuarterFinals from "./QuarterFinals";
 
 type Round16Props = {
   teams: string[];
