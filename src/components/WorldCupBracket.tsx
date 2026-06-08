@@ -3,54 +3,18 @@
 import { useState } from "react";
 
 const groups = [
-  {
-    name: "Group A",
-    teams: ["Mexico", "South Africa", "South Korea", "Czechia"],
-  },
-  {
-    name: "Group B",
-    teams: ["Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland"],
-  },
-  {
-    name: "Group C",
-    teams: ["Brazil", "Morocco", "Haiti", "Scotland"],
-  },
-  {
-    name: "Group D",
-    teams: ["USA", "Paraguay", "Australia", "Turkiye"],
-  },
-  {
-    name: "Group E",
-    teams: ["Germany", "Curaçao", "Cote d'Ivoire", "Ecuador"],
-  },
-  {
-    name: "Group F",
-    teams: ["Netherlands", "Japan", "Sweden", "Tunisia"],
-  },
-  {
-    name: "Group G",
-    teams: ["Belgium", "Egypt", "IR Iran", "New Zealand"],
-  },
-  {
-    name: "Group H",
-    teams: ["Spain", "Cabo Verde", "Saudi Arabia", "Uruguay"],
-  },
-  {
-    name: "Group I",
-    teams: ["France", " Senegal", "Iraq", "Norway"],
-  },
-  {
-    name: "Group J",
-    teams: ["Argentina", "Alegeria", "Austria", "Jordan"],
-  },
-  {
-    name: "Group K",
-    teams: ["Portugal", "Congo DR", "Uzbekistan", "Colombia"],
-  },
-  {
-    name: "Group L",
-    teams: ["England", "Croatia", "Ghana", "Panama"],
-  },
+  { name: "Group A", teams: ["Mexico", "South Africa", "South Korea", "Czechia"] },
+  { name: "Group B", teams: ["Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland"] },
+  { name: "Group C", teams: ["Brazil", "Morocco", "Haiti", "Scotland"] },
+  { name: "Group D", teams: ["USA", "Paraguay", "Australia", "Turkiye"] },
+  { name: "Group E", teams: ["Germany", "Curaçao", "Cote d'Ivoire", "Ecuador"] },
+  { name: "Group F", teams: ["Netherlands", "Japan", "Sweden", "Tunisia"] },
+  { name: "Group G", teams: ["Belgium", "Egypt", "IR Iran", "New Zealand"] },
+  { name: "Group H", teams: ["Spain", "Cabo Verde", "Saudi Arabia", "Uruguay"] },
+  { name: "Group I", teams: ["France", "Senegal", "Iraq", "Norway"] },
+  { name: "Group J", teams: ["Argentina", "Algeria", "Austria", "Jordan"] },
+  { name: "Group K", teams: ["Portugal", "Congo DR", "Uzbekistan", "Colombia"] },
+  { name: "Group L", teams: ["England", "Croatia", "Ghana", "Panama"] },
 ];
 
 type Placement = "first" | "second" | "third" | "fourth";
@@ -72,14 +36,21 @@ const placements: { key: Placement; label: string }[] = [
 export default function WorldCupBracket() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasSignedUp, setHasSignedUp] = useState(false);
+  const [step, setStep] = useState<"groups" | "thirdPlace">("groups");
+
   const [groupPicks, setGroupPicks] = useState<Record<string, GroupPick>>({});
   const [activeSlots, setActiveSlots] = useState<Record<string, Placement>>({});
+  const [topThirdPlaceTeams, setTopThirdPlaceTeams] = useState<string[]>([]);
 
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
   });
+
+  const thirdPlaceTeams = groups
+    .map((group) => groupPicks[group.name]?.third)
+    .filter(Boolean) as string[];
 
   function handleSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -119,12 +90,47 @@ export default function WorldCupBracket() {
   }
 
   function handleSubmitPicks() {
-    console.log("World Cup group picks:", {
-      customer: formData,
-      picks: groupPicks,
+    const missingGroups = groups.filter((group) => {
+      const picks = groupPicks[group.name];
+      return !picks?.first || !picks?.second || !picks?.third || !picks?.fourth;
     });
 
-    alert("Your World Cup group picks have been submitted!");
+    if (missingGroups.length > 0) {
+      alert("Please finish picking 1st, 2nd, 3rd, and 4th place for every group.");
+      return;
+    }
+
+    setStep("thirdPlace");
+  }
+
+  function toggleThirdPlaceTeam(team: string) {
+    setTopThirdPlaceTeams((current) => {
+      if (current.includes(team)) {
+        return current.filter((t) => t !== team);
+      }
+
+      if (current.length >= 8) {
+        alert("You can only pick 8 third-place teams.");
+        return current;
+      }
+
+      return [...current, team];
+    });
+  }
+
+  function finalSubmit() {
+    if (topThirdPlaceTeams.length !== 8) {
+      alert("Please select exactly 8 third-place teams.");
+      return;
+    }
+
+    console.log("Final World Cup picks:", {
+      customer: formData,
+      groupPicks,
+      topThirdPlaceTeams,
+    });
+
+    alert("Your World Cup bracket has been submitted!");
   }
 
   return (
@@ -138,7 +144,7 @@ export default function WorldCupBracket() {
             src="/uploads/world-cup-challenge.jpeg"
             alt="Sandstone World Cup Bracket Challenge"
             className="h-[100px] w-full object-cover"
-        />
+          />
 
           <div className="p-3 text-left">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-600">
@@ -225,7 +231,7 @@ export default function WorldCupBracket() {
                   </button>
                 </form>
               </div>
-            ) : (
+            ) : step === "groups" ? (
               <>
                 <div className="mb-8 flex flex-col gap-3 pr-12 text-white md:flex-row md:items-end md:justify-between">
                   <div>
@@ -266,16 +272,12 @@ export default function WorldCupBracket() {
 
                           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                             {group.teams.map((team) => {
-                              const selected = Object.values(picks).includes(
-                                team
-                              );
+                              const selected = Object.values(picks).includes(team);
 
                               return (
                                 <button
                                   key={team}
-                                  onClick={() =>
-                                    handleTeamPick(group.name, team)
-                                  }
+                                  onClick={() => handleTeamPick(group.name, team)}
                                   title={team}
                                   className={`flex min-h-[82px] items-center justify-center rounded-xl px-2 py-3 text-center text-xs font-black leading-tight transition ${
                                     selected
@@ -306,16 +308,12 @@ export default function WorldCupBracket() {
                                   })
                                 }
                                 className={`flex w-full items-center justify-between border-b px-4 py-3 text-left transition ${
-                                  isActive
-                                    ? "bg-blue-50"
-                                    : "bg-white hover:bg-gray-50"
+                                  isActive ? "bg-blue-50" : "bg-white hover:bg-gray-50"
                                 }`}
                               >
                                 <span
                                   className={`text-sm font-bold ${
-                                    isActive
-                                      ? "text-blue-700"
-                                      : "text-gray-500"
+                                    isActive ? "text-blue-700" : "text-gray-500"
                                   }`}
                                 >
                                   {placement.label}
@@ -351,7 +349,64 @@ export default function WorldCupBracket() {
                     onClick={handleSubmitPicks}
                     className="rounded-xl bg-orange-500 px-10 py-4 text-lg font-black uppercase text-white shadow-xl transition hover:bg-orange-400"
                   >
-                    Submit All Picks
+                    Continue to Top 8 Third Place
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mb-8 pr-12 text-white">
+                  <p className="text-xs font-bold uppercase tracking-[0.35em] md:text-sm">
+                    Sandstone World Cup
+                  </p>
+
+                  <h2 className="mt-2 text-3xl font-black uppercase leading-none md:text-6xl">
+                    Pick Top 8 Third Place Teams
+                  </h2>
+
+                  <p className="mt-3 text-white/80">
+                    Choose the 8 third-place teams you think will advance.
+                  </p>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                  {thirdPlaceTeams.map((team) => {
+                    const selected = topThirdPlaceTeams.includes(team);
+
+                    return (
+                      <button
+                        key={team}
+                        onClick={() => toggleThirdPlaceTeam(team)}
+                        className={`rounded-2xl px-5 py-6 text-lg font-black transition ${
+                          selected
+                            ? "bg-orange-500 text-white shadow-xl"
+                            : "bg-white text-gray-900 hover:bg-blue-100"
+                        }`}
+                      >
+                        {team}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <p className="mt-4 text-center font-bold text-white">
+                  {topThirdPlaceTeams.length}/8 selected
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 text-center md:flex-row md:justify-center">
+                  <button
+                    onClick={() => setStep("groups")}
+                    className="rounded-xl bg-white px-8 py-4 font-black uppercase text-blue-700"
+                  >
+                    Back
+                  </button>
+
+                  <button
+                    onClick={finalSubmit}
+                    disabled={topThirdPlaceTeams.length !== 8}
+                    className="rounded-xl bg-orange-500 px-10 py-4 text-lg font-black uppercase text-white shadow-xl transition hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Submit Top 8
                   </button>
                 </div>
               </>
