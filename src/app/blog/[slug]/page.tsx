@@ -33,11 +33,27 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     };
   }
 
-  return {
-    title: post.seoTitle || `${post.title} | Sandstone Blog`,
-    description: post.metaDescription || post.excerpt,
-    keywords: post.keywords,
+  const siteBase = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://sandstone.homes").replace(/\/+$/, "");
+  const title = post.seoTitle || `${post.title} | Sandstone Blog`;
+  const description = post.metaDescription || post.excerpt;
+  const imageUrl = post.coverImage.startsWith("http") ? post.coverImage : `${siteBase}${post.coverImage}`;
 
+  return {
+    title,
+    description,
+    keywords: post.keywords,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      publishedTime: post.date,
+      images: [
+        {
+          url: imageUrl,
+          alt: post.coverImageAlt || post.title,
+        },
+      ],
+    },
   };
 }
 
