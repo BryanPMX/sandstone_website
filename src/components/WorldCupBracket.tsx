@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Round32 from "./Round32";
 
 const groups = [
   {
@@ -72,7 +73,9 @@ const placements: { key: Placement; label: string }[] = [
 export default function WorldCupBracket() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasSignedUp, setHasSignedUp] = useState(false);
-  const [step, setStep] = useState<"groups" | "thirdPlace">("groups");
+  const [step, setStep] = useState<"groups" | "thirdPlace" | "round32">(
+    "groups"
+  );
 
   const [groupPicks, setGroupPicks] = useState<Record<string, GroupPick>>({});
   const [topThirdPlaceTeams, setTopThirdPlaceTeams] = useState<string[]>([]);
@@ -86,6 +89,12 @@ export default function WorldCupBracket() {
   const thirdPlaceTeams = groups
     .map((group) => groupPicks[group.name]?.third)
     .filter(Boolean) as string[];
+
+  const knockoutTeams = [
+    ...groups.map((group) => groupPicks[group.name]?.first),
+    ...groups.map((group) => groupPicks[group.name]?.second),
+    ...topThirdPlaceTeams,
+  ].filter(Boolean) as string[];
 
   function handleSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -161,19 +170,13 @@ export default function WorldCupBracket() {
     });
   }
 
-  function finalSubmit() {
+  function handleTopThirdSubmit() {
     if (topThirdPlaceTeams.length !== 8) {
       alert("Please select exactly 8 third-place teams.");
       return;
     }
 
-    console.log("Final World Cup picks:", {
-      customer: formData,
-      groupPicks,
-      topThirdPlaceTeams,
-    });
-
-    alert("Your World Cup bracket has been submitted!");
+    setStep("round32");
   }
 
   return (
@@ -412,7 +415,7 @@ export default function WorldCupBracket() {
                   </button>
                 </div>
               </>
-            ) : (
+            ) : step === "thirdPlace" ? (
               <>
                 <div className="mb-8 pr-12 text-white">
                   <p className="text-xs font-bold uppercase tracking-[0.35em] md:text-sm">
@@ -461,14 +464,19 @@ export default function WorldCupBracket() {
                   </button>
 
                   <button
-                    onClick={finalSubmit}
+                    onClick={handleTopThirdSubmit}
                     disabled={topThirdPlaceTeams.length !== 8}
                     className="rounded-xl bg-orange-500 px-10 py-4 text-lg font-black uppercase text-white shadow-xl transition hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    Submit Top 8
+                    Continue to Round of 32
                   </button>
                 </div>
               </>
+            ) : (
+              <Round32
+                groupPicks={groupPicks}
+                topThirdPlaceTeams={topThirdPlaceTeams}
+              />
             )}
           </div>
         </div>
