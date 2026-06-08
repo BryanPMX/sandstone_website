@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Round16 from "./Round16";
 
 type GroupPick = {
   first?: string;
@@ -45,11 +46,9 @@ function getTeamFromCode(
 
   const placementNumber = code[0];
   const groupLetter = code[1];
-  const groupName = `Group ${groupLetter}`;
-  const picks = groupPicks[groupName];
+  const picks = groupPicks[`Group ${groupLetter}`];
 
   if (!picks) return code;
-
   if (placementNumber === "1") return picks.first || code;
   if (placementNumber === "2") return picks.second || code;
 
@@ -85,18 +84,8 @@ export default function Round32({
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {matchups.map(([code1, code2], index) => {
-          const team1 = getTeamFromCode(
-            code1,
-            groupPicks,
-            topThirdPlaceTeams
-          );
-
-          const team2 = getTeamFromCode(
-            code2,
-            groupPicks,
-            topThirdPlaceTeams
-          );
-
+          const team1 = getTeamFromCode(code1, groupPicks, topThirdPlaceTeams);
+          const team2 = getTeamFromCode(code2, groupPicks, topThirdPlaceTeams);
           const winner = winners[index];
 
           return (
@@ -105,56 +94,27 @@ export default function Round32({
                 Match {index + 1}
               </p>
 
-              <button
-                onClick={() => pickWinner(index, team1)}
-                className={`mb-2 w-full rounded-xl border p-3 text-left font-bold transition ${
-                  winner === team1
-                    ? "bg-orange-500 text-white"
-                    : "bg-white text-gray-900 hover:bg-blue-50"
-                }`}
-              >
-                <span className="mr-2 text-xs text-gray-400">{code1}</span>
-                {team1}
-              </button>
-
-              <button
-                onClick={() => pickWinner(index, team2)}
-                className={`w-full rounded-xl border p-3 text-left font-bold transition ${
-                  winner === team2
-                    ? "bg-orange-500 text-white"
-                    : "bg-white text-gray-900 hover:bg-blue-50"
-                }`}
-              >
-                <span className="mr-2 text-xs text-gray-400">{code2}</span>
-                {team2}
-              </button>
+              {[team1, team2].map((team, teamIndex) => (
+                <button
+                  key={team}
+                  onClick={() => pickWinner(index, team)}
+                  className={`${
+                    teamIndex === 0 ? "mb-2" : ""
+                  } w-full rounded-xl border p-3 text-left font-bold transition ${
+                    winner === team
+                      ? "bg-orange-500 text-white"
+                      : "bg-white text-gray-900 hover:bg-blue-50"
+                  }`}
+                >
+                  {team}
+                </button>
+              ))}
             </div>
           );
         })}
       </div>
 
-      <div className="mt-10 rounded-2xl bg-white p-5 shadow-xl">
-        <h3 className="mb-4 text-2xl font-black text-gray-900">
-          Round of 16 Teams
-        </h3>
-
-        {round16Teams.length === 0 ? (
-          <p className="font-bold text-gray-500">
-            Winners will show here after you pick them.
-          </p>
-        ) : (
-          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-            {round16Teams.map((team, index) => (
-              <div
-                key={`${team}-${index}`}
-                className="rounded-xl bg-blue-50 px-4 py-3 font-black text-blue-800"
-              >
-                {index + 1}. {team}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {round16Teams.length === 16 && <Round16 teams={round16Teams} />}
     </div>
   );
 }
