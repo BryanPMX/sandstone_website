@@ -3,18 +3,54 @@
 import { useState } from "react";
 
 const groups = [
-  { name: "Group A", teams: ["Mexico", "South Africa", "South Korea", "Czechia"] },
-  { name: "Group B", teams: ["Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland"] },
-  { name: "Group C", teams: ["Brazil", "Morocco", "Haiti", "Scotland"] },
-  { name: "Group D", teams: ["USA", "Paraguay", "Australia", "Turkiye"] },
-  { name: "Group E", teams: ["Germany", "Curaçao", "Cote d'Ivoire", "Ecuador"] },
-  { name: "Group F", teams: ["Netherlands", "Japan", "Sweden", "Tunisia"] },
-  { name: "Group G", teams: ["Belgium", "Egypt", "IR Iran", "New Zealand"] },
-  { name: "Group H", teams: ["Spain", "Cabo Verde", "Saudi Arabia", "Uruguay"] },
-  { name: "Group I", teams: ["France", "Senegal", "Iraq", "Norway"] },
-  { name: "Group J", teams: ["Argentina", "Algeria", "Austria", "Jordan"] },
-  { name: "Group K", teams: ["Portugal", "Congo DR", "Uzbekistan", "Colombia"] },
-  { name: "Group L", teams: ["England", "Croatia", "Ghana", "Panama"] },
+  {
+    name: "Group A",
+    teams: ["Mexico", "South Africa", "South Korea", "Czechia"],
+  },
+  {
+    name: "Group B",
+    teams: ["Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland"],
+  },
+  {
+    name: "Group C",
+    teams: ["Brazil", "Morocco", "Haiti", "Scotland"],
+  },
+  {
+    name: "Group D",
+    teams: ["USA", "Paraguay", "Australia", "Turkiye"],
+  },
+  {
+    name: "Group E",
+    teams: ["Germany", "Curaçao", "Cote d'Ivoire", "Ecuador"],
+  },
+  {
+    name: "Group F",
+    teams: ["Netherlands", "Japan", "Sweden", "Tunisia"],
+  },
+  {
+    name: "Group G",
+    teams: ["Belgium", "Egypt", "IR Iran", "New Zealand"],
+  },
+  {
+    name: "Group H",
+    teams: ["Spain", "Cabo Verde", "Saudi Arabia", "Uruguay"],
+  },
+  {
+    name: "Group I",
+    teams: ["France", "Senegal", "Iraq", "Norway"],
+  },
+  {
+    name: "Group J",
+    teams: ["Argentina", "Algeria", "Austria", "Jordan"],
+  },
+  {
+    name: "Group K",
+    teams: ["Portugal", "Congo DR", "Uzbekistan", "Colombia"],
+  },
+  {
+    name: "Group L",
+    teams: ["England", "Croatia", "Ghana", "Panama"],
+  },
 ];
 
 type Placement = "first" | "second" | "third" | "fourth";
@@ -39,7 +75,6 @@ export default function WorldCupBracket() {
   const [step, setStep] = useState<"groups" | "thirdPlace">("groups");
 
   const [groupPicks, setGroupPicks] = useState<Record<string, GroupPick>>({});
-  const [activeSlots, setActiveSlots] = useState<Record<string, Placement>>({});
   const [topThirdPlaceTeams, setTopThirdPlaceTeams] = useState<string[]>([]);
 
   const [formData, setFormData] = useState({
@@ -58,20 +93,27 @@ export default function WorldCupBracket() {
   }
 
   function handleTeamPick(groupName: string, team: string) {
-    const activeSlot = activeSlots[groupName] || "first";
-
     setGroupPicks((current) => {
       const currentGroup = current[groupName] || {};
 
-      const cleanedGroup = Object.fromEntries(
-        Object.entries(currentGroup).filter(([, value]) => value !== team)
-      ) as GroupPick;
+      if (Object.values(currentGroup).includes(team)) {
+        return current;
+      }
+
+      const nextSlot = placements.find(
+        (placement) => !currentGroup[placement.key]
+      )?.key;
+
+      if (!nextSlot) {
+        alert("You already selected all 4 teams. Press Reset to make changes.");
+        return current;
+      }
 
       return {
         ...current,
         [groupName]: {
-          ...cleanedGroup,
-          [activeSlot]: team,
+          ...currentGroup,
+          [nextSlot]: team,
         },
       };
     });
@@ -83,23 +125,24 @@ export default function WorldCupBracket() {
       [groupName]: {},
     });
 
-    setActiveSlots({
-      ...activeSlots,
-      [groupName]: "first",
-    });
+    setTopThirdPlaceTeams([]);
   }
 
   function handleSubmitPicks() {
     const missingGroups = groups.filter((group) => {
       const picks = groupPicks[group.name];
+
       return !picks?.first || !picks?.second || !picks?.third || !picks?.fourth;
     });
 
     if (missingGroups.length > 0) {
-      alert("Please finish picking 1st, 2nd, 3rd, and 4th place for every group.");
+      alert(
+        "Please finish picking 1st, 2nd, 3rd, and 4th place for every group."
+      );
       return;
     }
 
+    setTopThirdPlaceTeams([]);
     setStep("thirdPlace");
   }
 
@@ -251,7 +294,6 @@ export default function WorldCupBracket() {
 
                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                   {groups.map((group) => {
-                    const activeSlot = activeSlots[group.name] || "first";
                     const picks = groupPicks[group.name] || {};
 
                     return (
@@ -261,23 +303,33 @@ export default function WorldCupBracket() {
                       >
                         <div className="p-4">
                           <div className="mb-5 border-b border-white/10 pb-3">
-                            <h3 className="text-xl font-black uppercase tracking-wide text-white">
-                              {group.name}
-                            </h3>
+                            <div className="flex items-center justify-between gap-3">
+                              <h3 className="text-xl font-black uppercase tracking-wide text-white">
+                                {group.name}
+                              </h3>
 
-                            <p className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white">
-                              Pick 1–4
+                              <p className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white">
+                                Pick 1–4
+                              </p>
+                            </div>
+
+                            <p className="mt-2 text-xs font-semibold text-white/70">
+                              Tap teams in the order you think they will finish.
                             </p>
                           </div>
 
                           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                             {group.teams.map((team) => {
-                              const selected = Object.values(picks).includes(team);
+                              const selected = Object.values(picks).includes(
+                                team
+                              );
 
                               return (
                                 <button
                                   key={team}
-                                  onClick={() => handleTeamPick(group.name, team)}
+                                  onClick={() =>
+                                    handleTeamPick(group.name, team)
+                                  }
                                   title={team}
                                   className={`flex min-h-[82px] items-center justify-center rounded-xl px-2 py-3 text-center text-xs font-black leading-tight transition ${
                                     selected
@@ -294,42 +346,49 @@ export default function WorldCupBracket() {
                           </div>
                         </div>
 
-                        <div className="bg-white">
-                          {placements.map((placement) => {
-                            const isActive = activeSlot === placement.key;
+                        <div className="bg-white p-4">
+                          <div className="space-y-2">
+                            <div className="flex justify-between rounded-lg bg-gray-50 px-3 py-2">
+                              <span className="font-bold text-blue-700">
+                                🥇 1st
+                              </span>
+                              <span className="font-black text-gray-900">
+                                {picks.first || "-"}
+                              </span>
+                            </div>
 
-                            return (
-                              <button
-                                key={placement.key}
-                                onClick={() =>
-                                  setActiveSlots({
-                                    ...activeSlots,
-                                    [group.name]: placement.key,
-                                  })
-                                }
-                                className={`flex w-full items-center justify-between border-b px-4 py-3 text-left transition ${
-                                  isActive ? "bg-blue-50" : "bg-white hover:bg-gray-50"
-                                }`}
-                              >
-                                <span
-                                  className={`text-sm font-bold ${
-                                    isActive ? "text-blue-700" : "text-gray-500"
-                                  }`}
-                                >
-                                  {placement.label}
-                                </span>
+                            <div className="flex justify-between rounded-lg bg-gray-50 px-3 py-2">
+                              <span className="font-bold text-blue-700">
+                                🥈 2nd
+                              </span>
+                              <span className="font-black text-gray-900">
+                                {picks.second || "-"}
+                              </span>
+                            </div>
 
-                                <span className="ml-4 max-w-[150px] truncate text-sm font-black text-gray-900">
-                                  {picks[placement.key] || "-"}
-                                </span>
-                              </button>
-                            );
-                          })}
+                            <div className="flex justify-between rounded-lg bg-gray-50 px-3 py-2">
+                              <span className="font-bold text-blue-700">
+                                🥉 3rd
+                              </span>
+                              <span className="font-black text-gray-900">
+                                {picks.third || "-"}
+                              </span>
+                            </div>
+
+                            <div className="flex justify-between rounded-lg bg-gray-50 px-3 py-2">
+                              <span className="font-bold text-blue-700">
+                                4️⃣ 4th
+                              </span>
+                              <span className="font-black text-gray-900">
+                                {picks.fourth || "-"}
+                              </span>
+                            </div>
+                          </div>
                         </div>
 
                         <div className="flex items-center justify-between bg-[#061a5f] p-4">
                           <p className="text-xs font-semibold text-white/70">
-                            Select a place, then tap a team.
+                            Tap 4 teams. Use reset to change.
                           </p>
 
                           <button
