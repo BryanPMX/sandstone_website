@@ -7,6 +7,13 @@ type Props = {
   teams: string[];
 };
 
+const quarterFinalMatchups = [
+  [0, 1], // RD16 W1 vs RD16 W2
+  [4, 5], // RD16 W5 vs RD16 W6
+  [2, 3], // RD16 W3 vs RD16 W4
+  [6, 7], // RD16 W7 vs RD16 W8
+];
+
 export default function QuarterFinals({ teams }: Props) {
   const [winners, setWinners] = useState<Record<number, string>>({});
 
@@ -21,9 +28,9 @@ export default function QuarterFinals({ teams }: Props) {
       </h2>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => {
-          const team1 = teams[index * 2];
-          const team2 = teams[index * 2 + 1];
+        {quarterFinalMatchups.map(([team1Index, team2Index], index) => {
+          const team1 = teams[team1Index];
+          const team2 = teams[team2Index];
           const winner = winners[index];
 
           return (

@@ -9,6 +9,11 @@ type Props = {
 export default function Final({ teams }: Props) {
   const [champion, setChampion] = useState("");
 
+  function submitBracket() {
+    alert(`Bracket submitted! Champion: ${champion}`);
+    console.log("Champion:", champion);
+  }
+
   return (
     <div className="mt-12">
       <h2 className="mb-3 text-center text-4xl font-black uppercase text-white">
@@ -38,15 +43,26 @@ export default function Final({ teams }: Props) {
       </div>
 
       {champion && (
-        <div className="mx-auto mt-8 max-w-xl rounded-2xl bg-white p-6 text-center shadow-xl">
-          <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
-            Champion
-          </p>
+        <>
+          <div className="mx-auto mt-8 max-w-xl rounded-2xl bg-white p-6 text-center shadow-xl">
+            <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
+              Champion
+            </p>
 
-          <h3 className="mt-3 text-4xl font-black text-gray-900">
-            🏆 {champion}
-          </h3>
-        </div>
+            <h3 className="mt-3 text-4xl font-black text-gray-900">
+              🏆 {champion}
+            </h3>
+          </div>
+
+          <div className="mt-8 text-center">
+            <button
+              onClick={submitBracket}
+              className="rounded-xl bg-orange-500 px-10 py-4 text-lg font-black uppercase text-white shadow-xl transition hover:bg-orange-400"
+            >
+              Submit Bracket
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
