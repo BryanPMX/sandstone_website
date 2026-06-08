@@ -129,7 +129,7 @@ export default function WorldCupBracket() {
 
   return (
     <>
-      <div className="fixed right-8 top-40 z-50 hidden max-w-[200px] md:block">
+      <div className="fixed bottom-24 right-4 z-50 max-w-[180px] md:right-8 md:top-40 md:bottom-auto md:max-w-[200px]">
         <button
           onClick={() => setIsOpen(true)}
           className="overflow-hidden rounded-2xl bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
