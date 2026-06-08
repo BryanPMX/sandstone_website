@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const data = await request.json();
 
     const result = await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "World Cup Challenge <bracket@sandstone.homes>",
       to: "zachcarrejo07@gmail.com",
       subject: `World Cup Bracket - ${data.name}`,
       html: `
@@ -19,9 +19,11 @@ export async function POST(request: Request) {
         <p><strong>Email:</strong> ${data.email}</p>
         <p><strong>Champion:</strong> ${data.champion}</p>
 
-        <h3>Full Bracket Data</h3>
+        <hr />
 
-        <pre>
+        <h3>Full Submission</h3>
+
+        <pre style="white-space: pre-wrap;">
 ${JSON.stringify(data, null, 2)}
         </pre>
       `,
@@ -40,7 +42,9 @@ ${JSON.stringify(data, null, 2)}
       {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error",
+          error instanceof Error
+            ? error.message
+            : "Unknown error",
       },
       { status: 500 }
     );
