@@ -21,6 +21,10 @@ const round16Matchups = [
 export default function Round16({ teams }: Round16Props) {
   const [winners, setWinners] = useState<Record<number, string>>({});
 
+  const quarterFinalTeams = Array.from({ length: 8 })
+    .map((_, index) => winners[index])
+    .filter(Boolean);
+
   return (
     <div className="mt-12">
       <h2 className="mb-3 text-center text-4xl font-black uppercase text-white">
@@ -34,7 +38,10 @@ export default function Round16({ teams }: Round16Props) {
           const winner = winners[index];
 
           return (
-            <div key={index} className="rounded-2xl bg-white p-4 shadow-xl">
+            <div
+              key={index}
+              className="rounded-2xl bg-white p-4 shadow-xl"
+            >
               <p className="mb-3 text-sm font-bold text-gray-500">
                 Match {index + 1}
               </p>
