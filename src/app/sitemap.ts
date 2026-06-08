@@ -1,52 +1,77 @@
-import { Resend } from "resend";
-import { NextResponse } from "next/server";
+import { MetadataRoute } from 'next'
+import { cache } from 'react'
+import { fetchMyPropertyCards } from '@/services'
 
-export async function POST(request: Request) {
-  try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+const getCachedProperties = cache(async () => {
+  return fetchMyPropertyCards();
+});
 
-    const data = await request.json();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const properties = await getCachedProperties()
+  const baseUrl = 'https://sandstone.homes'
 
-    const result = await resend.emails.send({
-      from: "World Cup Challenge <bracket@sandstone.homes>",
-      to: "zachcarrejo07@gmail.com",
-      subject: `World Cup Bracket - ${data.name}`,
-      html: `
-        <h2>New World Cup Bracket Submission</h2>
+  const listingUrls = properties.map((property) => ({
+    url: `${baseUrl}/listings/${encodeURIComponent(property.routeId)}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }))
 
-        <p><strong>Name:</strong> ${data.name}</p>
-        <p><strong>Phone:</strong> ${data.phone}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        <p><strong>Champion:</strong> ${data.champion}</p>
-
-        <hr />
-
-        <h3>Full Submission</h3>
-
-        <pre style="white-space: pre-wrap;">
-${JSON.stringify(data, null, 2)}
-        </pre>
-      `,
-    });
-
-    console.log("Resend result:", result);
-
-    return NextResponse.json({
-      success: true,
-      resend: result,
-    });
-  } catch (error) {
-    console.error("Submit bracket error:", error);
-
-    return NextResponse.json(
-      {
-        success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Unknown error",
-      },
-      { status: 500 }
-    );
-  }
+  return [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/listings`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/listings/map`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/sell`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/rent`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/join`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/terms-and-conditions`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
+    ...listingUrls,
+  ]
 }
