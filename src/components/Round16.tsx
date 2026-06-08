@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import QuarterFinals from "./QuarterFinals";
 
 type Round16Props = {
   teams: string[];
@@ -20,10 +19,6 @@ const round16Matchups = [
 
 export default function Round16({ teams }: Round16Props) {
   const [winners, setWinners] = useState<Record<number, string>>({});
-
-  const quarterFinalTeams = Array.from({ length: 8 })
-    .map((_, index) => winners[index])
-    .filter(Boolean);
 
   return (
     <div className="mt-12">
