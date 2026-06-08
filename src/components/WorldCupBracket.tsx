@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useState } from "react";
 
@@ -91,29 +91,29 @@ export default function WorldCupBracket() {
 
   return (
     <>
-      <div className="fixed right-8 top-28 z-50 hidden max-w-[230px] md:block">
+      <div className="fixed right-8 top-40 z-50 hidden max-w-[200px] md:block">
   <button
     onClick={() => setIsOpen(true)}
     className="overflow-hidden rounded-2xl border border-white/40 bg-white shadow-2xl transition hover:-translate-y-1 hover:shadow-3xl"
   >
     <img
-        src="/uploads/WhatsApp%20Image%202026-06-08%20at%2011.01.08%20AM.jpeg"
+        src="/uploads/world-cup-challenge.jpeg"
         alt="Sandstone World Cup Bracket Challenge"
-        className="h-[130px] w-full object-cover"
+        className="h-[100px] w-full object-cover"
     />
 
     <div className="p-3 text-left">
-      <p className="text-xs font-semibold uppercase tracking-widest text-blue-600">
-        World Cup Challenge
-      </p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-600">
+            World Cup Challenge
+        </p>
 
-      <p className="mt-1 text-sm font-bold text-gray-900">
-        Build Your Bracket
-      </p>
+    <p className="mt-1 text-sm font-bold text-gray-900">
+        Build Your Bracket ⚽
+    </p>
 
-      <p className="mt-1 text-xs text-gray-600">
+    <p className="mt-1 text-xs text-gray-500">
         Sign up and make your picks.
-      </p>
+    </p>
     </div>
   </button>
 </div>
