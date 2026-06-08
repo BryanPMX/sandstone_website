@@ -1,34 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import Final from "./Final";
 
 type Props = {
   teams: string[];
+  formData: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+  groupPicks: Record<string, unknown>;
+  topThirdPlaceTeams: string[];
 };
 
-type FinalProps = {
-  teams: string[];
-};
-
-function Final({ teams }: FinalProps) {
-  return (
-    <div className="mt-12 rounded-2xl bg-white p-4 shadow-xl">
-      <h2 className="mb-3 text-center text-3xl font-black uppercase text-gray-900">
-        Final
-      </h2>
-      {teams.map((team) => (
-        <p
-          key={team}
-          className="mb-2 rounded-xl border p-3 text-center font-bold text-gray-900"
-        >
-          {team}
-        </p>
-      ))}
-    </div>
-  );
-}
-
-export default function SemiFinals({ teams }: Props) {
+export default function SemiFinals({
+  teams,
+  formData,
+  groupPicks,
+  topThirdPlaceTeams,
+}: Props) {
   const [winners, setWinners] = useState<Record<number, string>>({});
 
   const finalTeams = Array.from({ length: 2 })
@@ -78,7 +69,14 @@ export default function SemiFinals({ teams }: Props) {
         })}
       </div>
 
-      {finalTeams.length === 2 && <Final teams={finalTeams} />}
+      {finalTeams.length === 2 && (
+        <Final
+          teams={finalTeams}
+          formData={formData}
+          groupPicks={groupPicks}
+          topThirdPlaceTeams={topThirdPlaceTeams}
+        />
+      )}
     </div>
   );
 }

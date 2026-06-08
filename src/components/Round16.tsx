@@ -5,20 +5,32 @@ import QuarterFinals from "./QuarterFinals";
 
 type Round16Props = {
   teams: string[];
+  formData: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+  groupPicks: Record<string, unknown>;
+  topThirdPlaceTeams: string[];
 };
 
 const round16Matchups = [
-  [0, 2],   // RD32 W1 vs RD32 W3
-  [1, 4],   // RD32 W2 vs RD32 W5
-  [3, 5],   // RD32 W4 vs RD32 W6
-  [6, 7],   // RD32 W7 vs RD32 W8
-  [10, 11], // RD32 W11 vs RD32 W12
-  [8, 9],   // RD32 W9 vs RD32 W10
-  [13, 15], // RD32 W14 vs RD32 W16
-  [12, 14], // RD32 W13 vs RD32 W15
+  [0, 2],
+  [1, 4],
+  [3, 5],
+  [6, 7],
+  [10, 11],
+  [8, 9],
+  [13, 15],
+  [12, 14],
 ];
 
-export default function Round16({ teams }: Round16Props) {
+export default function Round16({
+  teams,
+  formData,
+  groupPicks,
+  topThirdPlaceTeams,
+}: Round16Props) {
   const [winners, setWinners] = useState<Record<number, string>>({});
 
   const quarterFinalTeams = Array.from({ length: 8 })
@@ -38,10 +50,7 @@ export default function Round16({ teams }: Round16Props) {
           const winner = winners[index];
 
           return (
-            <div
-              key={index}
-              className="rounded-2xl bg-white p-4 shadow-xl"
-            >
+            <div key={index} className="rounded-2xl bg-white p-4 shadow-xl">
               <p className="mb-3 text-sm font-bold text-gray-500">
                 Match {index + 1}
               </p>
@@ -72,7 +81,12 @@ export default function Round16({ teams }: Round16Props) {
       </div>
 
       {quarterFinalTeams.length === 8 && (
-        <QuarterFinals teams={quarterFinalTeams} />
+        <QuarterFinals
+          teams={quarterFinalTeams}
+          formData={formData}
+          groupPicks={groupPicks}
+          topThirdPlaceTeams={topThirdPlaceTeams}
+        />
       )}
     </div>
   );

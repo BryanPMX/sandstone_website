@@ -11,6 +11,11 @@ type GroupPick = {
 };
 
 type Round32Props = {
+  formData: {
+    name: string;
+    phone: string;
+    email: string;
+  };
   groupPicks: Record<string, GroupPick>;
   topThirdPlaceTeams: string[];
 };
@@ -56,6 +61,7 @@ function getTeamFromCode(
 }
 
 export default function Round32({
+  formData,
   groupPicks,
   topThirdPlaceTeams,
 }: Round32Props) {
@@ -114,7 +120,14 @@ export default function Round32({
         })}
       </div>
 
-      {round16Teams.length === 16 && <Round16 teams={round16Teams} />}
+      {round16Teams.length === 16 && (
+        <Round16
+          teams={round16Teams}
+          formData={formData}
+          groupPicks={groupPicks}
+          topThirdPlaceTeams={topThirdPlaceTeams}
+        />
+      )}
     </div>
   );
 }

@@ -474,6 +474,7 @@ export default function WorldCupBracket() {
               </>
             ) : (
               <Round32
+                formData={formData}
                 groupPicks={groupPicks}
                 topThirdPlaceTeams={topThirdPlaceTeams}
               />

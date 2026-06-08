@@ -4,14 +4,56 @@ import { useState } from "react";
 
 type Props = {
   teams: string[];
+  formData: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+  groupPicks: Record<string, unknown>;
+  topThirdPlaceTeams: string[];
 };
 
-export default function Final({ teams }: Props) {
+export default function Final({
+  teams,
+  formData,
+  groupPicks,
+  topThirdPlaceTeams,
+}: Props) {
   const [champion, setChampion] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function submitBracket() {
-    alert(`Bracket submitted! Champion: ${champion}`);
-    console.log("Champion:", champion);
+  async function submitBracket() {
+    if (!champion) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/submit-bracket", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          champion,
+          groupPicks,
+          topThirdPlaceTeams,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit bracket");
+      }
+
+      alert("Bracket submitted successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("There was a problem submitting your bracket.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -57,9 +99,10 @@ export default function Final({ teams }: Props) {
           <div className="mt-8 text-center">
             <button
               onClick={submitBracket}
-              className="rounded-xl bg-orange-500 px-10 py-4 text-lg font-black uppercase text-white shadow-xl transition hover:bg-orange-400"
+              disabled={isSubmitting}
+              className="rounded-xl bg-orange-500 px-10 py-4 text-lg font-black uppercase text-white shadow-xl transition hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Submit Bracket
+              {isSubmitting ? "Submitting..." : "Submit Bracket"}
             </button>
           </div>
         </>
