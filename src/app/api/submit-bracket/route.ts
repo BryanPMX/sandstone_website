@@ -1,47 +1,43 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
+const GOOGLE_SHEETS_WEBHOOK_URL =
+  "https://script.google.com/macros/s/AKfycbxA7OGkRqAFMOkm0N9dRRYZWjpoCb9xF6H7P4v3DD4/dev";
+
 export async function POST(request: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL;
-
     const data = await request.json();
 
     console.log("=== BRACKET SUBMISSION RECEIVED ===");
-    console.log("GHL URL exists:", !!GHL_WEBHOOK_URL);
     console.log("Name:", data.name);
     console.log("Email:", data.email);
 
-    if (!GHL_WEBHOOK_URL) {
-      console.error("Missing GHL_WEBHOOK_URL");
-    } else {
-      try {
-        const ghlResponse = await fetch(GHL_WEBHOOK_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fullName: data.name,
-            phone: data.phone,
-            email: data.email,
-            championPick: data.champion,
-            groupStagePicks: JSON.stringify(data.groupPicks || {}),
-            top8ThirdPlacePicks: JSON.stringify(data.topThirdPlaceTeams || []),
-            roundOf32Picks: JSON.stringify(data.roundOf32Picks || []),
-            fullBracketJson: JSON.stringify(data),
-          }),
-        });
+    try {
+      const sheetsResponse = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify({
+          fullName: data.name,
+          phone: data.phone,
+          email: data.email,
+          championPick: data.champion,
+          groupStagePicks: JSON.stringify(data.groupPicks || {}),
+          top8ThirdPlacePicks: JSON.stringify(data.topThirdPlaceTeams || []),
+          roundOf32Picks: JSON.stringify(data.roundOf32Picks || []),
+          fullBracketJson: JSON.stringify(data),
+        }),
+      });
 
-        console.log("GHL Status:", ghlResponse.status);
+      console.log("Google Sheets Status:", sheetsResponse.status);
 
-        const ghlText = await ghlResponse.text();
-        console.log("GHL Response:", ghlText);
-      } catch (err) {
-        console.error("GHL webhook failed:", err);
-      }
+      const sheetsText = await sheetsResponse.text();
+      console.log("Google Sheets Response:", sheetsText);
+    } catch (err) {
+      console.error("Google Sheets webhook failed:", err);
     }
 
     const result = await resend.emails.send({
@@ -79,9 +75,7 @@ ${JSON.stringify(data, null, 2)}
       {
         success: false,
         error:
-          error instanceof Error
-            ? error.message
-            : "Unknown error",
+          error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
