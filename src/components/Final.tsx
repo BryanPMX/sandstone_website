@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 
+type BracketPick = {
+  match: number;
+  team1: string;
+  team2: string;
+  winner: string;
+};
+
 type Props = {
   teams: string[];
   formData: {
@@ -11,6 +18,10 @@ type Props = {
   };
   groupPicks: Record<string, unknown>;
   topThirdPlaceTeams: string[];
+  roundOf32Picks: BracketPick[];
+  round16Picks: BracketPick[];
+  quarterFinalPicks: BracketPick[];
+  semiFinalPicks: BracketPick[];
 };
 
 export default function Final({
@@ -18,6 +29,10 @@ export default function Final({
   formData,
   groupPicks,
   topThirdPlaceTeams,
+  roundOf32Picks,
+  round16Picks,
+  quarterFinalPicks,
+  semiFinalPicks,
 }: Props) {
   const [champion, setChampion] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +43,13 @@ export default function Final({
     setIsSubmitting(true);
 
     try {
+      const finalPick = {
+        match: 1,
+        team1: teams[0],
+        team2: teams[1],
+        winner: champion,
+      };
+
       const response = await fetch("/api/submit-bracket", {
         method: "POST",
         headers: {
@@ -40,6 +62,11 @@ export default function Final({
           champion,
           groupPicks,
           topThirdPlaceTeams,
+          roundOf32Picks,
+          round16Picks,
+          quarterFinalPicks,
+          semiFinalPicks,
+          finalPick,
         }),
       });
 
@@ -69,7 +96,7 @@ export default function Final({
 
         {teams.map((team, index) => (
           <button
-            key={team}
+            key={`${index}-${team}`}
             onClick={() => setChampion(team)}
             className={`${
               index === 0 ? "mb-2" : ""

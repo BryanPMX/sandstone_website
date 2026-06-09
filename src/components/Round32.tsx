@@ -74,21 +74,9 @@ export default function Round32({
     }));
   }
 
-  const roundOf32Picks = matchups.map(([code1, code2], index) => {
-    const team1 = getTeamFromCode(code1, groupPicks, topThirdPlaceTeams);
-    const team2 = getTeamFromCode(code2, groupPicks, topThirdPlaceTeams);
-
-    return {
-      match: index + 1,
-      team1,
-      team2,
-      winner: winners[index] || "",
-    };
-  });
-
-  const round16Teams = roundOf32Picks
-    .map((match) => match.winner)
-    .filter(Boolean);
+  const round16Teams = matchups
+    .map(([, ,], index) => winners[index])
+    .filter(Boolean) as string[];
 
   return (
     <div>
@@ -138,7 +126,6 @@ export default function Round32({
           formData={formData}
           groupPicks={groupPicks}
           topThirdPlaceTeams={topThirdPlaceTeams}
-          roundOf32Picks={roundOf32Picks}
         />
       )}
     </div>

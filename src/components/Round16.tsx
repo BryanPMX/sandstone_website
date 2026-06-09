@@ -3,6 +3,13 @@
 import { useState } from "react";
 import QuarterFinals from "./QuarterFinals";
 
+type RoundOf32Pick = {
+  match: number;
+  team1: string;
+  team2: string;
+  winner: string;
+};
+
 type Round16Props = {
   teams: string[];
   formData: {
@@ -12,6 +19,7 @@ type Round16Props = {
   };
   groupPicks: Record<string, unknown>;
   topThirdPlaceTeams: string[];
+  roundOf32Picks: RoundOf32Pick[];
 };
 
 const round16Matchups = [
@@ -30,11 +38,21 @@ export default function Round16({
   formData,
   groupPicks,
   topThirdPlaceTeams,
+  roundOf32Picks,
 }: Round16Props) {
   const [winners, setWinners] = useState<Record<number, string>>({});
 
-  const quarterFinalTeams = Array.from({ length: 8 })
-    .map((_, index) => winners[index])
+  const round16Picks = round16Matchups.map(
+    ([team1Index, team2Index], index) => ({
+      match: index + 1,
+      team1: teams[team1Index],
+      team2: teams[team2Index],
+      winner: winners[index] || "",
+    })
+  );
+
+  const quarterFinalTeams = round16Picks
+    .map((match) => match.winner)
     .filter(Boolean);
 
   return (
@@ -57,7 +75,7 @@ export default function Round16({
 
               {[team1, team2].map((team, teamIndex) => (
                 <button
-                  key={team}
+                  key={`${index}-${team}`}
                   onClick={() =>
                     setWinners((current) => ({
                       ...current,
@@ -86,6 +104,8 @@ export default function Round16({
           formData={formData}
           groupPicks={groupPicks}
           topThirdPlaceTeams={topThirdPlaceTeams}
+          roundOf32Picks={roundOf32Picks}
+          round16Picks={round16Picks}
         />
       )}
     </div>

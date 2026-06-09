@@ -3,6 +3,13 @@
 import { useState } from "react";
 import Final from "./Final";
 
+type BracketPick = {
+  match: number;
+  team1: string;
+  team2: string;
+  winner: string;
+};
+
 type Props = {
   teams: string[];
   formData: {
@@ -12,6 +19,9 @@ type Props = {
   };
   groupPicks: Record<string, unknown>;
   topThirdPlaceTeams: string[];
+  roundOf32Picks: BracketPick[];
+  round16Picks: BracketPick[];
+  quarterFinalPicks: BracketPick[];
 };
 
 export default function SemiFinals({
@@ -19,11 +29,21 @@ export default function SemiFinals({
   formData,
   groupPicks,
   topThirdPlaceTeams,
+  roundOf32Picks,
+  round16Picks,
+  quarterFinalPicks,
 }: Props) {
   const [winners, setWinners] = useState<Record<number, string>>({});
 
-  const finalTeams = Array.from({ length: 2 })
-    .map((_, index) => winners[index])
+  const semiFinalPicks = Array.from({ length: 2 }).map((_, index) => ({
+    match: index + 1,
+    team1: teams[index * 2],
+    team2: teams[index * 2 + 1],
+    winner: winners[index] || "",
+  }));
+
+  const finalTeams = semiFinalPicks
+    .map((match) => match.winner)
     .filter(Boolean);
 
   return (
@@ -46,7 +66,7 @@ export default function SemiFinals({
 
               {[team1, team2].map((team, teamIndex) => (
                 <button
-                  key={team}
+                  key={`${index}-${team}`}
                   onClick={() =>
                     setWinners((current) => ({
                       ...current,
@@ -75,6 +95,10 @@ export default function SemiFinals({
           formData={formData}
           groupPicks={groupPicks}
           topThirdPlaceTeams={topThirdPlaceTeams}
+          roundOf32Picks={roundOf32Picks}
+          round16Picks={round16Picks}
+          quarterFinalPicks={quarterFinalPicks}
+          semiFinalPicks={semiFinalPicks}
         />
       )}
     </div>
