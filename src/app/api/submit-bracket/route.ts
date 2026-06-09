@@ -10,6 +10,7 @@ export async function POST(request: Request) {
     console.log("=== BRACKET SUBMISSION RECEIVED ===");
     console.log("Name:", data.name);
     console.log("Email:", data.email);
+    console.log("Champion:", data.champion);
 
     const sheetsResponse = await fetch(
       GOOGLE_SHEETS_WEBHOOK_URL,
@@ -37,6 +38,22 @@ export async function POST(request: Request) {
 
           roundOf32Picks: JSON.stringify(
             data.roundOf32Picks || []
+          ),
+
+          round16Picks: JSON.stringify(
+            data.round16Picks || []
+          ),
+
+          quarterFinalPicks: JSON.stringify(
+            data.quarterFinalPicks || []
+          ),
+
+          semiFinalPicks: JSON.stringify(
+            data.semiFinalPicks || []
+          ),
+
+          finalPick: JSON.stringify(
+            data.finalPick || {}
           ),
 
           fullBracketJson: JSON.stringify(data),
