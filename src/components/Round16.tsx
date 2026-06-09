@@ -3,7 +3,7 @@
 import { useState } from "react";
 import QuarterFinals from "./QuarterFinals";
 
-type RoundOf32Pick = {
+type BracketPick = {
   match: number;
   team1: string;
   team2: string;
@@ -19,7 +19,7 @@ type Round16Props = {
   };
   groupPicks: Record<string, unknown>;
   topThirdPlaceTeams: string[];
-  roundOf32Picks: RoundOf32Pick[];
+  roundOf32Picks: BracketPick[];
 };
 
 const round16Matchups = [
