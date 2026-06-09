@@ -9,27 +9,52 @@ export async function POST(request: Request) {
 
     const data = await request.json();
 
-    // Send bracket data to GHL
+    // Send bracket data to GoHighLevel
     try {
-      await fetch(GHL_WEBHOOK_URL, {
+      const ghlResponse = await fetch(GHL_WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: data.name,
+          fullName: data.name,
           phone: data.phone,
           email: data.email,
-          champion: data.champion,
-          groupPicks: data.groupPicks,
-          topThirdPlaceTeams: data.topThirdPlaceTeams,
-          fullSubmission: data,
+
+          championPick: data.champion,
+
+          groupStagePicks: JSON.stringify(
+            data.groupPicks || {}
+          ),
+
+          top8ThirdPlacePicks: JSON.stringify(
+            data.topThirdPlaceTeams || []
+          ),
+
+          roundOf32Picks: JSON.stringify(
+            data.roundOf32Picks || []
+          ),
+
+          fullBracketJson: JSON.stringify(data),
         }),
       });
 
-      console.log("GHL webhook sent successfully");
+      console.log(
+        "GHL Status:",
+        ghlResponse.status
+      );
+
+      const ghlText = await ghlResponse.text();
+
+      console.log(
+        "GHL Response:",
+        ghlText
+      );
     } catch (err) {
-      console.error("GHL webhook failed:", err);
+      console.error(
+        "GHL webhook failed:",
+        err
+      );
     }
 
     // Send email notification
@@ -62,7 +87,10 @@ ${JSON.stringify(data, null, 2)}
       resend: result,
     });
   } catch (error) {
-    console.error("Submit bracket error:", error);
+    console.error(
+      "Submit bracket error:",
+      error
+    );
 
     return NextResponse.json(
       {
