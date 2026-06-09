@@ -1,12 +1,38 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
+const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL!;
+
 export async function POST(request: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const data = await request.json();
 
+    // Send bracket data to GHL
+    try {
+      await fetch(GHL_WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          champion: data.champion,
+          groupPicks: data.groupPicks,
+          topThirdPlaceTeams: data.topThirdPlaceTeams,
+          fullSubmission: data,
+        }),
+      });
+
+      console.log("GHL webhook sent successfully");
+    } catch (err) {
+      console.error("GHL webhook failed:", err);
+    }
+
+    // Send email notification
     const result = await resend.emails.send({
       from: "World Cup Challenge <bracket@sandstone.homes>",
       to: "zachcarrejo07@gmail.com",
