@@ -210,7 +210,7 @@ export default function WorldCupBracket() {
 
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 px-4">
-          <div className="relative max-h-[92vh] w-full max-w-7xl overflow-y-auto rounded-3xl bg-[#1557ff] p-5 shadow-2xl md:p-8">
+          <div className="relative max-h-[92vh] w-full max-w-[1800px] overflow-y-auto rounded-3xl bg-[#1557ff] p-5 shadow-2xl md:p-8">
             <button
               onClick={() => setIsOpen(false)}
               className="overflow-hidden rounded-2xl bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
@@ -295,7 +295,7 @@ export default function WorldCupBracket() {
                   </h3>
                 </div>
 
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
                   {groups.map((group) => {
                     const picks = groupPicks[group.name] || {};
 
@@ -334,13 +334,13 @@ export default function WorldCupBracket() {
                                     handleTeamPick(group.name, team)
                                   }
                                   title={team}
-                                  className={`flex min-h-[82px] items-center justify-center rounded-xl px-2 py-3 text-center text-xs font-black leading-tight transition ${
+                                  className={`flex min-h-[120px] items-center justify-center rounded-xl px-4 py-4 text-center text-base font-black leading-snug transition ${
                                     selected
                                       ? "bg-orange-500 text-white shadow-md"
                                       : "bg-[#354a86] text-white hover:bg-blue-500"
                                   }`}
                                 >
-                                  <span className="line-clamp-3 break-words">
+                                  <span className="break-words px-1">
                                     {team}
                                   </span>
                                 </button>
