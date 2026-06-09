@@ -9,6 +9,11 @@ export async function POST(request: Request) {
 
     const data = await request.json();
 
+    console.log("=== BRACKET SUBMISSION RECEIVED ===");
+    console.log("GHL URL exists:", !!process.env.GHL_WEBHOOK_URL);
+    console.log("Name:", data.name);
+    console.log("Email:", data.email);
+
     // Send bracket data to GoHighLevel
     try {
       const ghlResponse = await fetch(GHL_WEBHOOK_URL, {
@@ -39,22 +44,13 @@ export async function POST(request: Request) {
         }),
       });
 
-      console.log(
-        "GHL Status:",
-        ghlResponse.status
-      );
+      console.log("GHL Status:", ghlResponse.status);
 
       const ghlText = await ghlResponse.text();
 
-      console.log(
-        "GHL Response:",
-        ghlText
-      );
+      console.log("GHL Response:", ghlText);
     } catch (err) {
-      console.error(
-        "GHL webhook failed:",
-        err
-      );
+      console.error("GHL webhook failed:", err);
     }
 
     // Send email notification
@@ -87,10 +83,7 @@ ${JSON.stringify(data, null, 2)}
       resend: result,
     });
   } catch (error) {
-    console.error(
-      "Submit bracket error:",
-      error
-    );
+    console.error("Submit bracket error:", error);
 
     return NextResponse.json(
       {
