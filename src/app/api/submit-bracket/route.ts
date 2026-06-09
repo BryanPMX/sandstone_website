@@ -1,59 +1,49 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
-const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL!;
-
 export async function POST(request: Request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
+    const GHL_WEBHOOK_URL = process.env.GHL_WEBHOOK_URL;
+
     const data = await request.json();
 
     console.log("=== BRACKET SUBMISSION RECEIVED ===");
-    console.log("GHL URL exists:", !!process.env.GHL_WEBHOOK_URL);
+    console.log("GHL URL exists:", !!GHL_WEBHOOK_URL);
     console.log("Name:", data.name);
     console.log("Email:", data.email);
 
-    // Send bracket data to GoHighLevel
-    try {
-      const ghlResponse = await fetch(GHL_WEBHOOK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName: data.name,
-          phone: data.phone,
-          email: data.email,
+    if (!GHL_WEBHOOK_URL) {
+      console.error("Missing GHL_WEBHOOK_URL");
+    } else {
+      try {
+        const ghlResponse = await fetch(GHL_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullName: data.name,
+            phone: data.phone,
+            email: data.email,
+            championPick: data.champion,
+            groupStagePicks: JSON.stringify(data.groupPicks || {}),
+            top8ThirdPlacePicks: JSON.stringify(data.topThirdPlaceTeams || []),
+            roundOf32Picks: JSON.stringify(data.roundOf32Picks || []),
+            fullBracketJson: JSON.stringify(data),
+          }),
+        });
 
-          championPick: data.champion,
+        console.log("GHL Status:", ghlResponse.status);
 
-          groupStagePicks: JSON.stringify(
-            data.groupPicks || {}
-          ),
-
-          top8ThirdPlacePicks: JSON.stringify(
-            data.topThirdPlaceTeams || []
-          ),
-
-          roundOf32Picks: JSON.stringify(
-            data.roundOf32Picks || []
-          ),
-
-          fullBracketJson: JSON.stringify(data),
-        }),
-      });
-
-      console.log("GHL Status:", ghlResponse.status);
-
-      const ghlText = await ghlResponse.text();
-
-      console.log("GHL Response:", ghlText);
-    } catch (err) {
-      console.error("GHL webhook failed:", err);
+        const ghlText = await ghlResponse.text();
+        console.log("GHL Response:", ghlText);
+      } catch (err) {
+        console.error("GHL webhook failed:", err);
+      }
     }
 
-    // Send email notification
     const result = await resend.emails.send({
       from: "World Cup Challenge <bracket@sandstone.homes>",
       to: "zachcarrejo07@gmail.com",
