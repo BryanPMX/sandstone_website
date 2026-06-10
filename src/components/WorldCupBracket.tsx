@@ -70,7 +70,11 @@ const placements: { key: Placement; label: string }[] = [
   { key: "fourth", label: "4th Place" },
 ];
 
+// Change this date/time when you want submissions to close.
+const SUBMISSION_DEADLINE = new Date("2026-06-11T11:59:00-06:00");
+
 export default function WorldCupBracket() {
+  const isSubmissionClosed = new Date() > SUBMISSION_DEADLINE;
   const [isOpen, setIsOpen] = useState(false);
   const [hasSignedUp, setHasSignedUp] = useState(false);
   const [step, setStep] = useState<"groups" | "thirdPlace" | "round32">(
@@ -100,6 +104,12 @@ export default function WorldCupBracket() {
 
   function handleSignup(e: React.FormEvent) {
     e.preventDefault();
+
+    if (isSubmissionClosed) {
+      alert("Submissions are closed.");
+      return;
+    }
+
     setHasSignedUp(true);
   }
 
@@ -140,6 +150,11 @@ export default function WorldCupBracket() {
   }
 
   function handleSubmitPicks() {
+    if (isSubmissionClosed) {
+      alert("Submissions are closed.");
+      return;
+    }
+
     const missingGroups = groups.filter((group) => {
       const picks = groupPicks[group.name];
 
@@ -173,6 +188,11 @@ export default function WorldCupBracket() {
   }
 
   function handleTopThirdSubmit() {
+    if (isSubmissionClosed) {
+      alert("Submissions are closed.");
+      return;
+    }
+
     if (topThirdPlaceTeams.length !== 8) {
       alert("Please select exactly 8 third-place teams.");
       return;
@@ -185,8 +205,15 @@ export default function WorldCupBracket() {
     <>
       <div className="fixed bottom-4 left-4 z-[999] w-[200px] md:w-[280px]">
         <button
-          onClick={() => setIsOpen(true)}
-          className="overflow-hidden rounded-2xl bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
+          onClick={() => {
+            if (isSubmissionClosed) return;
+            setIsOpen(true);
+          }}
+          className={`overflow-hidden rounded-2xl bg-white shadow-xl transition ${
+            isSubmissionClosed
+              ? "cursor-not-allowed opacity-70"
+              : "hover:-translate-y-1 hover:shadow-2xl"
+          }`}
         >
           <img
             src="/uploads/world-cup-challenge.jpeg"
@@ -200,11 +227,13 @@ export default function WorldCupBracket() {
             </p>
 
             <p className="mt-1 text-sm font-bold text-gray-900">
-              Build Your Bracket ⚽
+              {isSubmissionClosed ? "Bracket Closed" : "Build Your Bracket ⚽"}
             </p>
 
             <p className="mt-1 text-xs text-gray-500">
-              Sign up and make your picks.
+              {isSubmissionClosed
+                ? "Submissions are no longer being accepted."
+                : "Sign up and make your picks."}
             </p>
           </div>
         </button>
