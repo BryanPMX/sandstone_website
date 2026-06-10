@@ -308,7 +308,7 @@ export default function WorldCupBracket() {
                     <div className="h-12 overflow-y-auto rounded-xl border border-blue-200 bg-gray-50 px-4 py-3 text-xs leading-relaxed text-gray-600">
                       <p className="font-bold text-gray-800">Independent Promotion</p>
                       <p className="mt-1">
-                        The Sandstone 2026 Bracket Challenge ("Promotion") is independently organized and administered by Sandstone Real Estate Team | Keller Williams. This Promotion is not sponsored, endorsed, administered by, or affiliated with FIFA, the FIFA World Cup™, or any of FIFA's affiliated organizations, partners, sponsors, or licensors.
+                        The Sandstone 2026 Bracket Challenge (&quot;Promotion&quot;) is independently organized and administered by Sandstone Real Estate Team | Keller Williams. This Promotion is not sponsored, endorsed, administered by, or affiliated with FIFA, the FIFA World Cup™, or any of FIFA&apos;s affiliated organizations, partners, sponsors, or licensors.
                       </p>
                       <p className="mt-2">
                         Any references to international soccer tournaments, participating teams, match schedules, or tournament-related information are provided solely for the purpose of facilitating participation in this independent prediction contest.
