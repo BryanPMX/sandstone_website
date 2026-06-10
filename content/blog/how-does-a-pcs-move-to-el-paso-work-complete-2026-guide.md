@@ -101,7 +101,7 @@ Fort Bliss family housing is managed by **Balfour Beatty Communities** (also ref
 - Less flexibility and privacy than off-post living
 - No equity building
 
-Contact the Housing Services Office at **(915) 568-2898** as soon as you receive orders to get on the waitlist.
+Contact the Housing Services Office at **(915) 277-6707** as soon as you receive orders to get on the waitlist.
 
 ### Off-Post Housing
 
