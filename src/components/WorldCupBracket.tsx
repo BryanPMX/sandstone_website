@@ -70,7 +70,7 @@ const placements: { key: Placement; label: string }[] = [
   { key: "fourth", label: "4th Place" },
 ];
 
-// Change this date/time when you want submissions to close.
+// Bracket submission deadline: June 11, 2026 at 11:59 AM MDT (one minute before the first match of the tournament starts)
 const SUBMISSION_DEADLINE = new Date("2026-06-11T11:59:00-06:00");
 
 export default function WorldCupBracket() {
@@ -305,7 +305,7 @@ export default function WorldCupBracket() {
                       Terms &amp; Conditions
                     </p>
 
-                    <div className="h-12 overflow-y-auto rounded-xl border border-blue-200 bg-gray-50 px-4 py-3 text-xs leading-relaxed text-gray-600">
+                    <div className="h-48 overflow-y-auto rounded-xl border border-blue-200 bg-gray-50 px-4 py-3 text-xs leading-relaxed text-gray-600">
                       <p className="font-bold text-gray-800">Independent Promotion</p>
                       <p className="mt-1">
                         The Sandstone 2026 Bracket Challenge (&quot;Promotion&quot;) is independently organized and administered by Sandstone Real Estate Team | Keller Williams. This Promotion is not sponsored, endorsed, administered by, or affiliated with FIFA, the FIFA World Cup™, or any of FIFA&apos;s affiliated organizations, partners, sponsors, or licensors.
@@ -319,6 +319,18 @@ export default function WorldCupBracket() {
                       <p className="mt-2">
                         Participants acknowledge that this Promotion is operated exclusively by Sandstone Real Estate Team | Keller Williams and that FIFA bears no responsibility or liability for any aspect of the Promotion, including registration, participation, prize administration, or dispute resolution.
                       </p>
+
+                      <p className="mt-3 font-bold text-gray-800">Promotion Rules</p>
+                      <ul className="mt-1 list-disc pl-4">
+                        <li>No purchase necessary.</li>
+                        <li>One entry per person.</li>
+                        <li>Predictions must be submitted before the official deadline.</li>
+                        <li>Once submitted, picks cannot be changed.</li>
+                        <li>To win the $2,000 Grand Prize, a participant must correctly predict every match of the tournament.</li>
+                        <li>If more than one participant submits a perfect bracket, the $2,000 Grand Prize will be divided equally among all eligible winners.</li>
+                        <li>If no participant correctly predicts every match, no Grand Prize will be awarded.</li>
+                        <li>Additional Terms &amp; Conditions apply.</li>
+                      </ul>
 
                       <p className="mt-3 font-bold text-gray-800">Additional Intellectual Property Clause</p>
                       <p className="mt-1">
