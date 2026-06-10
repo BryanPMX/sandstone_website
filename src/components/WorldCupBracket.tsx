@@ -86,6 +86,8 @@ export default function WorldCupBracket() {
     email: "",
   });
 
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
   const thirdPlaceTeams = groups
     .map((group) => groupPicks[group.name]?.third)
     .filter(Boolean) as string[];
@@ -269,9 +271,73 @@ export default function WorldCupBracket() {
                     className="w-full rounded-xl border border-blue-200 px-4 py-3 text-gray-900 outline-none focus:border-blue-500"
                   />
 
+                  <div>
+                    <p className="mb-2 text-sm font-semibold text-gray-700">
+                      Terms &amp; Conditions
+                    </p>
+
+                    <div className="h-12 overflow-y-auto rounded-xl border border-blue-200 bg-gray-50 px-4 py-3 text-xs leading-relaxed text-gray-600">
+                      <p className="font-bold text-gray-800">Independent Promotion</p>
+                      <p className="mt-1">
+                        The Sandstone 2026 Bracket Challenge ("Promotion") is independently organized and administered by Sandstone Real Estate Team | Keller Williams. This Promotion is not sponsored, endorsed, administered by, or affiliated with FIFA, the FIFA World Cup™, or any of FIFA's affiliated organizations, partners, sponsors, or licensors.
+                      </p>
+                      <p className="mt-2">
+                        Any references to international soccer tournaments, participating teams, match schedules, or tournament-related information are provided solely for the purpose of facilitating participation in this independent prediction contest.
+                      </p>
+                      <p className="mt-2">
+                        All trademarks, service marks, logos, team names, and other intellectual property referenced remain the property of their respective owners. No ownership, sponsorship, endorsement, or official association is claimed or implied.
+                      </p>
+                      <p className="mt-2">
+                        Participants acknowledge that this Promotion is operated exclusively by Sandstone Real Estate Team | Keller Williams and that FIFA bears no responsibility or liability for any aspect of the Promotion, including registration, participation, prize administration, or dispute resolution.
+                      </p>
+
+                      <p className="mt-3 font-bold text-gray-800">Additional Intellectual Property Clause</p>
+                      <p className="mt-1">
+                        Except as expressly stated, nothing contained within this Promotion shall be interpreted as granting any license or right to use any trademark, copyright, logo, trade dress, or other proprietary material belonging to FIFA or any third party.
+                      </p>
+                      <p className="mt-2">
+                        Participants may not reproduce, distribute, or commercially exploit any third-party intellectual property through this Promotion. Sandstone Real Estate Team | Keller Williams respects the intellectual property rights of others and will promptly address any legitimate intellectual property concerns brought to its attention.
+                      </p>
+
+                      <p className="mt-3 font-bold text-gray-800">Privacy Policy – Tournament Registration</p>
+                      <p className="mt-1">
+                        When you voluntarily register for the Sandstone 2026 Bracket Challenge, we may collect personal information including your name, email address, telephone number, and your tournament predictions.
+                      </p>
+                      <p className="mt-2">This information is collected solely for purposes including:</p>
+                      <ul className="mt-1 list-disc pl-4">
+                        <li>Administering the Promotion.</li>
+                        <li>Verifying participant eligibility.</li>
+                        <li>Contacting winners.</li>
+                        <li>Responding to participant inquiries.</li>
+                        <li>Providing requested real estate information or services.</li>
+                        <li>Improving our website and customer experience.</li>
+                      </ul>
+                      <p className="mt-2">
+                        Your information will never be sold to third parties. Information may be shared with trusted service providers solely for purposes related to administering this Promotion or providing requested services, subject to appropriate confidentiality obligations.
+                      </p>
+                      <p className="mt-2">
+                        Participation in this Promotion does not create any relationship with FIFA or any official tournament organizer. Personal information collected through this Promotion is collected exclusively by Sandstone Real Estate Team | Keller Williams.
+                      </p>
+                    </div>
+
+                    <label className="mt-3 flex cursor-pointer items-start gap-3">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={agreedToTerms}
+                        onChange={(e) => setAgreedToTerms(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
+                      />
+                      <span className="text-sm text-gray-700">
+                        I have read and agree to the Terms &amp; Conditions and Privacy Policy.
+                      </span>
+                    </label>
+                  </div>
+
                   <button
                     type="submit"
-                    className="w-full rounded-xl bg-blue-600 px-6 py-3 font-bold text-white transition hover:bg-blue-500"
+                    disabled={!agreedToTerms}
+                    className="w-full rounded-xl bg-blue-600 px-6 py-3 font-bold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Continue to Group Stage
                   </button>
