@@ -11,7 +11,7 @@ import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
 import { HOME_FAQ_SCHEMA_EN, HOME_FAQ_SCHEMA_ES } from "@/constants/site";
 import { GoogleReviews } from "@/components/GoogleReviews";
-import WorldCupBracket from "@/components/WorldCupBracket";
+
 export const revalidate = 300;
 export const dynamic = "force-dynamic";
 
@@ -121,8 +121,6 @@ export default async function Home() {
             />
           </Link>
         </section>
-
-        <WorldCupBracket />
 
         <FeaturedListingsSection
           properties={alejandroSparkProperties}
