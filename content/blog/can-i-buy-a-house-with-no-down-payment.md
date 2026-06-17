@@ -11,6 +11,7 @@ metaDescription: Yes, you can buy a house with no down payment. Discover VA
 coverImage: /uploads/el-paso-texas-real-estate.webp
 coverImageAlt: Family standing in front of their new home purchased with no down
   payment loan program
+area: fort-bliss
 keywords:
   - no down payment home
   - buy house no down payment

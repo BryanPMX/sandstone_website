@@ -1,13 +1,22 @@
 import { MetadataRoute } from 'next'
 import { cache } from 'react'
-import { fetchMyPropertyCards } from '@/services'
+import { fetchMyPropertyCards, getSortedPosts } from '@/services'
+import { BLOG_AREAS } from '@/config/blog-areas'
 
 const getCachedProperties = cache(async () => {
   return fetchMyPropertyCards();
 });
 
+const getCachedBlogPosts = cache(async () => {
+  return getSortedPosts();
+});
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const properties = await getCachedProperties()
+  const [properties, blogPosts] = await Promise.all([
+    getCachedProperties(),
+    getCachedBlogPosts(),
+  ]);
+
   const baseUrl = 'https://sandstone.homes'
 
   const listingUrls = properties.map((property) => ({
@@ -15,6 +24,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
+  }))
+
+  const blogPostUrls = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
+  const categoryUrls = BLOG_AREAS.map((area) => ({
+    url: `${baseUrl}/blog/category/${area.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.65,
   }))
 
   return [
@@ -72,6 +95,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.3,
     },
+    ...categoryUrls,
+    ...blogPostUrls,
     ...listingUrls,
   ]
 }

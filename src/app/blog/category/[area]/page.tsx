@@ -1,19 +1,42 @@
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { BlogAreaTabs } from "@/components/BlogAreaTabs";
 import { getSortedPosts } from "@/services";
-import { getAreaLabel } from "@/config/blog-areas";
+import { BLOG_AREAS, getAreaLabel, isValidAreaSlug } from "@/config/blog-areas";
 
-export const metadata = {
-  title: "Blog | Sandstone Real Estate Group",
-  description:
-    "Real estate market updates, home buying tips, and community insights from Sandstone Real Estate Group.",
-  alternates: {
-    canonical: "https://sandstone.homes/blog",
-  },
-};
+interface CategoryPageProps {
+  params: Promise<{ area: string }>;
+}
+
+export async function generateStaticParams() {
+  return BLOG_AREAS.map((area) => ({ area: area.slug }));
+}
+
+export async function generateMetadata({ params }: CategoryPageProps) {
+  const { area } = await params;
+  if (!isValidAreaSlug(area)) return { title: "Not Found" };
+  const label = getAreaLabel(area)!;
+  return {
+    title: `${label} Real Estate Blog | Sandstone`,
+    description: `Local market updates, community guides, and home buying tips for ${label}. Brought to you by Sandstone Real Estate Group.`,
+    alternates: {
+      canonical: `https://sandstone.homes/blog/category/${area}`,
+    },
+    openGraph: {
+      title: `${label} Real Estate Blog | Sandstone`,
+      description: `Local market updates, community guides, and home buying tips for ${label}.`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${label} Real Estate Blog | Sandstone`,
+      description: `Local market updates, community guides, and home buying tips for ${label}.`,
+    },
+  };
+}
 
 function formatBlogDate(value: string): string {
   return new Intl.DateTimeFormat("en-US", {
@@ -23,8 +46,13 @@ function formatBlogDate(value: string): string {
   }).format(new Date(value));
 }
 
-export default async function BlogIndexPage() {
-  const posts = await getSortedPosts();
+export default async function BlogCategoryPage({ params }: CategoryPageProps) {
+  const { area } = await params;
+  if (!isValidAreaSlug(area)) notFound();
+
+  const allPosts = await getSortedPosts();
+  const posts = allPosts.filter((p) => p.area === area);
+  const label = getAreaLabel(area)!;
 
   return (
     <>
@@ -32,25 +60,34 @@ export default async function BlogIndexPage() {
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-16">
         <section className="container mx-auto max-w-6xl px-4 pt-10">
           <Link
-            href="/"
+            href="/blog"
             className="text-sm font-medium text-[var(--sandstone-sand-gold)] hover:underline"
           >
-            Back to home
+            ← All posts
           </Link>
           <h1 className="mt-4 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
-            Sandstone Blog
+            {label}
           </h1>
           <p className="mt-3 max-w-3xl text-[var(--sandstone-charcoal)]/78">
-            Market trends, local updates, and practical guidance for buyers and sellers across El Paso.
+            Local market updates, community guides, and home buying tips for {label}.
           </p>
 
-          <BlogAreaTabs />
+          <BlogAreaTabs activeArea={area} />
 
           {posts.length === 0 ? (
-            <div className="mt-10 rounded-2xl border border-[var(--sandstone-navy)]/10 bg-white p-6 text-center">
-              <p className="text-[var(--sandstone-charcoal)]/85">
-                No blog posts published yet.
+            <div className="mt-10 rounded-2xl border border-[var(--sandstone-navy)]/10 bg-white p-8 text-center">
+              <p className="font-heading text-lg font-semibold text-[var(--sandstone-navy)]">
+                Coming soon
               </p>
+              <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+                We&apos;re working on content for this area. Check back soon or browse all posts.
+              </p>
+              <Link
+                href="/blog"
+                className="mt-4 inline-flex items-center rounded-full bg-[var(--sandstone-navy)] px-5 py-2 text-sm font-semibold text-white hover:opacity-90"
+              >
+                Browse all posts
+              </Link>
             </div>
           ) : (
             <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -71,16 +108,9 @@ export default async function BlogIndexPage() {
                       />
                     </div>
                     <div className="p-5">
-                      <div className="flex items-center gap-2">
-                        {post.area && (
-                          <span className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
-                            {getAreaLabel(post.area) ?? post.area}
-                          </span>
-                        )}
-                        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
-                          {formatBlogDate(post.date)}
-                        </p>
-                      </div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
+                        {formatBlogDate(post.date)}
+                      </p>
                       <h2 className="mt-2 font-heading text-xl font-bold text-[var(--sandstone-navy)]">
                         {post.title}
                       </h2>

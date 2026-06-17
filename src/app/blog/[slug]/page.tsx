@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getAllPostSlugs, getPostBySlug } from "@/services";
+import { getAreaLabel } from "@/config/blog-areas";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -26,14 +27,12 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
-
   if (!post) {
-    return {
-      title: "Post Not Found | Sandstone Blog",
-    };
+    return { title: "Post Not Found | Sandstone Blog" };
   }
 
   const siteBase = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://sandstone.homes").replace(/\/+$/, "");
+  const canonicalUrl = `${siteBase}/blog/${slug}`;
   const title = post.seoTitle || `${post.title} | Sandstone Blog`;
   const description = post.metaDescription || post.excerpt;
   const imageUrl = post.coverImage.startsWith("http") ? post.coverImage : `${siteBase}${post.coverImage}`;
@@ -42,17 +41,31 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     title,
     description,
     keywords: post.keywords,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
     openGraph: {
       title,
       description,
       type: "article",
       publishedTime: post.date,
+      url: canonicalUrl,
       images: [
         {
           url: imageUrl,
           alt: post.coverImageAlt || post.title,
         },
       ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
     },
   };
 }
@@ -65,8 +78,39 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  const siteBase = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://sandstone.homes").replace(/\/+$/, "");
+  const canonicalUrl = `${siteBase}/blog/${slug}`;
+  const imageUrl = post.coverImage.startsWith("http") ? post.coverImage : `${siteBase}${post.coverImage}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.metaDescription || post.excerpt,
+    image: imageUrl,
+    datePublished: post.date,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonicalUrl,
+    },
+    author: {
+      "@type": "Organization",
+      name: "Sandstone Real Estate Group",
+      url: siteBase,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Sandstone Real Estate Group",
+      url: siteBase,
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <article className="container mx-auto max-w-4xl px-4 pt-10">
@@ -74,12 +118,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             href="/blog"
             className="text-sm font-medium text-[var(--sandstone-sand-gold)] hover:underline"
           >
-            Back to blog
+            ← Back to blog
           </Link>
 
-          <p className="mt-5 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
-            {formatBlogDate(post.date)}
-          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            {post.area && (
+              <Link
+                href={`/blog/category/${post.area}`}
+                className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] hover:bg-[var(--sandstone-sand-gold)]/20 transition-colors"
+              >
+                {getAreaLabel(post.area) ?? post.area}
+              </Link>
+            )}
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
+              {formatBlogDate(post.date)}
+            </p>
+          </div>
+
           <h1 className="mt-2 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-5xl">
             {post.title}
           </h1>

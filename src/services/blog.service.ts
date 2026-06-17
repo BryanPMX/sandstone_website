@@ -68,6 +68,7 @@ function normalizeListItem(
     keywords?: string[];
     seoTitle?: string;
     metaDescription?: string;
+    area: string;
   }
 ): BlogPostListItem {
   return {
@@ -80,7 +81,7 @@ function normalizeListItem(
     keywords: input.keywords || [],
     seoTitle: input.seoTitle,
     metaDescription: input.metaDescription,
-
+    area: input.area,
   };
 }
 

@@ -10,6 +10,7 @@ export interface BlogPostFrontmatter {
   keywords?: string[];
   seoTitle?: string;
   metaDescription?: string;
+  area: string;
 }
 
 export interface BlogPostListItem extends BlogPostFrontmatter {

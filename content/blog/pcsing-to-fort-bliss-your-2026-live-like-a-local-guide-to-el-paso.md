@@ -6,6 +6,7 @@ excerpt: Moving to a new city is a whirlwind, especially with a military
   base"—the place where you’ll grab your morning coffee, take the kids to the
   park, and spend your weekends
 coverImage: /uploads/900-x-520-website-images-241772834098.webp
+area: fort-bliss
 ---
 ##### At Sandstone, our mission is to help you live like a local from the moment you arrive. In this month’s community spotlight, we’re diving into the best of El Paso this May and providing a crucial update on the Fort Bliss housing market.
 

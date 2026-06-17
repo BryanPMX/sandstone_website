@@ -10,6 +10,7 @@ excerpt: >-
 
   At Sandstone, our mission is to help you live like a local from the moment you arrive. In this month’s community spotlight, we’re diving into the best of El Paso this May and providing a crucial update on the Fort Bliss housing market.
 coverImage: /uploads/900-x-520-website-images-241772834098.webp
+area: fort-bliss
 ---
 ## The Morning Routine: 2Ten Coffee Roasters
 

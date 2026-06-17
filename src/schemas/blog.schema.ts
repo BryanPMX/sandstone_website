@@ -28,6 +28,7 @@ export const BlogSchema = z.object({
   keywords: z.array(z.string()).optional(),
   metaDescription: z.string().optional(),
   seoTitle: z.string().optional(),
+  area: z.string().min(1, "Area is required"),
 });
 
 export type BlogSchemaType = z.infer<typeof BlogSchema>;

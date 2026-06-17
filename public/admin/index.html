@@ -6,6 +6,15 @@
     <title>Sandstone CMS</title>
     <script>
       window.CMS_MANUAL_INIT = true;
+      if (typeof crypto !== 'undefined' && !crypto.randomUUID) {
+        crypto.randomUUID = function () {
+          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (Math.random() * 16) | 0;
+            var v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+          });
+        };
+      }
     </script>
   </head>
   <body>
@@ -97,6 +106,21 @@
                 { label: "Cover Image", name: "coverImage", widget: "image" },
                 { label: "Image Alt Text", name: "coverImageAlt", widget: "string", hint: "Describe the image for screen readers and SEO. "},
                 { label: "Keywords", name: "keywords", widget: "list"},
+                {
+                  label: "Area",
+                  name: "area",
+                  widget: "select",
+                  hint: "The El Paso area this post is about.",
+                  options: [
+                    { label: "Upper Valley El Paso", value: "upper-valley-el-paso" },
+                    { label: "Horizon City TX",      value: "horizon-city-tx" },
+                    { label: "Fort Bliss",           value: "fort-bliss" },
+                    { label: "West El Paso",         value: "west-el-paso" },
+                    { label: "Northeast El Paso",    value: "northeast-el-paso" },
+                    { label: "Santa Teresa NM",      value: "santa-teresa-nm" },
+                    { label: "Canutillo TX",         value: "canutillo-tx" },
+                  ],
+                },
                 { label: "Body", name: "body", widget: "markdown" },
                
               ],
