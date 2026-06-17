@@ -19,6 +19,7 @@ keywords:
   - military housing El Paso
   - Fort Bliss neighborhoods
   - PCS Fort Bliss checklist
+area: fort-bliss
 ---
 # How Does a PCS Move to El Paso Work? Your Complete 2026 Guide to Fort Bliss Relocation
 
