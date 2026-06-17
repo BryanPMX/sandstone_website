@@ -18,6 +18,7 @@ keywords:
   - Biggs AAF housing
   - Northeast El Paso PCS
   - Horizon City Fort Bliss commute
+area: fort-bliss
 ---
 # El Paso Neighborhoods by Commute Time to Fort Bliss Gates (2026 Guide)
 
