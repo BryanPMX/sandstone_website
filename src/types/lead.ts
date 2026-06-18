@@ -35,6 +35,7 @@ type LeadWebhookPayloadBase = {
 export type ContactLeadWebhookPayload = LeadWebhookPayloadBase & {
   formType: "contact";
   message: string;
+  listingTitle?: string;
 };
 
 export type PcsLeadWebhookPayload = LeadWebhookPayloadBase & {
