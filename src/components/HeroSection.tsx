@@ -8,7 +8,6 @@ import {
   LISTINGS_MAP_PATH,
   DEFAULT_PROPERTY_SEARCH_MARKET,
   DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
-  PROPERTY_SEARCH_MARKET_OPTIONS,
   inferPropertySearchMarketFromInput,
   getPropertySearchMarketLabel,
   getPropertySearchPriceOptions,
@@ -338,30 +337,6 @@ export function HeroSection() {
               className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
             >
               <div className="flex flex-col items-center">
-                <div className="mb-3 flex justify-center">
-                  <div
-                    className="inline-flex items-center rounded-full border border-white/30 bg-white/14 p-1 backdrop-blur-sm"
-                    role="group"
-                    aria-label="Choose market"
-                  >
-                    {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        onClick={() => setLocationFilter(option.value)}
-                        className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                          locationFilter === option.value
-                            ? "bg-white text-[var(--sandstone-navy)] shadow-[0_8px_20px_-12px_rgba(0,0,0,0.6)]"
-                            : "text-white/90 hover:bg-white/20"
-                        }`}
-                        aria-pressed={locationFilter === option.value}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 <div className="relative w-full max-w-[670px]">
                   <div className="rounded-[999px] bg-white p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)]">
                     <div className="relative">
@@ -545,27 +520,6 @@ export function HeroSection() {
         </div>
 
         <div className="bg-[var(--sandstone-navy)] px-4 pb-4 pt-3 lg:hidden">
-          <div
-            className="mx-auto inline-flex w-full max-w-sm items-center justify-center rounded-full border border-white/30 bg-white/14 p-1"
-            role="group"
-            aria-label="Choose market"
-          >
-            {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setLocationFilter(option.value)}
-                className={`rounded-full px-3 py-2 text-xs font-semibold transition ${
-                  locationFilter === option.value
-                    ? "bg-white text-[var(--sandstone-navy)]"
-                    : "text-white/90 hover:bg-white/20"
-                }`}
-                aria-pressed={locationFilter === option.value}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
           <form onSubmit={handleSearchSubmit} className="mx-auto mt-4 w-full max-w-sm">
             <input
               type="search"
