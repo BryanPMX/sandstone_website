@@ -12,7 +12,7 @@ export function FloatingWhatsAppBubble() {
     <>
       {/* Call Button */}
       <Link
-        href="tel:9152776707"
+        href={`tel:${phoneNumber}`}
         aria-label="Call Sandstone Real Estate"
         title="Call Sandstone"
         className="fixed bottom-[5.5rem] right-4 z-[160] inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#1e40af] text-white shadow-[0_16px_36px_-16px_rgba(0,0,0,0.6)] transition hover:scale-[1.03] hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#1e40af] sm:right-5"
