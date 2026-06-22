@@ -205,54 +205,17 @@ export function HeroSection() {
 
     setIsNavigatingToMap(true);
 
-    startTransition(() => {
-      router.push(href);
-    });
+    router.push(href);
   };
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const trimmed = searchValue.trim();
-    const combinedSearch = trimmed;
 
-    if (!combinedSearch) {
-      navigateToMap({});
-      return;
-    }
-
-    const goToMap = (center?: { lat: number; lng: number }) => {
-      navigateToMap({
-        search: combinedSearch,
-        centerLat: center?.lat,
-        centerLng: center?.lng,
-        radiusMiles: 5,
-      });
-    };
-
-    const placesService = placesServiceRef.current;
-
-    if (mapsReady && placesService && (selectedSuggestion || suggestions[0])) {
-      const placeId = (selectedSuggestion ?? suggestions[0])!.placeId;
-      placesService.getDetails(
-        { placeId, fields: ["geometry.location"] },
-        (place, status) => {
-          if (
-            status === "OK" &&
-            place?.geometry?.location &&
-            typeof place.geometry.location.lat === "function" &&
-            typeof place.geometry.location.lng === "function"
-          ) {
-            const lat = place.geometry.location.lat();
-            const lng = place.geometry.location.lng();
-            goToMap({ lat, lng });
-          } else {
-            goToMap();
-          }
-        }
-      );
-    } else {
-      goToMap();
-    }
+    navigateToMap({
+      search: trimmed,
+    });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
