@@ -12,6 +12,7 @@ export const CONTACT_US_MENU = [
   { label: "Sell a property", href: "/sell" },
   { label: "Rent a property", href: "/rent" },
   { label: "Join the Team", href: "/join" },
+  { label: "Deer Vallye Ranch Estates", href: "/deer-valley-ranch-estates"},
   { label: "Contact Us", href: "/#contact" },
 ] as const;
 
