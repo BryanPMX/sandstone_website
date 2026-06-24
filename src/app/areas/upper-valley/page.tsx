@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: "Upper Valley El Paso | Sandstone Real Estate Group",
 };
 
-export const revalidate = 3600; // refresh live market data every hour
+export const dynamic = "force-dynamic";
 
 // ── Spark API — market statistics for Upper Valley (ZIP 79922) ────────────────
 const SPARK_BASE    = "https://replication.sparkapi.com";
