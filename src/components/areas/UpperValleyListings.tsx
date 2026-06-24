@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
-
-
+import { useState, useMemo, useEffect } from "react";
 import { ListingCard } from "@/components/properties/ListingCard";
 import { ListingsMapPanel } from "@/components/properties/ListingsMapPanel";
 import {
@@ -14,7 +12,6 @@ import {
 } from "@/lib";
 import type { PropertyCard } from "@/types";
 
-// Upper Valley / ZIP 79922 map center
 const UV_CENTER: [number, number] = [31.882, -106.582];
 const UV_ZOOM = 12;
 const PAGE_SIZE = 6;
@@ -24,12 +21,29 @@ const SELECT_CLS =
 
 type ListingType = "active" | "rental";
 
-export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) {
+export function UpperValleyListings() {
+  const [allListings, setAllListings] = useState<PropertyCard[]>([]);
+  const [loading, setLoading]         = useState(true);
   const [listingType, setListingType] = useState<ListingType>("active");
   const [price, setPrice]             = useState<PropertySearchPricePreset>("any");
   const [beds,  setBeds]              = useState<PropertySearchCountPreset>("any");
   const [baths, setBaths]             = useState<PropertySearchCountPreset>("any");
   const [page,  setPage]              = useState(1);
+
+  useEffect(() => {
+    fetch("/api/listings/active")
+      .then(r => r.json())
+      .then((data: PropertyCard[]) => {
+        const uv = data.filter(l => {
+          const addr = (l.mapAddress ?? "").toLowerCase();
+          const loc  = (l.location  ?? "").toLowerCase();
+          return addr.includes("79922") || loc.includes("upper valley");
+        });
+        setAllListings(uv);
+      })
+      .catch(() => setAllListings([]))
+      .finally(() => setLoading(false));
+  }, []);
 
   const priceOptions = useMemo(() => getPropertySearchPriceOptions(listingType), [listingType]);
 
@@ -39,11 +53,11 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
       bedsPreset:  beds,
       bathsPreset: baths,
     });
-    return filterPropertyCardsWithFilters(listings, {
+    return filterPropertyCardsWithFilters(allListings, {
       minPrice, maxPrice, minBeds, minBaths,
       listingType,
     });
-  }, [listings, price, beds, baths, listingType]);
+  }, [allListings, price, beds, baths, listingType]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage   = Math.min(page, totalPages);
@@ -68,7 +82,6 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
       {/* ── Filter bar ──────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center gap-3 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 px-4 py-3 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.3)]">
 
-        {/* Buy / Rent toggle */}
         <div className="flex rounded-full border border-[var(--sandstone-navy)]/15 bg-[var(--sandstone-off-white)] p-1">
           {(["active", "rental"] as const).map((type) => (
             <button
@@ -86,7 +99,6 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
           ))}
         </div>
 
-        {/* Price */}
         <div className="relative">
           <select
             value={price}
@@ -97,7 +109,6 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
           </select>
         </div>
 
-        {/* Beds */}
         <div className="relative">
           <select
             value={beds}
@@ -112,7 +123,6 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
           </select>
         </div>
 
-        {/* Baths */}
         <div className="relative">
           <select
             value={baths}
@@ -130,7 +140,6 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
       {/* ── Map + Listings ───────────────────────────────────────────────── */}
       <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,1fr)]">
 
-        {/* Left — map */}
         <ListingsMapPanel
           properties={filtered}
           initialCenter={UV_CENTER}
@@ -138,25 +147,32 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
           mapContextQuery={{ from: "upper-valley" }}
         />
 
-        {/* Right — listing grid */}
         <div className="flex flex-col">
 
           {/* Count + page label */}
           <div className="mb-3 flex items-center justify-between">
             <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--sandstone-charcoal)]/55">
-              {filtered.length === 0
-                ? "No listings found"
-                : `Showing ${startIdx}–${endIdx} of ${filtered.length}`}
+              {loading
+                ? "Loading listings..."
+                : filtered.length === 0
+                  ? "No listings found"
+                  : `Showing ${startIdx}–${endIdx} of ${filtered.length}`}
             </p>
-            {totalPages > 1 && (
+            {!loading && totalPages > 1 && (
               <p className="text-[11px] text-[var(--sandstone-charcoal)]/40">
                 Page {safePage} of {totalPages}
               </p>
             )}
           </div>
 
-          {/* Cards */}
-          {visible.length > 0 ? (
+          {/* Loading skeleton */}
+          {loading ? (
+            <div className="grid grid-cols-2 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="animate-pulse rounded-2xl bg-[var(--sandstone-navy)]/6 aspect-[3/4]" />
+              ))}
+            </div>
+          ) : visible.length > 0 ? (
             <div className="grid grid-cols-2 gap-4">
               {visible.map((listing, i) => (
                 <ListingCard key={listing.id} property={listing} priority={i < 4} />
@@ -168,13 +184,7 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
                 No listings match your filters
               </p>
               <button
-                onClick={() => {
-                  setPrice("any");
-                  setBeds("any");
-                  setBaths("any");
-                  setListingType("active");
-                  setPage(1);
-                }}
+                onClick={() => { setPrice("any"); setBeds("any"); setBaths("any"); setListingType("active"); setPage(1); }}
                 className="mt-3 text-sm font-semibold text-[var(--sandstone-sand-gold)] underline underline-offset-2"
               >
                 Clear filters
@@ -183,7 +193,7 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
           )}
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {!loading && totalPages > 1 && (
             <div className="mt-5 flex items-center justify-center gap-2">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
@@ -229,7 +239,6 @@ export function UpperValleyListings({ listings }: { listings: PropertyCard[] }) 
           )}
         </div>
       </div>
-
     </div>
   );
 }
