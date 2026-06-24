@@ -25,7 +25,7 @@ export const revalidate = 3600; // refresh live market data every hour
 
 // ── Spark API — market statistics for Upper Valley (ZIP 79922) ────────────────
 const SPARK_BASE    = "https://replication.sparkapi.com";
-const SPARK_TOKEN   = process.env.SPARK_API_TOKEN ?? "";
+const SPARK_TOKEN   = process.env.SPARK_ACCESS_TOKEN ?? "";
 const SPARK_HEADERS = {
   Accept: "application/json",
   Authorization: `Bearer ${SPARK_TOKEN}`,
