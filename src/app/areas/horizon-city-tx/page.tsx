@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { UpperValleyListings as HorizonListings } from "@/components/areas/UpperValleyListings";
+import { HorizonListings } from "@/components/areas/HorizonListings";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
 import { getTurnstileSiteKey } from "@/config";
 import { fetchActivePropertyCards } from "@/services";
