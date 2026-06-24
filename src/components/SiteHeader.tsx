@@ -4,7 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { CONTACT_US_MENU, SITE_NAV } from "@/constants/site";
+import { AREAS_NAV_MENU, CONTACT_US_MENU, SITE_NAV } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { MobileMenuPortal } from "@/components/MobileMenuPortal";
 import { ChevronDown } from "lucide-react";
@@ -25,8 +25,10 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   const pathname = usePathname();
   const contactMenuId = useId();
+  const areasMenuId = useId();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
+  const [isAreasMenuOpen, setIsAreasMenuOpen] = useState(false);
   const desktopLeftNav = SITE_NAV.slice(0, 2);
   const desktopRightNav = SITE_NAV.slice(2);
   const isHeroHeader = overlayDesktop;
@@ -55,17 +57,19 @@ export function SiteHeader({
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsContactMenuOpen(false);
+    setIsAreasMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!isContactMenuOpen) {
-      return;
-    }
-
-    const handleClickOutside = () => setIsContactMenuOpen(false);
+    if (!isContactMenuOpen && !isAreasMenuOpen) return;
+    const handleClickOutside = () => {
+      setIsContactMenuOpen(false);
+      setIsAreasMenuOpen(false);
+    };
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsContactMenuOpen(false);
+        setIsAreasMenuOpen(false);
       }
     };
     window.addEventListener("click", handleClickOutside);
@@ -74,7 +78,7 @@ export function SiteHeader({
       window.removeEventListener("click", handleClickOutside);
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [isContactMenuOpen]);
+  }, [isContactMenuOpen, isAreasMenuOpen]);
 
   if (logoOnly) {
     return (
@@ -367,7 +371,57 @@ export function SiteHeader({
                   )}
                 >
                   {desktopRightNav.map((item) => (
-                    item.href === "/#contact" ? (
+                    item.href === "/areas" ? (
+                      <li key={item.href} className="relative">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsAreasMenuOpen((prev) => !prev);
+                            setIsContactMenuOpen(false);
+                          }}
+                          aria-haspopup="menu"
+                          aria-expanded={isAreasMenuOpen}
+                          aria-controls={areasMenuId}
+                          className={cn(
+                            isLeadHeader
+                              ? "inline-flex items-center gap-2 rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-4 py-2 text-[14px] font-bold uppercase tracking-[0.12em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white hover:shadow-[0_10px_18px_-14px_rgba(183,150,120,0.65)]"
+                              : "inline-flex items-center gap-2 text-[14px] font-bold tracking-wide text-[var(--sandstone-off-white)] transition hover:text-[var(--sandstone-sand-gold)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                          )}
+                        >
+                          <span>{item.label}</span>
+                          <ChevronDown
+                            aria-hidden
+                            className={cn("h-4 w-4 transition-transform", isAreasMenuOpen && "rotate-180")}
+                          />
+                        </button>
+
+                        {isAreasMenuOpen ? (
+                          <div
+                            id={areasMenuId}
+                            role="menu"
+                            aria-label="Areas menu"
+                            className="absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-56 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)]"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ul className="py-2">
+                              {AREAS_NAV_MENU.map((link) => (
+                                <li key={link.href}>
+                                  <Link
+                                    href={link.href}
+                                    role="menuitem"
+                                    className="block px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                                  >
+                                    {link.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                      </li>
+                    ) : item.href === "/#contact" ? (
                       <li key={item.href} className="relative">
                         <button
                           type="button"
@@ -445,7 +499,11 @@ export function SiteHeader({
       <MobileMenuPortal
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
-        navItems={[...SITE_NAV.filter((item) => item.href !== "/#contact"), ...CONTACT_US_MENU]}
+        navItems={[
+          ...SITE_NAV.filter((item) => item.href !== "/#contact" && item.href !== "/areas"),
+          ...AREAS_NAV_MENU,
+          ...CONTACT_US_MENU,
+        ]}
       />
 
     </header>
