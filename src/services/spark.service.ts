@@ -1939,6 +1939,20 @@ export async function fetchAllActiveSparkPropertyCards(
   );
 }
 
+export async function fetchActiveSparkPropertyCardsByPostalCode(
+  postalCode: string,
+  options?: SparkFetchOptions
+): Promise<PropertyCard[]> {
+  const activeFilter = getSparkActiveListingsFilter();
+  const filter = `${activeFilter} And PostalCode Eq '${postalCode}'`;
+  return fetchAllSparkPropertyCards(
+    getSparkListingsPath(),
+    filter,
+    options,
+    "active"
+  );
+}
+
 export async function fetchActiveSparkPropertyCardsPage(
   page: number,
   options?: SparkFetchOptions

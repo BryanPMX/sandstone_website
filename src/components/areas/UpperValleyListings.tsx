@@ -31,16 +31,9 @@ export function UpperValleyListings() {
   const [page,  setPage]              = useState(1);
 
   useEffect(() => {
-    fetch("/api/listings/active")
+    fetch("/api/listings/upper-valley")
       .then(r => r.json())
-      .then((data: PropertyCard[]) => {
-        const uv = data.filter(l => {
-          const addr = (l.mapAddress ?? "").toLowerCase();
-          const loc  = (l.location  ?? "").toLowerCase();
-          return addr.includes("79922") || loc.includes("upper valley");
-        });
-        setAllListings(uv);
-      })
+      .then((data: PropertyCard[]) => setAllListings(data))
       .catch(() => setAllListings([]))
       .finally(() => setLoading(false));
   }, []);
