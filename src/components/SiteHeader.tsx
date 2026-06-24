@@ -183,6 +183,16 @@ export function SiteHeader({
                 priority
               />
             </div>
+
+            <div className="flex flex-col leading-none">
+              <span className="text-lg font-bold tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
+                SANDSTONE
+              </span>
+
+              <span className="text-[9px] uppercase tracking-[0.28em] text-[var(--sandstone-sand-gold)]/80">
+                REAL ESTATE GROUP
+              </span>
+            </div>
           </Link>
 
           <div className="ml-auto">
