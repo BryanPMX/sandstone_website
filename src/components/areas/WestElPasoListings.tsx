@@ -12,8 +12,8 @@ import {
 } from "@/lib";
 import type { PropertyCard } from "@/types";
 
-const UV_CENTER: [number, number] = [31.882, -106.582];
-const UV_ZOOM = 12;
+const WEP_CENTER: [number, number] = [31.822, -106.501];
+const WEP_ZOOM = 12;
 const PAGE_SIZE = 6;
 
 const SELECT_CLS =
@@ -21,7 +21,7 @@ const SELECT_CLS =
 
 type ListingType = "active" | "rental";
 
-export function UpperValleyListings() {
+export function WestElPasoListings() {
   const [allListings, setAllListings] = useState<PropertyCard[]>([]);
   const [loading, setLoading]         = useState(true);
   const [listingType, setListingType] = useState<ListingType>("active");
@@ -31,7 +31,7 @@ export function UpperValleyListings() {
   const [page,  setPage]              = useState(1);
 
   useEffect(() => {
-    fetch("/api/listings/upper-valley")
+    fetch("/api/listings/west-el-paso")
       .then(r => r.json())
       .then((data: PropertyCard[]) => setAllListings(data))
       .catch(() => setAllListings([]))
@@ -135,9 +135,9 @@ export function UpperValleyListings() {
 
         <ListingsMapPanel
           properties={filtered}
-          initialCenter={UV_CENTER}
-          initialZoom={UV_ZOOM}
-          mapContextQuery={{ from: "upper-valley" }}
+          initialCenter={WEP_CENTER}
+          initialZoom={WEP_ZOOM}
+          mapContextQuery={{ from: "west-el-paso" }}
         />
 
         <div className="flex flex-col">

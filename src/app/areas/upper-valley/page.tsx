@@ -5,7 +5,6 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { UpperValleyListings } from "@/components/areas/UpperValleyListings";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
 import { getTurnstileSiteKey } from "@/config";
-import { fetchActivePropertyCards } from "@/services";
 import {
   Clock,
   BadgePercent,
@@ -175,17 +174,8 @@ const CX0 = 48, CY0 = 12, CX1 = 348, CY1 = 162;
 export default async function UpperValleyPage() {
   const turnstileSiteKey = getTurnstileSiteKey();
 
-  // ── Live data — market stats + Upper Valley listings ──────────────────────
-  const [{ p, i, d, r }, allActive] = await Promise.all([
-    fetchUpperValleyStats(),
-    fetchActivePropertyCards(),
-  ]);
-
-  const upperValleyListings = allActive.filter(listing => {
-    const addr = (listing.mapAddress ?? "").toLowerCase();
-    const loc  = (listing.location  ?? "").toLowerCase();
-    return addr.includes("79922") || loc.includes("upper valley");
-  });
+  // ── Live data — market stats only (listings load client-side) ────────────
+  const { p, i, d, r } = await fetchUpperValleyStats();
 
   const fmtUSD = (v: unknown, fallback: string) =>
     v != null
@@ -503,7 +493,7 @@ export default async function UpperValleyPage() {
               Active homes for sale in Upper Valley · ZIP 79922 · El Paso, TX
             </p>
 
-            <UpperValleyListings listings={upperValleyListings} />
+            <UpperValleyListings />
 
           </div>
         </section>
