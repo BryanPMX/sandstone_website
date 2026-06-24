@@ -79,21 +79,21 @@ const SCHOOLS = {
 
 const NEARBY = {
   hospitals: [
-    { name: "The Hospitals of Providence - Horizon CIty Campus", time: "13 min", img: "/areas/horizon-city/nearby/hospital-2.webp" },
-    { name: "University Medical Center",                         time: "22 min", img: "/areas/horizon-city/nearby/hospital-2.webp" },
-    { name: "Las Palmas Medical Center",                         time: "25 min", img: "/areas/horizon-city/nearby/las-palmas-hospital.webp" },
+    { name: "The Hospitals of Providence - Horizon CIty Campus", time: "13 min", img: "/areas/horizon-city/hopistal.jpg" },
+    { name: "University Medical Center",                         time: "22 min", img: "/areas/horizon-city/hosptial-2.webp" },
+    { name: "Las Palmas Medical Center",                         time: "25 min", img: "/areas/horizon-city/hos-3.jpg" },
   ],
   groceries: [
-    { name: "Albertsons",             time: "7 min",  img: "/areas/horizon-city/nearby/albertsons.webp" },
-    { name: "Walmart Supercenter",    time: "8 min",  img: "/areas/horizon-city/nearby/walmart.webp" },
-    { name: "Whole Foods",            time: "11 min", img: "/areas/horizon-city/nearby/whole-foods.webp" },
-    { name: "Sprouts Farmers Market", time: "10 min", img: "/areas/horizon-city/nearby/sprouts.webp" },
-    { name: "Vista Market",           time: "7 min",  img: "/areas/horizon-city/nearby/vista-market.webp" },
+    { name: "Albertsons",             time: "7 min",  img: "/areas/horizon-city/albertsons.jpg" },
+    { name: "Walmart Supercenter",    time: "8 min",  img: "/areas/horizon-city/walmart.jpg" },
+    { name: "Whole Foods",            time: "11 min", img: "/areas/horizon-city/whole-foods.webp" },
+    { name: "Sprouts Farmers Market", time: "10 min", img: "/areas/horizon-city/sprouts.webp" },
+    { name: "Vista Market",           time: "7 min",  img: "/areas/horizon-city/vista-market.webp" },
   ],
   shopping: [
-    { name: "Eastlake Shopping Center",        time: "5 min", img: "/areas/horizon-city/nearby/shopping-center-1.webp" },
-    { name: "Eastlake Marketplace Center ", time: "10 min", img: "/areas/horizon-city/nearby/shopping-center-2.webp" },
-    { name: "Cielo Vista Mall",             time: "20 min", img: "/areas/horizon-city/nearby/shopping-center-1.webp" },
+    { name: "Eastlake Shopping Center",        time: "5 min", img: "/areas/horizon-city/shopping center.jpg" },
+    { name: "Eastlake Marketplace Center ", time: "10 min", img: "/areas/horizon-city/eastlake-marketplace.jpg"},
+    { name: "Cielo Vista Mall",             time: "20 min", img: "/areas/horizon-city/cielo mall.jpg" },
   ],
 };
 
@@ -155,16 +155,56 @@ const UTILITIES = [
 
 // Items interleaved left-col / right-col to match the 2-column grid order
 const FAQS = [
-  { icon: "/icons/areas/icon-home.webp",       q: "Is Horizon City a good place to live?",     a: "Yes. Horizon City consistently ranks as one of El Paso's most desirable neighborhoods — large lots, mature trees, a quiet atmosphere, and easy access to quality schools, dining, and the Rio Grande." },
-  { icon: "/icons/areas/icon-water.webp",      q: "Does Horizon City have irrigation rights?",  a: "Many properties have access to Rio Grande irrigation water through El Paso County Water Improvement District No. 1, allowing homeowners to irrigate large lots at a fraction of municipal water costs." },
-  { icon: "/icons/areas/icon-dollar.webp",     q: "Is Horizon City expensive?",                 a: "Relative to El Paso, yes. The median price sits around $366,000, with homes ranging from $160K for smaller properties to well over $1M for luxury estates. Compared to similar neighborhoods in other Texas cities, it offers exceptional value." },
-  { icon: "/icons/areas/icon-horse.webp",      q: "Are there horse properties?",                a: "Yes. Horizon City is one of the few El Paso areas where equestrian properties are common. Many homes include acreage suited for horses, with nearby riding trails and a deep agricultural heritage." },
-  { icon: "/icons/areas/icon-diamond.webp",    q: "Are there luxury homes in Horizon City?",   a: "Absolutely. Horizon City is home to some of El Paso's finest properties — custom estates, equestrian ranches, and homes with private pools, large irrigated lots, and mountain views." },
-  { icon: "/icons/areas/icon-shield.webp",     q: "Is Horizon City safe?",                      a: "Horizon City is one of El Paso's safest, most established neighborhoods. El Paso itself consistently ranks as one of the safest large cities in the United States." },
-  { icon: "/icons/areas/icon-graduation.webp", q: "Which school district serves Horizon City?", a: "Horizon City is primarily served by El Paso ISD and Canutillo ISD depending on your specific address. Top schools include Horizon High School, Canutillo High School, and Zach White Elementary." },
-  { icon: "/icons/areas/icon-chart.webp",      q: "What's the average home price?",             a: "As of 2026, the median sold price is approximately $366,755. Prices range widely — from around $160K for condos to over $1M for luxury estates on large lots." },
-  { icon: "/icons/areas/icon-location.webp",   q: "How far is Horizon City from Fort Bliss?",   a: "Horizon City is approximately 20–25 miles from Fort Bliss, with a typical drive time of 25–35 minutes depending on traffic and the gate you're using." },
-  { icon: "/icons/areas/icon-home-alt.webp",   q: "Are there new construction homes?",          a: "New construction is limited due to the established nature of the neighborhood and scarce undeveloped land. Custom builds do occur on vacant lots, and many buyers renovate or expand existing homes." },
+  {
+    icon: "/icons/areas/icon-home.webp",
+    q: "Is Horizon City a good place to live?",
+    a: "Yes. Horizon City is one of the fastest-growing communities in the El Paso area. Residents enjoy newer neighborhoods, affordable housing options, excellent parks, and convenient access to East El Paso, Fort Bliss, and major roadways.",
+  },
+  {
+    icon: "/icons/areas/icon-water.webp",
+    q: "Does Horizon City have irrigation rights?",
+    a: "Most residential properties in Horizon City do not include irrigation rights. Water service is typically provided through local utility districts and municipal providers.",
+  },
+  {
+    icon: "/icons/areas/icon-dollar.webp",
+    q: "Is Horizon City affordable?",
+    a: "Yes. Horizon City is known for offering some of the best value in the El Paso region. Buyers can often find newer homes, larger lots, and modern communities at prices that remain competitive compared to many other Texas markets.",
+  },
+  {
+    icon: "/icons/areas/icon-horse.webp",
+    q: "Are there parks and outdoor activities?",
+    a: "Yes. Horizon City features several parks, playgrounds, sports fields, walking trails, and recreational areas. Residents also enjoy nearby golf courses, community events, and outdoor activities throughout the year.",
+  },
+  {
+    icon: "/icons/areas/icon-car.webp",
+    q: "What is the commute like from Horizon City?",
+    a: "Horizon City offers convenient access to East El Paso, Loop 375, I-10, and Fort Bliss. Many residents commute to Eastlake, East El Paso, and major employment centers within 15–30 minutes depending on traffic.",
+  },
+  {
+    icon: "/icons/areas/icon-shield.webp",
+    q: "Is Horizon City safe?",
+    a: "Horizon City is widely considered a family-friendly community with many master-planned neighborhoods, parks, and active community involvement. As with any area, safety can vary by neighborhood and should be evaluated individually.",
+  },
+  {
+    icon: "/icons/areas/icon-graduation.webp",
+    q: "Which school district serves Horizon City?",
+    a: "Horizon City is served by both Socorro Independent School District (SISD) and Clint Independent School District (CISD), depending on the neighborhood and specific address. Schools serving the area include Horizon High School, Eastlake High School, Ricardo Estrada Middle School, and several elementary schools.",
+  },
+  {
+    icon: "/icons/areas/icon-chart.webp",
+    q: "What's the average home price?",
+    a: "Home prices in Horizon City vary by neighborhood, age, size, and builder. Buyers can find everything from starter homes to larger custom residences, making the area attractive to a wide range of budgets.",
+  },
+  {
+    icon: "/icons/areas/icon-location.webp",
+    q: "How far is Horizon City from Fort Bliss?",
+    a: "Fort Bliss is approximately 15–25 miles from Horizon City depending on the gate used. Typical drive times range from 20–35 minutes depending on traffic conditions.",
+  },
+  {
+    icon: "/icons/areas/icon-home-alt.webp",
+    q: "Are there new construction homes?",
+    a: "Yes. Horizon City remains one of the most active areas for new home construction in the El Paso region, with multiple builders offering modern floor plans, growing communities, and newly developed neighborhoods.",
+  },
 ];
 
 // ── SVG chart canvas dimensions (fixed, axis labels excluded) ─────────────────
@@ -941,10 +981,10 @@ export default async function HorizonCityPage() {
             </div>
 
             {/* 2-column accordion grid */}
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start">
               {FAQS.map(({ icon, q, a }) => (
                 <details key={q} className="group rounded-2xl bg-white shadow-sm">
-                  <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4">
+                  <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-3">
                     {/* Icon circle */}
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-navy)]/8">
                       <Image src={icon} alt="" width={22} height={22} />
@@ -959,8 +999,8 @@ export default async function HorizonCityPage() {
                     />
                   </summary>
                   {/* Answer */}
-                  <div className="border-t border-[var(--sandstone-navy)]/8 px-5 py-4 pl-20">
-                    <p className="text-[13px] leading-relaxed text-[var(--sandstone-charcoal)]/65">{a}</p>
+                  <div className="border-t border-[var(--sandstone-navy)]/8 px-5 py-4">
+                    <p className="text-sm leading-7 text-[var(--sandstone-charcoal)]/70">{a}</p>
                   </div>
                 </details>
               ))}
