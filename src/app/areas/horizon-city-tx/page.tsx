@@ -220,11 +220,11 @@ export default async function HorizonCityPage() {
     fetchActivePropertyCards(),
   ]);
 
-  const horizonListings = allActive.filter(listing => {
-    const addr = (listing.mapAddress ?? "").toLowerCase();
-    const loc  = (listing.location  ?? "").toLowerCase();
-    return addr.includes("79928") || loc.includes("horizon");
-  });
+  //const horizonListings = allActive.filter(listing => {
+    //const addr = (listing.mapAddress ?? "").toLowerCase();
+    //const loc  = (listing.location  ?? "").toLowerCase();
+    //return addr.includes("79928") || loc.includes("horizon");
+  //});
 
   const fmtUSD = (v: unknown, fallback: string) =>
     v != null
@@ -542,7 +542,7 @@ export default async function HorizonCityPage() {
               Active homes for sale in Horizon City · ZIP 79928 · El Paso, TX
             </p>
 
-            <HorizonListings listings={horizonListings} />
+            <HorizonListings />
 
           </div>
         </section>
