@@ -604,7 +604,7 @@ export default function SandstoneNewBuildsPage() {
         </section>
 
         {/* ── FAQ ──────────────────────────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start"></div>
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             <div className="mb-10 text-center">
