@@ -604,7 +604,7 @@ export default function SandstoneNewBuildsPage() {
         </section>
 
         {/* ── FAQ ──────────────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start"></div>
+        <section className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             <div className="mb-10 text-center">
@@ -622,7 +622,7 @@ export default function SandstoneNewBuildsPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start">
               {FAQS.map(({ icon, q, a }) => (
                 <details key={q} className="group rounded-2xl bg-white shadow-sm">
                   <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4">
