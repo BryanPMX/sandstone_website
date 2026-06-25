@@ -247,21 +247,113 @@ export function SiteHeader({
 
               <nav aria-label="Primary right" className="flex-1">
                 <ul className="flex items-center justify-start gap-2 xl:gap-5">
-                  {desktopRightNav.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          "inline-flex items-center px-3 py-2 text-[14px] font-bold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)]",
-                          isActiveNavItem(item.href) &&
-                            "underline decoration-2 underline-offset-8",
-                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {desktopRightNav.map((item) =>
+                    item.href === "/areas" ? (
+                      <li key={item.href} className="relative">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsAreasMenuOpen((prev) => !prev);
+                            setIsContactMenuOpen(false);
+                          }}
+                          aria-haspopup="menu"
+                          aria-expanded={isAreasMenuOpen}
+                          aria-controls={areasMenuId}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 text-[14px] font-bold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                        >
+                          <span>{item.label}</span>
+                          <ChevronDown
+                            aria-hidden
+                            className={cn("h-4 w-4 transition-transform", isAreasMenuOpen && "rotate-180")}
+                          />
+                        </button>
+
+                        {isAreasMenuOpen ? (
+                          <div
+                            id={areasMenuId}
+                            role="menu"
+                            aria-label="Areas menu"
+                            className="absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-56 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)]"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ul className="py-2">
+                              {AREAS_NAV_MENU.map((link) => (
+                                <li key={link.href}>
+                                  <Link
+                                    href={link.href}
+                                    role="menuitem"
+                                    className="block px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                                  >
+                                    {link.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                      </li>
+                    ) : item.href === "/#contact" ? (
+                      <li key={item.href} className="relative">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsContactMenuOpen((prev) => !prev);
+                            setIsAreasMenuOpen(false);
+                          }}
+                          aria-haspopup="menu"
+                          aria-expanded={isContactMenuOpen}
+                          aria-controls={contactMenuId}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 text-[14px] font-bold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                        >
+                          <span>{item.label}</span>
+                          <ChevronDown
+                            aria-hidden
+                            className={cn("h-4 w-4 transition-transform", isContactMenuOpen && "rotate-180")}
+                          />
+                        </button>
+
+                        {isContactMenuOpen ? (
+                          <div
+                            id={contactMenuId}
+                            role="menu"
+                            aria-label="Contact menu"
+                            className="absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-60 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)]"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ul className="py-2">
+                              {CONTACT_US_MENU.map((link) => (
+                                <li key={link.href}>
+                                  <Link
+                                    href={link.href}
+                                    role="menuitem"
+                                    className="block px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                                  >
+                                    {link.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                      </li>
+                    ) : (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            "inline-flex items-center px-3 py-2 text-[14px] font-bold uppercase tracking-[0.13em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)]",
+                            isActiveNavItem(item.href) &&
+                              "underline decoration-2 underline-offset-8",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    )
+                  )}
                 </ul>
               </nav>
             </>
