@@ -295,7 +295,7 @@ export default async function LowerValleyPage() {
 
             {/* Subtitle */}
             <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-white/65">
-              Affordable homes, established neighborhoods, and convenient access to Downtown El Paso make Lower Valley one of the city's most historic communities.
+              Affordable homes, established neighborhoods, and convenient access to Downtown El Paso make Lower Valley one of the city&apos;s most historic communities.
             </p>
 
             {/* CTAs */}
