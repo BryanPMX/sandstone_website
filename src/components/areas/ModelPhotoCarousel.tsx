@@ -22,14 +22,17 @@ export function ModelPhotoCarousel({ images }: { images: CarouselImage[] }) {
           {current + 1} / {images.length}
         </div>
 
-        <Image
-          src={images[current].src}
-          alt={images[current].alt}
-          fill
-          sizes="(max-width: 1024px) 100vw, 80vw"
-          className="object-cover transition-opacity duration-300"
-          priority
-        />
+        {images.map((img, i) => (
+          <Image
+            key={img.src}
+            src={img.src}
+            alt={img.alt}
+            fill
+            sizes="(max-width: 1024px) 100vw, 80vw"
+            className={`object-cover transition-opacity duration-200 ${i === current ? "opacity-100" : "opacity-0"}`}
+            priority={i === 0}
+          />
+        ))}
 
         {/* Prev arrow */}
         <button
