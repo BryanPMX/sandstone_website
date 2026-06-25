@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { WestElPasoListings } from "@/components/areas/WestElPasoListings";
+import { UpperValleyListings } from "@/components/areas/UpperValleyListings";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
 import { getTurnstileSiteKey } from "@/config";
 import {
@@ -17,12 +17,12 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "West El Paso | Sandstone Real Estate Group",
+  title: "Lower Valley El Paso | Sandstone Real Estate Group",
 };
 
 export const dynamic = "force-dynamic";
 
-// ── Spark API — market statistics for West El Paso (ZIP 79912) ────────────────
+// ── Spark API — market statistics for Lower Valley (ZIP 79922) ────────────────
 const SPARK_BASE    = "https://replication.sparkapi.com";
 const SPARK_TOKEN   = process.env.SPARK_ACCESS_TOKEN ?? "";
 const SPARK_HEADERS = {
@@ -31,8 +31,8 @@ const SPARK_HEADERS = {
   "User-Agent": "sandstone-website/1.0",
 };
 
-async function fetchWestElPasoStats() {
-  const qs   = "LocationField=PostalCode&LocationValue=79912";
+async function fetchUpperValleyStats() {
+  const qs   = "LocationField=PostalCode&LocationValue=79922";
   const opts = { headers: SPARK_HEADERS, next: { revalidate: 3600 } } as RequestInit;
   try {
     const [priceRes, invRes, domRes, ratioRes] = await Promise.all([
@@ -55,50 +55,53 @@ async function fetchWestElPasoStats() {
   }
 }
 
+
 const SCHOOLS = {
   elementary: [
-    { name: "Putnam Elementary School of Science and Technology", district: "El Paso ISD", zip: "79912" },
-    { name: "Helen Ball Elementary School",                        district: "El Paso ISD", zip: "79912" },
-    { name: "Ken Lund Elementary School",                          district: "El Paso ISD", zip: "79912" },
-    { name: "Alta Vista Elementary School",                        district: "El Paso ISD", zip: "79912" },
-    { name: "Mesquite Elementary School",                          district: "El Paso ISD", zip: "79912" },
+    { name: "Riverside Elementary School",                                   district: "Ysleta ISD", zip: "79915"        },
+    { name: "Capistrano Elementary School",                   district: "Ysleta ISD", zip: "79915"        },
+    { name: "Cooley Elementary School",                                   district: "Ysleta ISD", zip: "79915" },
+    { name: "Ramona Elementary School",                      district: "Ysleta ISD", zip: "79915"        },
+    { name: "Congressman Silvestre & Carolina Reyes Elementary School",      district: "Ysleta ISD", zip: "79915"        },
+    { name: "Lancaster Elementary School",                              district: "Ysleta ISD", zip: "79915"        },
   ],
   middle: [
-    { name: "Charles Middle School",     district: "El Paso ISD", zip: "79912" },
-    { name: "MacArthur STEM Academy",    district: "El Paso ISD", zip: "79912" },
-    { name: "Wiggs Middle School",       district: "El Paso ISD", zip: "79912" },
+    { name: "Riverside Middle School",                       district: "Ysleta ISD", zip: "79915"        },
+    { name: "Del Valle Middle School",                         district: "Ysleta ISD", zip: "79907" },
+    { name: "Valley View Middle School",                                district: "Ysleta ISD", zip: "79915"        },
   ],
   high: [
-    { name: "Coronado High School",   district: "El Paso ISD", zip: "79912" },
-    { name: "Jefferson High School",  district: "El Paso ISD", zip: "79902, 79912" },
+    { name: "Riverside High School",                                          district: "Ysleta ISD", zip: "79915"          },
+    { name: "Del Valle High School",                                         district: "Ysleta ISD", zip: "79907"          },
   ],
 } as const;
 
 const NEARBY = {
   hospitals: [
-    { name: "The Hospitals of Providence West Campus", time: "10 min", img: "/areas/west-el-paso/nearby/hospital-providence.jpg" },
-    { name: "Las Palmas Medical Center",               time: "14 min", img: "/areas/west-el-paso/nearby/hospital-las-palmas.jpg"  },
-    { name: "University Medical Center (UMC)",         time: "18 min", img: "/areas/west-el-paso/nearby/hospital-umc.jpg"         },
+    { name: "The Hospitals of Providence Transmountain", time: "13 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
+    { name: "University Medical Center",                  time: "22 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
+    { name: "Las Palmas Medical Center",                  time: "25 min", img: "/areas/lower-valley/nearby/las-palmas-hospital.webp" },
   ],
   groceries: [
-    { name: "Albertsons",             time: "5 min",  img: "/areas/upper-valley/nearby/albertsons.webp"   },
-    { name: "Walmart Supercenter",    time: "8 min",  img: "/areas/upper-valley/nearby/walmart.webp"      },
-    { name: "Whole Foods",            time: "10 min", img: "/areas/upper-valley/nearby/whole-foods.webp"  },
-    { name: "Sprouts Farmers Market", time: "7 min",  img: "/areas/upper-valley/nearby/sprouts.webp"      },
+    { name: "Albertsons",             time: "7 min",  img: "/areas/lower-valley/nearby/albertsons.webp" },
+    { name: "Walmart Supercenter",    time: "8 min",  img: "/areas/lower-valley/nearby/walmart.webp" },
+    { name: "Whole Foods",            time: "11 min", img: "/areas/lower-valley/nearby/whole-foods.webp" },
+    { name: "Sprouts Farmers Market", time: "10 min", img: "/areas/lower-valley/nearby/sprouts.webp" },
+    { name: "Vista Market",           time: "7 min",  img: "/areas/lower-valley/nearby/vista-market.webp" },
   ],
   shopping: [
-    { name: "Coronado Hills Shopping Center", time: "5 min",  img: "/areas/west-el-paso/nearby/coronado-hills.jpg" },
-    { name: "The Shoppes at Solana",          time: "10 min", img: "/areas/west-el-paso/nearby/shoppes-solana.jpg" },
-    { name: "Cielo Vista Mall",               time: "18 min", img: "/areas/west-el-paso/nearby/cielo-vista.jpg"    },
+    { name: "West Towne Marketplace",        time: "10 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
+    { name: "The Outlet Shoppes at El Paso", time: "14 min", img: "/areas/lower-valley/nearby/shopping-center-2.webp" },
+    { name: "Sunland Park Mall",             time: "16 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
   ],
 };
 
 const COMMUTE_TIMES = [
-  { icon: "/icons/areas/icon-office.webp",       time: "15 min", label: "Downtown\nEl Paso"       },
-  { icon: "/icons/areas/icon-graduation.webp",   time: "10 min", label: "UTEP"                    },
-  { icon: "/icons/areas/icon-star.webp",         time: "30 min", label: "Fort Bliss\nMain Gate"   },
-  { icon: "/icons/areas/icon-airport.webp",      time: "22 min", label: "El Paso\nAirport"        },
-  { icon: "/icons/areas/icon-shopping-bag.webp", time: "5 min",  label: "Coronado Hills\nShopping"},
+  { icon: "/icons/areas/icon-office.webp",       time: "12 min", label: "Downtown\nEl Paso"          },
+  { icon: "/icons/areas/icon-graduation.webp",   time: "14 min", label: "UTEP"                       },
+  { icon: "/icons/areas/icon-star.webp",         time: "24 min", label: "Fort Bliss\nCassidy Gate"   },
+  { icon: "/icons/areas/icon-airport.webp",      time: "20 min", label: "El Paso\nAirport"           },
+  { icon: "/icons/areas/icon-shopping-bag.webp", time: "10 min", label: "West Towne\nMarketplace"    },
 ];
 
 const UTILITIES = [
@@ -149,30 +152,36 @@ const UTILITIES = [
   },
 ] as const;
 
+// Items interleaved left-col / right-col to match the 2-column grid order
 const FAQS = [
-  { icon: "/icons/areas/icon-home.webp",       q: "Is West El Paso a good place to live?",         a: "Absolutely. West El Paso consistently ranks as one of the city's most desirable neighborhoods — established tree-lined streets, top-rated schools, easy access to UTEP and shopping, and a family-friendly atmosphere that appeals to professionals and long-term residents alike." },
-  { icon: "/icons/areas/icon-dollar.webp",     q: "What is the median home price in West El Paso?", a: "As of 2026, the median list price in West El Paso (ZIP 79912) is approximately $366,755, though prices range widely — from condos in the $150K–$200K range to custom luxury homes well above $1M. The market has shown steady appreciation year over year." },
-  { icon: "/icons/areas/icon-graduation.webp", q: "Which schools serve West El Paso?",              a: "West El Paso is primarily served by El Paso ISD. Coronado High School is the flagship high school for the area and is highly regarded. Top elementary schools include Putnam Elementary School of Science and Technology. School zoning varies by address — always verify directly with El Paso ISD." },
-  { icon: "/icons/areas/icon-shield.webp",     q: "Is West El Paso safe?",                          a: "West El Paso is one of the safest and most established parts of the city. El Paso itself consistently ranks as one of the safest large cities in the United States, and the West Side reflects that reputation — quiet residential streets and a strong sense of community." },
-  { icon: "/icons/areas/icon-diamond.webp",    q: "Are there luxury homes in West El Paso?",        a: "Yes. West El Paso features a healthy selection of luxury properties — custom-built homes, golf-course communities, and estates with mountain views of the Franklin Mountains. The area attracts executives, medical professionals, and buyers seeking a premium El Paso address." },
-  { icon: "/icons/areas/icon-chart.webp",      q: "What is the market projection for 2026?",        a: "Based on current trends, the West El Paso median price is projected to reach approximately $431K by end of 2026. Demand remains strong, inventory is moderate, and the area's proximity to UTEP and the Medical Center District continues to support value." },
-  { icon: "/icons/areas/icon-location.webp",   q: "How far is West El Paso from Fort Bliss?",       a: "West El Paso is approximately 20–25 miles from Fort Bliss, with a typical drive of 30–35 minutes depending on traffic and the gate. Many military families choose West El Paso for its quality schools and established neighborhoods." },
-  { icon: "/icons/areas/icon-home-alt.webp",   q: "Are there new construction homes?",              a: "New construction exists on the outskirts of 79912, particularly in newer subdivisions near the Westside Drive corridor. Established neighborhoods closer to UTEP tend to be resale homes with character and mature landscaping." },
-  { icon: "/icons/areas/icon-horse.webp",      q: "What makes West El Paso different from other areas?", a: "West El Paso offers the best combination of location, schools, and lifestyle in El Paso. You're minutes from UTEP, close to the Medical Center District, surrounded by the Franklin Mountains, and served by some of the highest-rated schools in the city — all at prices that still compare favorably to comparable Texas metros." },
-  { icon: "/icons/areas/icon-water.webp",      q: "What shopping is near West El Paso?",            a: "West El Paso is well-served for shopping — Coronado Hills Shopping Center is minutes away, The Shoppes at Solana offers a great mix of retail and dining, and Cielo Vista Mall is an easy drive east. Grocery options include Albertsons, Walmart, Whole Foods, and Sprouts." },
+  { icon: "/icons/areas/icon-home.webp",       q: "Is Lower Valley a good place to live?",     a: "Yes. Lower Valley consistently ranks as one of El Paso's most desirable neighborhoods — large lots, mature trees, a quiet atmosphere, and easy access to quality schools, dining, and the Rio Grande." },
+  { icon: "/icons/areas/icon-water.webp",      q: "Does Lower Valley have irrigation rights?",  a: "Many properties have access to Rio Grande irrigation water through El Paso County Water Improvement District No. 1, allowing homeowners to irrigate large lots at a fraction of municipal water costs." },
+  { icon: "/icons/areas/icon-dollar.webp",     q: "Is Lower Valley expensive?",                 a: "Relative to El Paso, yes. The median price sits around $366,000, with homes ranging from $160K for smaller properties to well over $1M for luxury estates. Compared to similar neighborhoods in other Texas cities, it offers exceptional value." },
+  { icon: "/icons/areas/icon-horse.webp",      q: "Are there horse properties?",                a: "Yes. Lower Valley is one of the few El Paso areas where equestrian properties are common. Many homes include acreage suited for horses, with nearby riding trails and a deep agricultural heritage." },
+  { icon: "/icons/areas/icon-diamond.webp",    q: "Are there luxury homes in Lower Valley?",   a: "Absolutely. Lower Valley is home to some of El Paso's finest properties — custom estates, equestrian ranches, and homes with private pools, large irrigated lots, and mountain views." },
+  { icon: "/icons/areas/icon-shield.webp",     q: "Is Lower Valley safe?",                      a: "Lower Valley is one of El Paso's safest, most established neighborhoods. El Paso itself consistently ranks as one of the safest large cities in the United States." },
+  { icon: "/icons/areas/icon-graduation.webp", q: "Which school district serves Lower Valley?", a: "Lower Valley is primarily served by El Paso ISD and Canutillo ISD depending on your specific address. Top schools include Coronado High School, Canutillo High School, and Zach White Elementary." },
+  { icon: "/icons/areas/icon-chart.webp",      q: "What's the average home price?",             a: "As of 2026, the median sold price is approximately $366,755. Prices range widely — from around $160K for condos to over $1M for luxury estates on large lots." },
+  { icon: "/icons/areas/icon-location.webp",   q: "How far is Lower Valley from Fort Bliss?",   a: "Lower Valley is approximately 20–25 miles from Fort Bliss, with a typical drive time of 25–35 minutes depending on traffic and the gate you're using." },
+  { icon: "/icons/areas/icon-home-alt.webp",   q: "Are there new construction homes?",          a: "New construction is limited due to the established nature of the neighborhood and scarce undeveloped land. Custom builds do occur on vacant lots, and many buyers renovate or expand existing homes." },
 ];
 
+// ── SVG chart canvas dimensions (fixed, axis labels excluded) ─────────────────
 const CX0 = 48, CY0 = 12, CX1 = 348, CY1 = 162;
 
-export default async function WestElPasoPage() {
+// ── Page ──────────────────────────────────────────────────────────────────────
+export default async function LowerValleyPage() {
   const turnstileSiteKey = getTurnstileSiteKey();
-  const { p, i, d, r } = await fetchWestElPasoStats();
+
+  // ── Live data — market stats only (listings load client-side) ────────────
+  const { p, i, d, r } = await fetchUpperValleyStats();
 
   const fmtUSD = (v: unknown, fallback: string) =>
     v != null
       ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Number(v))
       : fallback;
 
+  // Current period label from API date ("May 2026" etc.)
   const period = p?.Dates?.[0]
     ? (() => {
         const [m, , y] = (p.Dates[0] as string).split("/");
@@ -180,32 +189,37 @@ export default async function WestElPasoPage() {
       })()
     : "May 2026";
 
-  const medianPrice       = fmtUSD(p?.ActiveMedianListPrice?.[0], "$366,755");
-  const activeInventory   = String(i?.ActiveListings?.[0]  ?? 154);
-  const newListings       = String(i?.NewListings?.[0]      ?? 28);
-  const avgDom            = d?.AverageDom?.[0] ? String(Math.round(Number(d.AverageDom[0]))) : "45";
+  // Live stat values (fallback to last known if API is down)
+  const medianPrice       = fmtUSD(p?.ActiveMedianListPrice?.[0], "$650,000");
+  const activeInventory   = String(i?.ActiveListings?.[0]  ?? 24);
+  const newListings       = String(i?.NewListings?.[0]      ?? 11);
+  const avgDom            = d?.AverageDom?.[0] ? String(Math.round(Number(d.AverageDom[0]))) : "99";
   const listPriceReceived = r?.SaleToOriginalListPriceRatio?.[0]
     ? `${Number(r.SaleToOriginalListPriceRatio[0]).toFixed(1)}%`
-    : "98.1%";
+    : "97.2%";
 
+  // Month-over-month change helper
   const moPct = (curr: unknown, prev: unknown) => {
     const c = Number(curr), p2 = Number(prev);
     if (!curr || !prev || !p2) return null;
     const pct = ((c - p2) / p2) * 100;
     return { pct: `${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%`, up: pct >= 0 };
   };
-  const domChange   = moPct(d?.AverageDom?.[0],                   d?.AverageDom?.[1]);
-  const ratioChange = moPct(r?.SaleToOriginalListPriceRatio?.[0], r?.SaleToOriginalListPriceRatio?.[1]);
-  const invChange   = moPct(i?.ActiveListings?.[0],               i?.ActiveListings?.[1]);
-  const newChange   = moPct(i?.NewListings?.[0],                  i?.NewListings?.[1]);
+  const domChange   = moPct(d?.AverageDom?.[0],                      d?.AverageDom?.[1]);
+  const ratioChange = moPct(r?.SaleToOriginalListPriceRatio?.[0],    r?.SaleToOriginalListPriceRatio?.[1]);
+  const invChange   = moPct(i?.ActiveListings?.[0],                  i?.ActiveListings?.[1]);
+  const newChange   = moPct(i?.NewListings?.[0],                     i?.NewListings?.[1]);
 
+  // Top 2 summary cards
   const STATS_TOP = [
-    { label: "Median Price",  value: medianPrice, sub: null           },
-    { label: "Commute Time",  value: "3.3",       sub: "mi / approx." },
+    { label: "Median Price",  value: medianPrice,  sub: null             },
+    { label: "Commute Time",  value: "3.3",        sub: "mi / approx."   },
   ];
 
-  const PRICE_CARD = { current: medianPrice, projection: "$431K", period };
+  // Price detail card
+  const PRICE_CARD = { current: medianPrice, projection: "$728K", period };
 
+  // Bottom 4 stat cards
   const STAT_CARDS = [
     { icon: Clock,        label: "Median Days\non Market", value: avgDom,            change: domChange?.pct,   up: domChange?.up   },
     { icon: BadgePercent, label: "List Price\nReceived",   value: listPriceReceived, change: ratioChange?.pct, up: ratioChange?.up },
@@ -213,12 +227,13 @@ export default async function WestElPasoPage() {
     { icon: ArrowUpDown,  label: "Active\nInventory",      value: activeInventory,   change: invChange?.pct,   up: invChange?.up   },
   ];
 
-  const rawDates    = (p?.Dates               as string[] | undefined) ?? [];
-  const rawPrices   = (p?.ActiveMedianListPrice as string[] | undefined) ?? [];
+  // ── Chart — 12 months of real price data (API returns newest-first) ───────
+  const rawDates   = (p?.Dates               as string[] | undefined) ?? [];
+  const rawPrices  = (p?.ActiveMedianListPrice as string[] | undefined) ?? [];
   const chartDates  = [...rawDates].slice(0, 12).reverse();
   const chartPricesK = [...rawPrices].slice(0, 12).reverse().map(v => Number(v) / 1000);
 
-  const allK   = chartPricesK.length ? chartPricesK : [340, 430];
+  const allK   = chartPricesK.length ? chartPricesK : [550, 700];
   const Y_MIN  = Math.floor(Math.min(...allK) / 50) * 50;
   const Y_MAX  = Math.ceil(Math.max(...allK)  / 50) * 50 + 50;
   const total  = chartPricesK.length || 7;
@@ -233,8 +248,8 @@ export default async function WestElPasoPage() {
   const Y_STEPS  = Math.round((Y_MAX - Y_MIN) / 50);
   const Y_LABELS = Array.from({ length: Y_STEPS + 1 }, (_, k) => Y_MIN + k * 50).reverse();
 
-  const MONTHS  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const xLabels = chartDates.map(dt => {
+  const MONTHS   = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const xLabels  = chartDates.map(dt => {
     const [m, , y] = dt.split("/");
     return `${MONTHS[Number(m) - 1]}'${y.slice(2)}`;
   });
@@ -247,33 +262,43 @@ export default async function WestElPasoPage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/west-el-paso/hero.jpg"
-            alt="Southwest-style home in West El Paso at sunset"
+            src="/areas/lower-valley/hero.webp"
+            alt="Luxury estate in Lower Valley El Paso"
             fill
             priority
             sizes="100vw"
             className="object-cover object-center"
           />
+
+          {/* layered gradient: strong at bottom, fades to subtle dark tint at top */}
           <div className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)] via-[var(--sandstone-navy)]/50 to-[var(--sandstone-navy)]/10" />
+
+          {/* left-side vignette so text always reads cleanly */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/25 to-transparent" />
 
+          {/* Content */}
           <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-36 lg:px-6 lg:pb-20">
+
+            {/* Location breadcrumb */}
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-10 bg-[var(--sandstone-sand-gold)]" />
               <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
-                West El Paso · El Paso, TX
+                Lower Valley · El Paso, TX
               </span>
             </div>
 
+            {/* Heading */}
             <h1 className="max-w-2xl font-heading text-4xl font-bold leading-[1.1] text-white md:text-5xl lg:text-6xl">
               Homes for Sale in<br />
-              West El Paso, TX
+              Lower Valley El Paso, TX
             </h1>
 
+            {/* Subtitle */}
             <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-white/65">
-              Top-rated schools, mountain views, and proximity to UTEP — West El Paso is one of the Sun City&apos;s most established and sought-after communities.
+              Affordable homes, established neighborhoods, and convenient access to Downtown El Paso make Lower Valley one of the city&apos;s most historic communities.
             </p>
 
+            {/* CTAs */}
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="#listings"
@@ -288,40 +313,51 @@ export default async function WestElPasoPage() {
                 Talk to an Agent
               </Link>
             </div>
+
           </div>
         </section>
 
-        {/* ── Market Snapshot ──────────────────────────────────────────────── */}
+        {/* ── Market Snapshot section ──────────────────────────────────────── */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
+            {/* Header */}
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                West El Paso Market Snapshot 2026
+                Lower Valley Market Snapshot 2026
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                Explore homes for sale in West El Paso, TX. Learn about neighborhoods, schools, home prices, commute times, and browse the latest listings in one of El Paso&apos;s most desirable areas.
+                If you&apos;re looking for a beautiful address in El Paso, Lower Valley is where you want to be. This established, tree-lined community along the Rio Grande corridor represents the pinnacle of El Paso living — generous lot sizes, mature landscaping, mountain views, and a lifestyle that&apos;s hard to find anywhere else in the Sun City.
               </p>
             </div>
 
             {/* Top 2 stat cards */}
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {STATS_TOP.map(({ label, value, sub }) => (
-                <div key={label} className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
+                <div
+                  key={label}
+                  className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm"
+                >
                   <p className="text-sm font-bold text-[var(--sandstone-navy)]">{label}</p>
                   <div className="mt-3 flex items-baseline gap-2">
-                    <span className="font-heading text-4xl font-bold text-[var(--sandstone-sand-gold)]">{value}</span>
-                    {sub && <span className="text-sm font-medium text-[var(--sandstone-charcoal)]/55">{sub}</span>}
+                    <span className="font-heading text-4xl font-bold text-[var(--sandstone-sand-gold)]">
+                      {value}
+                    </span>
+                    {sub && (
+                      <span className="text-sm font-medium text-[var(--sandstone-charcoal)]/55">{sub}</span>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Price detail card + chart */}
+            {/* Middle row: price detail card + line chart */}
             <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
 
+              {/* Left — price detail */}
               <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
                 <p className="text-sm font-bold text-[var(--sandstone-navy)]">Median Price</p>
+
                 <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
                   <div>
                     <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
@@ -331,11 +367,13 @@ export default async function WestElPasoPage() {
                       {PRICE_CARD.current}
                     </p>
                   </div>
+
                   <div className="flex flex-col items-center gap-1 text-[var(--sandstone-charcoal)]/35">
                     <div className="h-px w-8 bg-[var(--sandstone-charcoal)]/25" />
                     <span className="text-lg">→</span>
                     <div className="h-px w-8 bg-[var(--sandstone-charcoal)]/25" />
                   </div>
+
                   <div>
                     <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
                       Market Projection (2026)
@@ -346,42 +384,57 @@ export default async function WestElPasoPage() {
                     <p className="mt-1 text-[9px] italic text-[var(--sandstone-charcoal)]/35">Editorial estimate</p>
                   </div>
                 </div>
+
                 <p className="mt-5 text-xs italic text-[var(--sandstone-charcoal)]/40">
                   vs market projection / 2026 trend
                 </p>
               </div>
 
+              {/* Right — line chart */}
               <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
                 <p className="mb-4 text-sm font-bold text-[var(--sandstone-navy)]">
-                  West El Paso Median List Price — 12 Months
+                  Lower Valley Median List Price — 12 Months
                 </p>
+
                 <svg
                   viewBox={`0 0 ${CX1 + 16} ${CY1 + 24}`}
                   className="w-full"
-                  aria-label="West El Paso home price trend — last 12 months"
+                  aria-label="Lower Valley home price trend — last 12 months"
                 >
                   <defs>
-                    <linearGradient id="chartFillWep" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#b79678" stopOpacity="0.25" />
                       <stop offset="100%" stopColor="#b79678" stopOpacity="0.02" />
                     </linearGradient>
                   </defs>
-                  <path d={areaPath} fill="url(#chartFillWep)" />
+                  <path d={areaPath} fill="url(#chartFill)" />
+
+                  {/* Y grid lines */}
                   {Y_LABELS.map((price) => {
                     const y = toSvgY(price);
                     return (
                       <g key={price}>
                         <line x1={CX0} y1={y} x2={CX1} y2={y} stroke="#e5e7eb" strokeWidth="1" />
-                        <text x={CX0 - 6} y={y + 4} textAnchor="end" fontSize="9" fill="#9ca3af">${price}K</text>
+                        <text x={CX0 - 6} y={y + 4} textAnchor="end" fontSize="9" fill="#9ca3af">
+                          ${price}K
+                        </text>
                       </g>
                     );
                   })}
+
+                  {/* X-axis labels — every other month to avoid crowding */}
                   {xLabels.map((label, idx) =>
                     idx % 2 === 0 || idx === xLabels.length - 1 ? (
-                      <text key={idx} x={toSvgX(idx)} y={CY1 + 14} textAnchor="middle" fontSize="9" fill="#9ca3af">{label}</text>
+                      <text key={idx} x={toSvgX(idx)} y={CY1 + 14} textAnchor="middle" fontSize="9" fill="#9ca3af">
+                        {label}
+                      </text>
                     ) : null
                   )}
+
+                  {/* Line */}
                   <path d={linePath} fill="none" stroke="#b79678" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+                  {/* Dots */}
                   {pts.map(([x, y], idx) => (
                     <circle key={idx} cx={x} cy={y} r="4" fill="#b79678" />
                   ))}
@@ -392,14 +445,25 @@ export default async function WestElPasoPage() {
             {/* Bottom 4 stat cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {STAT_CARDS.map(({ icon: Icon, label, value, change, up }) => (
-                <div key={label} className="flex flex-col items-center rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-3 py-5 text-center shadow-sm">
+                <div
+                  key={label}
+                  className="flex flex-col items-center rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-3 py-5 text-center shadow-sm"
+                >
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--sandstone-navy)]/12 bg-[var(--sandstone-off-white)]">
                     <Icon size={18} className="text-[var(--sandstone-navy)]" strokeWidth={1.75} />
                   </div>
-                  <p className="whitespace-pre-line text-[10px] font-semibold leading-snug text-[var(--sandstone-charcoal)]/60">{label}</p>
-                  <p className="mt-2 font-heading text-2xl font-bold text-[var(--sandstone-sand-gold)]">{value}</p>
+                  <p className="whitespace-pre-line text-[10px] font-semibold leading-snug text-[var(--sandstone-charcoal)]/60">
+                    {label}
+                  </p>
+                  <p className="mt-2 font-heading text-2xl font-bold text-[var(--sandstone-sand-gold)]">
+                    {value}
+                  </p>
                   {change ? (
-                    <span className={`mt-1.5 inline-flex items-center gap-0.5 text-[10px] font-bold ${up ? "text-green-600" : "text-red-500"}`}>
+                    <span
+                      className={`mt-1.5 inline-flex items-center gap-0.5 text-[10px] font-bold ${
+                        up ? "text-green-600" : "text-red-500"
+                      }`}
+                    >
                       {change} {up ? "↑" : "↓"}
                     </span>
                   ) : (
@@ -409,46 +473,59 @@ export default async function WestElPasoPage() {
               ))}
             </div>
 
+            {/* Source footnote */}
             <p className="mt-6 text-center text-[11px] text-[var(--sandstone-charcoal)]/35">
-              Live data: GEPAR MLS via Spark API · ZIP 79912 · Refreshes hourly
+              Live data: GEPAR MLS via Spark API · ZIP 79922 · Refreshes hourly
             </p>
+
           </div>
         </section>
 
-        {/* ── Browse Listings ──────────────────────────────────────────────── */}
+        {/* ── Browse Listings section ──────────────────────────────────────── */}
         <section id="listings" className="bg-white py-16 scroll-mt-20">
           <div className="mx-auto max-w-6xl px-4 lg:px-6">
+
             <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-              Browse West El Paso Listings
+              Browse Lower Valley Listings
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-center text-sm text-[var(--sandstone-charcoal)]/60">
-              Active homes for sale in West El Paso · ZIP 79912 · El Paso, TX
+              Active homes for sale in Lower Valley · El Paso, TX
             </p>
-            <WestElPasoListings />
+
+            <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center">
+              <h3 className="text-xl font-semibold">Lower Valley Listings</h3>
+                <p className="mt-2 text-gray-500">
+                  Listings will be connected after the page layout is complete.
+                </p>
+            </div>
+
           </div>
         </section>
 
-        {/* ── Schools ──────────────────────────────────────────────────────── */}
+        {/* ── Schools Near Lower Valley ────────────────────────────────────── */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
+            {/* Header */}
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Schools Near West El Paso
+                Schools Near Lower Valley
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                West El Paso falls within the El Paso Independent School District (EPISD) and is
+                Lower Valley falls within the El Paso Independent School District (EPISD) and is
                 served by some of the highest-rated schools in the city:
               </p>
             </div>
 
+            {/* 2-column layout — items-stretch so photos fill right-column height */}
             <div className="flex flex-col gap-8 lg:flex-row">
 
-              {/* Left: school photos */}
+              {/* Left: school photos — flex column on desktop so children fill full height */}
               <div className="w-full lg:sticky lg:top-[116px] lg:self-start lg:flex lg:w-[58%] lg:flex-col">
+                {/* Large — Coronado High (3 parts of the column height) */}
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/west-el-paso/schools/coronado-high.jpg"
+                    src="/areas/lower-valley/schools/coronado-high.webp"
                     alt="Coronado High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
@@ -460,31 +537,32 @@ export default async function WestElPasoPage() {
                   </p>
                 </div>
 
+                {/* Two smaller photos (2 parts of the column height) */}
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/west-el-paso/schools/charles-middle.jpg"
-                      alt="Charles Middle School"
+                      src="/areas/lower-valley/schools/canutillo-middle.webp"
+                      alt="Canutillo Middle School STEAM Academy"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Charles<br />Middle School
+                      Canutillo Middle<br />School
                     </p>
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/west-el-paso/schools/putnam-elementary.jpg"
-                      alt="Putnam Elementary School of Science and Technology"
+                      src="/areas/lower-valley/schools/zach-white.webp"
+                      alt="Zach White Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Putnam Elementary<br />School
+                      Zach White<br />Elementary School
                     </p>
                   </div>
                 </div>
@@ -493,39 +571,45 @@ export default async function WestElPasoPage() {
               {/* Right: school tables */}
               <div className="flex-1 space-y-7">
                 {(["elementary", "middle", "high"] as const).map((level) => {
-                  const titles = { elementary: "Elementary Schools", middle: "Middle Schools", high: "High Schools" };
+                  const titles = {
+                    elementary: "Elementary Schools",
+                    middle:     "Middle Schools",
+                    high:       "High Schools",
+                  };
                   return (
                     <div key={level}>
-                      <h3 className="mb-2 font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">{titles[level]}</h3>
-                      <div className="overflow-x-auto">
-                        <table className="w-full min-w-[480px]">
-                          <thead>
-                            <tr className="border-b border-[var(--sandstone-navy)]/10">
-                              <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">School</th>
-                              <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">District</th>
-                              <th className="pb-2 text-right text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">Primary ZIP*</th>
+                      <h3 className="mb-2 font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">
+                        {titles[level]}
+                      </h3>
+                      <div className="overflow-x-auto"><table className="w-full min-w-[480px]">
+                        <thead>
+                          <tr className="border-b border-[var(--sandstone-navy)]/10">
+                            <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">School</th>
+                            <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">District</th>
+                            <th className="pb-2 text-right text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">Primary ZIP Codes Served*</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {SCHOOLS[level].map((school, i) => (
+                            <tr key={i} className="border-b border-[var(--sandstone-navy)]/8 last:border-0">
+                              <td className="py-2 pr-4 text-[13px] font-medium text-[var(--sandstone-charcoal)]">{school.name}</td>
+                              <td className="py-2 pr-4 text-[13px] text-[var(--sandstone-charcoal)]/60">{school.district}</td>
+                              <td className="py-2 text-right text-[13px] text-[var(--sandstone-charcoal)]/60">{school.zip}</td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {SCHOOLS[level].map((school, i) => (
-                              <tr key={i} className="border-b border-[var(--sandstone-navy)]/8 last:border-0">
-                                <td className="py-2 pr-4 text-[13px] font-medium text-[var(--sandstone-charcoal)]">{school.name}</td>
-                                <td className="py-2 pr-4 text-[13px] text-[var(--sandstone-charcoal)]/60">{school.district}</td>
-                                <td className="py-2 text-right text-[13px] text-[var(--sandstone-charcoal)]/60">{school.zip}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                          ))}
+                        </tbody>
+                      </table></div>
                     </div>
                   );
                 })}
 
+                {/* Footer note */}
                 <p className="text-[12px] italic leading-relaxed text-[var(--sandstone-charcoal)]/50">
-                  Families consistently cite Coronado High School and EPISD quality as a primary reason for choosing West El Paso.{" "}
-                  School zoning may change. Buyers should verify attendance boundaries directly with El Paso ISD.
+                  Families moving to Lower Valley consistently cite the school quality as a primary reason for choosing the neighborhood.{" "}
+                  School zoning may change. Buyers should verify attendance boundaries directly with the school district.
                 </p>
               </div>
+
             </div>
           </div>
         </section>
@@ -534,15 +618,17 @@ export default async function WestElPasoPage() {
         <section className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
+            {/* Header */}
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
                 Convenience at Your Doorstep
               </h2>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                West El Paso offers easy access to quality healthcare, everyday essentials, and popular shopping destinations.
+                Lower Valley offers easy access to quality healthcare, everyday essentials, and popular shopping destinations.
               </p>
             </div>
 
+            {/* 3-column cards */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 
               {/* Hospitals */}
@@ -646,8 +732,10 @@ export default async function WestElPasoPage() {
 
             </div>
 
-            {/* Commute Times */}
+            {/* Commute Times bar */}
             <div className="mt-4 flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm lg:flex-row lg:items-center">
+
+              {/* Label */}
               <div className="flex shrink-0 items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
                   <Image src="/icons/areas/icon-car.webp" alt="" width={26} height={26} />
@@ -657,7 +745,10 @@ export default async function WestElPasoPage() {
                   <p className="text-[11px] text-[var(--sandstone-charcoal)]/50">Quick access to everything that matters.</p>
                 </div>
               </div>
+
               <div className="hidden w-px self-stretch bg-[var(--sandstone-navy)]/10 lg:block" />
+
+              {/* Stats */}
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
                 {COMMUTE_TIMES.map((c) => (
                   <div key={c.label} className="flex items-center gap-3 sm:flex-col sm:items-center sm:gap-1.5 sm:text-center">
@@ -671,53 +762,56 @@ export default async function WestElPasoPage() {
                   </div>
                 ))}
               </div>
+
             </div>
 
           </div>
         </section>
 
-        {/* ── Why Buyers Choose West El Paso ───────────────────────────────── */}
+        {/* ── Why Buyers Choose Lower Valley ───────────────────────────────── */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
+            {/* Full-width centered heading */}
             <h2 className="mb-10 text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-              Why Buyers Choose West El Paso
+              Why Buyers Choose Lower Valley
             </h2>
 
+            {/* Two-column body */}
             <div className="flex flex-col gap-10 lg:flex-row lg:gap-14">
 
               {/* Left: editorial text */}
               <div className="flex-1 space-y-7">
                 <div>
                   <p className="text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    West El Paso is one of the city&apos;s most consistently popular neighborhoods for good reason. The area combines established residential streets with convenient access to UTEP, the Medical Center District, and the Franklin Mountains — offering a lifestyle that&apos;s hard to replicate elsewhere in El Paso. Buyers here enjoy a mix of mature neighborhoods, newer subdivisions, and a strong sense of community.
+                    Lower Valley is El Paso&apos;s most sought-after neighborhood for good reason. Homes here sit on some of the largest lots in the city, many with irrigation rights, private wells, and acreage that simply doesn&apos;t exist elsewhere in El Paso. The neighborhood blends long-established character with a quiet, ranch-style atmosphere — yet you&apos;re minutes from the shops and restaurants of Westside Drive and Mesa Hills.
                   </p>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    West El Paso attracts a diverse mix of buyers — from UTEP faculty and medical professionals to military families and retirees who value proximity to quality healthcare and shopping. The area offers something for nearly every budget, from entry-level condos to custom luxury estates.
-                  </p>
-                </div>
-
-                <div>
-                  <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-                    West El Paso Home Prices in 2026
-                  </h2>
-                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    With a median list price around $366,755 and a market projection of $431K by year-end, West El Paso represents strong long-term value. Homes tend to move at a healthy pace, and Sandstone&apos;s local expertise helps you navigate everything from first offers to closing with confidence.
+                    The average household income in Lower Valley is $139,000, making it one of the most affluent communities in the region. Neighbors tend to be long-term El Paso residents, professionals, and families who&apos;ve made this area home for generations.
                   </p>
                 </div>
 
                 <div>
                   <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-                    Is West El Paso Right for You?
+                    Lower Valley Home Prices in 2026
                   </h2>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    West El Paso is an excellent fit if top-rated schools, location convenience, and long-term appreciation matter to you. It&apos;s especially popular with:
+                    Homes in Lower Valley tend to spend an average of 109 days on the market — longer than the El Paso average — because buyers in this price range take their time. That also means there&apos;s room to negotiate, and Sandstone&apos;s local expertise helps you move confidently in this market.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+                    Is Lower Valley Right for You?
+                  </h2>
+                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                    Lower Valley is an excellent fit if you&apos;re looking for a premium El Paso address with space, character, and long-term value. It&apos;s particularly popular with:
                   </p>
                   <ul className="mt-3 space-y-2">
                     {[
-                      "Families prioritizing EPISD schools, especially the Coronado High School district",
-                      "Professionals and medical staff near the UTEP and Medical Center corridor",
-                      "Military families relocating to Fort Bliss seeking quality Westside neighborhoods",
+                      "Move-up buyers from other El Paso neighborhoods",
+                      "Professionals and executives relocating to El Paso",
+                      "Investors looking for distinctive properties in El Paso’s most established market",
                     ].map((item) => (
                       <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
                         <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sandstone-sand-gold)]" />
@@ -725,15 +819,18 @@ export default async function WestElPasoPage() {
                       </li>
                     ))}
                   </ul>
+                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                    If space is a priority, the entry level of Lower Valley offers surprisingly competitive value compared to what you&apos;d get on the West Side or Northeast.
+                  </p>
                 </div>
               </div>
 
-              {/* Right: lifestyle photos */}
+              {/* Right: stacked lifestyle photos */}
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/west-el-paso/lifestyle-mountains.jpg"
-                    alt="Franklin Mountains at sunset, West El Paso"
+                    src="/areas/lower-valley/lifestyle-pool.webp"
+                    alt="Lower Valley luxury pool"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     className="object-cover"
@@ -741,8 +838,8 @@ export default async function WestElPasoPage() {
                 </div>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/west-el-paso/lifestyle-utep.jpg"
-                    alt="University of Texas at El Paso campus"
+                    src="/areas/lower-valley/lifestyle-garden.webp"
+                    alt="Lower Valley garden estate"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     className="object-cover"
@@ -758,6 +855,7 @@ export default async function WestElPasoPage() {
         <section className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
+            {/* Header */}
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
                 Utilities &amp; Local Services
@@ -767,15 +865,32 @@ export default async function WestElPasoPage() {
               </p>
             </div>
 
+            {/* 5-card grid */}
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               {UTILITIES.map(({ icon, title, provider, description, linkLabel, href, accent }) => (
                 <div key={title} className="flex flex-col items-center rounded-2xl bg-white p-5 text-center shadow-sm">
+
+                  {/* Icon circle */}
                   <div className={`mb-4 flex h-24 w-24 items-center justify-center rounded-full ${accent.bg}`}>
                     <Image src={icon} alt="" width={44} height={44} />
                   </div>
-                  <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">{title}</h3>
-                  <p className={`mt-1 text-[13px] font-semibold ${accent.text}`}>{provider}</p>
-                  <p className="mt-3 flex-1 text-[12px] leading-relaxed text-[var(--sandstone-charcoal)]/55">{description}</p>
+
+                  {/* Title */}
+                  <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">
+                    {title}
+                  </h3>
+
+                  {/* Provider */}
+                  <p className={`mt-1 text-[13px] font-semibold ${accent.text}`}>
+                    {provider}
+                  </p>
+
+                  {/* Description */}
+                  <p className="mt-3 flex-1 text-[12px] leading-relaxed text-[var(--sandstone-charcoal)]/55">
+                    {description}
+                  </p>
+
+                  {/* CTA button */}
                   {href && (
                     <a
                       href={href}
@@ -787,14 +902,17 @@ export default async function WestElPasoPage() {
                       <ExternalLink size={12} strokeWidth={2.5} />
                     </a>
                   )}
+
                 </div>
               ))}
             </div>
 
+            {/* Footnote */}
             <p className="mt-6 flex items-center justify-center gap-1.5 text-[12px] text-[var(--sandstone-charcoal)]/40">
               <Info size={14} strokeWidth={1.75} />
               Providers and service availability may vary depending on the specific address and subdivision.
             </p>
+
           </div>
         </section>
 
@@ -802,12 +920,13 @@ export default async function WestElPasoPage() {
         <section className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
+            {/* Header */}
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
                 Frequently Asked Questions
               </h2>
               <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
-                Find answers to the most common questions about living in West El Paso.
+                Find answers to the most common questions about living in Lower Valley.
               </p>
               <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/60">
                 Can&apos;t find what you&apos;re looking for?{" "}
@@ -817,20 +936,25 @@ export default async function WestElPasoPage() {
               </p>
             </div>
 
+            {/* 2-column accordion grid */}
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start">
               {FAQS.map(({ icon, q, a }) => (
                 <details key={q} className="group rounded-2xl bg-white shadow-sm">
                   <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4">
+                    {/* Icon circle */}
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-navy)]/8">
                       <Image src={icon} alt="" width={22} height={22} />
                     </div>
+                    {/* Question */}
                     <span className="flex-1 text-[14px] font-semibold text-[var(--sandstone-navy)]">{q}</span>
+                    {/* Chevron */}
                     <ChevronDown
                       size={18}
                       strokeWidth={2}
                       className="shrink-0 text-[var(--sandstone-navy)]/50 transition-transform duration-200 group-open:rotate-180"
                     />
                   </summary>
+                  {/* Answer */}
                   <div className="border-t border-[var(--sandstone-navy)]/8 px-5 py-4 pl-20">
                     <p className="text-[13px] leading-relaxed text-[var(--sandstone-charcoal)]/65">{a}</p>
                   </div>
@@ -841,18 +965,18 @@ export default async function WestElPasoPage() {
           </div>
         </section>
 
-        {/* ── Contact Form ─────────────────────────────────────────────────── */}
+        {/* ── Ready to Buy in Lower Valley ─────────────────────────────────── */}
         <LeadCaptureSection
           formType="contact"
           sectionId="contact"
-          heading="Ready to Buy in West El Paso?"
-          subheading="The Sandstone team knows West El Paso inside and out — from established neighborhoods near UTEP to newer Westside subdivisions. Reach out and we'll help you find the right home."
+          heading="Ready to Buy in Lower Valley?"
+          subheading="The Sandstone team knows Lower Valley. We've helped buyers navigate everything from standard resales to large acreage properties with irrigation rights — reach out and we'll walk you through every detail."
           ctaLabel="Schedule a Visit"
-          messagePlaceholder="Tell us about your West El Paso search..."
-          mappingReference="west-el-paso"
+          messagePlaceholder="Tell us about your Lower Valley search..."
+          mappingReference="upper-valley"
           asideEyebrow="Ready. Lifestyle. Real."
           asideTitle="Ready to Make Your Next Move?"
-          asideDescription="Schedule a consultation and get a personalized strategy for your West El Paso property search."
+          asideDescription="Schedule a consultation and get a personalized strategy for your Lower Valley property search."
           asideCtaLabel="Schedule a Consultation"
           turnstileSiteKey={turnstileSiteKey}
         />

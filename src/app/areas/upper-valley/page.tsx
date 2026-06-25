@@ -933,7 +933,7 @@ export default async function UpperValleyPage() {
             </div>
 
             {/* 2-column accordion grid */}
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start">
               {FAQS.map(({ icon, q, a }) => (
                 <details key={q} className="group rounded-2xl bg-white shadow-sm">
                   <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4">
