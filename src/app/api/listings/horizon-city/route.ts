@@ -9,7 +9,7 @@ export async function GET() {
     const properties = await fetchActiveSparkPropertyCardsByPostalCode("79928");
     return NextResponse.json(properties);
   } catch (error) {
-    console.error("Failed to fetch Upper Valley listings:", error);
+    console.error("Failed to fetch Horizon City listings:", error);
     return NextResponse.json(
       { error: "Failed to fetch listings" },
       { status: 500 }
