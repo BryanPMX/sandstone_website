@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { HorizonListings } from "@/components/areas/HorizonListings";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
 import { getTurnstileSiteKey } from "@/config";
+import { fetchActivePropertyCards } from "@/services";
 import {
   Clock,
   BadgePercent,
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   title: "Horizon City | Sandstone Real Estate Group",
 };
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 // ── Spark API — market statistics for Horizon City (ZIP 79928) ────────────────
 const SPARK_BASE    = "https://replication.sparkapi.com";
@@ -31,43 +32,28 @@ const SPARK_HEADERS = {
   "User-Agent": "sandstone-website/1.0",
 };
 
-type SparkStatsKey = "p" | "i" | "d" | "r";
-type SparkJson = { D?: { Results?: unknown[] } };
-
-async function fetchSparkStat(endpoint: string): Promise<unknown | null> {
-  if (!SPARK_TOKEN) return null;
-
-  const qs = "LocationField=PostalCode&LocationValue=79928";
-
-  try {
-    const res = await fetch(`${SPARK_BASE}/v1/marketstatistics/${endpoint}?${qs}`, {
-      headers: SPARK_HEADERS,
-      next: { revalidate: 3600 },
-      signal: AbortSignal.timeout(8000),
-    });
-
-    if (!res.ok) return null;
-
-    const json = (await res.json()) as SparkJson;
-    return json?.D?.Results?.[0] ?? null;
-  } catch {
-    return null;
-  }
-}
-
 async function fetchHorizonCityStats() {
-  const entries: Array<[SparkStatsKey, string]> = [
-    ["p", "price"],
-    ["i", "inventory"],
-    ["d", "dom"],
-    ["r", "ratio"],
-  ];
-
-  const results = await Promise.all(
-    entries.map(async ([key, endpoint]) => [key, await fetchSparkStat(endpoint)] as const)
-  );
-
-  return Object.fromEntries(results) as Record<SparkStatsKey, unknown | null>;
+  const qs   = "LocationField=PostalCode&LocationValue=79928";
+  const opts = { headers: SPARK_HEADERS, next: { revalidate: 3600 } } as RequestInit;
+  try {
+    const [priceRes, invRes, domRes, ratioRes] = await Promise.all([
+      fetch(`${SPARK_BASE}/v1/marketstatistics/price?${qs}`,     opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/inventory?${qs}`, opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/dom?${qs}`,       opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/ratio?${qs}`,     opts),
+    ]);
+    const [price, inv, dom, ratio] = await Promise.all([
+      priceRes.json(), invRes.json(), domRes.json(), ratioRes.json(),
+    ]);
+    return {
+      p: price?.D?.Results?.[0]  ?? null,
+      i: inv?.D?.Results?.[0]    ?? null,
+      d: dom?.D?.Results?.[0]    ?? null,
+      r: ratio?.D?.Results?.[0]  ?? null,
+    };
+  } catch {
+    return { p: null, i: null, d: null, r: null };
+  }
 }
 
 
@@ -93,7 +79,7 @@ const SCHOOLS = {
 
 const NEARBY = {
   hospitals: [
-    { name: "The Hospitals of Providence - Horizon City Campus", time: "13 min", img: "/areas/horizon-city/hopistal.jpg" },
+    { name: "The Hospitals of Providence - Horizon CIty Campus", time: "13 min", img: "/areas/horizon-city/hopistal.jpg" },
     { name: "University Medical Center",                         time: "22 min", img: "/areas/horizon-city/hosptial-2.webp" },
     { name: "Las Palmas Medical Center",                         time: "25 min", img: "/areas/horizon-city/hos-3.jpg" },
   ],
@@ -229,7 +215,16 @@ export default async function HorizonCityPage() {
   const turnstileSiteKey = getTurnstileSiteKey();
 
   // ── Live data — market stats + Horizon City listings ──────────────────────
-  const { p, i, d, r } = await fetchHorizonCityStats();
+  const [{ p, i, d, r }, allActive] = await Promise.all([
+    fetchHorizonCityStats(),
+    fetchActivePropertyCards(),
+  ]);
+
+  //const horizonListings = allActive.filter(listing => {
+    //const addr = (listing.mapAddress ?? "").toLowerCase();
+    //const loc  = (listing.location  ?? "").toLowerCase();
+    //return addr.includes("79928") || loc.includes("horizon");
+  //});
 
   const fmtUSD = (v: unknown, fallback: string) =>
     v != null
