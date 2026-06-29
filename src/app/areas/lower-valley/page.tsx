@@ -964,22 +964,111 @@ export default async function LowerValleyPage() {
 
           </div>
         </section>
+        {/* ── Explore More El Paso Areas ───────────────────────── */}
+<section className="bg-white py-16">
+  <div className="mx-auto max-w-5xl px-4 lg:px-6">
+    <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
+      Explore Nearby Areas
+    </h2>
 
-        {/* ── Ready to Buy in Lower Valley ─────────────────────────────────── */}
-        <LeadCaptureSection
-          formType="contact"
-          sectionId="contact"
-          heading="Ready to Buy in Lower Valley?"
-          subheading="The Sandstone team knows Lower Valley. We've helped buyers navigate everything from standard resales to large acreage properties with irrigation rights — reach out and we'll walk you through every detail."
-          ctaLabel="Schedule a Visit"
-          messagePlaceholder="Tell us about your Lower Valley search..."
-          mappingReference="upper-valley"
-          asideEyebrow="Ready. Lifestyle. Real."
-          asideTitle="Ready to Make Your Next Move?"
-          asideDescription="Schedule a consultation and get a personalized strategy for your Lower Valley property search."
-          asideCtaLabel="Schedule a Consultation"
-          turnstileSiteKey={turnstileSiteKey}
-        />
+    <p className="mx-auto mt-3 max-w-2xl text-center text-[15px] text-[var(--sandstone-charcoal)]/70">
+      Looking beyond Lower Valley? Compare nearby neighborhoods,
+      browse homes for sale, and discover more communities across
+      the El Paso area.
+    </p>
+
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+      <Link
+        href="/areas/upper-valley"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Upper Valley
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Luxury homes, mature trees, larger lots, and peaceful living.
+        </p>
+      </Link>
+
+      <Link
+        href="/areas/horizon-city-tx"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Horizon City
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Fast-growing community with newer homes and excellent value.
+        </p>
+      </Link>
+
+      <Link
+        href="/areas/west-el-paso"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          West El Paso
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Mountain views, shopping, dining, and highly desirable neighborhoods.
+        </p>
+      </Link>
+
+      <Link
+        href="/pcs"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          PCS to Fort Bliss
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Military relocation resources and VA home buying guides.
+        </p>
+      </Link>
+
+      <Link
+        href="/blog"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Read More Articles
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Local market updates, neighborhood guides, and home buying tips.
+        </p>
+      </Link>
+
+      <Link
+        href="/listings"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Browse All Listings
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          View every available home for sale across the El Paso region.
+        </p>
+      </Link>
+
+    </div>
+  </div>
+</section>
+
+<LeadCaptureSection
+  formType="contact"
+  sectionId="contact"
+  heading="Ready to Buy in Lower Valley?"
+  subheading="The Sandstone team knows Lower Valley. We've helped buyers navigate everything from standard resales to large acreage properties with irrigation rights — reach out and we'll walk you through every detail."
+  ctaLabel="Schedule a Visit"
+  messagePlaceholder="Tell us about your Lower Valley search..."
+  mappingReference="lower-valley"
+  asideEyebrow="Ready. Lifestyle. Real."
+  asideTitle="Ready to Make Your Next Move?"
+  asideDescription="Schedule a consultation and get a personalized strategy for your Lower Valley property search."
+  asideCtaLabel="Schedule a Consultation"
+  turnstileSiteKey={turnstileSiteKey}
+/>
 
       </main>
       <SiteFooter />
