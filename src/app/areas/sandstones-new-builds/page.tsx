@@ -10,20 +10,32 @@ import type { HomeModel } from "@/components/areas/ModelShowcase";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sandstone's New Builds | Sandstone Home Builders",
+  title: "New Construction Homes in Midland, TX | Sandstone Home Builders",
   description:
-    "New construction luxury homes by Sandstone Home Builders in Midland, TX. Explore the Maribel and Clarissa floor plans — custom-built in the Greenwood ISD community.",
+    "Explore luxury new construction homes in Midland, TX by Sandstone Home Builders. Tour the Maribel and Clarissa floor plans - 4 bed, 4 bath, 3,600 sq ft in the Greenwood ISD community.",
+  openGraph: {
+    title: "New Construction Homes in Midland, TX | Sandstone Home Builders",
+  },
 };
 
 const BASE = "/areas/sandstones-new-builds";
 
-const SPEC_BOXES = (prefix: string) => [
-  { icon: `${BASE}/icons/sqft.jpg`,   value: "3,600 SF", label: "Living Area"    },
-  { icon: `${BASE}/icons/beds.jpg`,   value: "4",        label: "Bedrooms"       },
+const MARIBEL_SPEC_BOXES = [
+  { icon: `${BASE}/icons/sqft.jpg`,   value: "3,600 SF", label: "Living Area" },
+  { icon: `${BASE}/icons/beds.jpg`,   value: "4",        label: "Bedrooms" },
+  { icon: `${BASE}/icons/baths.jpg`,  value: "4.5",      label: "Bathrooms" },
+  { icon: `${BASE}/icons/garage.jpg`, value: "3-Car",    label: "Garage" },
+  { icon: `${BASE}/icons/patio.jpg`,  value: "787 SF",   label: "Covered Patio" },
+  { icon: `${BASE}/icons/star.jpg`,   value: "Luxury",   label: "Custom Home" },
+];
+
+const CLARISSA_SPEC_BOXES = [
+  { icon: `${BASE}/icons/sqft.jpg`,   value: "3,600 SF", label: "Living Area" },
+  { icon: `${BASE}/icons/beds.jpg`,   value: "4",        label: "Bedrooms" },
   { icon: `${BASE}/icons/baths.jpg`,  value: "4",        label: "Full Bathrooms" },
-  { icon: `${BASE}/icons/garage.jpg`, value: "3-Car",    label: "Garage"         },
-  { icon: `${BASE}/icons/patio.jpg`,  value: "787 SF",   label: "Covered Patio"  },
-  { icon: `${BASE}/icons/star.jpg`,   value: "Luxury",   label: "Custom Home"    },
+  { icon: `${BASE}/icons/garage.jpg`, value: "3-Car",    label: "Garage" },
+  { icon: `${BASE}/icons/patio.jpg`,  value: "787 SF",   label: "Covered Patio" },
+  { icon: `${BASE}/icons/star.jpg`,   value: "Luxury",   label: "Custom Home" },
 ];
 
 const MODELS: HomeModel[] = [
@@ -32,19 +44,19 @@ const MODELS: HomeModel[] = [
     label:       "Maribel",
     name:        "MARIBEL",
     community:   "SANDSTONE HOME BUILDERS · MIDLAND, TX",
-    specsLine:   "4 Bedrooms | 4 Bathrooms | 3,600 Sq Ft Living Area | 3-Car Garage",
-    description: "A luxury single-story residence designed for modern living. Featuring soaring vaulted ceilings, an open-concept layout, a private owner’s suite, and an expansive covered patio built for entertaining and enjoying West Texas sunsets.",
-    price:       "$XXX,XXX",
+    specsLine:   "4 Bedrooms | 4.5 Bathrooms | 3,600 Sq Ft Living Area | 3-Car Garage",
+    description: "This stunning, custom-built home offers the perfect blend of modern design and everyday comfort. Thoughtfully crafted with premium finishes, spacious living areas, and seamless indoor-outdoor flow.",
+    price:       "",
     photos: [
-      { src: `${BASE}/model/maribel-1.webp`, alt: "Maribel photo 1" },
-      { src: `${BASE}/model/maribel-2.webp`, alt: "Maribel photo 2" },
-      { src: `${BASE}/model/maribel-3.webp`, alt: "Maribel photo 3" },
-      { src: `${BASE}/model/maribel-4.webp`, alt: "Maribel photo 4" },
-      { src: `${BASE}/model/maribel-5.webp`, alt: "Maribel photo 5" },
-      { src: `${BASE}/model/maribel-6.webp`, alt: "Maribel photo 6" },
-      { src: `${BASE}/model/maribel-7.webp`, alt: "Maribel photo 7" },
+      { src: `${BASE}/model/maribel-1.webp`, alt: "Maribel open concept-living room with vaulted ceiling" },
+      { src: `${BASE}/model/maribel-2.webp`, alt: "Maribel dining area" },
+      { src: `${BASE}/model/maribel-3.webp`, alt: "Maribel model exterior" },
+      { src: `${BASE}/model/maribel-4.webp`, alt: "Maribel covered patio" },
+      { src: `${BASE}/model/maribel-5.webp`, alt: "Maribel covered patio" },
+      { src: `${BASE}/model/maribel-6.webp`, alt: "Maribel model exterior" },
+      { src: `${BASE}/model/maribel-7.webp`, alt: "Maribel backyard" },
     ],
-    specBoxes: SPEC_BOXES("maribel"),
+    specBoxes: MARIBEL_SPEC_BOXES,
   },
   {
     id:          "clarissa",
@@ -52,21 +64,21 @@ const MODELS: HomeModel[] = [
     name:        "CLARISSA",
     community:   "SANDSTONE HOME BUILDERS · MIDLAND, TX",
     specsLine:   "4 Bedrooms | 4 Bathrooms | 3,600 Sq Ft Living Area | 3-Car Garage",
-    description: "A refined single-story home that blends open-concept design with intimate gathering spaces. The Clarissa features a chef’s kitchen, expansive owner’s retreat, and seamless indoor-outdoor living — crafted for those who demand both elegance and everyday comfort.",
-    price:       "$XXX,XXX",
+    description: "Modern ranch design with clean lines, timeless curb appeal, vaulted ceilings, expansive windows, a gourmet kitchen, spacious living areas, and a private owner's retreat with a spa-inspired bath. Designed for luxury living and available as a pre-sale opportunity.",
+    price:       "",
     photos: [
-      { src: `${BASE}/model/clarissa-1.webp`,  alt: "Clarissa photo 1"  },
-      { src: `${BASE}/model/clarissa-2.webp`,  alt: "Clarissa photo 2"  },
-      { src: `${BASE}/model/clarissa-3.webp`,  alt: "Clarissa photo 3"  },
-      { src: `${BASE}/model/clarissa-4.webp`,  alt: "Clarissa photo 4"  },
-      { src: `${BASE}/model/clarissa-5.webp`,  alt: "Clarissa photo 5"  },
-      { src: `${BASE}/model/clarissa-6.webp`,  alt: "Clarissa photo 6"  },
-      { src: `${BASE}/model/clarissa-7.webp`,  alt: "Clarissa photo 7"  },
-      { src: `${BASE}/model/clarissa-8.webp`,  alt: "Clarissa photo 8"  },
-      { src: `${BASE}/model/clarissa-9.webp`,  alt: "Clarissa photo 9"  },
-      { src: `${BASE}/model/clarissa-10.webp`, alt: "Clarissa photo 10" },
+      { src: `${BASE}/model/clarissa-1.webp`,  alt: "Clarissa living room"  },
+      { src: `${BASE}/model/clarissa-2.webp`,  alt: "Clarissa living room"  },
+      { src: `${BASE}/model/clarissa-3.webp`,  alt: "Clarissa living room"  },
+      { src: `${BASE}/model/clarissa-4.webp`,  alt: "Clarissa primary bedroom"  },
+      { src: `${BASE}/model/clarissa-5.webp`,  alt: "Clarissa spa-inspired bathroom"  },
+      { src: `${BASE}/model/clarissa-6.webp`,  alt: "Clarissa bathroom sinks"  },
+      { src: `${BASE}/model/clarissa-7.webp`,  alt: "Clarissa patio dining"  },
+      { src: `${BASE}/model/clarissa-8.webp`,  alt: "Clarissa patio"  },
+      { src: `${BASE}/model/clarissa-9.webp`,  alt: "Clarissa covered patio"  },
+      { src: `${BASE}/model/clarissa-10.webp`, alt: "Clarissa patio full" },
     ],
-    specBoxes: SPEC_BOXES("clarissa"),
+    specBoxes: CLARISSA_SPEC_BOXES,
   },
 ];
 
@@ -205,11 +217,30 @@ const FAQS = [
   },
 ];
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.a,
+    },
+  })),
+};
+
 export default function SandstoneNewBuildsPage() {
   const turnstileSiteKey = getTurnstileSiteKey();
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqSchema),
+        }}
+      />
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
 
@@ -220,10 +251,10 @@ export default function SandstoneNewBuildsPage() {
             <div className="mb-8 flex flex-col items-center text-center">
               <span className="mb-3 block h-px w-10 bg-[var(--sandstone-sand-gold)]" />
               <h1 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl lg:text-5xl">
-                Explore Our Home Models
+                New Construction Homes in Midland, TX
               </h1>
               <p className="mt-2 text-[15px] italic text-[var(--sandstone-sand-gold)]">
-                New construction by Sandstone Home Builders · Midland, TX
+                New Construction Homes in Midland, TX | Sandstone Home Builders
               </p>
               <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/50">
                 Explore distinctive floor plans crafted for West Texas living. Select a model below to tour its design and features.
@@ -646,6 +677,35 @@ export default function SandstoneNewBuildsPage() {
           </div>
         </section>
 
+        {/* ── You Might Also Like ───────────────────────────────────────────── */}
+        <section className="bg-white py-12">
+          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+            <div className="text-center">
+              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
+                You Might Also Like
+              </h2>
+              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
+                Explore more communities and available homes from Sandstone.
+              </p>
+            </div>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-6">
+              <Link
+                href="/listings"
+                className="font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
+              >
+                View Available Listings →
+              </Link>
+
+              <Link
+                href="/areas/lower-valley"
+                className="font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
+              >
+                Lower Valley →
+              </Link>
+            </div>
+          </div>
+        </section>
         {/* ── Contact Form ─────────────────────────────────────────────────── */}
         <LeadCaptureSection
           formType="contact"
