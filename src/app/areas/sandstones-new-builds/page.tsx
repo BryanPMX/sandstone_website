@@ -646,6 +646,97 @@ export default function SandstoneNewBuildsPage() {
           </div>
         </section>
 
+        {/* ── Explore Nearby Areas ───────────────────────── */}
+<section className="bg-white py-16">
+  <div className="mx-auto max-w-5xl px-4 lg:px-6">
+
+    <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
+      Explore More West Texas Communities
+    </h2>
+
+    <p className="mx-auto mt-3 max-w-2xl text-center text-[15px] text-[var(--sandstone-charcoal)]/70">
+      Interested in other communities? Browse additional neighborhoods,
+      homes for sale, relocation resources, and local market guides.
+    </p>
+
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+      <Link
+        href="/areas/el-paso-tx"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          El Paso
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Explore homes, neighborhoods, schools and relocation information.
+        </p>
+      </Link>
+
+      <Link
+        href="/areas/horizon-city-tx"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Horizon City
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Fast-growing community with new homes and great value.
+        </p>
+      </Link>
+
+      <Link
+        href="/areas/upper-valley"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Upper Valley
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Luxury homes, mature trees and larger custom properties.
+        </p>
+      </Link>
+
+      <Link
+        href="/blog"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Real Estate Blog
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Market updates, buying guides and neighborhood information.
+        </p>
+      </Link>
+
+      <Link
+        href="/listings"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Browse Listings
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          View every available home currently on the market.
+        </p>
+      </Link>
+
+      <Link
+        href="/contact"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Contact Sandstone
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Speak with our team about building your custom home.
+        </p>
+      </Link>
+
+    </div>
+  </div>
+</section>
+
         {/* ── Contact Form ─────────────────────────────────────────────────── */}
         <LeadCaptureSection
           formType="contact"
