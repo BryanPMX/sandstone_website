@@ -1,82 +1,70 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { ArrowRight, Home, HeartHandshake, UsersRound } from "lucide-react";
 
 const TILES = [
   {
-    label: "Sell My House",
+    title: "Sell your home",
+    description: "Get a free home valuation and expert guidance.",
     href: "/sell",
-    icon: "/icon1.webp",
+    icon: Home,
   },
   {
-    label: "Rent My House",
+    title: "Rent your home",
+    description: "List your home and find the right tenants.",
     href: "/rent",
-    icon: "/icon2.webp",
+    icon: HeartHandshake,
   },
   {
-    label: "Join the Team",
+    title: "Join our team",
+    description: "Build your career and make an impact.",
     href: "/join",
-    icon: "/icon3.webp",
+    icon: UsersRound,
   },
 ] as const;
 
 export function PrimaryActionTiles() {
   return (
-    <section className="bg-[var(--sandstone-beige)] py-10 md:py-3">
+    <section className="bg-[#F7F3EC] py-8 md:py-10">
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="grid grid-cols-1 gap-4 md:hidden">
-          {TILES.map((tile) => (
-            <Link
-              key={tile.href}
-              href={tile.href}
-              className="group flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/65 bg-white/88 p-8 shadow-[0_16px_32px_-24px_rgba(37,52,113,0.42)] backdrop-blur-sm transition hover:border-[var(--sandstone-sand-gold)]/40 hover:bg-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-beige)]"
-            >
-              <div className="relative h-14 w-14 shrink-0">
-                <Image
-                  src={tile.icon}
-                  alt=""
-                  fill
-                  className="object-contain transition group-hover:opacity-90"
-                />
-              </div>
-              <span className="text-center font-heading text-lg font-bold text-[var(--sandstone-charcoal)] group-hover:text-[var(--sandstone-navy)]">
-                {tile.label}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </div>
+        <div className="rounded-2xl border border-white/60 bg-[#F7F3EC] shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
+          <ul className="grid grid-cols-1 md:grid-cols-3">
+            {TILES.map((tile, index) => {
+              const Icon = tile.icon;
 
-      <div className="hidden border-y border-[var(--sandstone-navy)]/15 md:block">
-        <div className="container mx-auto max-w-6xl px-6">
-          <ul className="grid grid-cols-3">
-            {TILES.map((tile, index) => (
-              <li key={tile.href} className="relative">
-                {index < TILES.length - 1 && (
-                  <span
-                    className="absolute right-0 top-1/2 h-16 w-px -translate-y-1/2 bg-[var(--sandstone-navy)]/30"
-                    aria-hidden
-                  />
-                )}
-                <Link
-                  href={tile.href}
-                  className="group flex min-h-[8.75rem] flex-col items-center justify-center gap-3 py-6 text-[var(--sandstone-charcoal)] transition hover:bg-white/18 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-navy)]"
-                >
-                  <div className="relative h-14 w-14 shrink-0 lg:h-16 lg:w-16">
-                    <Image
-                      src={tile.icon}
-                      alt=""
-                      fill
-                      className="object-contain"
+              return (
+                <li key={tile.href} className="relative">
+                  {index < TILES.length - 1 && (
+                    <span
+                      className="absolute right-0 top-1/2 hidden h-16 w-px -translate-y-1/2 bg-[var(--sandstone-sand-gold)]/40 md:block"
+                      aria-hidden
                     />
-                  </div>
-                  <span className="text-sm font-semibold leading-tight tracking-wide">
-                    {tile.label}
-                  </span>
-                </Link>
-              </li>
-            ))}
+                  )}
+
+                  <Link
+                    href={tile.href}
+                    className="group flex min-h-[8.5rem] items-center gap-6 rounded-2xl px-8 py-6 transition hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                  >
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white shadow-md text-[var(--sandstone-sand-gold)]">
+                      <Icon className="h-8 w-8 stroke-[1.8]" />
+                    </div>
+
+                    <div className="flex-1">
+                      <h3 className="font-heading text-lg font-bold text-[var(--sandstone-charcoal)]">
+                        {tile.title}
+                      </h3>
+
+                      <p className="mt-1 text-sm leading-6 text-[var(--sandstone-charcoal)]/80">
+                        {tile.description}
+                      </p>
+                    </div>
+
+                    <ArrowRight className="h-6 w-6 shrink-0 text-[var(--sandstone-charcoal)] transition group-hover:translate-x-1" />
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
