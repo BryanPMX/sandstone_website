@@ -4,38 +4,38 @@ const nearbyCards = [
   {
     title: "Upper Valley",
     description:
-      "Luxury homes, mature trees, larger lots, and peaceful living.",
-    href: "/upper-valley-homes-for-sale",
+      "Luxury homes, mature trees, scenic views, and some of El Paso's most desirable neighborhoods.",
+    href: "/areas/upper-valley",
   },
   {
     title: "West El Paso",
     description:
-      "Shopping, dining, mountain views, and excellent schools.",
-    href: "/west-el-paso-homes-for-sale",
+      "Beautiful mountain views, shopping, restaurants, and top-rated communities.",
+    href: "/areas/west-el-paso",
   },
   {
     title: "Northeast El Paso",
     description:
-      "Close to Fort Bliss with affordable homes and short commutes.",
-    href: "/northeast-el-paso-homes-for-sale",
+      "Affordable homes, Fort Bliss access, and convenient commuting.",
+    href: "/areas/northeast-el-paso",
   },
   {
-    title: "PCS to Fort Bliss",
+    title: "Horizon City",
     description:
-      "Military relocation resources and VA home buying guides.",
+      "One of the fastest-growing communities with new construction and family-friendly neighborhoods.",
+    href: "/areas/horizon-city",
+  },
+  {
+    title: "Fort Bliss PCS",
+    description:
+      "Everything military families need to know before relocating to El Paso.",
     href: "/pcs",
   },
   {
-    title: "Read More Articles",
+    title: "All Communities",
     description:
-      "Local market updates, neighborhood guides, and buying tips.",
-    href: "/blog",
-  },
-  {
-    title: "Browse All Listings",
-    description:
-      "View every available home across the El Paso area.",
-    href: "/listings",
+      "Browse every neighborhood Sandstone Real Estate serves throughout the El Paso area.",
+    href: "/areas",
   },
 ];
 
@@ -49,9 +49,8 @@ export default function ExploreNearbyAreas() {
           </h2>
 
           <p className="mt-4 text-lg text-gray-600">
-            Looking beyond Horizon City? Compare nearby neighborhoods, browse
-            homes for sale, and learn more about the communities throughout the
-            El Paso area.
+            Discover the neighborhoods that make El Paso unique. Learn about
+            local communities, schools, amenities, and available homes.
           </p>
         </div>
 
@@ -62,16 +61,16 @@ export default function ExploreNearbyAreas() {
               href={card.href}
               className="group rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#1d3b7a] hover:shadow-xl"
             >
-              <h3 className="text-2xl font-bold text-gray-900 group-hover:text-[#1d3b7a]">
+              <h3 className="text-2xl font-bold text-gray-900 transition-colors group-hover:text-[#1d3b7a]">
                 {card.title}
               </h3>
 
-              <p className="mt-4 text-gray-600">
+              <p className="mt-4 text-gray-600 leading-7">
                 {card.description}
               </p>
 
-              <span className="mt-6 inline-block font-semibold text-[#1d3b7a]">
-                Learn More →
+              <span className="mt-6 inline-flex font-semibold text-[#1d3b7a]">
+                Explore Area →
               </span>
             </Link>
           ))}
