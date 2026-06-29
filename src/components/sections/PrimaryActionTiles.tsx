@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Home, HeartHandshake, UsersRound } from "lucide-react";
+import { ArrowRight, Home, HouseHeart, UsersRound } from "lucide-react";
 
 const TILES = [
   {
@@ -14,7 +14,7 @@ const TILES = [
     title: "Rent your home",
     description: "List your home and find the right tenants.",
     href: "/rent",
-    icon: HeartHandshake,
+    icon: HouseHeart,
   },
   {
     title: "Join our team",
@@ -28,7 +28,7 @@ export function PrimaryActionTiles() {
   return (
     <section className="bg-[#F7F3EC] py-8 md:py-10">
       <div className="container mx-auto max-w-6xl px-4">
-        <div className="rounded-2xl border border-white/60 bg-[#F7F3EC] shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
+        <div className="overflow-hidden rounded-2xl border border-white/60 bg-[#F7F3EC] shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
           <ul className="grid grid-cols-1 md:grid-cols-3">
             {TILES.map((tile, index) => {
               const Icon = tile.icon;
@@ -38,15 +38,15 @@ export function PrimaryActionTiles() {
                   {index < TILES.length - 1 && (
                     <span
                       className="absolute right-0 top-1/2 hidden h-16 w-px -translate-y-1/2 bg-[var(--sandstone-sand-gold)]/40 md:block"
-                      aria-hidden
+                      aria-hidden="true"
                     />
                   )}
 
                   <Link
                     href={tile.href}
-                    className="group flex min-h-[8.5rem] items-center gap-6 rounded-2xl px-8 py-6 transition hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                    className="group flex min-h-[8.5rem] items-center gap-6 px-8 py-6 transition hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                   >
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white shadow-md text-[var(--sandstone-sand-gold)]">
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white text-[var(--sandstone-sand-gold)] shadow-md">
                       <Icon className="h-8 w-8 stroke-[1.8]" />
                     </div>
 
