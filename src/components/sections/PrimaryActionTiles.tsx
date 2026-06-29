@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Home, House, UsersRound } from "lucide-react";
+import { ArrowRight, Home, FileKey2, UsersRound } from "lucide-react";
 
 const TILES = [
   {
@@ -14,7 +14,7 @@ const TILES = [
     title: "Rent your home",
     description: "List your home and find the right tenants.",
     href: "/rent",
-    icon: House,
+    icon: FileKey2,
   },
   {
     title: "Join our team",
