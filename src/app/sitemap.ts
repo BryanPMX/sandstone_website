@@ -4,18 +4,18 @@ import { fetchMyPropertyCards, getSortedPosts } from '@/services'
 import { BLOG_AREAS } from '@/config/blog-areas'
 
 const getCachedProperties = cache(async () => {
-  return fetchMyPropertyCards();
-});
+  return fetchMyPropertyCards()
+})
 
 const getCachedBlogPosts = cache(async () => {
-  return getSortedPosts();
-});
+  return getSortedPosts()
+})
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [properties, blogPosts] = await Promise.all([
     getCachedProperties(),
     getCachedBlogPosts(),
-  ]);
+  ])
 
   const baseUrl = 'https://sandstone.homes'
 
@@ -64,6 +64,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/pcs`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/sell`,
