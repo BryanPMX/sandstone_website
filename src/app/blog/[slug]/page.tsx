@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getAllPostSlugs, getPostBySlug } from "@/services";
+import { getAllPostSlugs, getPostBySlug, getSortedPosts } from "@/services";
 import { getAreaLabel } from "@/config/blog-areas";
 
 interface BlogPostPageProps {
@@ -46,25 +46,15 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     title,
     description,
     keywords: post.keywords,
-    alternates: {
-      canonical: canonicalUrl,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    alternates: { canonical: canonicalUrl },
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,
       type: "article",
       publishedTime: post.date,
       url: canonicalUrl,
-      images: [
-        {
-          url: imageUrl,
-          alt: post.coverImageAlt || post.title,
-        },
-      ],
+      images: [{ url: imageUrl, alt: post.coverImageAlt || post.title }],
     },
     twitter: {
       card: "summary_large_image",
@@ -82,6 +72,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (!post) {
     notFound();
   }
+
+  const allPosts = await getSortedPosts();
+
+  const relatedPosts = allPosts
+    .filter((item) => item.slug !== post.slug)
+    .sort((a, b) => {
+      if (a.area === post.area && b.area !== post.area) return -1;
+      if (a.area !== post.area && b.area === post.area) return 1;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    })
+    .slice(0, 4);
 
   const siteBase = (
     process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://sandstone.homes"
@@ -172,6 +173,42 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
 
+          {relatedPosts.length > 0 && (
+            <section className="mt-12 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-6 shadow-sm">
+              <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+                Related Articles
+              </h2>
+
+              <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+                Continue reading more Sandstone articles related to this topic.
+              </p>
+
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                {relatedPosts.map((relatedPost) => (
+                  <Link
+                    key={relatedPost.slug}
+                    href={`/blog/${relatedPost.slug}`}
+                    className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)] hover:shadow-md"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[var(--sandstone-sand-gold)]">
+                      {relatedPost.area
+                        ? getAreaLabel(relatedPost.area) ?? relatedPost.area
+                        : "Sandstone Blog"}
+                    </p>
+
+                    <h3 className="mt-2 font-heading text-lg font-bold text-[var(--sandstone-charcoal)]">
+                      {relatedPost.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+                      {relatedPost.excerpt}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className="mt-12 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-6 shadow-sm">
             <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
               Helpful Sandstone Links
@@ -183,45 +220,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </p>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <Link
-                href="/pcs"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
-              >
+              <Link href="/pcs" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
                 PCS Move Guide
               </Link>
 
-              <Link
-                href="/listings"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
-              >
+              <Link href="/listings" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
                 View El Paso Homes
               </Link>
 
-              <Link
-                href="/areas/upper-valley"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
-              >
+              <Link href="/areas/upper-valley" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
                 Upper Valley Area Guide
               </Link>
 
-              <Link
-                href="/areas/horizon-city-tx"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
-              >
+              <Link href="/areas/horizon-city-tx" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
                 Horizon City Area Guide
               </Link>
 
-              <Link
-                href="/blog"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
-              >
+              <Link href="/blog" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
                 More Blog Articles
               </Link>
 
-              <Link
-                href="/sell"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
-              >
+              <Link href="/sell" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
                 Sell Your Home
               </Link>
             </div>
