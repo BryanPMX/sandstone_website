@@ -8,7 +8,7 @@ const nearbyCards = [
     href: "/areas/upper-valley",
   },
   {
-    title: "West El Paso",
+    title: "Westside El Paso",
     description:
       "Beautiful mountain views, shopping, restaurants, and top-rated communities.",
     href: "/areas/west-el-paso",
@@ -32,11 +32,12 @@ const nearbyCards = [
     href: "/pcs",
   },
   {
-    title: "All Communities",
+    title: "Canutillo Texas",
     description:
-      "Browse every neighborhood Sandstone Real Estate serves throughout the El Paso area.",
-    href: "/areas",
+      "A quiet, family-friendly community with easy access to shopping and dining.",
+    href: "/areas/canutillo-tx",
   },
+
 ];
 
 export default function ExploreNearbyAreas() {
