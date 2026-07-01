@@ -688,7 +688,7 @@ export default async function NortheastElPasoPage() {
 
                   {/* X-axis labels — every other month to avoid crowding */}
                   {xLabels.map((label, idx) =>
-                    idx % 2 === 0 || idx === xLabels.length - 1 ? (
+                    (idx % 2 === 0 && idx < xLabels.length - 2) || idx === xLabels.length - 1 ? (
                       <text
                         key={idx}
                         x={toSvgX(idx)}
