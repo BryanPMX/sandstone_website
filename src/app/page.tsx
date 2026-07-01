@@ -6,14 +6,12 @@ import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsS
 import { BlogTeaserSection } from "@/components/sections/BlogTeaserSection";
 import { PrimaryActionTiles } from "@/components/sections/PrimaryActionTiles";
 import { ContactForm } from "@/components/ContactForm";
+import { GoogleReviews } from "@/components/GoogleReviews";
 import { SiteFooter } from "@/components/SiteFooter";
 import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
-import {
-  HOME_FAQ_SCHEMA_EN,
-  HOME_FAQ_SCHEMA_ES,
-} from "@/constants/site";
+import { HOME_FAQ_SCHEMA_EN, HOME_FAQ_SCHEMA_ES } from "@/constants/site";
 
 export const revalidate = 600;
 
@@ -118,7 +116,6 @@ export default async function Home() {
 
         <FeaturedListingsSection properties={alejandroSparkProperties} />
 
-        {/* New section added */}
         <ExploreNearbyAreas />
 
         <BlogTeaserSection posts={latestPosts} />
@@ -126,6 +123,8 @@ export default async function Home() {
         <PrimaryActionTiles />
 
         <ContactForm />
+
+        <GoogleReviews />
       </main>
 
       <SiteFooter />
