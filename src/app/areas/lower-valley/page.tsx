@@ -31,7 +31,7 @@ const SPARK_HEADERS = {
 };
 
 async function fetchLowerValleyStats() {
-  const qs   = "LocationField=PostalCode&LocationValue=79922";
+  const qs   = "LocationField=PostalCode&LocationValue=79915";
   const opts = { headers: SPARK_HEADERS, next: { revalidate: 3600 } } as RequestInit;
   try {
     const [priceRes, invRes, domRes, ratioRes] = await Promise.all([
@@ -57,11 +57,9 @@ async function fetchLowerValleyStats() {
 
 const SCHOOLS = {
   elementary: [
-    { name: "Capistrano Elementary School",                   district: "Ysleta ISD", zip: "79915"        },
-    { name: "Congressman Silvestre & Carolina Reyes Elementary School",      district: "Ysleta ISD", zip: "79915"        },
-    { name: "Cooley Elementary School",                                   district: "Ysleta ISD", zip: "79915" },
-    { name: "Lancaster Elementary School",                              district: "Ysleta ISD", zip: "79915"        },
-    { name: "Ramona Elementary School",                      district: "Ysleta ISD", zip: "79915"        },
+    { name: "Ascarate Elementary School",                   district: "Ysleta ISD", zip: "79905"        },
+    { name: "Hueco Elementary",                              district: "Ysleta ISD", zip: "79907"        },
+    { name: "Presa Elementary",                                   district: "Ysleta ISD", zip: "79907" },
     { name: "Riverside Elementary School",                                   district: "Ysleta ISD", zip: "79915"        },
   ],
   middle: [
@@ -72,35 +70,35 @@ const SCHOOLS = {
   high: [
     { name: "Del Valle High School",                                         district: "Ysleta ISD", zip: "79907"          },
     { name: "Riverside High School",                                          district: "Ysleta ISD", zip: "79915"          },
+    { name: "Ysleta High School",                           district: "Ysleta ISD", zip: "79907"},
   ],
 } as const;
 
 const NEARBY = {
   hospitals: [
-    { name: "The Hospitals of Providence Transmountain", time: "13 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
-    { name: "University Medical Center",                  time: "22 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
-    { name: "Las Palmas Medical Center",                  time: "25 min", img: "/areas/lower-valley/nearby/las-palmas-hospital.webp" },
+    { name: "Del Sol Medical Center",                     time: "12 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
+    { name: "Las Palmas Medical Center",                  time: "10 min", img: "/areas/lower-valley/nearby/las-palmas-hospital.webp" },
+    { name: "University Medical Center",                  time: "15 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
   ],
   groceries: [
-    { name: "Albertsons",             time: "7 min",  img: "/areas/lower-valley/nearby/albertsons.webp" },
-    { name: "Walmart Supercenter",    time: "8 min",  img: "/areas/lower-valley/nearby/walmart.webp" },
-    { name: "Whole Foods",            time: "11 min", img: "/areas/lower-valley/nearby/whole-foods.webp" },
-    { name: "Sprouts Farmers Market", time: "10 min", img: "/areas/lower-valley/nearby/sprouts.webp" },
-    { name: "Vista Market",           time: "7 min",  img: "/areas/lower-valley/nearby/vista-market.webp" },
+    { name: "Albertsons",             time: "8 min",  img: "/areas/lower-valley/nearby/albertsons.webp" },
+    { name: "El Super",               time: "7 min",  img: "/areas/lower-valley/nearby/vista-market.webp"},
+    { name: "Food King Cost Plus",    time: "9 min",  img: "/areas/lower-valley/nearby/vista-market.webp"},
+    { name: "Walmart Supercenter",    time: "6 min",  img: "/areas/lower-valley/nearby/walmart.webp" },
   ],
   shopping: [
-    { name: "West Towne Marketplace",        time: "10 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
-    { name: "The Outlet Shoppes at El Paso", time: "14 min", img: "/areas/lower-valley/nearby/shopping-center-2.webp" },
-    { name: "Sunland Park Mall",             time: "16 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
+    { name: "The Fountains at Farah",        time: "12 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
+    { name: "Bassett Place Mall",            time: "10 min", img: "/areas/lower-valley/nearby/shopping-center-2.webp" },
+    { name: "Cielo Vista Mall",              time: "11 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
   ],
 };
 
 const COMMUTE_TIMES = [
-  { icon: "/icons/areas/icon-office.webp",       time: "12 min", label: "Downtown\nEl Paso"          },
-  { icon: "/icons/areas/icon-graduation.webp",   time: "14 min", label: "UTEP"                       },
-  { icon: "/icons/areas/icon-star.webp",         time: "24 min", label: "Fort Bliss\nCassidy Gate"   },
-  { icon: "/icons/areas/icon-airport.webp",      time: "20 min", label: "El Paso\nAirport"           },
-  { icon: "/icons/areas/icon-shopping-bag.webp", time: "10 min", label: "West Towne\nMarketplace"    },
+  { icon: "/icons/areas/icon-office.webp",       time: "12-18 min", label: "Downtown\nEl Paso"       },
+  { icon: "/icons/areas/icon-graduation.webp",   time: "15-20 min", label: "UTEP"                    },
+  { icon: "/icons/areas/icon-star.webp",         time: "20-25 min", label: "Fort Bliss\nCassidy Gate"},
+  { icon: "/icons/areas/icon-airport.webp",      time: "15-20 min", label: "El Paso\nAirport"        },
+  { icon: "/icons/areas/icon-shopping-bag.webp", time: "8-12 min",  label: "Ysleta Port\nof Entry" },
 ];
 
 const UTILITIES = [
@@ -153,16 +151,16 @@ const UTILITIES = [
 
 // Items interleaved left-col / right-col to match the 2-column grid order
 const FAQS = [
-  { icon: "/icons/areas/icon-home.webp",       q: "Is Lower Valley a good place to live?",     a: "Yes. Lower Valley consistently ranks as one of El Paso's most desirable neighborhoods — large lots, mature trees, a quiet atmosphere, and easy access to quality schools, dining, and the Rio Grande." },
-  { icon: "/icons/areas/icon-water.webp",      q: "Does Lower Valley have irrigation rights?",  a: "Many properties have access to Rio Grande irrigation water through El Paso County Water Improvement District No. 1, allowing homeowners to irrigate large lots at a fraction of municipal water costs." },
-  { icon: "/icons/areas/icon-dollar.webp",     q: "Is Lower Valley expensive?",                 a: "Relative to El Paso, yes. The median price sits around $366,000, with homes ranging from $160K for smaller properties to well over $1M for luxury estates. Compared to similar neighborhoods in other Texas cities, it offers exceptional value." },
-  { icon: "/icons/areas/icon-horse.webp",      q: "Are there horse properties?",                a: "Yes. Lower Valley is one of the few El Paso areas where equestrian properties are common. Many homes include acreage suited for horses, with nearby riding trails and a deep agricultural heritage." },
-  { icon: "/icons/areas/icon-diamond.webp",    q: "Are there luxury homes in Lower Valley?",   a: "Absolutely. Lower Valley is home to some of El Paso's finest properties — custom estates, equestrian ranches, and homes with private pools, large irrigated lots, and mountain views." },
-  { icon: "/icons/areas/icon-shield.webp",     q: "Is Lower Valley safe?",                      a: "Lower Valley is one of El Paso's safest, most established neighborhoods. El Paso itself consistently ranks as one of the safest large cities in the United States." },
-  { icon: "/icons/areas/icon-graduation.webp", q: "Which school district serves Lower Valley?", a: "Lower Valley is primarily served by El Paso ISD and Canutillo ISD depending on your specific address. Top schools include Coronado High School, Canutillo High School, and Zach White Elementary." },
-  { icon: "/icons/areas/icon-chart.webp",      q: "What's the average home price?",             a: "As of 2026, the median sold price is approximately $366,755. Prices range widely — from around $160K for condos to over $1M for luxury estates on large lots." },
-  { icon: "/icons/areas/icon-location.webp",   q: "How far is Lower Valley from Fort Bliss?",   a: "Lower Valley is approximately 20–25 miles from Fort Bliss, with a typical drive time of 25–35 minutes depending on traffic and the gate you're using." },
-  { icon: "/icons/areas/icon-home-alt.webp",   q: "Are there new construction homes?",          a: "New construction is limited due to the established nature of the neighborhood and scarce undeveloped land. Custom builds do occur on vacant lots, and many buyers renovate or expand existing homes." },
+  { icon: "/icons/areas/icon-home.webp",       q: "Is Lower Valley a good place to live?",     a: "Yes. Lower Valley is known for its established neighborhoods, affordability, and strong sense of community. Residents enjoy convenient access to Downtown El Paso, schools, parks, shopping, and major roadways, making it a popular choice for families, first-time buyers, and long-term residents." },
+  { icon: "/icons/areas/icon-water.webp",      q: "What makes Lower Valley unique?",           a: "Lower Valley is one of El Paso's oldest communities, offering historic neighborhoods, mature landscaping, affordable housing, and a central location with convenient access throughout the city." },
+  { icon: "/icons/areas/icon-dollar.webp",     q: "Is Lower Valley expensive?",                 a: "Lower Valley is generally considered one of the more affordable housing markets in El Paso. Home prices vary by location, size, and condition, making the area attractive to first-time buyers, families, and investors." },
+  { icon: "/icons/areas/icon-horse.webp",      q: "Who is Lower Valley a good fit for?",        a: "Lower Valley appeals to first-time homebuyers, growing families, retirees, and investors looking for established neighborhoods with convenient access to schools, shopping, and employment centers." },
+  { icon: "/icons/areas/icon-diamond.webp",    q: "What types of homes are available",          a: "Lower Valley offers a wide variety of homes, including established single-family residences, remodeled homes, investment properties, and newer construction in select areas. Buyers can find options that fit many different budgets and lifestyles." },
+  { icon: "/icons/areas/icon-shield.webp",     q: "Is Lower Valley safe?",                      a: "Lower Valley benefits from being part of El Paso, which is consistently recognized as one of the safest large cities in the United States. As with any neighborhood, buyers should research specific areas that interest them."},
+  { icon: "/icons/areas/icon-graduation.webp", q: "Which school district serves Lower Valley?", a: "Most of Lower Valley is served by the Ysleta Independent School District (YISD). School attendance boundaries vary by address, so buyers should verify zoning directly with the district before purchasing a home." },
+  { icon: "/icons/areas/icon-chart.webp",      q: "What's the average home price?",             a: "Home prices in Lower Valley change as the market evolves. Visit our Market Snapshot above for the latest pricing trends, inventory, and market statistics powered by live MLS data." },
+  { icon: "/icons/areas/icon-location.webp",   q: "How far is Lower Valley from Fort Bliss?",   a: "Lower Valley is approximately 20–25 minutes from Fort Bliss, depending on traffic and the gate being used. Its location also provides convenient access to Downtown El Paso, Loop 375, and the El Paso International Airport." },
+  { icon: "/icons/areas/icon-home-alt.webp",   q: "Are there new construction homes?",          a: "While Lower Valley is primarily an established neighborhood, buyers can occasionally find new construction or recently renovated homes. Your Sandstone Real Estate Group agent can help you locate the newest available opportunities." },
 ];
 
 // ── SVG chart canvas dimensions (fixed, axis labels excluded) ─────────────────
@@ -511,12 +509,10 @@ export default async function LowerValleyPage() {
                 Schools Near Lower Valley
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                  Lower Valley is primarily served by the Ysleta Independent School District (YISD),
-                  one of the oldest school districts in the El Paso region. Depending on the exact
-                  address, some nearby neighborhoods may also fall within Socorro ISD attendance
-                  boundaries.
-                </p>
+                The Lower Valley is served primarily by the Ysleta Independent School District
+                (YISD), one of El Paso's largest and highest-performing school districts.
+                School zoning is address-specific, so buyers should verify attendance
+                boundaries directly with Ysleta ISD before purchasing a home.
               </p>
             </div>
 
@@ -608,8 +604,7 @@ export default async function LowerValleyPage() {
 
                 {/* Footer note */}
                 <p className="text-[12px] italic leading-relaxed text-[var(--sandstone-charcoal)]/50">
-                  Families moving to Lower Valley consistently cite the school quality as a primary reason for choosing the neighborhood.{" "}
-                  School zoning may change. Buyers should verify attendance boundaries directly with the school district.
+                  School attendance boundaries are established by Yselta ISD and are subject to change. Buyers should verify current zoning for a specific address directly with the district before purchasing a home.
                 </p>
               </div>
 
@@ -627,7 +622,7 @@ export default async function LowerValleyPage() {
                 Convenience at Your Doorstep
               </h2>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                Lower Valley offers easy access to quality healthcare, everyday essentials, and popular shopping destinations.
+                Lower Valley provides convenient access to healthcare, shopping, parks, schools, and major transportation routes, making everyday life both comfortable and connected.
               </p>
             </div>
 
@@ -787,10 +782,17 @@ export default async function LowerValleyPage() {
               <div className="flex-1 space-y-7">
                 <div>
                   <p className="text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Lower Valley is El Paso&apos;s most sought-after neighborhood for good reason. Homes here sit on some of the largest lots in the city, many with irrigation rights, private wells, and acreage that simply doesn&apos;t exist elsewhere in El Paso. The neighborhood blends long-established character with a quiet, ranch-style atmosphere — yet you&apos;re minutes from the shops and restaurants of Westside Drive and Mesa Hills.
+                    Lower Valley is one of El Paso&apos;s most established and affordable communities,
+                    offering a unique blend of historic neighborhoods, convenient access, and strong
+                    community pride. Residents enjoy mature tree-lined streets, long-standing local
+                    businesses, and quick connections to Downtown El Paso, Loop 375, and I-10.
                   </p>
+
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    The average household income in Lower Valley is $139,000, making it one of the most affluent communities in the region. Neighbors tend to be long-term El Paso residents, professionals, and families who&apos;ve made this area home for generations.
+                    Homebuyers are drawn to Lower Valley for its value, central location, and
+                    welcoming atmosphere. With nearby parks, schools, shopping, and community
+                    events, it remains a popular choice for first-time buyers, growing families,
+                    and long-term residents alike.
                   </p>
                 </div>
 
@@ -799,7 +801,7 @@ export default async function LowerValleyPage() {
                     Lower Valley Home Prices in 2026
                   </h2>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Homes in Lower Valley tend to spend an average of 109 days on the market — longer than the El Paso average — because buyers in this price range take their time. That also means there&apos;s room to negotiate, and Sandstone&apos;s local expertise helps you move confidently in this market.
+                    Lower Valley remains one of the most affordable housing markets in the El Paso metro area. Buyers can often find established homes with larger lots at prices below many other neighborhoods, making the communit attractive to both homeowners and investors. For the latest pricing, inventory, and market trends, contact Sandstone Real Estate Group.
                   </p>
                 </div>
 
@@ -808,13 +810,14 @@ export default async function LowerValleyPage() {
                     Is Lower Valley Right for You?
                   </h2>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Lower Valley is an excellent fit if you&apos;re looking for a premium El Paso address with space, character, and long-term value. It&apos;s particularly popular with:
+                    Lower Valley is an excellent choice for buyers looking for affordability, established neighborhoods, and a convenient central location. It's especially popular with:
                   </p>
                   <ul className="mt-3 space-y-2">
                     {[
-                      "Move-up buyers from other El Paso neighborhoods",
-                      "Professionals and executives relocating to El Paso",
-                      "Investors looking for distinctive properties in El Paso’s most established market",
+                      "First-time homebuyers looking for affordable homeownership opportunities",
+                      "Multi-generational families wantint to stay close to established community ties",
+                      "Buyers seeking a shorter commute to Downtown, medical centers, or the Ysleta Port of Entry",
+                      "Investors looking for stable rental demand in an established neighborhood",
                     ].map((item) => (
                       <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
                         <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sandstone-sand-gold)]" />
@@ -823,7 +826,7 @@ export default async function LowerValleyPage() {
                     ))}
                   </ul>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    If space is a priority, the entry level of Lower Valley offers surprisingly competitive value compared to what you&apos;d get on the West Side or Northeast.
+                    Whether you're purchasing your first home, incesting, or looking for an established neighborhood with excellent access throughout El Paso, Lower Valley offers lasting value and a strong sense of community.
                   </p>
                 </div>
               </div>
