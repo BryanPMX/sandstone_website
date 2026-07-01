@@ -17,7 +17,9 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Horizon City | Sandstone Real Estate Group",
+  title: "Horizon City Homes for Sale | Sandstone Real Estate Group",
+  description:
+    "Explore Horizon City, TX homes for sale, market stats, schools, commute times, utilities, and local amenities.",
 };
 
 export const dynamic = "force-dynamic";
@@ -32,23 +34,41 @@ const SPARK_HEADERS = {
 };
 
 async function fetchHorizonCityStats() {
-  const qs   = "LocationField=PostalCode&LocationValue=79928";
-  const opts = { headers: SPARK_HEADERS, next: { revalidate: 3600 } } as RequestInit;
+  if (!SPARK_TOKEN) {
+    return { p: null, i: null, d: null, r: null };
+  }
+
+  const qs = "LocationField=PostalCode&LocationValue=79928";
+  const opts = {
+    headers: SPARK_HEADERS,
+    next: { revalidate: 3600 },
+  };
+
+  const safeJson = async (res: Response) => {
+    if (!res.ok) return null;
+    return res.json();
+  };
+
   try {
     const [priceRes, invRes, domRes, ratioRes] = await Promise.all([
-      fetch(`${SPARK_BASE}/v1/marketstatistics/price?${qs}`,     opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/price?${qs}`, opts),
       fetch(`${SPARK_BASE}/v1/marketstatistics/inventory?${qs}`, opts),
-      fetch(`${SPARK_BASE}/v1/marketstatistics/dom?${qs}`,       opts),
-      fetch(`${SPARK_BASE}/v1/marketstatistics/ratio?${qs}`,     opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/dom?${qs}`, opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/ratio?${qs}`, opts),
     ]);
+
     const [price, inv, dom, ratio] = await Promise.all([
-      priceRes.json(), invRes.json(), domRes.json(), ratioRes.json(),
+      safeJson(priceRes),
+      safeJson(invRes),
+      safeJson(domRes),
+      safeJson(ratioRes),
     ]);
+
     return {
-      p: price?.D?.Results?.[0]  ?? null,
-      i: inv?.D?.Results?.[0]    ?? null,
-      d: dom?.D?.Results?.[0]    ?? null,
-      r: ratio?.D?.Results?.[0]  ?? null,
+      p: price?.D?.Results?.[0] ?? null,
+      i: inv?.D?.Results?.[0] ?? null,
+      d: dom?.D?.Results?.[0] ?? null,
+      r: ratio?.D?.Results?.[0] ?? null,
     };
   } catch {
     return { p: null, i: null, d: null, r: null };
@@ -78,7 +98,7 @@ const SCHOOLS = {
 
 const NEARBY = {
   hospitals: [
-    { name: "The Hospitals of Providence - Horizon CIty Campus", time: "13 min", img: "/areas/horizon-city/hopistal.jpg" },
+    { name: "The Hospitals of Providence - Horizon City Campus", time: "13 min", img: "/areas/horizon-city/hopistal.jpg" },
     { name: "University Medical Center",                         time: "22 min", img: "/areas/horizon-city/hosptial-2.webp" },
     { name: "Las Palmas Medical Center",                         time: "25 min", img: "/areas/horizon-city/hos-3.jpg" },
   ],
@@ -91,16 +111,16 @@ const NEARBY = {
   ],
   shopping: [
     { name: "Eastlake Shopping Center",        time: "5 min", img: "/areas/horizon-city/shopping center.jpg" },
-    { name: "Eastlake Marketplace Center ", time: "10 min", img: "/areas/horizon-city/eastlake-marketplace.jpg"},
+    { name: "Eastlake Marketplace Center", time: "10 min", img: "/areas/horizon-city/eastlake-marketplace.jpg" },
     { name: "Cielo Vista Mall",             time: "20 min", img: "/areas/horizon-city/cielo mall.jpg" },
   ],
 };
 
 const COMMUTE_TIMES = [
   { icon: "/icons/areas/icon-office.webp",       time: "24 - 30 min", label: "Downtown\nEl Paso"          },
-  { icon: "/icons/areas/icon-graduation.webp",   time: "25 - 30  min", label: "UTEP"                       },
+  { icon: "/icons/areas/icon-graduation.webp",   time: "25 - 30 min", label: "UTEP"                       },
   { icon: "/icons/areas/icon-star.webp",         time: "28 - 32 min", label: "Fort Bliss\nBuffalo Soldier" },
-  { icon: "/icons/areas/icon-airport.webp",      time: "21 - 25  min", label: "El Paso\nAirport"           },
+  { icon: "/icons/areas/icon-airport.webp",      time: "21 - 25 min", label: "El Paso\nAirport"           },
   { icon: "/icons/areas/icon-shopping-bag.webp", time: "5 min", label: "Eastlake\nShopping"          },
 ];
 
@@ -253,7 +273,7 @@ export default async function HorizonCityPage() {
   // Top 2 summary cards
   const STATS_TOP = [
     { label: "Median Price",  value: medianPrice,  sub: null             },
-    { label: "Commute Time",  value: "3.3",        sub: "mi / approx."   },
+    { label: "Fort Bliss Commute", value: "28–32", sub: "min / approx." },
   ];
 
   // Price detail card
@@ -270,8 +290,17 @@ export default async function HorizonCityPage() {
   // ── Chart — 12 months of real price data (API returns newest-first) ───────
   const rawDates   = (p?.Dates               as string[] | undefined) ?? [];
   const rawPrices  = (p?.ActiveMedianListPrice as string[] | undefined) ?? [];
-  const chartDates  = [...rawDates].slice(0, 12).reverse();
-  const chartPricesK = [...rawPrices].slice(0, 12).reverse().map(v => Number(v) / 1000);
+  const chartPairs = rawDates
+    .map((date, idx) => ({
+      date,
+      priceK: Number(rawPrices[idx]) / 1000,
+    }))
+    .filter((item) => item.date && Number.isFinite(item.priceK))
+    .slice(0, 12)
+    .reverse();
+
+  const chartDates = chartPairs.map((item) => item.date);
+  const chartPricesK = chartPairs.map((item) => item.priceK);
 
   const allK   = chartPricesK.length ? chartPricesK : [550, 700];
   const Y_MIN  = Math.floor(Math.min(...allK) / 50) * 50;
@@ -283,6 +312,7 @@ export default async function HorizonCityPage() {
 
   const pts      = chartPricesK.map((pk, idx) => [toSvgX(idx), toSvgY(pk)] as [number, number]);
   const linePath = pts.map(([x, y], idx) => `${idx === 0 ? "M" : "L"}${x},${y}`).join(" ");
+  const hasChartData = pts.length > 1;
   const areaPath = pts.length ? `${linePath} L${pts[pts.length - 1][0]},${CY1} L${pts[0][0]},${CY1} Z` : "";
 
   const Y_STEPS  = Math.round((Y_MAX - Y_MIN) / 50);
@@ -447,7 +477,7 @@ export default async function HorizonCityPage() {
                       <stop offset="100%" stopColor="#b79678" stopOpacity="0.02" />
                     </linearGradient>
                   </defs>
-                  <path d={areaPath} fill="url(#chartFill)" />
+                  {hasChartData && <path d={areaPath} fill="url(#chartFill)" />}
 
                   {/* Y grid lines */}
                   {Y_LABELS.map((price) => {
@@ -472,12 +502,26 @@ export default async function HorizonCityPage() {
                   )}
 
                   {/* Line */}
-                  <path d={linePath} fill="none" stroke="#b79678" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  {hasChartData ? (
+                    <path
+                      d={linePath}
+                      fill="none"
+                      stroke="#b79678"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  ) : (
+                    <text x="50%" y="50%" textAnchor="middle" fontSize="12" fill="#9ca3af">
+                      Price trend unavailable
+                    </text>
+                  )}
 
                   {/* Dots */}
-                  {pts.map(([x, y], idx) => (
-                    <circle key={idx} cx={x} cy={y} r="4" fill="#b79678" />
-                  ))}
+                  {hasChartData &&
+                    pts.map(([x, y], idx) => (
+                      <circle key={idx} cx={x} cy={y} r="4" fill="#b79678" />
+                    ))}
                 </svg>
               </div>
             </div>
@@ -692,8 +736,8 @@ export default async function HorizonCityPage() {
                   ))}
                 </div>
                 <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View all healthcare options →
+                  <Link href="#contact" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
+                    Ask about healthcare options →
                   </Link>
                 </div>
               </div>
@@ -725,8 +769,8 @@ export default async function HorizonCityPage() {
                   ))}
                 </div>
                 <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View more grocery options →
+                  <Link href="#contact" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
+                    Ask about grocery options →
                   </Link>
                 </div>
               </div>
@@ -758,8 +802,8 @@ export default async function HorizonCityPage() {
                   ))}
                 </div>
                 <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View more shopping options →
+                  <Link href="#contact" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
+                    Ask about shopping options →
                   </Link>
                 </div>
               </div>
