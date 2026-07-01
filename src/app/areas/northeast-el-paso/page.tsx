@@ -1437,17 +1437,6 @@ export default async function NortheastElPasoPage() {
               </Link>
 
               <Link
-                href="/areas/east-el-paso"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">East El Paso</h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  Newer neighborhoods, retail access, parks and family-friendly
-                  communities.
-                </p>
-              </Link>
-
-              <Link
                 href="/areas/horizon-city"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
               >
@@ -1459,17 +1448,6 @@ export default async function NortheastElPasoPage() {
               </Link>
 
               <Link
-                href="/areas/socorro"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">Socorro</h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  Affordable homes, local schools and established communities in
-                  the Lower Valley.
-                </p>
-              </Link>
-
-              <Link
                 href="/areas/canutillo"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
               >
@@ -1477,19 +1455,6 @@ export default async function NortheastElPasoPage() {
                 <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
                   Northwest El Paso access, newer communities and convenient
                   routes to I-10.
-                </p>
-              </Link>
-
-              <Link
-                href="/areas/central-el-paso"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">
-                  Central El Paso
-                </h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  Historic homes, quick downtown access and classic El Paso
-                  character.
                 </p>
               </Link>
 
