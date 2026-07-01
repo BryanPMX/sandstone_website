@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { UpperValleyListings } from "@/components/areas/UpperValleyListings";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
 import { getTurnstileSiteKey } from "@/config";
 import {
@@ -31,7 +30,7 @@ const SPARK_HEADERS = {
   "User-Agent": "sandstone-website/1.0",
 };
 
-async function fetchUpperValleyStats() {
+async function fetchLowerValleyStats() {
   const qs   = "LocationField=PostalCode&LocationValue=79922";
   const opts = { headers: SPARK_HEADERS, next: { revalidate: 3600 } } as RequestInit;
   try {
@@ -58,21 +57,21 @@ async function fetchUpperValleyStats() {
 
 const SCHOOLS = {
   elementary: [
-    { name: "Riverside Elementary School",                                   district: "Ysleta ISD", zip: "79915"        },
     { name: "Capistrano Elementary School",                   district: "Ysleta ISD", zip: "79915"        },
-    { name: "Cooley Elementary School",                                   district: "Ysleta ISD", zip: "79915" },
-    { name: "Ramona Elementary School",                      district: "Ysleta ISD", zip: "79915"        },
     { name: "Congressman Silvestre & Carolina Reyes Elementary School",      district: "Ysleta ISD", zip: "79915"        },
+    { name: "Cooley Elementary School",                                   district: "Ysleta ISD", zip: "79915" },
     { name: "Lancaster Elementary School",                              district: "Ysleta ISD", zip: "79915"        },
+    { name: "Ramona Elementary School",                      district: "Ysleta ISD", zip: "79915"        },
+    { name: "Riverside Elementary School",                                   district: "Ysleta ISD", zip: "79915"        },
   ],
   middle: [
-    { name: "Riverside Middle School",                       district: "Ysleta ISD", zip: "79915"        },
     { name: "Del Valle Middle School",                         district: "Ysleta ISD", zip: "79907" },
+    { name: "Riverside Middle School",                       district: "Ysleta ISD", zip: "79915"        },
     { name: "Valley View Middle School",                                district: "Ysleta ISD", zip: "79915"        },
   ],
   high: [
-    { name: "Riverside High School",                                          district: "Ysleta ISD", zip: "79915"          },
     { name: "Del Valle High School",                                         district: "Ysleta ISD", zip: "79907"          },
+    { name: "Riverside High School",                                          district: "Ysleta ISD", zip: "79915"          },
   ],
 } as const;
 
@@ -174,7 +173,7 @@ export default async function LowerValleyPage() {
   const turnstileSiteKey = getTurnstileSiteKey();
 
   // ── Live data — market stats only (listings load client-side) ────────────
-  const { p, i, d, r } = await fetchUpperValleyStats();
+  const { p, i, d, r } = await fetchLowerValleyStats();
 
   const fmtUSD = (v: unknown, fallback: string) =>
     v != null
@@ -213,7 +212,7 @@ export default async function LowerValleyPage() {
   // Top 2 summary cards
   const STATS_TOP = [
     { label: "Median Price",  value: medianPrice,  sub: null             },
-    { label: "Commute Time",  value: "3.3",        sub: "mi / approx."   },
+    { label: "Downtown El Paso",  value: "10-15",  sub: "min (approx.)"   },
   ];
 
   // Price detail card
@@ -327,7 +326,7 @@ export default async function LowerValleyPage() {
                 Lower Valley Market Snapshot 2026
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                If you&apos;re looking for a beautiful address in El Paso, Lower Valley is where you want to be. This established, tree-lined community along the Rio Grande corridor represents the pinnacle of El Paso living — generous lot sizes, mature landscaping, mountain views, and a lifestyle that&apos;s hard to find anywhere else in the Sun City.
+                Lower Valley offers a unique blend of affordability, established neighborhoods, and convenient access to Downtown El Paso. Homebuyers can find a variety of single-family homes, mature landscaping, and communities with decades of history. Its central location, nearby schools, parks, and shopping make Lower Valley an excellent choice for first-time buyers, growing families, and anyone looking for strong value in the El Paso real estate market
               </p>
             </div>
 
@@ -512,8 +511,12 @@ export default async function LowerValleyPage() {
                 Schools Near Lower Valley
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                Lower Valley falls within the El Paso Independent School District (EPISD) and is
-                served by some of the highest-rated schools in the city:
+                <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
+                  Lower Valley is primarily served by the Ysleta Independent School District (YISD),
+                  one of the oldest school districts in the El Paso region. Depending on the exact
+                  address, some nearby neighborhoods may also fall within Socorro ISD attendance
+                  boundaries.
+                </p>
               </p>
             </div>
 

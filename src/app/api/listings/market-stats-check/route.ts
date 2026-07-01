@@ -24,6 +24,7 @@ export async function GET() {
     { label: "MLSAreaMinor — test", url: `${baseUrl}/v1/marketstatistics/price?LocationField=MLSAreaMinor&LocationValue=West` },
     { label: "SubdivisionName — test", url: `${baseUrl}/v1/marketstatistics/price?LocationField=SubdivisionName&LocationValue=Horizon+City` },
     { label: "Neighborhood — test", url: `${baseUrl}/v1/marketstatistics/price?LocationField=Neighborhood&LocationValue=Upper+Valley` },
+    { label: "Neighborhood - Lower Valley", url: `${baseUrl}/v1/marketstatistics/price?LocationField=Neighborhood&LocationValue=Lower+Valley`},
   ];
 
   const results = await Promise.all(
