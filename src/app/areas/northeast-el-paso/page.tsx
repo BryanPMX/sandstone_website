@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
-import { NortheastListings } from "@/components/areas/NortheastListings";
+import { NortheastListings } from "@/components/areas/NortheastElPaso.listing";
 import { getTurnstileSiteKey } from "@/config";
 import {
   Clock,
@@ -74,6 +74,7 @@ async function fetchNortheastElPasoStats() {
     return { p: null, i: null, d: null, r: null };
   }
 }
+
 
 const SCHOOLS = {
   elementary: [

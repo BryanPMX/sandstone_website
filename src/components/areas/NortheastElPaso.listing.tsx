@@ -186,7 +186,7 @@ export function NortheastListings() {
                 ? "Loading listings..."
                 : filtered.length === 0
                 ? "No listings found"
-                : `Showing ${startIdx}–${endIdx} of ${filtered.length}`}
+                : `Showing ${startIdx}-${endIdx} of ${filtered.length}`}
             </p>
 
             {!loading && totalPages > 1 && (
