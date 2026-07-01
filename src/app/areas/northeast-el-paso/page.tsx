@@ -1437,7 +1437,7 @@ export default async function NortheastElPasoPage() {
               </Link>
 
               <Link
-                href="/areas/horizon-city"
+                href="/areas/horizon-city-tx"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
               >
                 <h3 className="font-heading text-xl font-bold">Horizon City</h3>
@@ -1448,7 +1448,7 @@ export default async function NortheastElPasoPage() {
               </Link>
 
               <Link
-                href="/areas/canutillo"
+                href="/areas/canutillo-tx"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
               >
                 <h3 className="font-heading text-xl font-bold">Canutillo</h3>
@@ -1459,14 +1459,14 @@ export default async function NortheastElPasoPage() {
               </Link>
 
               <Link
-                href="/pcs"
+                href="/listings"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
               >
                 <h3 className="font-heading text-xl font-bold">
-                  PCS to Fort Bliss
+                Browse All Listings
                 </h3>
                 <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  Military relocation resources and VA home buying guides.
+                  View every available home across the El Paso area.
                 </p>
               </Link>
 
