@@ -510,7 +510,7 @@ export default async function LowerValleyPage() {
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
                 The Lower Valley is served primarily by the Ysleta Independent School District
-                (YISD), one of El Paso's largest and highest-performing school districts.
+                (YISD), one of El Paso&apos;s largest and highest-performing school districts.
                 School zoning is address-specific, so buyers should verify attendance
                 boundaries directly with Ysleta ISD before purchasing a home.
               </p>
@@ -810,7 +810,7 @@ export default async function LowerValleyPage() {
                     Is Lower Valley Right for You?
                   </h2>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Lower Valley is an excellent choice for buyers looking for affordability, established neighborhoods, and a convenient central location. It's especially popular with:
+                    Lower Valley is an excellent choice for buyers looking for affordability, established neighborhoods, and a convenient central location. It&apos;s especially popular with:
                   </p>
                   <ul className="mt-3 space-y-2">
                     {[
@@ -826,7 +826,7 @@ export default async function LowerValleyPage() {
                     ))}
                   </ul>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Whether you're purchasing your first home, incesting, or looking for an established neighborhood with excellent access throughout El Paso, Lower Valley offers lasting value and a strong sense of community.
+                    Whether you&aps;re purchasing your first home, incesting, or looking for an established neighborhood with excellent access throughout El Paso, Lower Valley offers lasting value and a strong sense of community.
                   </p>
                 </div>
               </div>
