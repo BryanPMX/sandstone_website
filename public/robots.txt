@@ -5,7 +5,7 @@ Disallow: /admin/
 Disallow: /api/
 
 # Host
-Host: https://sandstone.homes
+Host: https://www.sandstone.homes
 
 # Sitemaps
-Sitemap: https://sandstone.homes/sitemap.xml
+Sitemap: https://www.sandstone.homes/sitemap.xml

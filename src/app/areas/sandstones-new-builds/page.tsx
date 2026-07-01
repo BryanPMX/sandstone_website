@@ -10,9 +10,12 @@ import type { HomeModel } from "@/components/areas/ModelShowcase";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sandstone's New Builds | Sandstone Home Builders",
+  title: "New Construction Homes in Midland, TX | Sandstone Home Builders",
   description:
-    "New construction luxury homes by Sandstone Home Builders in Midland, TX. Explore the Maribel and Clarissa floor plans — custom-built in the Greenwood ISD community.",
+    "Explore luxury new construction homes in Midland, TX by Sandstone Home Builders. Tour the Maribel and Clarissa floor plans - 4 bed, 4 bath, 3,600 sq ft in the Greenwood ISD community.",
+  openGraph: {
+    title: "New Construction Homes in Midland, TX | Sandstone Home Builders",
+  },
 };
 
 const BASE = "/areas/sandstones-new-builds";
@@ -32,17 +35,17 @@ const MODELS: HomeModel[] = [
     label:       "Maribel",
     name:        "MARIBEL",
     community:   "SANDSTONE HOME BUILDERS · MIDLAND, TX",
-    specsLine:   "4 Bedrooms | 4 Bathrooms | 3,600 Sq Ft Living Area | 3-Car Garage",
-    description: "A luxury single-story residence designed for modern living. Featuring soaring vaulted ceilings, an open-concept layout, a private owner’s suite, and an expansive covered patio built for entertaining and enjoying West Texas sunsets.",
-    price:       "$XXX,XXX",
+    specsLine:   "4 Bedrooms | 4.5 Bathrooms | 3,600 Sq Ft Living Area | 3-Car Garage",
+    description: "This stunning, custom-built home offers the perfect blend of modern design and everyday comfort. Thoughtfully crafted with premium finishes, spacious living areas, and seamless indoor-outdoor flow.",
+    price:       "",
     photos: [
-      { src: `${BASE}/model/maribel-1.webp`, alt: "Maribel photo 1" },
-      { src: `${BASE}/model/maribel-2.webp`, alt: "Maribel photo 2" },
-      { src: `${BASE}/model/maribel-3.webp`, alt: "Maribel photo 3" },
-      { src: `${BASE}/model/maribel-4.webp`, alt: "Maribel photo 4" },
-      { src: `${BASE}/model/maribel-5.webp`, alt: "Maribel photo 5" },
-      { src: `${BASE}/model/maribel-6.webp`, alt: "Maribel photo 6" },
-      { src: `${BASE}/model/maribel-7.webp`, alt: "Maribel photo 7" },
+      { src: `${BASE}/model/maribel-1.webp`, alt: "Maribel open concept living room" },
+      { src: `${BASE}/model/maribel-2.webp`, alt: "Maribel dining room" },
+      { src: `${BASE}/model/maribel-3.webp`, alt: "Maribel Exterior" },
+      { src: `${BASE}/model/maribel-4.webp`, alt: "Maribel covered patio" },
+      { src: `${BASE}/model/maribel-5.webp`, alt: "Maribel patio close-up" },
+      { src: `${BASE}/model/maribel-6.webp`, alt: "Maribel Exterior pt.2" },
+      { src: `${BASE}/model/maribel-7.webp`, alt: "Maribel Patio" },
     ],
     specBoxes: SPEC_BOXES("maribel"),
   },
@@ -52,19 +55,19 @@ const MODELS: HomeModel[] = [
     name:        "CLARISSA",
     community:   "SANDSTONE HOME BUILDERS · MIDLAND, TX",
     specsLine:   "4 Bedrooms | 4 Bathrooms | 3,600 Sq Ft Living Area | 3-Car Garage",
-    description: "A refined single-story home that blends open-concept design with intimate gathering spaces. The Clarissa features a chef’s kitchen, expansive owner’s retreat, and seamless indoor-outdoor living — crafted for those who demand both elegance and everyday comfort.",
-    price:       "$XXX,XXX",
+    description: "Modern ranch design with clean lines, timeless curb appeal, vaulted ceilings, expansive windows, a gourmet kitchen, spacious living areas, and a private owners's retreat with a spa-inspired bath. Designed for luxury living and available as a pre-sale opportunity.",
+    price:       "",
     photos: [
-      { src: `${BASE}/model/clarissa-1.webp`,  alt: "Clarissa photo 1"  },
-      { src: `${BASE}/model/clarissa-2.webp`,  alt: "Clarissa photo 2"  },
-      { src: `${BASE}/model/clarissa-3.webp`,  alt: "Clarissa photo 3"  },
-      { src: `${BASE}/model/clarissa-4.webp`,  alt: "Clarissa photo 4"  },
-      { src: `${BASE}/model/clarissa-5.webp`,  alt: "Clarissa photo 5"  },
-      { src: `${BASE}/model/clarissa-6.webp`,  alt: "Clarissa photo 6"  },
-      { src: `${BASE}/model/clarissa-7.webp`,  alt: "Clarissa photo 7"  },
-      { src: `${BASE}/model/clarissa-8.webp`,  alt: "Clarissa photo 8"  },
-      { src: `${BASE}/model/clarissa-9.webp`,  alt: "Clarissa photo 9"  },
-      { src: `${BASE}/model/clarissa-10.webp`, alt: "Clarissa photo 10" },
+      { src: `${BASE}/model/clarissa-1.webp`,  alt: "Clarissa kitchen and living room"  },
+      { src: `${BASE}/model/clarissa-2.webp`,  alt: "Clarissa living room front"  },
+      { src: `${BASE}/model/clarissa-3.webp`,  alt: "Clarissa living room behind"  },
+      { src: `${BASE}/model/clarissa-4.webp`,  alt: "Clarissa main room"  },
+      { src: `${BASE}/model/clarissa-5.webp`,  alt: "Clarissa spa bathroom"  },
+      { src: `${BASE}/model/clarissa-6.webp`,  alt: "Clarissa bathroom sinks"  },
+      { src: `${BASE}/model/clarissa-7.webp`,  alt: "Clarissa patio dining"  },
+      { src: `${BASE}/model/clarissa-8.webp`,  alt: "Clarissa patio full"  },
+      { src: `${BASE}/model/clarissa-9.webp`,  alt: "Clarissa patio front"  },
+      { src: `${BASE}/model/clarissa-10.webp`, alt: "Clarissa exterior" },
     ],
     specBoxes: SPEC_BOXES("clarissa"),
   },
@@ -204,12 +207,31 @@ const FAQS = [
     a:    "Midland's real estate market has shown steady long-term strength driven by Permian Basin activity. New construction allows buyers to lock in today's pricing, enjoy builder incentives, and avoid bidding wars common in resale markets. Early buyers often benefit most from community appreciation.",
   },
 ];
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.a,
+    },
+  })),
+};
 
 export default function SandstoneNewBuildsPage() {
   const turnstileSiteKey = getTurnstileSiteKey();
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqSchema),
+        }}
+      />
+      
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
 
@@ -220,7 +242,7 @@ export default function SandstoneNewBuildsPage() {
             <div className="mb-8 flex flex-col items-center text-center">
               <span className="mb-3 block h-px w-10 bg-[var(--sandstone-sand-gold)]" />
               <h1 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl lg:text-5xl">
-                Explore Our Home Models
+                New Construction Homes in Midland, TX
               </h1>
               <p className="mt-2 text-[15px] italic text-[var(--sandstone-sand-gold)]">
                 New construction by Sandstone Home Builders · Midland, TX
@@ -645,6 +667,97 @@ export default function SandstoneNewBuildsPage() {
 
           </div>
         </section>
+
+        {/* ── Explore Nearby Areas ───────────────────────── */}
+<section className="bg-white py-16">
+  <div className="mx-auto max-w-5xl px-4 lg:px-6">
+
+    <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
+      Explore More West Texas Communities
+    </h2>
+
+    <p className="mx-auto mt-3 max-w-2xl text-center text-[15px] text-[var(--sandstone-charcoal)]/70">
+      Interested in other communities? Browse additional neighborhoods,
+      homes for sale, relocation resources, and local market guides.
+    </p>
+
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+      <Link
+        href="/areas/el-paso-tx"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          El Paso
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Explore homes, neighborhoods, schools and relocation information.
+        </p>
+      </Link>
+
+      <Link
+        href="/areas/horizon-city-tx"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Horizon City
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Fast-growing community with new homes and great value.
+        </p>
+      </Link>
+
+      <Link
+        href="/areas/upper-valley"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Upper Valley
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Luxury homes, mature trees and larger custom properties.
+        </p>
+      </Link>
+
+      <Link
+        href="/blog"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Real Estate Blog
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Market updates, buying guides and neighborhood information.
+        </p>
+      </Link>
+
+      <Link
+        href="/listings"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Browse Listings
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          View every available home currently on the market.
+        </p>
+      </Link>
+
+      <Link
+        href="/contact"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Contact Sandstone
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Speak with our team about building your custom home.
+        </p>
+      </Link>
+
+    </div>
+  </div>
+</section>
 
         {/* ── Contact Form ─────────────────────────────────────────────────── */}
         <LeadCaptureSection

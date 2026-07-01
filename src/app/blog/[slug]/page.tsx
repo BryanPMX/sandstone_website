@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { getAllPostSlugs, getPostBySlug } from "@/services";
+import { getAllPostSlugs, getPostBySlug, getSortedPosts } from "@/services";
 import { getAreaLabel } from "@/config/blog-areas";
 
 interface BlogPostPageProps {
@@ -31,35 +31,30 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     return { title: "Post Not Found | Sandstone Blog" };
   }
 
-  const siteBase = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://sandstone.homes").replace(/\/+$/, "");
+  const siteBase = (
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://sandstone.homes"
+  ).replace(/\/+$/, "");
+
   const canonicalUrl = `${siteBase}/blog/${slug}`;
   const title = post.seoTitle || `${post.title} | Sandstone Blog`;
   const description = post.metaDescription || post.excerpt;
-  const imageUrl = post.coverImage.startsWith("http") ? post.coverImage : `${siteBase}${post.coverImage}`;
+  const imageUrl = post.coverImage.startsWith("http")
+    ? post.coverImage
+    : `${siteBase}${post.coverImage}`;
 
   return {
     title,
     description,
     keywords: post.keywords,
-    alternates: {
-      canonical: canonicalUrl,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    alternates: { canonical: canonicalUrl },
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,
       type: "article",
       publishedTime: post.date,
       url: canonicalUrl,
-      images: [
-        {
-          url: imageUrl,
-          alt: post.coverImageAlt || post.title,
-        },
-      ],
+      images: [{ url: imageUrl, alt: post.coverImageAlt || post.title }],
     },
     twitter: {
       card: "summary_large_image",
@@ -78,9 +73,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
-  const siteBase = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://sandstone.homes").replace(/\/+$/, "");
+  const allPosts = await getSortedPosts();
+
+  const relatedPosts = allPosts
+    .filter((item) => item.slug !== post.slug)
+    .sort((a, b) => {
+      if (a.area === post.area && b.area !== post.area) return -1;
+      if (a.area !== post.area && b.area === post.area) return 1;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    })
+    .slice(0, 4);
+
+  const siteBase = (
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://sandstone.homes"
+  ).replace(/\/+$/, "");
+
   const canonicalUrl = `${siteBase}/blog/${slug}`;
-  const imageUrl = post.coverImage.startsWith("http") ? post.coverImage : `${siteBase}${post.coverImage}`;
+  const imageUrl = post.coverImage.startsWith("http")
+    ? post.coverImage
+    : `${siteBase}${post.coverImage}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -111,7 +122,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
+
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <article className="container mx-auto max-w-4xl px-4 pt-10">
           <Link
@@ -125,11 +138,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {post.area && (
               <Link
                 href={`/blog/category/${post.area}`}
-                className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] hover:bg-[var(--sandstone-sand-gold)]/20 transition-colors"
+                className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition-colors hover:bg-[var(--sandstone-sand-gold)]/20"
               >
                 {getAreaLabel(post.area) ?? post.area}
               </Link>
             )}
+
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
               {formatBlogDate(post.date)}
             </p>
@@ -138,6 +152,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <h1 className="mt-2 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-5xl">
             {post.title}
           </h1>
+
           <p className="mt-4 max-w-3xl text-base text-[var(--sandstone-charcoal)]/80 md:text-lg">
             {post.excerpt}
           </p>
@@ -157,8 +172,82 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             className="prose prose-slate mt-10 max-w-none prose-headings:font-heading prose-headings:text-[var(--sandstone-navy)] prose-a:text-[var(--sandstone-navy)] prose-strong:text-[var(--sandstone-charcoal)]"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
+
+          {relatedPosts.length > 0 && (
+            <section className="mt-12 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-6 shadow-sm">
+              <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+                Related Articles
+              </h2>
+
+              <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+                Continue reading more Sandstone articles related to this topic.
+              </p>
+
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                {relatedPosts.map((relatedPost) => (
+                  <Link
+                    key={relatedPost.slug}
+                    href={`/blog/${relatedPost.slug}`}
+                    className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)] hover:shadow-md"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[var(--sandstone-sand-gold)]">
+                      {relatedPost.area
+                        ? getAreaLabel(relatedPost.area) ?? relatedPost.area
+                        : "Sandstone Blog"}
+                    </p>
+
+                    <h3 className="mt-2 font-heading text-lg font-bold text-[var(--sandstone-charcoal)]">
+                      {relatedPost.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+                      {relatedPost.excerpt}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section className="mt-12 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-6 shadow-sm">
+            <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+              Helpful Sandstone Links
+            </h2>
+
+            <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+              Explore more local resources, home search tools, and area guides
+              from Sandstone Real Estate Group.
+            </p>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <Link href="/pcs" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
+                PCS Move Guide
+              </Link>
+
+              <Link href="/listings" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
+                View El Paso Homes
+              </Link>
+
+              <Link href="/areas/upper-valley" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
+                Upper Valley Area Guide
+              </Link>
+
+              <Link href="/areas/horizon-city-tx" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
+                Horizon City Area Guide
+              </Link>
+
+              <Link href="/blog" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
+                More Blog Articles
+              </Link>
+
+              <Link href="/sell" className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]">
+                Sell Your Home
+              </Link>
+            </div>
+          </section>
         </article>
       </main>
+
       <SiteFooter />
     </>
   );

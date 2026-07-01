@@ -7,9 +7,13 @@ import { BlogTeaserSection } from "@/components/sections/BlogTeaserSection";
 import { PrimaryActionTiles } from "@/components/sections/PrimaryActionTiles";
 import { ContactForm } from "@/components/ContactForm";
 import { SiteFooter } from "@/components/SiteFooter";
+import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
-import { HOME_FAQ_SCHEMA_EN, HOME_FAQ_SCHEMA_ES } from "@/constants/site";
+import {
+  HOME_FAQ_SCHEMA_EN,
+  HOME_FAQ_SCHEMA_ES,
+} from "@/constants/site";
 
 export const revalidate = 600;
 
@@ -28,7 +32,10 @@ export default async function Home() {
   const latestPosts = posts.slice(0, 3);
 
   const alejandroSparkProperties = properties
-    .filter((property) => Boolean(property.sparkSource) && isAlejandroListing(property))
+    .filter(
+      (property) =>
+        Boolean(property.sparkSource) && isAlejandroListing(property)
+    )
     .slice(0, 12);
 
   return (
@@ -36,14 +43,16 @@ export default async function Home() {
       <Script
         id="local-business-structured-data"
         type="application/ld+json"
-        strategy="lazyOnload"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "RealEstateAgent",
+            "@type": ["RealEstateAgent", "LocalBusiness"],
             name: "Sandstone Real Estate Group",
+            url: "https://sandstone.homes",
             description:
-              "Luxury. Lifestyle. Legacy. Redefining real estate in El Paso and the Southwest through trust, lifestyle, and innovation.",
+              "Luxury real estate and military PCS specialist serving El Paso, Fort Bliss, Horizon City, Upper Valley, Canutillo, and Santa Teresa.",
+            telephone: "+19152776707",
             address: {
               "@type": "PostalAddress",
               addressLocality: "El Paso",
@@ -52,19 +61,23 @@ export default async function Home() {
             },
             geo: {
               "@type": "GeoCoordinates",
-              latitude: "31.7619",
-              longitude: "-106.485",
+              latitude: 31.7619,
+              longitude: -106.485,
             },
-            url: "https://sandstone.homes",
-            areaServed: {
-              "@type": "City",
-              name: "El Paso",
-              addressRegion: "TX",
-            },
+            areaServed: [
+              "El Paso, TX",
+              "Fort Bliss, TX",
+              "Horizon City, TX",
+              "Upper Valley, TX",
+              "Canutillo, TX",
+              "Santa Teresa, NM",
+            ],
             serviceType: [
               "Real Estate Sales",
-              "Property Management",
-              "Real Estate Consulting",
+              "Military PCS",
+              "VA Home Buying",
+              "Luxury Homes",
+              "Home Selling",
             ],
           }),
         }}
@@ -104,6 +117,9 @@ export default async function Home() {
         </section>
 
         <FeaturedListingsSection properties={alejandroSparkProperties} />
+
+        {/* New section added */}
+        <ExploreNearbyAreas />
 
         <BlogTeaserSection posts={latestPosts} />
 

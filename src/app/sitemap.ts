@@ -4,20 +4,36 @@ import { fetchMyPropertyCards, getSortedPosts } from '@/services'
 import { BLOG_AREAS } from '@/config/blog-areas'
 
 const getCachedProperties = cache(async () => {
-  return fetchMyPropertyCards();
-});
+  return fetchMyPropertyCards()
+})
 
 const getCachedBlogPosts = cache(async () => {
-  return getSortedPosts();
-});
+  return getSortedPosts()
+})
+
+const areaPages = [
+  '/areas/horizon-city-tx',
+  '/areas/upper-valley',
+  '/areas/west-el-paso',
+  '/areas/northeast-el-paso',
+  '/areas/lower-valley',
+  '/areas/sandstones-new-builds',
+]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [properties, blogPosts] = await Promise.all([
     getCachedProperties(),
     getCachedBlogPosts(),
-  ]);
+  ])
 
-  const baseUrl = 'https://sandstone.homes'
+  const baseUrl = 'https://www.sandstone.homes'
+
+  const areaUrls = areaPages.map((path) => ({
+    url: `${baseUrl}${path}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.85,
+  }))
 
   const listingUrls = properties.map((property) => ({
     url: `${baseUrl}/listings/${encodeURIComponent(property.routeId)}`,
@@ -66,6 +82,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/pcs`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/sell`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
@@ -95,6 +117,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.3,
     },
+    ...areaUrls,
     ...categoryUrls,
     ...blogPostUrls,
     ...listingUrls,

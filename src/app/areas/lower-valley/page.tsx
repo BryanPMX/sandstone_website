@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { HorizonListings } from "@/components/areas/HorizonListings";
+import { UpperValleyListings } from "@/components/areas/UpperValleyListings";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
 import { getTurnstileSiteKey } from "@/config";
 import {
@@ -17,12 +17,12 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Horizon City | Sandstone Real Estate Group",
+  title: "Lower Valley El Paso | Sandstone Real Estate Group",
 };
 
 export const dynamic = "force-dynamic";
 
-// ── Spark API — market statistics for Horizon City (ZIP 79928) ────────────────
+// ── Spark API — market statistics for Lower Valley (ZIP 79922) ────────────────
 const SPARK_BASE    = "https://replication.sparkapi.com";
 const SPARK_TOKEN   = process.env.SPARK_ACCESS_TOKEN ?? "";
 const SPARK_HEADERS = {
@@ -31,8 +31,8 @@ const SPARK_HEADERS = {
   "User-Agent": "sandstone-website/1.0",
 };
 
-async function fetchHorizonCityStats() {
-  const qs   = "LocationField=PostalCode&LocationValue=79928";
+async function fetchUpperValleyStats() {
+  const qs   = "LocationField=PostalCode&LocationValue=79922";
   const opts = { headers: SPARK_HEADERS, next: { revalidate: 3600 } } as RequestInit;
   try {
     const [priceRes, invRes, domRes, ratioRes] = await Promise.all([
@@ -58,50 +58,50 @@ async function fetchHorizonCityStats() {
 
 const SCHOOLS = {
   elementary: [
-    { name: "Horizon Heights Elementary School", district: "Socorro ISD", zip: "79928" },
-    { name: "Desert Wind Elementary School", district: "Socorro ISD", zip: "79928" },
-    { name: "Frank Macias Elementary School", district: "Clint ISD", zip: "79928" },
-    { name: "Carroll T. Welch Elementary School", district: "Clint ISD", zip: "79928" },
-    { name: "Desert Hills Elementary School", district: "Socorro ISD", zip: "79928" }
-    
+    { name: "Riverside Elementary School",                                   district: "Ysleta ISD", zip: "79915"        },
+    { name: "Capistrano Elementary School",                   district: "Ysleta ISD", zip: "79915"        },
+    { name: "Cooley Elementary School",                                   district: "Ysleta ISD", zip: "79915" },
+    { name: "Ramona Elementary School",                      district: "Ysleta ISD", zip: "79915"        },
+    { name: "Congressman Silvestre & Carolina Reyes Elementary School",      district: "Ysleta ISD", zip: "79915"        },
+    { name: "Lancaster Elementary School",                              district: "Ysleta ISD", zip: "79915"        },
   ],
   middle: [
-    { name: "Col. John O. Ensor Middle School", district: "Socorro ISD", zip: "79928" },
-    { name: "Horizon Middle School", district: "Clint ISD", zip: "79928" },
-    { name: "Ricardo Estrada Middle School", district: "Socorro ISD", zip: "79928" },
+    { name: "Riverside Middle School",                       district: "Ysleta ISD", zip: "79915"        },
+    { name: "Del Valle Middle School",                         district: "Ysleta ISD", zip: "79907" },
+    { name: "Valley View Middle School",                                district: "Ysleta ISD", zip: "79915"        },
   ],
   high: [
-    { name: "Horizon High School", district: "Clint ISD", zip: "79928" },
-    { name: "Eastlake High School", district: "Socorro ISD", zip: "79928" },
+    { name: "Riverside High School",                                          district: "Ysleta ISD", zip: "79915"          },
+    { name: "Del Valle High School",                                         district: "Ysleta ISD", zip: "79907"          },
   ],
 } as const;
 
 const NEARBY = {
   hospitals: [
-    { name: "The Hospitals of Providence - Horizon CIty Campus", time: "13 min", img: "/areas/horizon-city/hopistal.jpg" },
-    { name: "University Medical Center",                         time: "22 min", img: "/areas/horizon-city/hosptial-2.webp" },
-    { name: "Las Palmas Medical Center",                         time: "25 min", img: "/areas/horizon-city/hos-3.jpg" },
+    { name: "The Hospitals of Providence Transmountain", time: "13 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
+    { name: "University Medical Center",                  time: "22 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
+    { name: "Las Palmas Medical Center",                  time: "25 min", img: "/areas/lower-valley/nearby/las-palmas-hospital.webp" },
   ],
   groceries: [
-    { name: "Albertsons",             time: "7 min",  img: "/areas/horizon-city/albertsons.jpg" },
-    { name: "Walmart Supercenter",    time: "8 min",  img: "/areas/horizon-city/walmart.jpg" },
-    { name: "Whole Foods",            time: "11 min", img: "/areas/horizon-city/whole-foods.webp" },
-    { name: "Sprouts Farmers Market", time: "10 min", img: "/areas/horizon-city/sprouts.webp" },
-    { name: "Vista Market",           time: "7 min",  img: "/areas/horizon-city/vista-market.webp" },
+    { name: "Albertsons",             time: "7 min",  img: "/areas/lower-valley/nearby/albertsons.webp" },
+    { name: "Walmart Supercenter",    time: "8 min",  img: "/areas/lower-valley/nearby/walmart.webp" },
+    { name: "Whole Foods",            time: "11 min", img: "/areas/lower-valley/nearby/whole-foods.webp" },
+    { name: "Sprouts Farmers Market", time: "10 min", img: "/areas/lower-valley/nearby/sprouts.webp" },
+    { name: "Vista Market",           time: "7 min",  img: "/areas/lower-valley/nearby/vista-market.webp" },
   ],
   shopping: [
-    { name: "Eastlake Shopping Center",        time: "5 min", img: "/areas/horizon-city/shopping center.jpg" },
-    { name: "Eastlake Marketplace Center ", time: "10 min", img: "/areas/horizon-city/eastlake-marketplace.jpg"},
-    { name: "Cielo Vista Mall",             time: "20 min", img: "/areas/horizon-city/cielo mall.jpg" },
+    { name: "West Towne Marketplace",        time: "10 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
+    { name: "The Outlet Shoppes at El Paso", time: "14 min", img: "/areas/lower-valley/nearby/shopping-center-2.webp" },
+    { name: "Sunland Park Mall",             time: "16 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
   ],
 };
 
 const COMMUTE_TIMES = [
-  { icon: "/icons/areas/icon-office.webp",       time: "24 - 30 min", label: "Downtown\nEl Paso"          },
-  { icon: "/icons/areas/icon-graduation.webp",   time: "25 - 30  min", label: "UTEP"                       },
-  { icon: "/icons/areas/icon-star.webp",         time: "28 - 32 min", label: "Fort Bliss\nBuffalo Soldier" },
-  { icon: "/icons/areas/icon-airport.webp",      time: "21 - 25  min", label: "El Paso\nAirport"           },
-  { icon: "/icons/areas/icon-shopping-bag.webp", time: "5 min", label: "Eastlake\nShopping"          },
+  { icon: "/icons/areas/icon-office.webp",       time: "12 min", label: "Downtown\nEl Paso"          },
+  { icon: "/icons/areas/icon-graduation.webp",   time: "14 min", label: "UTEP"                       },
+  { icon: "/icons/areas/icon-star.webp",         time: "24 min", label: "Fort Bliss\nCassidy Gate"   },
+  { icon: "/icons/areas/icon-airport.webp",      time: "20 min", label: "El Paso\nAirport"           },
+  { icon: "/icons/areas/icon-shopping-bag.webp", time: "10 min", label: "West Towne\nMarketplace"    },
 ];
 
 const UTILITIES = [
@@ -154,67 +154,27 @@ const UTILITIES = [
 
 // Items interleaved left-col / right-col to match the 2-column grid order
 const FAQS = [
-  {
-    icon: "/icons/areas/icon-home.webp",
-    q: "Is Horizon City a good place to live?",
-    a: "Yes. Horizon City is one of the fastest-growing communities in the El Paso area. Residents enjoy newer neighborhoods, affordable housing options, excellent parks, and convenient access to East El Paso, Fort Bliss, and major roadways.",
-  },
-  {
-    icon: "/icons/areas/icon-water.webp",
-    q: "Does Horizon City have irrigation rights?",
-    a: "Most residential properties in Horizon City do not include irrigation rights. Water service is typically provided through local utility districts and municipal providers.",
-  },
-  {
-    icon: "/icons/areas/icon-dollar.webp",
-    q: "Is Horizon City affordable?",
-    a: "Yes. Horizon City is known for offering some of the best value in the El Paso region. Buyers can often find newer homes, larger lots, and modern communities at prices that remain competitive compared to many other Texas markets.",
-  },
-  {
-    icon: "/icons/areas/icon-horse.webp",
-    q: "Are there parks and outdoor activities?",
-    a: "Yes. Horizon City features several parks, playgrounds, sports fields, walking trails, and recreational areas. Residents also enjoy nearby golf courses, community events, and outdoor activities throughout the year.",
-  },
-  {
-    icon: "/icons/areas/icon-car.webp",
-    q: "What is the commute like from Horizon City?",
-    a: "Horizon City offers convenient access to East El Paso, Loop 375, I-10, and Fort Bliss. Many residents commute to Eastlake, East El Paso, and major employment centers within 15–30 minutes depending on traffic.",
-  },
-  {
-    icon: "/icons/areas/icon-shield.webp",
-    q: "Is Horizon City safe?",
-    a: "Horizon City is widely considered a family-friendly community with many master-planned neighborhoods, parks, and active community involvement. As with any area, safety can vary by neighborhood and should be evaluated individually.",
-  },
-  {
-    icon: "/icons/areas/icon-graduation.webp",
-    q: "Which school district serves Horizon City?",
-    a: "Horizon City is served by both Socorro Independent School District (SISD) and Clint Independent School District (CISD), depending on the neighborhood and specific address. Schools serving the area include Horizon High School, Eastlake High School, Ricardo Estrada Middle School, and several elementary schools.",
-  },
-  {
-    icon: "/icons/areas/icon-chart.webp",
-    q: "What's the average home price?",
-    a: "Home prices in Horizon City vary by neighborhood, age, size, and builder. Buyers can find everything from starter homes to larger custom residences, making the area attractive to a wide range of budgets.",
-  },
-  {
-    icon: "/icons/areas/icon-location.webp",
-    q: "How far is Horizon City from Fort Bliss?",
-    a: "Fort Bliss is approximately 15–25 miles from Horizon City depending on the gate used. Typical drive times range from 20–35 minutes depending on traffic conditions.",
-  },
-  {
-    icon: "/icons/areas/icon-home-alt.webp",
-    q: "Are there new construction homes?",
-    a: "Yes. Horizon City remains one of the most active areas for new home construction in the El Paso region, with multiple builders offering modern floor plans, growing communities, and newly developed neighborhoods.",
-  },
+  { icon: "/icons/areas/icon-home.webp",       q: "Is Lower Valley a good place to live?",     a: "Yes. Lower Valley consistently ranks as one of El Paso's most desirable neighborhoods — large lots, mature trees, a quiet atmosphere, and easy access to quality schools, dining, and the Rio Grande." },
+  { icon: "/icons/areas/icon-water.webp",      q: "Does Lower Valley have irrigation rights?",  a: "Many properties have access to Rio Grande irrigation water through El Paso County Water Improvement District No. 1, allowing homeowners to irrigate large lots at a fraction of municipal water costs." },
+  { icon: "/icons/areas/icon-dollar.webp",     q: "Is Lower Valley expensive?",                 a: "Relative to El Paso, yes. The median price sits around $366,000, with homes ranging from $160K for smaller properties to well over $1M for luxury estates. Compared to similar neighborhoods in other Texas cities, it offers exceptional value." },
+  { icon: "/icons/areas/icon-horse.webp",      q: "Are there horse properties?",                a: "Yes. Lower Valley is one of the few El Paso areas where equestrian properties are common. Many homes include acreage suited for horses, with nearby riding trails and a deep agricultural heritage." },
+  { icon: "/icons/areas/icon-diamond.webp",    q: "Are there luxury homes in Lower Valley?",   a: "Absolutely. Lower Valley is home to some of El Paso's finest properties — custom estates, equestrian ranches, and homes with private pools, large irrigated lots, and mountain views." },
+  { icon: "/icons/areas/icon-shield.webp",     q: "Is Lower Valley safe?",                      a: "Lower Valley is one of El Paso's safest, most established neighborhoods. El Paso itself consistently ranks as one of the safest large cities in the United States." },
+  { icon: "/icons/areas/icon-graduation.webp", q: "Which school district serves Lower Valley?", a: "Lower Valley is primarily served by El Paso ISD and Canutillo ISD depending on your specific address. Top schools include Coronado High School, Canutillo High School, and Zach White Elementary." },
+  { icon: "/icons/areas/icon-chart.webp",      q: "What's the average home price?",             a: "As of 2026, the median sold price is approximately $366,755. Prices range widely — from around $160K for condos to over $1M for luxury estates on large lots." },
+  { icon: "/icons/areas/icon-location.webp",   q: "How far is Lower Valley from Fort Bliss?",   a: "Lower Valley is approximately 20–25 miles from Fort Bliss, with a typical drive time of 25–35 minutes depending on traffic and the gate you're using." },
+  { icon: "/icons/areas/icon-home-alt.webp",   q: "Are there new construction homes?",          a: "New construction is limited due to the established nature of the neighborhood and scarce undeveloped land. Custom builds do occur on vacant lots, and many buyers renovate or expand existing homes." },
 ];
 
 // ── SVG chart canvas dimensions (fixed, axis labels excluded) ─────────────────
 const CX0 = 48, CY0 = 12, CX1 = 348, CY1 = 162;
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-export default async function HorizonCityPage() {
+export default async function LowerValleyPage() {
   const turnstileSiteKey = getTurnstileSiteKey();
 
-  // ── Live data — market stats only (listings load inside <HorizonListings />)
-  const { p, i, d, r } = await fetchHorizonCityStats();
+  // ── Live data — market stats only (listings load client-side) ────────────
+  const { p, i, d, r } = await fetchUpperValleyStats();
 
   const fmtUSD = (v: unknown, fallback: string) =>
     v != null
@@ -302,8 +262,8 @@ export default async function HorizonCityPage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/horizon-city/hero.jpg.jpg"
-            alt="Luxury estate in Horizon City, TX"
+            src="/areas/lower-valley/hero.webp"
+            alt="Luxury estate in Lower Valley El Paso"
             fill
             priority
             sizes="100vw"
@@ -323,19 +283,19 @@ export default async function HorizonCityPage() {
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-10 bg-[var(--sandstone-sand-gold)]" />
               <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
-                Horizon City · El Paso, TX
+                Lower Valley · El Paso, TX
               </span>
             </div>
 
             {/* Heading */}
             <h1 className="max-w-2xl font-heading text-4xl font-bold leading-[1.1] text-white md:text-5xl lg:text-6xl">
               Homes for Sale in<br />
-              Horizon City, TX
+              Lower Valley El Paso, TX
             </h1>
 
             {/* Subtitle */}
             <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-white/65">
-              Newer homes, growing neighborhoods, and strong East El Paso value — one of the area&apos;s fastest-growing communities.
+              Affordable homes, established neighborhoods, and convenient access to Downtown El Paso make Lower Valley one of the city&apos;s most historic communities.
             </p>
 
             {/* CTAs */}
@@ -364,10 +324,10 @@ export default async function HorizonCityPage() {
             {/* Header */}
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Horizon City Market Snapshot 2026
+                Lower Valley Market Snapshot 2026
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                Horizon City is one of the fastest-growing areas in the El Paso region, known for newer homes, family-friendly neighborhoods, parks, schools, and convenient access to Eastlake, I-10, Loop 375, shopping, and Fort Bliss.
+                If you&apos;re looking for a beautiful address in El Paso, Lower Valley is where you want to be. This established, tree-lined community along the Rio Grande corridor represents the pinnacle of El Paso living — generous lot sizes, mature landscaping, mountain views, and a lifestyle that&apos;s hard to find anywhere else in the Sun City.
               </p>
             </div>
 
@@ -433,13 +393,13 @@ export default async function HorizonCityPage() {
               {/* Right — line chart */}
               <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
                 <p className="mb-4 text-sm font-bold text-[var(--sandstone-navy)]">
-                  Horizon City Median List Price — 12 Months
+                  Lower Valley Median List Price — 12 Months
                 </p>
 
                 <svg
                   viewBox={`0 0 ${CX1 + 16} ${CY1 + 24}`}
                   className="w-full"
-                  aria-label="Horizon City home price trend — last 12 months"
+                  aria-label="Lower Valley home price trend — last 12 months"
                 >
                   <defs>
                     <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
@@ -515,7 +475,7 @@ export default async function HorizonCityPage() {
 
             {/* Source footnote */}
             <p className="mt-6 text-center text-[11px] text-[var(--sandstone-charcoal)]/35">
-              Live data: GEPAR MLS via Spark API · ZIP 79928 · Refreshes hourly
+              Live data: GEPAR MLS via Spark API · ZIP 79922 · Refreshes hourly
             </p>
 
           </div>
@@ -526,28 +486,34 @@ export default async function HorizonCityPage() {
           <div className="mx-auto max-w-6xl px-4 lg:px-6">
 
             <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-              Browse Horizon City Listings
+              Browse Lower Valley Listings
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-center text-sm text-[var(--sandstone-charcoal)]/60">
-              Active homes for sale in Horizon City · ZIP 79928 · El Paso, TX
+              Active homes for sale in Lower Valley · El Paso, TX
             </p>
 
-            <HorizonListings />
+            <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center">
+              <h3 className="text-xl font-semibold">Lower Valley Listings</h3>
+                <p className="mt-2 text-gray-500">
+                  Listings will be connected after the page layout is complete.
+                </p>
+            </div>
 
           </div>
         </section>
 
-        {/* ── Schools Near Horizon City ────────────────────────────────────── */}
+        {/* ── Schools Near Lower Valley ────────────────────────────────────── */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             {/* Header */}
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Schools Near Horizon City
+                Schools Near Lower Valley
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                Horizon City is served by schools in the Socorro Independent School District and Clint Independent School District depending on the specific address.
+                Lower Valley falls within the El Paso Independent School District (EPISD) and is
+                served by some of the highest-rated schools in the city:
               </p>
             </div>
 
@@ -556,18 +522,18 @@ export default async function HorizonCityPage() {
 
               {/* Left: school photos — flex column on desktop so children fill full height */}
               <div className="w-full lg:sticky lg:top-[116px] lg:self-start lg:flex lg:w-[58%] lg:flex-col">
-                {/* Large —  High school  (3 parts of the column height) */}
+                {/* Large — Coronado High (3 parts of the column height) */}
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/horizon-city/Horizon-City-High.jpg"
-                    alt="Horizon High School"
+                    src="/areas/lower-valley/schools/coronado-high.webp"
+                    alt="Coronado High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                   <p className="absolute bottom-4 left-4 font-heading text-xl font-bold text-white drop-shadow">
-                    Horizon High School
+                    Coronado High School
                   </p>
                 </div>
 
@@ -575,28 +541,28 @@ export default async function HorizonCityPage() {
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/horizon-city/horizon-City-middle.jpg"
-                      alt="Horizon Middle School"
+                      src="/areas/lower-valley/schools/canutillo-middle.webp"
+                      alt="Canutillo Middle School STEAM Academy"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Horizon Middle<br />School
+                      Canutillo Middle<br />School
                     </p>
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/horizon-city/horizon-elemantary.jpg"
-                      alt="Horizon Elementary School"
+                      src="/areas/lower-valley/schools/zach-white.webp"
+                      alt="Zach White Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Horizon Elementary<br />School
+                      Zach White<br />Elementary School
                     </p>
                   </div>
                 </div>
@@ -639,7 +605,7 @@ export default async function HorizonCityPage() {
 
                 {/* Footer note */}
                 <p className="text-[12px] italic leading-relaxed text-[var(--sandstone-charcoal)]/50">
-                  Families moving to Horizon City often cite newer neighborhoods, nearby schools, parks, and Eastside convenience as major reasons for choosing the area.{" "}
+                  Families moving to Lower Valley consistently cite the school quality as a primary reason for choosing the neighborhood.{" "}
                   School zoning may change. Buyers should verify attendance boundaries directly with the school district.
                 </p>
               </div>
@@ -658,7 +624,7 @@ export default async function HorizonCityPage() {
                 Convenience at Your Doorstep
               </h2>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                Horizon City offers easy access to healthcare, grocery stores, restaurants, and growing Eastside shopping destinations.
+                Lower Valley offers easy access to quality healthcare, everyday essentials, and popular shopping destinations.
               </p>
             </div>
 
@@ -802,13 +768,13 @@ export default async function HorizonCityPage() {
           </div>
         </section>
 
-        {/* ── Why Buyers Choose Horizon City ───────────────────────────────── */}
+        {/* ── Why Buyers Choose Lower Valley ───────────────────────────────── */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             {/* Full-width centered heading */}
             <h2 className="mb-10 text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-              Why Buyers Choose Horizon City
+              Why Buyers Choose Lower Valley
             </h2>
 
             {/* Two-column body */}
@@ -818,34 +784,34 @@ export default async function HorizonCityPage() {
               <div className="flex-1 space-y-7">
                 <div>
                   <p className="text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Horizon City has become one of the most popular choices for buyers who want newer homes, more space, and strong value on the east side of the El Paso region. Many neighborhoods offer modern floor plans, parks, nearby schools, and quick access to Eastlake, I-10, and Loop 375.
+                    Lower Valley is El Paso&apos;s most sought-after neighborhood for good reason. Homes here sit on some of the largest lots in the city, many with irrigation rights, private wells, and acreage that simply doesn&apos;t exist elsewhere in El Paso. The neighborhood blends long-established character with a quiet, ranch-style atmosphere — yet you&apos;re minutes from the shops and restaurants of Westside Drive and Mesa Hills.
                   </p>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Buyers choose Horizon City for its balance of affordability, convenience, and growth. It is a strong option for first-time buyers, move-up buyers, military families, and anyone looking for a newer community with room to grow.
-                  </p>
-                </div>
-
-                <div>
-                  <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-                    Horizon City Home Prices in 2026
-                  </h2>
-                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Homes in Horizon City offer a wide range of options, from starter homes to larger newer construction properties. The market is especially attractive for buyers comparing East El Paso, Socorro, Clint, and Far East communities.
+                    The average household income in Lower Valley is $139,000, making it one of the most affluent communities in the region. Neighbors tend to be long-term El Paso residents, professionals, and families who&apos;ve made this area home for generations.
                   </p>
                 </div>
 
                 <div>
                   <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-                    Is Horizon City Right for You?
+                    Lower Valley Home Prices in 2026
                   </h2>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Horizon City is an excellent fit if you&apos;re looking for value, newer homes, and Eastside convenience. It&apos;s particularly popular with:
+                    Homes in Lower Valley tend to spend an average of 109 days on the market — longer than the El Paso average — because buyers in this price range take their time. That also means there&apos;s room to negotiate, and Sandstone&apos;s local expertise helps you move confidently in this market.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+                    Is Lower Valley Right for You?
+                  </h2>
+                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                    Lower Valley is an excellent fit if you&apos;re looking for a premium El Paso address with space, character, and long-term value. It&apos;s particularly popular with:
                   </p>
                   <ul className="mt-3 space-y-2">
                     {[
-                      "First-time buyers looking for newer homes",
-                      "Military families commuting to Fort Bliss",
-                      "Move-up buyers wanting more space on the Eastside",
+                      "Move-up buyers from other El Paso neighborhoods",
+                      "Professionals and executives relocating to El Paso",
+                      "Investors looking for distinctive properties in El Paso’s most established market",
                     ].map((item) => (
                       <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
                         <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sandstone-sand-gold)]" />
@@ -854,7 +820,7 @@ export default async function HorizonCityPage() {
                     ))}
                   </ul>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    If newer homes and Eastside convenience are priorities, Horizon City is one of the strongest value areas in the El Paso market.
+                    If space is a priority, the entry level of Lower Valley offers surprisingly competitive value compared to what you&apos;d get on the West Side or Northeast.
                   </p>
                 </div>
               </div>
@@ -863,8 +829,8 @@ export default async function HorizonCityPage() {
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/horizon-city/horizon-golf.jpg"
-                    alt="Horizon City Golf Course"
+                    src="/areas/lower-valley/lifestyle-pool.webp"
+                    alt="Lower Valley luxury pool"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     className="object-cover"
@@ -872,8 +838,8 @@ export default async function HorizonCityPage() {
                 </div>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/horizon-city/horizon-Cfa.jpg"
-                    alt="Horizon City shopping center"
+                    src="/areas/lower-valley/lifestyle-garden.webp"
+                    alt="Lower Valley garden estate"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     className="object-cover"
@@ -960,7 +926,7 @@ export default async function HorizonCityPage() {
                 Frequently Asked Questions
               </h2>
               <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
-                Find answers to the most common questions about living in Horizon City.
+                Find answers to the most common questions about living in Lower Valley.
               </p>
               <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/60">
                 Can&apos;t find what you&apos;re looking for?{" "}
@@ -974,7 +940,7 @@ export default async function HorizonCityPage() {
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start">
               {FAQS.map(({ icon, q, a }) => (
                 <details key={q} className="group rounded-2xl bg-white shadow-sm">
-                  <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-3">
+                  <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4">
                     {/* Icon circle */}
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-navy)]/8">
                       <Image src={icon} alt="" width={22} height={22} />
@@ -989,8 +955,8 @@ export default async function HorizonCityPage() {
                     />
                   </summary>
                   {/* Answer */}
-                  <div className="border-t border-[var(--sandstone-navy)]/8 px-5 py-4">
-                    <p className="text-sm leading-7 text-[var(--sandstone-charcoal)]/70">{a}</p>
+                  <div className="border-t border-[var(--sandstone-navy)]/8 px-5 py-4 pl-20">
+                    <p className="text-[13px] leading-relaxed text-[var(--sandstone-charcoal)]/65">{a}</p>
                   </div>
                 </details>
               ))}
@@ -998,20 +964,17 @@ export default async function HorizonCityPage() {
 
           </div>
         </section>
-
-
         {/* ── Explore More El Paso Areas ───────────────────────── */}
 <section className="bg-white py-16">
   <div className="mx-auto max-w-5xl px-4 lg:px-6">
-
     <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
       Explore Nearby Areas
     </h2>
 
     <p className="mx-auto mt-3 max-w-2xl text-center text-[15px] text-[var(--sandstone-charcoal)]/70">
-      Looking beyond Horizon City? Compare nearby neighborhoods,
-      browse homes for sale, and learn more about the communities
-      around El Paso.
+      Looking beyond Lower Valley? Compare nearby neighborhoods,
+      browse homes for sale, and discover more communities across
+      the El Paso area.
     </p>
 
     <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -1024,7 +987,19 @@ export default async function HorizonCityPage() {
           Upper Valley
         </h3>
         <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-          Luxury homes, mature trees, larger lots and peaceful living.
+          Luxury homes, mature trees, larger lots, and peaceful living.
+        </p>
+      </Link>
+
+      <Link
+        href="/areas/horizon-city-tx"
+        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
+      >
+        <h3 className="font-heading text-xl font-bold">
+          Horizon City
+        </h3>
+        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
+          Fast-growing community with newer homes and excellent value.
         </p>
       </Link>
 
@@ -1036,19 +1011,7 @@ export default async function HorizonCityPage() {
           West El Paso
         </h3>
         <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-          Shopping, dining, mountain views and excellent schools.
-        </p>
-      </Link>
-
-      <Link
-        href="/areas/northeast-el-paso"
-        className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-      >
-        <h3 className="font-heading text-xl font-bold">
-          Northeast El Paso
-        </h3>
-        <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-          Close to Fort Bliss with affordable homes and short commutes.
+          Mountain views, shopping, dining, and highly desirable neighborhoods.
         </p>
       </Link>
 
@@ -1072,7 +1035,7 @@ export default async function HorizonCityPage() {
           Read More Articles
         </h3>
         <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-          Local market updates, neighborhood guides and buying tips.
+          Local market updates, neighborhood guides, and home buying tips.
         </p>
       </Link>
 
@@ -1084,7 +1047,7 @@ export default async function HorizonCityPage() {
           Browse All Listings
         </h3>
         <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-          View every available home across the El Paso area.
+          View every available home for sale across the El Paso region.
         </p>
       </Link>
 
@@ -1092,21 +1055,20 @@ export default async function HorizonCityPage() {
   </div>
 </section>
 
-        {/* ── Ready to Buy in Horizon City ─────────────────────────────────── */}
-        <LeadCaptureSection
-          formType="contact"
-          sectionId="contact"
-          heading="Ready to Buy in Horizon City?"
-          subheading="The Sandstone team knows Horizon City. We help buyers compare neighborhoods, schools, commute times, builder options, and resale homes so they can move with confidence."
-          ctaLabel="Schedule a Visit"
-          messagePlaceholder="Tell us about your Horizon City search..."
-          mappingReference="horizon-city"
-          asideEyebrow="Ready. Lifestyle. Real."
-          asideTitle="Ready to Make Your Next Move?"
-          asideDescription="Schedule a consultation and get a personalized strategy for your Horizon City property search."
-          asideCtaLabel="Schedule a Consultation"
-          turnstileSiteKey={turnstileSiteKey}
-        />
+<LeadCaptureSection
+  formType="contact"
+  sectionId="contact"
+  heading="Ready to Buy in Lower Valley?"
+  subheading="The Sandstone team knows Lower Valley. We've helped buyers navigate everything from standard resales to large acreage properties with irrigation rights — reach out and we'll walk you through every detail."
+  ctaLabel="Schedule a Visit"
+  messagePlaceholder="Tell us about your Lower Valley search..."
+  mappingReference="lower-valley"
+  asideEyebrow="Ready. Lifestyle. Real."
+  asideTitle="Ready to Make Your Next Move?"
+  asideDescription="Schedule a consultation and get a personalized strategy for your Lower Valley property search."
+  asideCtaLabel="Schedule a Consultation"
+  turnstileSiteKey={turnstileSiteKey}
+/>
 
       </main>
       <SiteFooter />
