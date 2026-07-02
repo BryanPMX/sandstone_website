@@ -76,13 +76,13 @@ const SCHOOLS = {
 
 const NEARBY = {
   hospitals: [
-    { name: "Del Sol Medical Center",                     time: "12 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
+    { name: "Del Sol Medical Center",                     time: "12 min", img: "/areas/lower-valley/nearby/delSolMedical.png" },
     { name: "Las Palmas Medical Center",                  time: "10 min", img: "/areas/lower-valley/nearby/las-palmas-hospital.webp" },
     { name: "University Medical Center",                  time: "15 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
   ],
   groceries: [
     { name: "Albertsons",             time: "8 min",  img: "/areas/lower-valley/nearby/albertsons.webp" },
-    { name: "El Super",               time: "7 min",  img: "/areas/lower-valley/nearby/vista-market.webp"},
+    { name: "El Super",               time: "7 min",  img: "/areas/lower-valley/nearby/El-super.jpg"},
     { name: "Food King Cost Plus",    time: "9 min",  img: "/areas/lower-valley/nearby/vista-market.webp"},
     { name: "Walmart Supercenter",    time: "6 min",  img: "/areas/lower-valley/nearby/walmart.webp" },
   ],
@@ -259,8 +259,8 @@ export default async function LowerValleyPage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/lower-valley/hero.webp"
-            alt="Luxury estate in Lower Valley El Paso"
+            src="/areas/lower-valley/nearby/lower-valley.png"
+            alt="Lower Valley EL Paso neighborhood "
             fill
             priority
             sizes="100vw"
@@ -524,15 +524,15 @@ export default async function LowerValleyPage() {
                 {/* Large — Coronado High (3 parts of the column height) */}
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/lower-valley/schools/coronado-high.webp"
-                    alt="Coronado High School"
+                    src="/areas/lower-valley/schools/riversideHS.png"
+                    alt="Riverside High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                   <p className="absolute bottom-4 left-4 font-heading text-xl font-bold text-white drop-shadow">
-                    Coronado High School
+                    Riverside High School
                   </p>
                 </div>
 
@@ -540,28 +540,28 @@ export default async function LowerValleyPage() {
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/lower-valley/schools/canutillo-middle.webp"
-                      alt="Canutillo Middle School STEAM Academy"
+                      src="/areas/lower-valley/schools/riversideElem.png"
+                      alt="Riverside Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Canutillo Middle<br />School
+                      Riverside Elementary<br />School
                     </p>
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/lower-valley/schools/zach-white.webp"
-                      alt="Zach White Elementary School"
+                      src="/areas/lower-valley/schools/delvalleHS.png"
+                      alt="Del Valle High School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Zach White<br />Elementary School
+                      Del Valle<br />High School
                     </p>
                   </div>
                 </div>
@@ -835,8 +835,8 @@ export default async function LowerValleyPage() {
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/lower-valley/lifestyle-pool.webp"
-                    alt="Lower Valley luxury pool"
+                    src="/areas/lower-valley/nearby/park.png"
+                    alt="Ascarate Park"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     className="object-cover"
@@ -844,8 +844,8 @@ export default async function LowerValleyPage() {
                 </div>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/lower-valley/lifestyle-garden.webp"
-                    alt="Lower Valley garden estate"
+                    src="/areas/lower-valley/nearby/baseball.png"
+                    alt="Community baseball fields in Lower Valley"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
                     className="object-cover"
