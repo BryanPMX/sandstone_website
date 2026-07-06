@@ -787,7 +787,7 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* â”€â”€ Schools Near Santa Teresa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* Schools Near Santa Teresa  */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
@@ -915,7 +915,7 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* â”€â”€ Convenience at Your Doorstep â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* Convenience at Your Doorstep */}
         <section className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
@@ -1153,7 +1153,7 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* â”€â”€ Why Buyers Choose Santa Teresa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* Why Buyers Choose Santa Teresa */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Full-width centered heading */}
@@ -1215,7 +1215,7 @@ export default async function SantaTeresaPage() {
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/santa-teresa/upper-valley.jpg"
+                    src="/areas/horizon-city/st-helicopter.jpg"
                     alt="Upper Valley near Santa Teresa"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
@@ -1224,7 +1224,7 @@ export default async function SantaTeresaPage() {
                 </div>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/santa-teresa/outlet-shoppes.jpg"
+                    src="/areas/horizon-city/outlet-shoppes.jpg"
                     alt="Outlet Shoppes near Santa Teresa"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
