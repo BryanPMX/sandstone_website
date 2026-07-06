@@ -142,7 +142,7 @@ const NEARBY = {
     {
       name: "Sprouts Farmers Market",
       time: "15 min",
-      img: "/areas/horizon-city/sprouts.webp"
+      img: "/areas/horizon-city/sprouts.webp" 
     },
     {
       name: "Target",
