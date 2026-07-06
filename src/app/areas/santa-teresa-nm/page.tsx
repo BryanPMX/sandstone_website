@@ -807,7 +807,7 @@ export default async function SantaTeresaPage() {
                 {/* Large - high school (3 parts of the column height) */}
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/santa-teresa/santa-teresa-high.jpg"
+                    src="/areas/horizon-city/santa-teresa-highschool.jpg"
                     alt="Santa Teresa High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
