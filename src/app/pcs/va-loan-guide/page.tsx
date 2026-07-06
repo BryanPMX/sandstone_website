@@ -216,35 +216,54 @@ export default function VaLoanGuidePage() {
               </div>
             </div>
 
-            <div className="mx-auto mt-10 w-full max-w-5xl rounded-xl border-2 border-[var(--sandstone-sand-gold)] p-5 sm:p-6">
-              <div className="flex flex-col items-center gap-5 md:flex-row md:items-center md:justify-between">
-                <div className="relative h-24 w-24 shrink-0 sm:h-28 sm:w-28">
-                  <Image
-                    src="/VA_Loan_Guide_Imgs/Downland_Checklist_VA.png"
-                    alt="VA document checklist"
-                    fill
-                    sizes="112px"
-                    className="object-contain"
-                  />
+            <div className="mx-auto mt-10 w-full max-w-5xl rounded-xl border-2 border-[var(--sandstone-sand-gold)] bg-white p-8">
+              <h3 className="text-center font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+                PCS & VA Loan Checklist
+              </h3>
+
+              <p className="mt-3 text-center text-[var(--sandstone-charcoal)]">
+                Use this checklist to stay organized throughout your PCS move and VA home purchase.
+              </p>
+
+              <div className="mt-8 grid gap-8 md:grid-cols-2">
+                <div>
+                  <h4 className="mb-3 font-bold text-[var(--sandstone-navy)]">Before You Receive Orders</h4>
+                  <ul className="list-disc pl-6 space-y-2 text-sm marker:text-[var(--sandstone-sand-gold)]">
+                    <li>Create a moving budget</li>
+                    <li>Research your new duty station</li>
+                    <li>Organize important documents</li>
+                    <li>Review your current lease or mortgage</li>
+                  </ul>
+
+                  <h4 className="mt-8 mb-3 font-bold text-[var(--sandstone-navy)]">Once You Receive Orders</h4>
+                  <ul className="list-disc pl-6 space-y-2 text-sm marker:text-[var(--sandstone-sand-gold)]">
+                    <li>Keep copies of your PCS Orders</li>
+                    <li>Schedule your household goods shipment</li>
+                    <li>Contact your transportation office</li>
+                    <li>Start your home search</li>
+                  </ul>
                 </div>
 
-                <div className="md:flex-1 md:px-4">
-                  <h3 className="text-center font-heading text-xl font-bold text-[var(--sandstone-navy)] md:text-left">
-                    Download the VA Document Checklist
-                  </h3>
-                  <p className="mt-2 text-center text-sm text-[var(--sandstone-charcoal)]/68 md:text-left">
-                    Know exactly what documents you need for a smooth VA loan process
-                  </p>
-                </div>
+                <div>
+                  <h4 className="mb-3 font-bold text-[var(--sandstone-navy)]">VA Loan Documents</h4>
+                  <ul className="list-disc pl-6 space-y-2 text-sm marker:text-[var(--sandstone-sand-gold)]  ">
+                    <li>Government-issued ID</li>
+                    <li> Certificate of Eligibility (COE)</li>
+                    <li> PCS Orders</li>
+                    <li> Leave & Earnings Statement (LES)</li>
+                    <li> Recent Pay Stubs</li>
+                    <li> W-2s (Last 2 Years)</li>
+                    <li> Bank Statements</li>
+                    <li> Purchase Contract</li>
+                  </ul>
 
-                <div className="shrink-0">
-                  <Link
-                    href="/VA_Loan_Guide_Imgs/Downland_Checklist_VA.png"
-                    download
-                    className="inline-flex h-11 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-6 text-xs font-extrabold uppercase tracking-[0.14em] text-white transition hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-                  >
-                    Get your VA Documents Checklist
-                  </Link>
+                  <h4 className="mt-8 mb-3 font-bold text-[var(--sandstone-navy)]">Before Closing</h4>
+                  <ul className="list-disc pl-6 space-y-2 text-sm marker:text-[var(--sandstone-sand-gold)]">
+                    <li>Complete the VA appraisal</li>
+                    <li>Schedule the home inspection</li>
+                    <li>Arrange homeowners insurance</li>
+                    <li>Review your Closing Disclosure</li>
+                  </ul>
                 </div>
               </div>
             </div>
