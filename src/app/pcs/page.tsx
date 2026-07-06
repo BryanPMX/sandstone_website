@@ -196,7 +196,7 @@ export default async function PCSPage() {
                     href="/sell#mortgage-calculator"
                     className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
                   >
-                    Calculate now →
+                    Calculate now &rarr;
                   </Link>
                 </div>
               </div>
@@ -225,7 +225,7 @@ export default async function PCSPage() {
                     href="/pcs/va-loan-guide"
                     className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
                   >
-                    View guide →
+                    View guide &rarr;
                   </Link>
                 </div>
               </div>
@@ -254,7 +254,7 @@ export default async function PCSPage() {
                     href="/blog"
                     className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
                   >
-                    Explore guide →
+                    Explore guide &rarr;
                   </Link>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default async function PCSPage() {
                     href="/pcs/va-loan-guide#pcs-checklist"
                     className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
                   >
-                    View checklist →
+                    View checklist &rarr;
                   </Link>
                 </div>
               </div>
@@ -304,7 +304,7 @@ export default async function PCSPage() {
             {featuredNearFortBliss.length === 0 ? (
               <div className="mt-8 rounded-2xl border border-[var(--sandstone-navy)]/10 bg-white p-6 text-center shadow-sm">
                 <p className="text-sm text-[var(--sandstone-charcoal)]/80">
-                  We’re updating Fort Bliss listings right now.
+                  We&rsquo;re updating Fort Bliss listings right now.
                 </p>
               </div>
             ) : (
@@ -315,8 +315,47 @@ export default async function PCSPage() {
           </div>
         </section>
 
-      </main>
+        {/* FAQ */}
+        <section className="py-16 border-t border-[var(--sandstone-navy)]/10 bg-white">
+          <div className={SECTION_MAX}>
+            <h2 className="text-center font-heading text-3xl font-extrabold text-[var(--sandstone-navy)]">
+              Frequently Asked Questions
+            </h2>
 
+            <p className="mt-3 text-center text-[var(--sandstone-charcoal)]/70">
+              Answers to common questions about using a VA loan during your PCS move.
+            </p>
+
+            {[
+              {
+                q: "Can I buy a home before I PCS?",
+                a: "Yes. Many military families purchase before arriving using virtual tours, electronic signatures, and remote closings."
+              },
+              {
+                q: "Do I need a down payment with a VA loan?",
+                a: "Most eligible buyers can purchase with no down payment, although normal closing costs and prepaid expenses may still apply."
+              },
+              {
+                q: "What documents do I need?",
+                a: "Typically you'll need your ID, COE, PCS orders, LES, pay stubs, bank statements, and any lender-requested financial documents."
+              },
+              {
+                q: "Can I use my VA loan benefit more than once?",
+                a: "Yes. Many eligible borrowers can reuse their VA benefit if they meet current eligibility requirements."
+              },
+              {
+                q: "How long does a VA loan take to close?",
+                a: "Many VA loans close in about 30-45 days depending on the transaction."
+              },
+            ].map((item) => (
+              <div key={item.q} className="mt-5 rounded-xl border border-[var(--sandstone-navy)]/10 p-6">
+                <h3 className="font-bold text-[var(--sandstone-navy)]">{item.q}</h3>
+                <p className="mt-2 text-[var(--sandstone-charcoal)]">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
       <SiteFooter />
     </>
   );
