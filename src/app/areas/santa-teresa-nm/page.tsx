@@ -137,12 +137,12 @@ const NEARBY = {
     {
       name: "Walmart Supercenter",
       time: "12 min",
-      img: "/areas/santa-teresa/walmart.jpg",
+      img: "/areas/horizon-city/walmart.jpg" 
     },
     {
       name: "Sprouts Farmers Market",
       time: "15 min",
-      img: "/areas/santa-teresa/sprouts.jpg",
+      img: "/areas/horizon-city/sprouts.webp"
     },
     {
       name: "Target",
