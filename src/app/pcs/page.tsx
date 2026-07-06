@@ -8,9 +8,9 @@ import { PcsHeroSearch } from "./PcsHeroSearch.client";
 import { PcsHeader } from "./PcsHeader.client";
 
 export const metadata = {
-  title: "PCS | Homes Near Fort Bliss",
+  title: "VA Loan Homes in El Paso | Fort Bliss Military Homes",
   description:
-    "Military-focused home search near Fort Bliss. Filter by drive time to gates and find the right home for your next PCS move.",
+    "Browse VA loan homes in El Paso near Fort Bliss. Search military-friendly homes, learn about VA loans, calculate your BAH, and plan your PCS move with Sandstone.",
 };
 
 const SECTION_MAX = "mx-auto w-full max-w-6xl px-4 lg:px-6";
@@ -159,7 +159,7 @@ export default async function PCSPage() {
                   form="pcs-hero-search"
                   className="inline-flex h-11 items-center justify-center rounded-full bg-[var(--sandstone-navy)] px-10 text-[13px] font-extrabold uppercase tracking-[0.16em] text-white shadow-[0_18px_40px_-26px_rgba(37,52,113,0.85)] transition hover:bg-[var(--sandstone-navy-deep)]"
                 >
-                  Start the mission
+                  Search VA Loan Homes
                 </button>
               </div>
             </div>
@@ -297,8 +297,12 @@ export default async function PCSPage() {
           <div className={SECTION_MAX}>
             <div className="text-center">
               <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)] sm:text-3xl">
-                Featured homes near Fort Bliss
+                VA Loan Homes in El Paso Near Fort Bliss
               </h2>
+
+            <p className="mt-3 text-center text-[var(--sandstone-charcoal)]/70">
+              Browse homes that are ideal for military buyers using their VA home loan benefit.
+            </p>
             </div>
 
             {featuredNearFortBliss.length === 0 ? (
