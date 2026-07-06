@@ -125,19 +125,19 @@ const NEARBY = {
     {
       name: "Providence Memorial Hospital",
       time: "20 min",
-      img: "/areas/canutillo/providence-memorial.jpg",
-    },
+      img: "/areas/horizon-city/hos-3.jpg" },
+
   ],
   groceries: [
     {
       name: "Walmart Supercenter",
       time: "5 min",
-      img: "/areas/canutillo/walmart.jpg",
+      img: "/areas/horizon-city/walmart.jpg" 
     },
     {
       name: "Albertsons",
       time: "8 min",
-      img: "/areas/canutillo/albertsons.jpg",
+      img: "/areas/horizon-city/albertsons.jpg" 
     },
     {
       name: "Sprouts Farmers Market",

@@ -132,7 +132,7 @@ const NEARBY = {
     {
       name: "Albertsons",
       time: "10 min",
-      img: "/areas/santa-teresa/albertsons.jpg",
+      img: "/areas/horizon-city/albertsons.jpg" 
     },
     {
       name: "Walmart Supercenter",
