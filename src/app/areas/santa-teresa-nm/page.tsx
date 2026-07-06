@@ -495,7 +495,7 @@ export default async function SantaTeresaPage() {
         {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/santa-teresa/hero.jpg"
+            src="/areas/horizon-city/santa-teresa-nm.jpg"
             alt="Homes and neighborhoods in Santa Teresa, NM"
             fill
             priority
