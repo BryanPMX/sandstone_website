@@ -120,12 +120,12 @@ const NEARBY = {
     {
       name: "Las Palmas Medical Center",
       time: "18 min",
-      img: "/areas/horizon-city/las-palmas.webp",
+      img: "/areas/horizon-city/Las-Palmas.webp",
     },
     {
       name: "Providence Memorial Hospital",
       time: "20 min",
-      img: "/areas/horizon-city/providence-memorial.jpg",
+      img: "/areas/horizon-city/hos-3.jpg",
     },
   ],
   groceries: [
