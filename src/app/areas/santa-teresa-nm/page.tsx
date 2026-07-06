@@ -110,22 +110,22 @@ const NEARBY = {
     {
       name: "The Hospitals of Providence - Transmountain Campus",
       time: "10 min",
-      img: "/areas/santa-teresa/hospital-transmountain.jpg",
+      img: "/areas/horizon-city/hospital-transmountain.jpg",
     },
     {
       name: "Northwest Emergency Center",
       time: "12 min",
-      img: "/areas/santa-teresa/northwest-emergency.jpg",
+      img: "/areas/horizon-city/northwest-emergency-center.webp",
     },
     {
       name: "Las Palmas Medical Center",
       time: "18 min",
-      img: "/areas/santa-teresa/las-palmas.jpg",
+      img: "/areas/horizon-city/las-palmas.webp",
     },
     {
       name: "Providence Memorial Hospital",
       time: "20 min",
-      img: "/areas/santa-teresa/providence-memorial.jpg",
+      img: "/areas/horizon-city/providence-memorial.jpg",
     },
   ],
   groceries: [
