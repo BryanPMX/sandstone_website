@@ -823,7 +823,7 @@ export default async function SantaTeresaPage() {
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/santa-teresa/santa-teresa-middle.jpg"
+                      src="/areas/horizon-city/santa-teresa-middle-school.jpg"
                       alt="Santa Teresa Middle School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -838,7 +838,7 @@ export default async function SantaTeresaPage() {
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/santa-teresa/santa-teresa-elementary.jpg"
+                      src="/areas/horizon-city/santa-teresa-elementary.jpg"
                       alt="Santa Teresa Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
