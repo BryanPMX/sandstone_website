@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Check, X } from "lucide-react";
 import { PcsHeader } from "../PcsHeader.client";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -227,17 +226,21 @@ export default function VaLoanGuidePage() {
 
               <div className="mt-8 grid gap-8 md:grid-cols-2">
                 <div>
-                  <h4 className="mb-3 font-bold text-[var(--sandstone-navy)]">Before You Receive Orders</h4>
-                  <ul className="list-disc pl-6 space-y-2 text-sm marker:text-[var(--sandstone-sand-gold)]">
+                  <h4 className="mb-3 font-bold text-[var(--sandstone-navy)]">
+                    Before You Receive Orders
+                  </h4>
+                  <ul className="list-disc space-y-2 pl-6 text-sm marker:text-[var(--sandstone-sand-gold)]">
                     <li>Create a moving budget</li>
                     <li>Research your new duty station</li>
                     <li>Organize important documents</li>
                     <li>Review your current lease or mortgage</li>
                   </ul>
 
-                  <h4 className="mt-8 mb-3 font-bold text-[var(--sandstone-navy)]">Once You Receive Orders</h4>
-                  <ul className="list-disc pl-6 space-y-2 text-sm marker:text-[var(--sandstone-sand-gold)]">
-                    <li>Keep copies of your PCS Orders</li>
+                  <h4 className="mb-3 mt-8 font-bold text-[var(--sandstone-navy)]">
+                    Once You Receive Orders
+                  </h4>
+                  <ul className="list-disc space-y-2 pl-6 text-sm marker:text-[var(--sandstone-sand-gold)]">
+                    <li>Keep copies of your PCS orders</li>
                     <li>Schedule your household goods shipment</li>
                     <li>Contact your transportation office</li>
                     <li>Start your home search</li>
@@ -245,20 +248,24 @@ export default function VaLoanGuidePage() {
                 </div>
 
                 <div>
-                  <h4 className="mb-3 font-bold text-[var(--sandstone-navy)]">VA Loan Documents</h4>
-                  <ul className="list-disc pl-6 space-y-2 text-sm marker:text-[var(--sandstone-sand-gold)]  ">
+                  <h4 className="mb-3 font-bold text-[var(--sandstone-navy)]">
+                    VA Loan Documents
+                  </h4>
+                  <ul className="list-disc space-y-2 pl-6 text-sm marker:text-[var(--sandstone-sand-gold)]">
                     <li>Government-issued ID</li>
-                    <li> Certificate of Eligibility (COE)</li>
-                    <li> PCS Orders</li>
-                    <li> Leave & Earnings Statement (LES)</li>
-                    <li> Recent Pay Stubs</li>
-                    <li> W-2s (Last 2 Years)</li>
-                    <li> Bank Statements</li>
-                    <li> Purchase Contract</li>
+                    <li>Certificate of Eligibility (COE)</li>
+                    <li>PCS orders</li>
+                    <li>Leave & Earnings Statement (LES)</li>
+                    <li>Recent pay stubs</li>
+                    <li>W-2s from the last 2 years</li>
+                    <li>Bank statements</li>
+                    <li>Purchase contract</li>
                   </ul>
 
-                  <h4 className="mt-8 mb-3 font-bold text-[var(--sandstone-navy)]">Before Closing</h4>
-                  <ul className="list-disc pl-6 space-y-2 text-sm marker:text-[var(--sandstone-sand-gold)]">
+                  <h4 className="mb-3 mt-8 font-bold text-[var(--sandstone-navy)]">
+                    Before Closing
+                  </h4>
+                  <ul className="list-disc space-y-2 pl-6 text-sm marker:text-[var(--sandstone-sand-gold)]">
                     <li>Complete the VA appraisal</li>
                     <li>Schedule the home inspection</li>
                     <li>Arrange homeowners insurance</li>

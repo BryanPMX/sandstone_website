@@ -5,7 +5,6 @@ import { ListingCarousel } from "@/components/properties";
 import { fetchMyPropertyCards } from "@/services";
 import type { PropertyCard } from "@/types";
 import { PcsHeroSearch } from "./PcsHeroSearch.client";
-import { Star } from "lucide-react";
 import { PcsHeader } from "./PcsHeader.client";
 
 export const metadata = {
@@ -171,7 +170,7 @@ export default async function PCSPage() {
         {/* ACTION TILES */}
         <section className="py-12">
           <div className={SECTION_MAX}>
-            <div className="grid gap-6 rounded-2xl border border-[var(--sandstone-charcoal)]/8 bg-white p-6 shadow-[0_22px_56px_-40px_rgba(37,52,113,0.35)] md:grid-cols-3 md:gap-4">
+            <div className="grid gap-6 rounded-2xl border border-[var(--sandstone-charcoal)]/8 bg-white p-6 shadow-[0_22px_56px_-40px_rgba(37,52,113,0.35)] md:grid-cols-2 lg:grid-cols-4 md:gap-4">
 
               <div className="flex items-start gap-4">
                 <div className="relative h-12 w-12 shrink-0 rounded-xl bg-[var(--sandstone-off-white)]">
@@ -260,6 +259,35 @@ export default async function PCSPage() {
                 </div>
               </div>
 
+              <div className="flex items-start gap-4">
+                <div className="relative h-12 w-12 shrink-0 rounded-xl bg-[var(--sandstone-off-white)]">
+                  <Image
+                    src="/VA_Loan_Guide_Imgs/Downland_Checklist_VA.png"
+                    alt=""
+                    fill
+                    className="object-contain p-2"
+                    sizes="48px"
+                  />
+                </div>
+
+                <div>
+                  <p className="font-heading text-sm font-extrabold tracking-wide text-[var(--sandstone-navy)]">
+                    PCS Checklist
+                  </p>
+
+                  <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/75">
+                    See the key PCS and VA loan documents to prepare before your move.
+                  </p>
+
+                  <Link
+                    href="/pcs/va-loan-guide#pcs-checklist"
+                    className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
+                  >
+                    View checklist →
+                  </Link>
+                </div>
+              </div>
+
             </div>
           </div>
         </section>
@@ -286,8 +314,6 @@ export default async function PCSPage() {
             )}
           </div>
         </section>
-
-
 
       </main>
 
