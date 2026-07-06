@@ -391,7 +391,7 @@ export default async function CanutilloPage() {
   // Price detail card
   const PRICE_CARD = {
     current: medianPrice,
-    projection: "Contact for current snapshot",
+    guidance: "Compare by address",
     period,
   };
 
@@ -612,20 +612,20 @@ export default async function CanutilloPage() {
 
                   <div>
                     <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
-                      Current Guidance
+                      Neighborhood Guidance
                     </p>
-                    <p className="mt-1 font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-                      {PRICE_CARD.projection}
+                    <p className="mt-1 font-heading text-2xl font-bold leading-tight text-[var(--sandstone-navy)]">
+                      {PRICE_CARD.guidance}
                     </p>
                     <p className="mt-1 text-[9px] italic text-[var(--sandstone-charcoal)]/35">
-                      Local market snapshot
+                      Subdivision, school zone, and access vary
                     </p>
                   </div>
                 </div>
 
                 <p className="mt-5 text-xs italic text-[var(--sandstone-charcoal)]/40">
-                  pricing varies by condition, school zone, and Fort Bliss
-                  proximity
+                  Pricing varies by condition, subdivision, school zone, and
+                  proximity to I-10 / Artcraft.
                 </p>
               </div>
 
