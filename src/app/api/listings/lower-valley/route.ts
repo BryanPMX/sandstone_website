@@ -9,11 +9,9 @@ export async function GET() {
     const properties = await fetchActiveSparkPropertyCardsByPostalCode("79915");
     return NextResponse.json(properties);
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch Lower Valley listings:", error);
     return NextResponse.json(
-      { 
-        error: error instanceof Error ? error.message : String(error), 
-      },
+      { error: "Failed to fetch listings" },
       { status: 500 }
     );
   }
