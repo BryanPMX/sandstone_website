@@ -23,7 +23,7 @@ const nearbyCards = [
     title: "Horizon City",
     description:
       "One of the fastest-growing communities with new construction and family-friendly neighborhoods.",
-    href: "/areas/horizon-city",
+    href: "/areas/horizon-city-tx",
   },
   {
     title: "Fort Bliss PCS",
