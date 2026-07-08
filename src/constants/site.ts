@@ -11,13 +11,14 @@ export const SITE_NAV = [
 
 export const AREAS_NAV_MENU = [
   { label: "Upper Valley El Paso",         href: "/areas/upper-valley" },
-  { label: "Lower Valley El Paso", href: "/areas/lower-valley" },
+  { label: "Lower Valley El Paso",         href: "/areas/lower-valley" },
   { label: "West El Paso",                 href: "/areas/west-el-paso" },
   { label: "Northeast El Paso",            href: "/areas/northeast-el-paso" },
   { label: "Horizon City TX",              href: "/areas/horizon-city-tx" },
   { label: "Santa Teresa NM",              href: "/areas/santa-teresa-nm" },
   { label: "Canutillo TX",                 href: "/areas/canutillo-tx" },
-  { label: "Sandstone's New Builds",        href: "/areas/sandstones-new-builds" },
+  { label: "Downtown / UTEP Area",         href: "/areas/downtown-utep" },
+  { label: "Sandstone's New Builds",       href: "/areas/sandstones-new-builds" },
 ] as const;
 
 export const CONTACT_US_MENU = [
