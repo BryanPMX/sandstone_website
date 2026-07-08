@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import { LowerValleyListings } from "@/components/areas/LowerValleyListings";
 import { getTurnstileSiteKey } from "@/config";
 import {
   Clock,
@@ -504,12 +505,7 @@ export default async function LowerValleyPage() {
               Active homes for sale in Lower Valley · El Paso, TX
             </p>
 
-            <div className="rounded-2xl border border-dashed border-gray-300 p-8 text-center">
-              <h3 className="text-xl font-semibold">Lower Valley Listings</h3>
-                <p className="mt-2 text-gray-500">
-                  Listings will be connected after the page layout is complete.
-                </p>
-            </div>
+            <LowerValleyListings />
 
           </div>
         </section>
