@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-// ── Spark API — market statistics for Lower Valley (ZIP 79922) ────────────────
+// ── Spark API — market statistics for Lower Valley (ZIP 79915) ────────────────
 const SPARK_BASE    = "https://replication.sparkapi.com";
 const SPARK_TOKEN   = process.env.SPARK_ACCESS_TOKEN ?? "";
 const SPARK_HEADERS = {
@@ -57,39 +57,39 @@ async function fetchLowerValleyStats() {
 
 const SCHOOLS = {
   elementary: [
-    { name: "Ascarate Elementary School",                   district: "Ysleta ISD", zip: "79905"        },
-    { name: "Hueco Elementary",                              district: "Ysleta ISD", zip: "79907"        },
-    { name: "Presa Elementary",                                   district: "Ysleta ISD", zip: "79907" },
-    { name: "Riverside Elementary School",                                   district: "Ysleta ISD", zip: "79915"        },
+    { name: "Ascarate Elementary School",                   district: "Ysleta ISD", zip: "79905"    },
+    { name: "Hueco Elementary",                             district: "Ysleta ISD", zip: "79907"    },
+    { name: "Presa Elementary",                             district: "Ysleta ISD", zip: "79907"    },
+    { name: "Riverside Elementary School",                  district: "Ysleta ISD", zip: "79915"    },
   ],
   middle: [
-    { name: "Del Valle Middle School",                         district: "Ysleta ISD", zip: "79907" },
-    { name: "Riverside Middle School",                       district: "Ysleta ISD", zip: "79915"        },
-    { name: "Valley View Middle School",                                district: "Ysleta ISD", zip: "79915"        },
+    { name: "Del Valle Middle School",                      district: "Ysleta ISD", zip: "79907"    },
+    { name: "Riverside Middle School",                      district: "Ysleta ISD", zip: "79915"    },
+    { name: "Valley View Middle School",                    district: "Ysleta ISD", zip: "79915"    },
   ],
   high: [
-    { name: "Del Valle High School",                                         district: "Ysleta ISD", zip: "79907"          },
-    { name: "Riverside High School",                                          district: "Ysleta ISD", zip: "79915"          },
-    { name: "Ysleta High School",                           district: "Ysleta ISD", zip: "79907"},
+    { name: "Del Valle High School",                        district: "Ysleta ISD", zip: "79907"     },
+    { name: "Riverside High School",                        district: "Ysleta ISD", zip: "79915"     },
+    { name: "Ysleta High School",                           district: "Ysleta ISD", zip: "79907"     },
   ],
 } as const;
 
 const NEARBY = {
   hospitals: [
-    { name: "Del Sol Medical Center",                     time: "12 min", img: "/areas/lower-valley/nearby/delSolMedical.png" },
-    { name: "Las Palmas Medical Center",                  time: "10 min", img: "/areas/lower-valley/nearby/las-palmas-hospital.webp" },
-    { name: "University Medical Center",                  time: "15 min", img: "/areas/lower-valley/nearby/hospital-2.webp" },
+    { name: "Del Sol Medical Center",                     time: "12 min", img: "/areas/lower-valley/nearby/delSol.png" },
+    { name: "Las Palmas Medical Center",                  time: "10 min", img: "/areas/lower-valley/nearby/lasPalmas.png" },
+    { name: "University Medical Center",                  time: "15 min", img: "/areas/lower-valley/nearby/uniMc.png" },
   ],
   groceries: [
     { name: "Albertsons",             time: "8 min",  img: "/areas/lower-valley/nearby/albertsons.webp" },
-    { name: "El Super",               time: "7 min",  img: "/areas/lower-valley/nearby/El-super.jpg"},
-    { name: "Food King Cost Plus",    time: "9 min",  img: "/areas/lower-valley/nearby/vista-market.webp"},
+    { name: "El Super",               time: "7 min",  img: "/areas/lower-valley/nearby/elSuper.jpg"},
+    { name: "Food King Cost Plus",    time: "9 min",  img: "/areas/lower-valley/nearby/foodKing.jpg"},
     { name: "Walmart Supercenter",    time: "6 min",  img: "/areas/lower-valley/nearby/walmart.webp" },
   ],
   shopping: [
-    { name: "The Fountains at Farah",        time: "12 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
-    { name: "Bassett Place Mall",            time: "10 min", img: "/areas/lower-valley/nearby/shopping-center-2.webp" },
-    { name: "Cielo Vista Mall",              time: "11 min", img: "/areas/lower-valley/nearby/shopping-center-1.webp" },
+    { name: "The Fountains at Farah",        time: "12 min", img: "/areas/lower-valley/nearby/theFountains.png" },
+    { name: "Bassett Place Mall",            time: "10 min", img: "/areas/lower-valley/nearby/basset.png" },
+    { name: "Cielo Vista Mall",              time: "11 min", img: "/areas/lower-valley/nearby/cielovista.png" },
   ],
 };
 
@@ -214,7 +214,7 @@ export default async function LowerValleyPage() {
   ];
 
   // Price detail card
-  const PRICE_CARD = { current: medianPrice, projection: "$728K", period };
+  const PRICE_CARD = { current: medianPrice, period, };
 
   // Bottom 4 stat cards
   const STAT_CARDS = [
@@ -259,7 +259,7 @@ export default async function LowerValleyPage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/lower-valley/nearby/lower-valley.png"
+            src="/areas/lower-valley/LVHero.png"
             alt="Lower Valley EL Paso neighborhood "
             fill
             priority
@@ -347,58 +347,102 @@ export default async function LowerValleyPage() {
                 </div>
               ))}
             </div>
+        
 
-            {/* Middle row: price detail card + line chart */}
-            <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+          {/* Dashboard */}
+          <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-[400px_1fr]">
 
-              {/* Left — price detail */}
-              <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
-                <p className="text-sm font-bold text-[var(--sandstone-navy)]">Median Price</p>
+            {/* LEFT COLUMN */}
+            <div className="space-y-4">
 
-                <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
-                      Current ({PRICE_CARD.period})
-                    </p>
-                    <p className="mt-1 font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-                      {PRICE_CARD.current}
-                    </p>
-                  </div>
+              {/* Median Price */}
+              <div className="rounded-2x1 border border-[var(--sandstone-navy)]/12 bg-white p-6 shadow-sm">
 
-                  <div className="flex flex-col items-center gap-1 text-[var(--sandstone-charcoal)]/35">
-                    <div className="h-px w-8 bg-[var(--sandstone-charcoal)]/25" />
-                    <span className="text-lg">→</span>
-                    <div className="h-px w-8 bg-[var(--sandstone-charcoal)]/25" />
-                  </div>
+                <p className="text-sm font-bold text-[var(--sandstone-navy)]">
+                  Median Price
+                </p>
 
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
-                      Market Projection (2026)
-                    </p>
-                    <p className="mt-1 font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-                      {PRICE_CARD.projection}
-                    </p>
-                    <p className="mt-1 text-[9px] italic text-[var(--sandstone-charcoal)]/35">Editorial estimate</p>
-                  </div>
-                </div>
+                <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
+                  Current ({PRICE_CARD.period})
+                </p>
+                <p className="mt-3 font-heading text-5xl font-bold text-[var(--sandstone-sand-gold)]">
+                  {PRICE_CARD.current}
+                </p>
 
-                <p className="mt-5 text-xs italic text-[var(--sandstone-charcoal)]/40">
-                  vs market projection / 2026 trend
+                <p className="mt-4 text-xs text-[var(--sandstone-charcoal)]/55">
+                  Updated hourly from GEPAR MLS via the Spark API.
                 </p>
               </div>
 
-              {/* Right — line chart */}
-              <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
-                <p className="mb-4 text-sm font-bold text-[var(--sandstone-navy)]">
-                  Lower Valley Median List Price — 12 Months
+              {/* Market Stats */}
+              <div className="grid grid-cols-2 gap-3">
+                {STAT_CARDS.map(({icon: Icon, label, value, change, up}) => (
+
+                  <div
+                    key={label}
+                    className="rounded-2x1 border border-[var(--sandstone-navy)]/12 bg-white px-3 py-5 shadow-sm"
+                  >
+                    <div className="mb-3 flex items-center justify-center">
+
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--sandstone-navy)]/12 bg-[var(--sandstone-off-white)]">
+
+                        <Icon 
+                          size={18}
+                          className="text-[var(--sandstone-navy)]"
+                          strokeWidth={1.75}
+                        />
+                      
+                      </div>
+                    
+                    </div>
+
+                    <p className="whitespace-pre-line text-center text-[10x] font-semibold leading-snug text-[var(--sandstone-charcoal)]/60">
+                      {label}
+                    </p>
+
+                    <p className="mt-2 text-center font-heading text-2x1 font-bold text-[var(--sandstone-sand-gold)]">
+                      {value}
+                    </p>
+
+                    {change ? (
+                      
+                      <span
+                        className={`mt-2 flex justify-center text-[10px] font-bold ${
+                          up ? "text-green-600" : "text-red-500"
+                        }`}
+                      >
+                        {change} {up ? "↑" : "↓"}
+                      </span>
+
+                    ) : (
+                      
+                      <span className="mt-2 flex justify-center text-[10px] text-[var(--sandstone-charcoal)]/30">
+                        —
+                      </span>
+
+                    )}
+
+                  </div>
+
+                ))}
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN */}
+            <div className="rounded-2x1 border border-[var(--sandstone-navy)]/12 bg-white p-6 shadow-sm">
+                
+                <p className="mb-5 text-sm font-bold text-[var(--sandstone-navy)]">
+                  Lower Valley Median List Price — Last 12 Months
                 </p>
 
-                <svg
-                  viewBox={`0 0 ${CX1 + 16} ${CY1 + 24}`}
-                  className="w-full"
-                  aria-label="Lower Valley home price trend — last 12 months"
-                >
-                  <defs>
+                <div className="h-[500px] flex items-center">
+
+                  <svg
+                    viewBox={`0 0 ${CX1 + 16} ${CY1 + 24}`}
+                    className="h-full w-full"
+                    aria-label="Lower Valley home price trend — last 12 months"
+                    >
+                      <defs>
                     <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#b79678" stopOpacity="0.25" />
                       <stop offset="100%" stopColor="#b79678" stopOpacity="0.02" />
@@ -438,41 +482,12 @@ export default async function LowerValleyPage() {
                 </svg>
               </div>
             </div>
+          </div>
 
-            {/* Bottom 4 stat cards */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {STAT_CARDS.map(({ icon: Icon, label, value, change, up }) => (
-                <div
-                  key={label}
-                  className="flex flex-col items-center rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-3 py-5 text-center shadow-sm"
-                >
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--sandstone-navy)]/12 bg-[var(--sandstone-off-white)]">
-                    <Icon size={18} className="text-[var(--sandstone-navy)]" strokeWidth={1.75} />
-                  </div>
-                  <p className="whitespace-pre-line text-[10px] font-semibold leading-snug text-[var(--sandstone-charcoal)]/60">
-                    {label}
-                  </p>
-                  <p className="mt-2 font-heading text-2xl font-bold text-[var(--sandstone-sand-gold)]">
-                    {value}
-                  </p>
-                  {change ? (
-                    <span
-                      className={`mt-1.5 inline-flex items-center gap-0.5 text-[10px] font-bold ${
-                        up ? "text-green-600" : "text-red-500"
-                      }`}
-                    >
-                      {change} {up ? "↑" : "↓"}
-                    </span>
-                  ) : (
-                    <span className="mt-1.5 text-[10px] text-[var(--sandstone-charcoal)]/30">—</span>
-                  )}
-                </div>
-              ))}
-            </div>
-
+            
             {/* Source footnote */}
             <p className="mt-6 text-center text-[11px] text-[var(--sandstone-charcoal)]/35">
-              Live data: GEPAR MLS via Spark API · ZIP 79922 · Refreshes hourly
+              Live data: GEPAR MLS via Spark API · ZIP 79915 · Refreshes hourly
             </p>
 
           </div>
@@ -524,7 +539,7 @@ export default async function LowerValleyPage() {
                 {/* Large — Coronado High (3 parts of the column height) */}
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/lower-valley/schools/riversideHS.png"
+                    src="/areas/lower-valley/schools/DVMS.png"
                     alt="Riverside High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
@@ -532,7 +547,7 @@ export default async function LowerValleyPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                   <p className="absolute bottom-4 left-4 font-heading text-xl font-bold text-white drop-shadow">
-                    Riverside High School
+                    Del Valle Middle School
                   </p>
                 </div>
 
@@ -540,7 +555,7 @@ export default async function LowerValleyPage() {
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/lower-valley/schools/riversideElem.png"
+                      src="/areas/lower-valley/schools/RSElem.png"
                       alt="Riverside Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -553,7 +568,7 @@ export default async function LowerValleyPage() {
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/lower-valley/schools/delvalleHS.png"
+                      src="/areas/lower-valley/schools/DVHS.png"
                       alt="Del Valle High School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -801,7 +816,7 @@ export default async function LowerValleyPage() {
                     Lower Valley Home Prices in 2026
                   </h2>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Lower Valley remains one of the most affordable housing markets in the El Paso metro area. Buyers can often find established homes with larger lots at prices below many other neighborhoods, making the communit attractive to both homeowners and investors. For the latest pricing, inventory, and market trends, contact Sandstone Real Estate Group.
+                    Lower Valley remains one of the most affordable housing markets in the El Paso metro area. Buyers can often find established homes with larger lots at prices below many other neighborhoods, making the community attractive to both homeowners and investors. For the latest pricing, inventory, and market trends, contact Sandstone Real Estate Group.
                   </p>
                 </div>
 
@@ -815,7 +830,7 @@ export default async function LowerValleyPage() {
                   <ul className="mt-3 space-y-2">
                     {[
                       "First-time homebuyers looking for affordable homeownership opportunities",
-                      "Multi-generational families wantint to stay close to established community ties",
+                      "Multi-generational families wanting to stay close to established community ties",
                       "Buyers seeking a shorter commute to Downtown, medical centers, or the Ysleta Port of Entry",
                       "Investors looking for stable rental demand in an established neighborhood",
                     ].map((item) => (
@@ -826,7 +841,7 @@ export default async function LowerValleyPage() {
                     ))}
                   </ul>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Whether you&aps;re purchasing your first home, incesting, or looking for an established neighborhood with excellent access throughout El Paso, Lower Valley offers lasting value and a strong sense of community.
+                    Whether you&apos;re purchasing your first home, investing, or looking for an established neighborhood with excellent access throughout El Paso, Lower Valley offers lasting value and a strong sense of community.
                   </p>
                 </div>
               </div>
