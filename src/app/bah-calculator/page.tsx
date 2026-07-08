@@ -111,7 +111,7 @@ export default async function BahCalculatorPage() {
             </div>
 
             <LeadCaptureSection
-              formType="buy"
+              formType={"buy" as any}
               sectionId="bah-contact"
               heading="Request a BAH Consultation"
               headingTag="h2"
