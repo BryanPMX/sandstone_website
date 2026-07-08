@@ -193,7 +193,7 @@ export default async function PCSPage() {
                   </p>
 
                   <Link
-                    href="/sell#mortgage-calculator"
+                    href="/bah-calculator"
                     className="mt-2 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)] hover:underline"
                   >
                     Calculate now &rarr;
