@@ -23,29 +23,6 @@ export default async function BahCalculatorPage() {
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         <BahCalculator />
 
-        <section id="homes-within-budget" className="bg-white py-16">
-          <div className="mx-auto max-w-6xl px-4 lg:px-6">
-            <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-[0.28em] text-[var(--sandstone-sand-gold)]">
-                Homes Within Your Budget
-              </p>
-
-              <h2 className="mt-3 font-heading text-3xl font-extrabold text-[var(--sandstone-navy)] sm:text-4xl">
-                Browse Homes Near Fort Bliss
-              </h2>
-
-              <p className="mx-auto mt-3 max-w-2xl text-[var(--sandstone-charcoal)]/75">
-                Explore El Paso homes that may fit your BAH, VA loan, and PCS
-                timeline.
-              </p>
-            </div>
-
-            <div className="mt-8">
-              <ListingCarousel properties={properties.slice(0, 9)} />
-            </div>
-          </div>
-        </section>
-
         <section className="bg-[var(--sandstone-off-white)] py-20">
           <div className="mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-[0.9fr_1.1fr] lg:px-6 lg:items-start">
             <div className="rounded-[2rem] border border-[var(--sandstone-navy)]/10 bg-white p-8 shadow-sm lg:sticky lg:top-24">
@@ -85,10 +62,6 @@ export default async function BahCalculatorPage() {
                     key={item.title}
                     className="flex gap-4 rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)] p-5"
                   >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-sm font-bold text-white">
-                      ✓
-                    </div>
-
                     <div>
                       <h3 className="font-bold text-[var(--sandstone-navy)]">
                         {item.title}
@@ -111,7 +84,7 @@ export default async function BahCalculatorPage() {
             </div>
 
             <LeadCaptureSection
-              formType={"buy" as any}
+              formType="buy"
               sectionId="bah-contact"
               heading="Request a BAH Consultation"
               headingTag="h2"
@@ -121,6 +94,29 @@ export default async function BahCalculatorPage() {
               messagePlaceholder="Tell us your price range, pay grade, timeline, or any questions..."
               turnstileSiteKey={turnstileSiteKey}
             />
+          </div>
+        </section>
+
+        <section id="homes-within-budget" className="bg-white py-16">
+          <div className="mx-auto max-w-6xl px-4 lg:px-6">
+            <div className="text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.28em] text-[var(--sandstone-sand-gold)]">
+                Homes Within Your Budget
+              </p>
+
+              <h2 className="mt-3 font-heading text-3xl font-extrabold text-[var(--sandstone-navy)] sm:text-4xl">
+                Browse Homes Near Fort Bliss
+              </h2>
+
+              <p className="mx-auto mt-3 max-w-2xl text-[var(--sandstone-charcoal)]/75">
+                Explore El Paso homes that may fit your BAH, VA loan, and PCS
+                timeline.
+              </p>
+            </div>
+
+            <div className="mt-8">
+              <ListingCarousel properties={properties.slice(0, 9)} />
+            </div>
           </div>
         </section>
 
