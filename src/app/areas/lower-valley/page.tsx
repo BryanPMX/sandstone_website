@@ -82,8 +82,8 @@ const NEARBY = {
   ],
   groceries: [
     { name: "Albertsons",             time: "8 min",  img: "/areas/lower-valley/nearby/albertsons.webp" },
-    { name: "El Super",               time: "7 min",  img: "/areas/lower-valley/nearby/El-super.jpg"},
-    { name: "Food King Cost Plus",    time: "9 min",  img: "/areas/lower-valley/nearby/vista-market.webp"},
+    { name: "El Super",               time: "7 min",  img: "/areas/lower-valley/nearby/elSuper.jpg"},
+    { name: "Food King Cost Plus",    time: "9 min",  img: "/areas/lower-valley/nearby/foodKing.jpg"},
     { name: "Walmart Supercenter",    time: "6 min",  img: "/areas/lower-valley/nearby/walmart.webp" },
   ],
   shopping: [
@@ -259,7 +259,7 @@ export default async function LowerValleyPage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/lower-valley/hero.webp"
+            src="/areas/lower-valley/LVHero.png"
             alt="Lower Valley EL Paso neighborhood "
             fill
             priority
