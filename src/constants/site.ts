@@ -12,7 +12,6 @@ export const SITE_NAV = [
 export const AREAS_NAV_MENU = [
   { label: "Upper Valley El Paso",         href: "/areas/upper-valley" },
   { label: "Lower Valley El Paso",         href: "/areas/lower-valley" },
-  { label: "West El Paso",                 href: "/areas/west-el-paso" },
   { label: "Northeast El Paso",            href: "/areas/northeast-el-paso" },
   { label: "East El Paso",                 href: "/areas/east-el-paso"},
   { label: "West El Paso",                 href: "/areas/west-el-paso" },
