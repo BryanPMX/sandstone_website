@@ -213,13 +213,12 @@ const AREAS: AreaCard[] = [
   {
     title:       "Downtown / UTEP Area",
     description: "Urban living, walkability, cultural landmarks, and strong investment potential.",
-    href:        "",
+    href:        "/areas/downtown-utep",
     icon:        <IcoDowntown />,
     price:       "From $180K+",
     commute:     "10–15 min to Fort Bliss",
     feature:     "UTEP & Culture",
     featIcon:    <BLeaf />,
-    noLink:      true,
   },
 ];
 
@@ -227,21 +226,26 @@ const AREAS: AreaCard[] = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function ExploreNearbyAreas() {
+interface ExploreNearbyAreasProps {
+  compact?: boolean;
+  currentAreaHref?: string;
+}
+
+export default function ExploreNearbyAreas({ compact = false, currentAreaHref }: ExploreNearbyAreasProps = {}) {
   const router = useRouter();
 
   return (
-    <section style={{ backgroundColor: "#f5f0eb" }} className="py-20">
+    <section style={{ backgroundColor: "#f5f0eb" }} className={compact ? "py-12" : "py-20"}>
       <div className="mx-auto max-w-7xl px-6">
 
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-10">
-          <IcoMountain />
+          {!compact && <IcoMountain />}
           <h2
-            className="mt-4 text-[2.6rem] font-extrabold tracking-tight leading-tight"
+            className={`font-extrabold tracking-tight leading-tight ${compact ? "mt-0 text-3xl font-heading" : "mt-4 text-[2.6rem]"}`}
             style={{ color: "#111827" }}
           >
-            Explore El Paso Neighborhoods
+            Explore Nearby Areas
           </h2>
           <p className="mt-3 text-[1.05rem]" style={{ color: "#6b7280" }}>
             Find the area that fits your lifestyle, commute, and home goals.
@@ -250,9 +254,23 @@ export default function ExploreNearbyAreas() {
 
 
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {AREAS.map((area) => {
-            const cardInner = (
+        <div className={`grid gap-5 ${compact ? "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "sm:grid-cols-2 lg:grid-cols-4"}`}>
+          {AREAS.filter(a => a.href !== currentAreaHref).map((area) => {
+            const cardInner = compact ? (
+              <div className="p-5 flex items-center gap-4 flex-1">
+                <div className="shrink-0 scale-90 origin-left">{area.icon}</div>
+                <div className="flex-1">
+                  <h3 className="text-[1.05rem] font-bold leading-tight" style={{ color: "#111827" }}>
+                    {area.title}
+                  </h3>
+                  {!area.noLink && (
+                    <span className="text-[12px] font-bold mt-1 inline-block" style={{ color: "#C5860A" }}>
+                      Explore →
+                    </span>
+                  )}
+                </div>
+              </div>
+            ) : (
               <div className="p-6 flex flex-col flex-1">
                 <div className="mb-4">{area.icon}</div>
                 <h3 className="text-[1.2rem] font-extrabold mb-1.5" style={{ color: "#111827" }}>
@@ -308,10 +326,11 @@ export default function ExploreNearbyAreas() {
         </div>
 
         {/* Bottom CTA */}
-        <div
-          className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-6 rounded-2xl px-8 py-6"
-          style={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb" }}
-        >
+        {!compact && (
+          <div
+            className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-6 rounded-2xl px-8 py-6"
+            style={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb" }}
+          >
           <div className="flex items-center gap-4">
             <IcoHeadphone />
             <div>
@@ -331,6 +350,7 @@ export default function ExploreNearbyAreas() {
             Schedule a Consultation →
           </Link>
         </div>
+        )}
 
       </div>
     </section>

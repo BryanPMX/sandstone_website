@@ -115,7 +115,7 @@ const NEARBY = {
     {
       name: "Northwest Emergency Center",
       time: "12 min",
-      img: "/areas/horizon-city/northwest-emergency-center.webp",
+      img: "/areas/santa teresa/Northwest Emergency Center _2.png",
     },
     {
       name: "Las Palmas Medical Center",
@@ -154,17 +154,17 @@ const NEARBY = {
     {
       name: "The Outlet Shoppes at El Paso",
       time: "10 min",
-      img: "/areas/santa-teresa/outlet-shoppes.jpg",
+      img: "/areas/santa teresa/the outlets_2 .png",
     },
     {
       name: "West Towne Marketplace",
       time: "15 min",
-      img: "/areas/santa-teresa/west-towne.jpg",
+      img: "/areas/santa teresa/west town_2.png",
     },
     {
       name: "Santa Teresa Port of Entry Area",
       time: "8 min",
-      img: "/areas/santa-teresa/port-of-entry.jpg",
+      img: "/areas/santa teresa/santa teresa port of entry_2.png",
     },
   ],
 };
@@ -495,7 +495,7 @@ export default async function SantaTeresaPage() {
         {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/horizon-city/santa-teresa-nm.jpg"
+            src="/areas/santa teresa/st_hero.png"
             alt="Homes and neighborhoods in Santa Teresa, NM"
             fill
             priority

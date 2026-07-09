@@ -110,17 +110,17 @@ const NEARBY = {
     {
       name: "The Hospitals of Providence - Transmountain Campus",
       time: "10 min",
-      img: "/areas/canutillo/hospital-transmountain.jpg",
+      img: "/areas/canutillo/The Hospitals of Providence_2 .png",
     },
     {
       name: "Northwest Emergency Center",
       time: "12 min",
-      img: "/areas/canutillo/northwest-emergency.jpg",
+      img: "/areas/canutillo/Northwest Emergency Center _2.png",
     },
     {
       name: "Las Palmas Medical Center",
       time: "18 min",
-      img: "/areas/canutillo/las-palmas.jpg",
+      img: "/areas/canutillo/Las Palmas Medical Center _2.png",
     },
     {
       name: "Providence Memorial Hospital",
@@ -154,17 +154,17 @@ const NEARBY = {
     {
       name: "The Outlet Shoppes at El Paso",
       time: "5 min",
-      img: "/areas/canutillo/outlet-shoppes.jpg",
+      img: "/areas/canutillo/the outlets_editada .png",
     },
     {
       name: "West Towne Marketplace",
       time: "10 min",
-      img: "/areas/canutillo/west-towne.jpg",
+      img: "/areas/canutillo/west town_editada .png",
     },
     {
       name: "Sunland Park Mall",
       time: "15 min",
-      img: "/areas/canutillo/sunland-park-mall.jpg",
+      img: "/areas/west-el-paso/nearby/shoppes-solana.jpg",
     },
   ],
 };
@@ -495,7 +495,7 @@ export default async function CanutilloPage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/canutillo/hero.jpg"
+            src="/areas/canutillo/canutillo_cover.png"
             alt="Homes and neighborhoods in Canutillo, TX"
             fill
             priority
@@ -807,7 +807,7 @@ export default async function CanutilloPage() {
                 {/* Large —  High school  (3 parts of the column height) */}
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/canutillo/canutillo-high.jpg"
+                    src="/areas/canutillo/canutillo HS_2.png"
                     alt="Canutillo High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
@@ -823,7 +823,7 @@ export default async function CanutilloPage() {
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/canutillo/alderete-middle.jpg"
+                      src="/areas/canutillo/Jose J. Alderete_2.png"
                       alt="Jose J. Alderete Middle School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -838,7 +838,7 @@ export default async function CanutilloPage() {
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/canutillo/canutillo-elementary.jpg"
+                      src="/areas/canutillo/Canutillo elementary_2.png"
                       alt="Canutillo Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -1215,7 +1215,7 @@ export default async function CanutilloPage() {
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/canutillo/upper-valley.jpg"
+                    src="/areas/canutillo/aztec cave_2.png"
                     alt="Upper Valley near Canutillo"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
@@ -1224,7 +1224,7 @@ export default async function CanutilloPage() {
                 </div>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/canutillo/outlet-shoppes.jpg"
+                    src="/areas/canutillo/the outlets_2.png"
                     alt="Outlet Shoppes near Canutillo"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
