@@ -153,12 +153,12 @@ const UTILITIES = [
 ] as const;
 
 const FAQS = [
-  { icon: "/icons/areas/icon-home.webp",       q: "Is East El Paso a good place to live?",               a: "Yes. Eastside El Paso is one of the city's most established and connected communities, known for mature neighborhoods, a large retail and dining corridor, and quick access to the airport." },
+  { icon: "/icons/areas/icon-home.webp",       q: "Is East El Paso a good place to live?",               a: "Yes. Eastside El Paso is one of the city&apos;s most established and connected communities, known for mature neighborhoods, a large retail and dining corridor, and quick access to the airport." },
   { icon: "/icons/areas/icon-graduation.webp", q: "What school district serves East El Paso?",           a: "Most of Eastside El Paso is served by Yselta ISD. Some addresses near the western edge may fall under El Paso ISD, and far eastern edges may fall under Socorro ISD, so buyers should verify exact zoning by address." },
   { icon: "/icons/areas/icon-dollar.webp",     q: "How affordable is Eastside El Paso?",                 a: "East El Paso offers a wide range of price points, from entry-level homes near $175,000 to updated or newer-construction properties above $300,000 making it accessible to first-time buyers and move-up buyer alike." },
-  { icon: "/icons/areas/icon-shield.webp",     q: "What is the commute to Fort Bliss like?",             a: "Most Eastside neighborhoods are roughly 20-25 minutes from Fort Bliss's main or north gate via Loop 375, longer than Northeast El Paso but still commutable for militery households" },
+  { icon: "/icons/areas/icon-shield.webp",     q: "What is the commute to Fort Bliss like?",             a: "Most Eastside neighborhoods are roughly 20-25 minutes from Fort Bliss&apos;s main or north gate via Loop 375, longer than Northeast El Paso but still commutable for militery households" },
   { icon: "/icons/areas/icon-diamond.webp",    q: "What is the commute to the airport like?",            a: "Eastside El Paso is one of the closest residential corridors to El Paso International Airport, with most neighborhoods roughly 10-15 minutes away." },
-  { icon: "/icons/areas/icon-chart.webp",      q: "Is East El Paso good for military families?",         a: "Yes. While not as close to Fort Bliss as Northeast El Paso, Eastside offers strong values, established neighborhoods, and steady rental demand tied to the base's military population." },
+  { icon: "/icons/areas/icon-chart.webp",      q: "Is East El Paso good for military families?",         a: "Yes. While not as close to Fort Bliss as Northeast El Paso, Eastside offers strong values, established neighborhoods, and steady rental demand tied to the base&apos;s military population." },
   { icon: "/icons/areas/icon-location.webp",   q: "What parks and recreation are nearby?",               a: "The El Paso County Sportsplex, Marty Robbins Park, Edgemere Pond Park, Album Park, and the historc Yselta Mission are all within the Eastsides corridor." },
   { icon: "/icons/areas/icon-home-alt.webp",   q: "Is new construction available in Eastside El Paso?",  a: "Some newer construction is available toward the Vista de Oro and Far East-adjacent corridor, though most Eastside homes are established properties from prior decades. Buyers seeking the newest construction may also want to compare Horizon City and Far East El Paso." },
   { icon: "/icons/areas/icon-horse.webp",      q: "What is the average days on market?",                 a: "Days on market varies by price point and subarea, generally tracking the citywide El Paso average of roughly 44-54 days. Contact Sandstone Real Estate Group for current local market data." },
@@ -441,7 +441,7 @@ export default async function EastElPasoPage() {
                 Schools Near East El Paso
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                East El Paso is served primarily by Ysleta ISD, with some neighborhoods also falling within El Paso ISD or Socorro ISD depenindg on the property's location. Buyers should always verify school attendance boundaries for their specific address.
+                East El Paso is served primarily by Ysleta ISD, with some neighborhoods also falling within El Paso ISD or Socorro ISD depending on the property&apos;s location. Buyers should always verify school attendance boundaries for their specific address.
               </p>
             </div>
 
@@ -541,7 +541,7 @@ export default async function EastElPasoPage() {
                 Convenience at Your Doorstep
               </h2>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                East El Paso offers easy access to healthcare, grocery stores, restaurants, and one of the city's largest shopping corridors.
+                East El Paso offers easy access to healthcare, grocery stores, restaurants, and one of the city&apos;s largest shopping corridors.
               </p>
             </div>
 
@@ -940,7 +940,7 @@ export default async function EastElPasoPage() {
           formType="contact"
           sectionId="contact"
           heading="Ready to Buy in East El Paso?"
-          subheading="The Sandstone team knows East El Paso inside and out — from established neighborhoods near UTEP to newer Eastside subdivisions. Reach out and we'll help you find the right home."
+          subheading="The Sandstone team knows East El Paso inside and out — from established neighborhoods near UTEP to newer Eastside subdivisions. Reach out and we&apos;ll help you find the right home."
           ctaLabel="Schedule a Visit"
           messagePlaceholder="Tell us about your East El Paso home search..."
           mappingReference="east-el-paso"
