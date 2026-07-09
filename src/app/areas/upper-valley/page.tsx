@@ -79,9 +79,9 @@ const SCHOOLS = {
 
 const NEARBY = {
   hospitals: [
-    { name: "The Hospitals of Providence Transmountain", time: "13 min", img: "/areas/upper-valley/nearby/hospital-2.webp" },
-    { name: "University Medical Center",                  time: "22 min", img: "/areas/upper-valley/nearby/hospital-2.webp" },
-    { name: "Las Palmas Medical Center",                  time: "25 min", img: "/areas/upper-valley/nearby/las-palmas-hospital.webp" },
+    { name: "The Hospitals of Providence Transmountain", time: "13 min", img: "/areas/upper-valley/nearby/hospital-of-prov.webp" },
+    { name: "University Medical Center",                  time: "22 min", img: "/areas/upper-valley/nearby/University-MC.webp" },
+    { name: "Las Palmas Medical Center",                  time: "25 min", img: "/areas/upper-valley/nearby/Las-Palmas-MCenter.webp" },
   ],
   groceries: [
     { name: "Albertsons",             time: "7 min",  img: "/areas/upper-valley/nearby/albertsons.webp" },
@@ -91,9 +91,9 @@ const NEARBY = {
     { name: "Vista Market",           time: "7 min",  img: "/areas/upper-valley/nearby/vista-market.webp" },
   ],
   shopping: [
-    { name: "West Towne Marketplace",        time: "10 min", img: "/areas/upper-valley/nearby/shopping-center-1.webp" },
-    { name: "The Outlet Shoppes at El Paso", time: "14 min", img: "/areas/upper-valley/nearby/shopping-center-2.webp" },
-    { name: "Sunland Park Mall",             time: "16 min", img: "/areas/upper-valley/nearby/shopping-center-1.webp" },
+    { name: "West Towne Marketplace",        time: "10 min", img: "/areas/upper-valley/nearby/west-town.webp" },
+    { name: "The Outlet Shoppes at El Paso", time: "14 min", img: "/areas/upper-valley/nearby/the-outlets.webp" },
+    { name: "Sunland Park Mall",             time: "16 min", img: "/areas/upper-valley/nearby/sunland.webp" },
   ],
 };
 
@@ -825,7 +825,7 @@ export default async function UpperValleyPage() {
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/upper-valley/lifestyle-pool.webp"
+                    src="/areas/upper-valley/nearby/country-club.webp"
                     alt="Upper Valley luxury pool"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
@@ -834,7 +834,7 @@ export default async function UpperValleyPage() {
                 </div>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/upper-valley/lifestyle-garden.webp"
+                    src="/areas/upper-valley/nearby/rio-grande.webp"
                     alt="Upper Valley garden estate"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
