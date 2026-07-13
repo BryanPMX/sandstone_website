@@ -63,31 +63,6 @@ const neighborhoods = [
   },
 ];
 
-function Table({
-  headers,
-  children,
-}: {
-  headers: string[];
-  children: ReactNode;
-}) {
-  return (
-    <div className="mt-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
-      <table className="w-full min-w-[760px] border-collapse text-left text-sm">
-        <thead className="bg-gradient-to-r from-[#26356f] to-[#1e2a58] text-white">
-          <tr>
-            {headers.map((header) => (
-              <th key={header} className="p-5 font-semibold tracking-wide">
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-100">{children}</tbody>
-      </table>
-    </div>
-  );
-}
-
 export default function FortBlissBahPage() {
   return (
     <>
@@ -152,7 +127,7 @@ export default function FortBlissBahPage() {
 
             <div className="mt-12 rounded-none border-l-2 border-[#c6a46a] bg-slate-50 p-8 text-left text-slate-800 shadow-sm">
               <p className="text-lg font-light italic leading-relaxed">
-                "An E-5 with dependents may receive up to <span className="font-semibold text-[#c6a46a]">$1,809/month</span>, which can cover a major portion of a luxury VA loan mortgage payment in El Paso."
+                &quot;An E-5 with dependents may receive up to <span className="font-semibold text-[#c6a46a]">$1,809/month</span>, which can cover a major portion of a luxury VA loan mortgage payment in El Paso.&quot;
               </p>
             </div>
           </div>
