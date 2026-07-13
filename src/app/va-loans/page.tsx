@@ -128,7 +128,7 @@ export default function VaLoansPage() {
         <section className="relative overflow-hidden bg-[#26356f] text-white">
           <div className="absolute inset-0">
             <Image
-              src="/uploads/va-home.jpg"
+              src="/uploads/va-home.png"
               alt="El Paso neighborhood homes with mountain views"
               fill
               priority
