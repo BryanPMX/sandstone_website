@@ -125,8 +125,22 @@ export default function VaLoansPage() {
       <SiteHeader />
 
       <main className="min-h-screen bg-white text-slate-900">
-        <section className="bg-[#26356f] px-6 py-20 text-white">
-          <div className="mx-auto max-w-6xl">
+        <section className="relative overflow-hidden bg-[#26356f] text-white">
+          <div className="absolute inset-0">
+            <Image
+              src="/uploads/el_paso_neighborhood.jpg"
+              alt="El Paso neighborhood homes with mountain views"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+
+            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#26356f]/90 via-[#26356f]/60 to-black/20" />
+          </div>
+
+          <div className="relative z-10 mx-auto max-w-6xl px-6 py-24 md:py-32">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-[#c6a46a]">
               Fort Bliss Military Home Buying
             </p>
@@ -135,7 +149,7 @@ export default function VaLoansPage() {
               VA Loan Homes for Sale in El Paso, TX
             </h1>
 
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80">
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/85">
               Use your VA home loan benefit in one of the strongest military
               housing markets in the country. Sandstone helps Fort Bliss buyers
               find VA-eligible homes, compare neighborhoods, and close with
@@ -304,35 +318,36 @@ export default function VaLoansPage() {
         </section>
 
         <section className="relative overflow-hidden">
-          <div className="relative min-h-[560px] w-full">
+          <div className="relative h-[520px] w-full md:h-[560px] lg:h-[620px]">
             <Image
-              src="/uploads/va-home-search-banner.png"
-              alt="Military family looking at their El Paso home"
+              src="/uploads/el_paso_neighborhood.jpg"
+              alt="El Paso neighborhood homes with mountain views"
               fill
+              priority
               sizes="100vw"
-              className="object-cover"
+              className="object-cover object-center"
             />
 
-            <div className="absolute inset-0 bg-black/45" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#26356f]/80 via-[#26356f]/35 to-black/20" />
+            <div className="absolute inset-0 bg-[#26356f]/60" />
+            <div className="absolute inset-0 bg-black/35" />
 
-            <div className="relative z-10 flex min-h-[560px] flex-col items-center justify-center px-6 text-center">
-              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-[#c6a46a]">
+            <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center justify-center px-6 text-center">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-[#c6a46a] md:text-sm">
                 VA Homes Near Fort Bliss
               </p>
 
-              <h2 className="max-w-5xl text-4xl font-light tracking-[0.18em] text-white md:text-6xl">
+              <h2 className="max-w-4xl text-4xl font-light leading-tight tracking-[0.16em] text-white md:text-5xl lg:text-6xl">
                 Start Your El Paso Home Search
               </h2>
 
               <div className="mt-6 h-px w-20 bg-[#c6a46a]" />
 
-              <p className="mt-8 max-w-3xl bg-black/25 px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
+              <p className="mt-8 max-w-3xl bg-black/25 px-5 py-3 text-base font-light leading-relaxed text-white md:text-lg">
                 Ready to see what your BAH can buy? Browse active listings near
                 Fort Bliss, filtered by your budget and preferred neighborhoods.
               </p>
 
-              <div className="mt-8 w-full max-w-4xl">
+              <div className="mt-10 w-full max-w-3xl">
                 <SearchForm />
               </div>
             </div>
