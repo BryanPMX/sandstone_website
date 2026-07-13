@@ -100,7 +100,7 @@ const COMMUTE_TIMES = [
   { icon: "/icons/areas/icon-graduation.webp",   time: "15-20 min", label: "UTEP"                    },
   { icon: "/icons/areas/icon-star.webp",         time: "20-25 min", label: "Fort Bliss\nCassidy Gate"},
   { icon: "/icons/areas/icon-airport.webp",      time: "15-20 min", label: "El Paso\nAirport"        },
-  { icon: "/icons/areas/icon-shopping-bag.webp", time: "8-12 min",  label: "Ysleta Port\nof Entry" },
+  { icon: "/icons/areas/icon-location.webp", time: "8-12 min",  label: "Ysleta Port\nof Entry" },
 ];
 
 const UTILITIES = [

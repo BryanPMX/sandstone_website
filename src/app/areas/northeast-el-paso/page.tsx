@@ -114,7 +114,7 @@ const NEARBY = {
     {
       name: "William Beaumont Army Medical Center",
       time: "10 min",
-      img: "/areas/north east/William Beaumont Army Medical Center_2.png" },
+      img: "/areas/north-east/WilliamBeaumontArmyMedicalCenter_2.png" },
 
     {
       name: "The Hospitals of Providence - Transmountain Campus",
@@ -144,19 +144,19 @@ const NEARBY = {
     {
       name: "Food King",
       time: "7 min",
-      img: "/areas/northeast-el-paso/food-king.jpg",
+      img: "/areas/lower-valley/nearby/foodKing.jpg",
     },
     {
       name: "Sam's Club",
       time: "8 min",
-      img: "/areas/northeast-el-paso/sams-club.jpg",
+      img: "/areas/east-el-paso/nearby/sams-club.jpeg",
     },
   ],
   shopping: [
     {
       name: "Dyer Street Corridor",
       time: "On-site",
-      img: "/areas/north east/Dyer corridor_2.png",
+      img: "/areas/north-east/DyerCorridor_2.png",
     },
     {
       name: "Cielo Vista Mall",
@@ -165,7 +165,7 @@ const NEARBY = {
     {
       name: "Bassett Place Mall",
       time: "15 min",
-      img: "/areas/north east/basset_2.png",
+      img: "/areas/north-east/basset_2.png",
     },
   ],
 };
@@ -496,7 +496,7 @@ export default async function NortheastElPasoPage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
-            src="/areas/north east/northeast cover.png"
+            src="/areas/north-east/northeast-cover.png"
             alt="Homes and mountain views in Northeast El Paso, TX"
             fill
             priority
@@ -814,7 +814,7 @@ export default async function NortheastElPasoPage() {
                 {/* Large —  High school  (3 parts of the column height) */}
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/north east/Andres HS_2.png"
+                    src="/areas/north-east/Andres-HS_2.png"
                     alt="Andress High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
@@ -830,7 +830,7 @@ export default async function NortheastElPasoPage() {
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/north east/Canyon Hills Middle School_2.png"
+                      src="/areas/north-east/CanyonHillsMiddleSchool_2.png"
                       alt="Canyon Hills Middle School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -845,7 +845,7 @@ export default async function NortheastElPasoPage() {
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/north east/Whitaker Elementary School_2.png"
+                      src="/areas/north-east/WhitakerElem_2.png"
                       alt="Whitaker Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -1244,7 +1244,7 @@ export default async function NortheastElPasoPage() {
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/north east/Franklin Mountains NE_2.png"
+                    src="/areas/north-east/Franklin-Mountains-NE_2.png"
                     alt="Franklin Mountains near Northeast El Paso"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
@@ -1253,7 +1253,7 @@ export default async function NortheastElPasoPage() {
                 </div>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src="/areas/north east/NE attractions_2.png"
+                    src="/areas/north-east/NE-attractions_2.png"
                     alt="Dyer Street shopping corridor in Northeast El Paso"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"

@@ -100,9 +100,9 @@ const NEARBY = {
     { name: "University Medical Center (UMC)", time: "10 min", img: "/areas/downtown-utep/University-Medical-Center_2-.png" },
   ],
   groceries: [
-    { name: "Food City", time: "5 min", img: "/icons/areas/icon-grocery.webp" },
-    { name: "El Super", time: "8 min", img: "/icons/areas/icon-grocery.webp" },
-    { name: "Albertsons", time: "10 min", img: "/icons/areas/icon-grocery.webp" },
+    { name: "Food City", time: "5 min", img: "/areas/east-el-paso/nearby/food-city.jpeg" },
+    { name: "El Super", time: "8 min", img: "/areas/lower-valley/nearby/elSuper.jpg" },
+    { name: "Albertsons", time: "10 min", img: "/areas/lower-valley/nearby/albertsons.webp" },
   ],
   shopping: [
     { name: "La Nube & Arts District", time: "2 min", img: "/areas/downtown-utep/la-nube-downtown_2.png" },
