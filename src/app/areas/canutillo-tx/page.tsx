@@ -148,7 +148,7 @@ const NEARBY = {
     {
       name: "Target",
       time: "10 min",
-      img: "/areas/canutillo/target.jpg",
+      img: "/areas/canutillo/target.png",
     },
   ],
   shopping: [
@@ -839,7 +839,7 @@ export default async function CanutilloPage() {
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/canutillo/Canutillo elementary_2.png"
+                      src="/areas/canutillo/CanutilloElementary_2.png"
                       alt="Canutillo Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"

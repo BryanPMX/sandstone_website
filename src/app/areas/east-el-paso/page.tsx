@@ -102,7 +102,7 @@ const COMMUTE_TIMES = [
   { icon: "/icons/areas/icon-graduation.webp",   time: "20-25 min", label: "UTEP"                    },
   { icon: "/icons/areas/icon-star.webp",         time: "20-25 min", label: "Fort Bliss\nMain Gate"   },
   { icon: "/icons/areas/icon-airport.webp",      time: "10-15 min", label: "El Paso\nAirport"        },
-  { icon: "/icons/areas/icon-shopping-bag.webp", time: "25-30 min",  label: "Westside\nvia I-10"},
+  { icon: "/icons/areas/icon-location.webp", time: "25-30 min",  label: "Westside\nvia I-10"},
 ];
 
 const UTILITIES = [
