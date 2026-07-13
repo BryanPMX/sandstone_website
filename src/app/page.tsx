@@ -116,7 +116,7 @@ export default async function Home() {
 
         <FeaturedListingsSection properties={alejandroSparkProperties} />
 
-        <ExploreNearbyAreas />
+        <ExploreNearbyAreas compact={true} />
 
         <BlogTeaserSection posts={latestPosts} />
 
