@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ContactForm } from "@/components/ContactForm";
+import SearchForm from "../bah-fort-bliss-2026/SearchForm";
 
 export const metadata = {
   title: "VA Loan Homes El Paso TX | $0 Down, No PMI | Sandstone Real Estate",
@@ -301,25 +303,38 @@ export default function VaLoansPage() {
           </div>
         </section>
 
-        <section className="bg-slate-50 px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              Browse VA-Eligible Homes in El Paso
-            </h2>
+        <section className="relative overflow-hidden">
+          <div className="relative min-h-[560px] w-full">
+            <Image
+              src="/uploads/va-home-search-banner.png"
+              alt="Military family looking at their El Paso home"
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
 
-            <p className="mt-4 max-w-3xl text-slate-700">
-              Search homes across El Paso that may fit VA financing, including
-              Northeast El Paso, Horizon City, Far East El Paso, West El Paso,
-              and the Upper Valley.
-            </p>
+            <div className="absolute inset-0 bg-black/45" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#26356f]/80 via-[#26356f]/35 to-black/20" />
 
-            <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
-              <h3 className="text-xl font-bold text-[#26356f]">
-                IDX / Listing Carousel Placeholder
-              </h3>
-              <p className="mt-2 text-slate-600">
-                Add the property listing widget here when ready.
+            <div className="relative z-10 flex min-h-[560px] flex-col items-center justify-center px-6 text-center">
+              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-[#c6a46a]">
+                VA Homes Near Fort Bliss
               </p>
+
+              <h2 className="max-w-5xl text-4xl font-light tracking-[0.18em] text-white md:text-6xl">
+                Start Your El Paso Home Search
+              </h2>
+
+              <div className="mt-6 h-px w-20 bg-[#c6a46a]" />
+
+              <p className="mt-8 max-w-3xl bg-black/25 px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
+                Ready to see what your BAH can buy? Browse active listings near
+                Fort Bliss, filtered by your budget and preferred neighborhoods.
+              </p>
+
+              <div className="mt-8 w-full max-w-4xl">
+                <SearchForm />
+              </div>
             </div>
           </div>
         </section>

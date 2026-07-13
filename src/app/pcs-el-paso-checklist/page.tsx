@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ContactForm } from "@/components/ContactForm";
+import SearchForm from "../bah-fort-bliss-2026/SearchForm";
 
 export const metadata = {
   title:
@@ -296,43 +297,45 @@ export default function PcsElPasoChecklistPage() {
       <SiteHeader />
 
       <main className="min-h-screen bg-white text-slate-900">
-        <section className="relative overflow-hidden bg-[var(--sandstone-navy)] px-6 py-24 text-white md:py-28">
+        <section className="relative min-h-[640px] overflow-hidden bg-[var(--sandstone-navy)] px-6 pt-36 pb-24 text-white md:min-h-[700px] md:pt-44">
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: "url('/uploads/pcs-hero-bg.png')",
             }}
           />
 
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,53,111,0.97)_0%,rgba(38,53,111,0.88)_45%,rgba(38,53,111,0.58)_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,33,82,0.92)_0%,rgba(20,33,82,0.78)_42%,rgba(20,33,82,0.38)_72%,rgba(20,33,82,0.18)_100%)]" />
 
-          <div className="relative mx-auto max-w-6xl">
+          <div className="absolute inset-0 bg-black/10" />
+
+          <div className="relative mx-auto flex min-h-[460px] max-w-6xl items-center">
             <div className="max-w-4xl">
-              <p className="mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+              <p className="mb-6 inline-flex rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs font-bold uppercase tracking-[0.28em] text-[var(--sandstone-sand-gold)] backdrop-blur">
                 Fort Bliss Relocation Guide
               </p>
 
-              <h1 className="font-heading text-4xl font-bold tracking-tight md:text-6xl">
+              <h1 className="font-heading text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
                 PCS to El Paso Checklist 2026
               </h1>
 
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80">
-                A complete Fort Bliss relocation guide covering housing, BAH,
-                VA loan prep, school districts, neighborhoods, in-processing,
-                and your first week in El Paso.
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-white/85 md:text-xl">
+                A complete Fort Bliss relocation guide covering housing, BAH, VA
+                loan prep, school districts, neighborhoods, in-processing, and
+                your first week in El Paso.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-4">
+              <div className="mt-10 flex flex-wrap gap-4">
                 <a
                   href="#checklist"
-                  className="rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:opacity-90"
+                  className="rounded-full bg-[var(--sandstone-sand-gold)] px-8 py-4 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:opacity-90"
                 >
-                  View Checklist
+                  View Checklist →
                 </a>
 
                 <a
                   href="#contact"
-                  className="rounded-full border border-white/25 px-7 py-3 text-sm font-bold text-white transition hover:bg-white hover:text-[var(--sandstone-navy)]"
+                  className="rounded-full border border-white/30 px-8 py-4 text-sm font-bold text-white transition hover:bg-white hover:text-[var(--sandstone-navy)]"
                 >
                   Get Relocation Help
                 </a>
@@ -491,29 +494,34 @@ export default function PcsElPasoChecklistPage() {
 
         <section className="px-6 py-16 md:py-20">
           <div className="mx-auto max-w-6xl">
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm md:p-12">
-              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
-                Homes Near Fort Bliss
-              </p>
+            <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage: 'url("/uploads/el_paso_neighborhood.jpg")',
+                }}
+              />
 
-              <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Browse homes by gate and budget
-              </h2>
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,53,111,0.92)_0%,rgba(38,53,111,0.76)_45%,rgba(38,53,111,0.45)_100%)]" />
 
-              <p className="mx-auto mt-4 max-w-3xl leading-8 text-[var(--sandstone-charcoal)]">
-                Search El Paso, Horizon City, West El Paso, Northeast El Paso,
-                and Santa Teresa homes based on commute, budget, and your Fort
-                Bliss assignment.
-              </p>
-
-              <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-10">
-                <h3 className="font-heading text-xl font-bold text-[var(--sandstone-navy)]">
-                  IDX / Listing Carousel Placeholder
-                </h3>
-
-                <p className="mt-2 text-slate-600">
-                  Add the property listing widget here when ready.
+              <div className="relative z-10 flex min-h-[520px] flex-col items-center justify-center px-6 text-center md:min-h-[560px]">
+                <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+                  Homes Near Fort Bliss
                 </p>
+
+                <h2 className="mt-4 max-w-5xl font-heading text-4xl font-bold tracking-tight text-white md:text-6xl">
+                  Start Your El Paso Home Search
+                </h2>
+
+                <div className="mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
+
+                <p className="mt-8 max-w-3xl bg-black/25 px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
+                  Ready to see what your BAH can buy? Browse active listings near
+                  Fort Bliss, filtered by your budget and preferred
+                  neighborhoods.
+                </p>
+
+                <SearchForm />
               </div>
             </div>
           </div>
