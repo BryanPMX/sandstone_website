@@ -80,9 +80,9 @@ const SCHOOLS = {
 
 const NEARBY = {
   hospitals: [
-    { name: "The Hospitals of Providence Transmountain", time: "13 min", img: "/areas/upper-valley/nearby/hospital-of-prov.webp" },
-    { name: "University Medical Center",                  time: "22 min", img: "/areas/upper-valley/nearby/University-MC.webp" },
-    { name: "Las Palmas Medical Center",                  time: "25 min", img: "/areas/upper-valley/nearby/Las-Palmas-MCenter.webp" },
+    { name: "The Hospitals of Providence Transmountain", time: "13 min", img: "/areas/upper-valley/hospitals/hospital-of-prov.webp" },
+    { name: "University Medical Center",                  time: "22 min", img: "/areas/upper-valley/hospitals/University-MC.webp" },
+    { name: "Las Palmas Medical Center",                  time: "25 min", img: "/areas/upper-valley/hospitals/Las-Palmas-MCenter.webp" },
   ],
   groceries: [
     { name: "Albertsons",             time: "7 min",  img: "/areas/upper-valley/nearby/albertsons.webp" },
