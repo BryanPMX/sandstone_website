@@ -25,27 +25,91 @@ const daysBeforeChecklist = [
 ];
 
 const neighborhoodGuide = [
-  { gate: "Cassidy Gate / MSG Peña Gate", area: "Northeast El Paso", price: "$231,526", commute: "5–15 min" },
-  { gate: "Cassidy Gate, east units", area: "Horizon City TX", price: "$324,000", commute: "10–15 min" },
-  { gate: "Biggs Army Airfield", area: "West El Paso", price: "$350,000–$380,000", commute: "25–30 min" },
-  { gate: "West side flexibility / lower taxes", area: "Santa Teresa NM", price: "$346,000", commute: "40–45 min to main gate" },
+  {
+    gate: "Cassidy Gate / MSG Peña Gate",
+    area: "Northeast El Paso",
+    price: "$231,526",
+    commute: "5–15 min",
+  },
+  {
+    gate: "Cassidy Gate, east units",
+    area: "Horizon City TX",
+    price: "$324,000",
+    commute: "10–15 min",
+  },
+  {
+    gate: "Biggs Army Airfield",
+    area: "West El Paso",
+    price: "$350,000–$380,000",
+    commute: "25–30 min",
+  },
+  {
+    gate: "West side flexibility / lower taxes",
+    area: "Santa Teresa NM",
+    price: "$346,000",
+    commute: "40–45 min to main gate",
+  },
 ];
 
 const schoolDistricts = [
-  { area: "Northeast El Paso", district: "El Paso ISD", schools: "Parkland High School, Transmountain Early College HS" },
-  { area: "West El Paso", district: "El Paso ISD", schools: "Coronado High School, Franklin High School" },
-  { area: "Horizon City / Far East", district: "Socorro ISD", schools: "Eastlake High School, Horizon Heights Elementary" },
-  { area: "Santa Teresa NM", district: "Gadsden ISD", schools: "Santa Teresa High School, Middle, Elementary" },
-  { area: "On-post housing", district: "El Paso ISD", schools: "On-installation elementary schools and high school" },
+  {
+    area: "Northeast El Paso",
+    district: "El Paso ISD",
+    schools: "Parkland High School, Transmountain Early College HS",
+  },
+  {
+    area: "West El Paso",
+    district: "El Paso ISD",
+    schools: "Coronado High School, Franklin High School",
+  },
+  {
+    area: "Horizon City / Far East",
+    district: "Socorro ISD",
+    schools: "Eastlake High School, Horizon Heights Elementary",
+  },
+  {
+    area: "Santa Teresa NM",
+    district: "Gadsden ISD",
+    schools: "Santa Teresa High School, Middle, Elementary",
+  },
+  {
+    area: "On-post housing",
+    district: "El Paso ISD",
+    schools: "On-installation elementary schools and high school",
+  },
 ];
 
 const processingChecklist = [
-  { task: "Report to Reception Company", where: "Building 1006, Carter Street", priority: "Day 1" },
-  { task: "Complete unit in-processing", where: "Through your unit", priority: "Day 1–3" },
-  { task: "Update military IDs", where: "DEERS / RAPIDS office", priority: "Week 1" },
-  { task: "Enroll children in school", where: "EPISD, SISD, or Gadsden ISD", priority: "Week 1" },
-  { task: "Set up TRICARE", where: "William Beaumont Army Medical Center", priority: "Week 1" },
-  { task: "Register vehicle", where: "El Paso Tax Assessor-Collector office", priority: "Within 90 days" },
+  {
+    task: "Report to Reception Company",
+    where: "Building 1006, Carter Street",
+    priority: "Day 1",
+  },
+  {
+    task: "Complete unit in-processing",
+    where: "Through your unit",
+    priority: "Day 1–3",
+  },
+  {
+    task: "Update military IDs",
+    where: "DEERS / RAPIDS office",
+    priority: "Week 1",
+  },
+  {
+    task: "Enroll children in school",
+    where: "EPISD, SISD, or Gadsden ISD",
+    priority: "Week 1",
+  },
+  {
+    task: "Set up TRICARE",
+    where: "William Beaumont Army Medical Center",
+    priority: "Week 1",
+  },
+  {
+    task: "Register vehicle",
+    where: "El Paso Tax Assessor-Collector office",
+    priority: "Within 90 days",
+  },
 ];
 
 const vaDocs = [
@@ -61,14 +125,104 @@ const timeline = [
   {
     timeframe: "Orders received",
     action:
-      "Call Housing Office, calculate BAH, decide buy vs. rent, contact Sandstone.",
+      "Call Housing Office, calculate BAH, decide buy vs. rent, and contact Sandstone.",
   },
-  { timeframe: "90 days out", action: "Start remote home search and get VA pre-approval." },
-  { timeframe: "60 days out", action: "Use PTDY to tour homes and make an offer." },
-  { timeframe: "30 days out", action: "Complete inspection, escrow steps, and moving coordination." },
-  { timeframe: "Reporting date", action: "In-process at Reception and finalize housing." },
-  { timeframe: "Within 90 days", action: "Register vehicles in Texas or New Mexico." },
+  {
+    timeframe: "90 days out",
+    action: "Start your remote home search and get VA pre-approved.",
+  },
+  {
+    timeframe: "60 days out",
+    action: "Use PTDY to tour homes, compare areas, and make an offer.",
+  },
+  {
+    timeframe: "30 days out",
+    action:
+      "Complete inspections, escrow steps, lender requests, and moving coordination.",
+  },
+  {
+    timeframe: "Reporting date",
+    action: "In-process at Reception and finalize your housing plan.",
+  },
+  {
+    timeframe: "Within 90 days",
+    action: "Register vehicles in Texas or New Mexico if applicable.",
+  },
 ];
+
+function SectionHeader({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+}) {
+  return (
+    <div className="mx-auto max-w-3xl text-center">
+      {eyebrow ? (
+        <p className="mb-3 text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+          {eyebrow}
+        </p>
+      ) : null}
+
+      <h2 className="font-heading text-3xl font-bold tracking-tight text-[var(--sandstone-navy)] md:text-4xl">
+        {title}
+      </h2>
+
+      {description ? (
+        <p className="mt-4 text-base leading-8 text-[var(--sandstone-charcoal)] md:text-lg">
+          {description}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function ChecklistCard({
+  title,
+  items,
+  variant = "light",
+}: {
+  title: string;
+  items: string[];
+  variant?: "light" | "dark";
+}) {
+  const isDark = variant === "dark";
+
+  return (
+    <div
+      className={`rounded-3xl border p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl ${
+        isDark
+          ? "border-white/10 bg-[var(--sandstone-navy)] text-white"
+          : "border-slate-200 bg-white text-[var(--sandstone-charcoal)]"
+      }`}
+    >
+      <h3
+        className={`font-heading text-2xl font-bold ${
+          isDark ? "text-white" : "text-[var(--sandstone-navy)]"
+        }`}
+      >
+        {title}
+      </h3>
+
+      <ul className="mt-6 space-y-4">
+        {items.map((item) => (
+          <li key={item} className="flex gap-3 leading-7">
+            <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] text-xs font-bold text-white">
+              ✓
+            </span>
+
+            <span className={isDark ? "text-white/85" : "text-slate-700"}>
+              {item}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 function Table({
   headers,
@@ -78,19 +232,60 @@ function Table({
   children: ReactNode;
 }) {
   return (
-    <div className="mt-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
-      <table className="w-full min-w-[760px] border-collapse text-left text-sm">
-        <thead className="bg-[#26356f] text-white">
-          <tr>
-            {headers.map((header) => (
-              <th key={header} className="p-4">
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>{children}</tbody>
-      </table>
+    <div className="mt-10 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+          <thead className="bg-[var(--sandstone-navy)] text-white">
+            <tr>
+              {headers.map((header) => (
+                <th
+                  key={header}
+                  className="px-5 py-4 text-xs font-bold uppercase tracking-[0.18em]"
+                >
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody className="divide-y divide-slate-200">{children}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function TimelineCard() {
+  return (
+    <div className="rounded-3xl bg-[var(--sandstone-navy)] p-8 text-white shadow-xl md:p-10">
+      <p className="text-sm font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+        PCS Timeline
+      </p>
+
+      <h3 className="mt-3 font-heading text-3xl font-bold">
+        Your move at a glance
+      </h3>
+
+      <div className="mt-8 space-y-5">
+        {timeline.map((item, index) => (
+          <div key={item.timeframe} className="flex gap-4">
+            <div className="flex flex-col items-center">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] text-sm font-bold text-white">
+                {index + 1}
+              </span>
+
+              {index !== timeline.length - 1 ? (
+                <span className="mt-2 h-full w-px bg-white/15" />
+              ) : null}
+            </div>
+
+            <div className="pb-5">
+              <p className="font-bold text-white">{item.timeframe}</p>
+              <p className="mt-1 leading-7 text-white/75">{item.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -101,193 +296,152 @@ export default function PcsElPasoChecklistPage() {
       <SiteHeader />
 
       <main className="min-h-screen bg-white text-slate-900">
-        <section className="bg-[#26356f] px-6 py-20 text-white">
-          <div className="mx-auto max-w-6xl">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-[#c6a46a]">
-              Fort Bliss Relocation Guide
-            </p>
+        <section className="relative overflow-hidden bg-[var(--sandstone-navy)] px-6 py-24 text-white md:py-28">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(198,164,106,0.28),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.10),transparent_35%)]" />
 
-            <h1 className="max-w-5xl text-4xl font-bold tracking-tight md:text-6xl">
-              PCS to El Paso Checklist 2026 — Complete Military Relocation Guide
-            </h1>
+          <div className="relative mx-auto max-w-6xl">
+            <div className="max-w-4xl">
+              <p className="mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+                Fort Bliss Relocation Guide
+              </p>
 
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80">
-              Got orders to Fort Bliss? Use this checklist to organize housing,
-              BAH, VA loan pre-approval, schools, neighborhoods, and your first
-              week on post.
-            </p>
+              <h1 className="font-heading text-4xl font-bold tracking-tight md:text-6xl">
+                PCS to El Paso Checklist 2026
+              </h1>
 
-            <div className="mt-8 flex flex-wrap gap-4">
-              <a
-                href="#checklist"
-                className="rounded-full bg-[#c6a46a] px-6 py-3 text-sm font-bold normal-case tracking-normal text-white transition hover:bg-[#b89458]"
-              >
-                View Checklist
-              </a>
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80">
+                A complete Fort Bliss relocation guide covering housing, BAH,
+                VA loan prep, school districts, neighborhoods, in-processing,
+                and your first week in El Paso.
+              </p>
 
-              <a
-                href="#contact"
-                className="rounded-full border border-white/30 px-6 py-3 text-sm font-bold normal-case tracking-normal text-white transition hover:bg-white hover:text-[#26356f]"
-              >
-                Get Relocation Help
-              </a>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <a
+                  href="#checklist"
+                  className="rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:opacity-90"
+                >
+                  View Checklist
+                </a>
+
+                <a
+                  href="#contact"
+                  className="rounded-full border border-white/25 px-7 py-3 text-sm font-bold text-white transition hover:bg-white hover:text-[var(--sandstone-navy)]"
+                >
+                  Get Relocation Help
+                </a>
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="checklist" className="px-6 py-16">
-          <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-2">
-            <div className="rounded-3xl border border-slate-200 p-8">
-              <h2 className="text-3xl font-bold text-[#26356f]">
-                As Soon As You Get Orders
-              </h2>
+        <section id="checklist" className="bg-slate-50 px-6 py-16 md:py-20">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              eyebrow="Start Here"
+              title="Your PCS checklist by phase"
+              description="Use these steps to stay organized before you arrive at Fort Bliss."
+            />
 
-              <ul className="mt-6 space-y-4">
-                {ordersChecklist.map((item) => (
-                  <li key={item} className="flex gap-3 text-slate-700">
-                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#c6a46a]" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <div className="mt-12 grid gap-8 md:grid-cols-2">
+              <ChecklistCard
+                title="As Soon As You Get Orders"
+                items={ordersChecklist}
+              />
 
-            <div className="rounded-3xl bg-slate-100 p-8">
-              <h2 className="text-3xl font-bold text-[#26356f]">
-                60–90 Days Before Reporting
-              </h2>
-
-              <ul className="mt-6 space-y-4">
-                {daysBeforeChecklist.map((item) => (
-                  <li key={item} className="flex gap-3 text-slate-700">
-                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#c6a46a]" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <ChecklistCard
+                title="60–90 Days Before Reporting"
+                items={daysBeforeChecklist}
+              />
             </div>
           </div>
         </section>
 
-        <section className="bg-slate-50 px-6 py-16">
+        <section className="px-6 py-16 md:py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              Quick Neighborhood Guide by Gate
-            </h2>
+            <SectionHeader
+              eyebrow="Neighborhoods"
+              title="Quick neighborhood guide by gate"
+              description="Choose your target area based on commute, price range, schools, and preferred gate access."
+            />
 
-            <p className="mt-4 max-w-3xl text-slate-700">
-              Choose your target area based on gate access, commute, schools,
-              and budget.
-            </p>
-
-            <Table headers={["Gate / Assignment", "Best Neighborhood", "Median Price", "Commute"]}>
+            <Table
+              headers={[
+                "Gate / Assignment",
+                "Best Neighborhood",
+                "Median Price",
+                "Commute",
+              ]}
+            >
               {neighborhoodGuide.map((row) => (
-                <tr key={row.gate} className="border-t border-slate-200">
-                  <td className="p-4 font-semibold">{row.gate}</td>
-                  <td className="p-4">{row.area}</td>
-                  <td className="p-4">{row.price}</td>
-                  <td className="p-4">{row.commute}</td>
+                <tr key={row.gate} className="transition hover:bg-slate-50">
+                  <td className="px-5 py-4 font-bold text-[var(--sandstone-navy)]">
+                    {row.gate}
+                  </td>
+                  <td className="px-5 py-4 text-slate-700">{row.area}</td>
+                  <td className="px-5 py-4 text-slate-700">{row.price}</td>
+                  <td className="px-5 py-4 text-slate-700">{row.commute}</td>
                 </tr>
               ))}
             </Table>
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section className="bg-slate-50 px-6 py-16 md:py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              School Districts Near Fort Bliss
-            </h2>
-
-            <p className="mt-4 max-w-4xl text-lg leading-8 text-slate-700">
-              Fort Bliss does not have DoDEA schools. Children attend public
-              schools based on the home address, so always confirm the exact
-              attendance zone before finalizing a purchase.
-            </p>
+            <SectionHeader
+              eyebrow="Schools"
+              title="School districts near Fort Bliss"
+              description="Fort Bliss does not have DoDEA schools. Children attend public schools based on home address, so confirm the exact attendance zone before buying."
+            />
 
             <Table headers={["Area", "School District", "Notable Schools"]}>
               {schoolDistricts.map((row) => (
-                <tr key={row.area} className="border-t border-slate-200">
-                  <td className="p-4 font-semibold">{row.area}</td>
-                  <td className="p-4">{row.district}</td>
-                  <td className="p-4">{row.schools}</td>
+                <tr key={row.area} className="transition hover:bg-slate-50">
+                  <td className="px-5 py-4 font-bold text-[var(--sandstone-navy)]">
+                    {row.area}
+                  </td>
+                  <td className="px-5 py-4 text-slate-700">{row.district}</td>
+                  <td className="px-5 py-4 text-slate-700">{row.schools}</td>
                 </tr>
               ))}
             </Table>
           </div>
         </section>
 
-        <section className="bg-[#26356f] px-6 py-16 text-white">
+        <section className="bg-[var(--sandstone-navy)] px-6 py-16 text-white md:py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold">
-              30–60 Days Before Reporting
-            </h2>
+            <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+                  30–60 Days Out
+                </p>
 
-            <div className="mt-8 grid gap-5 md:grid-cols-2">
-              {[
-                "Make an offer and open escrow.",
-                "Schedule a home inspection.",
-                "Coordinate your DITY / PPM move if applicable.",
-                "Register vehicles in Texas within 90 days of establishing residency.",
-              ].map((item) => (
-                <div key={item} className="rounded-2xl bg-white/10 p-6">
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                <h2 className="mt-3 font-heading text-3xl font-bold md:text-4xl">
+                  Finalize housing and move details before reporting
+                </h2>
 
-        <section className="px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              El Paso In-Processing Checklist
-            </h2>
+                <p className="mt-5 leading-8 text-white/75">
+                  This is the window to tighten up inspections, lender
+                  documents, moving logistics, and your arrival plan.
+                </p>
+              </div>
 
-            <Table headers={["Task", "Where / How", "Priority"]}>
-              {processingChecklist.map((row) => (
-                <tr key={row.task} className="border-t border-slate-200">
-                  <td className="p-4 font-semibold">{row.task}</td>
-                  <td className="p-4">{row.where}</td>
-                  <td className="p-4">{row.priority}</td>
-                </tr>
-              ))}
-            </Table>
-          </div>
-        </section>
-
-        <section className="px-6 py-16">
-          <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-2">
-            <div>
-              <h2 className="text-3xl font-bold text-[#26356f]">
-                VA Loan Documents Checklist
-              </h2>
-
-              <ul className="mt-6 space-y-4">
-                {vaDocs.map((item) => (
-                  <li key={item} className="flex gap-3 text-slate-700">
-                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#c6a46a]" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-3xl bg-[#26356f] p-8 text-white">
-              <h2 className="text-3xl font-bold">
-                Your PCS Timeline at a Glance
-              </h2>
-
-              <div className="mt-6 space-y-4">
-                {timeline.map((item) => (
+              <div className="grid gap-5 md:grid-cols-2">
+                {[
+                  "Make an offer and open escrow.",
+                  "Schedule a home inspection.",
+                  "Coordinate your DITY / PPM move if applicable.",
+                  "Register vehicles in Texas within 90 days of establishing residency.",
+                ].map((item) => (
                   <div
-                    key={item.timeframe}
-                    className="border-b border-white/10 pb-4"
+                    key={item}
+                    className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm"
                   >
-                    <p className="font-bold text-[#c6a46a]">
-                      {item.timeframe}
-                    </p>
-                    <p className="mt-1 text-white/80">{item.action}</p>
+                    <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] font-bold">
+                      ✓
+                    </span>
+
+                    <p className="leading-7 text-white/85">{item}</p>
                   </div>
                 ))}
               </div>
@@ -295,47 +449,95 @@ export default function PcsElPasoChecklistPage() {
           </div>
         </section>
 
-        <section className="bg-slate-50 px-6 py-16">
+        <section className="px-6 py-16 md:py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              Browse Homes by Gate and Budget
-            </h2>
+            <SectionHeader
+              eyebrow="Arrival"
+              title="El Paso in-processing checklist"
+              description="Use this list to stay organized during your first few days after arriving at Fort Bliss."
+            />
 
-            <p className="mt-4 max-w-3xl text-slate-700">
-              Search El Paso and Santa Teresa homes based on commute, budget,
-              and your Fort Bliss assignment.
-            </p>
+            <Table headers={["Task", "Where / How", "Priority"]}>
+              {processingChecklist.map((row) => (
+                <tr key={row.task} className="transition hover:bg-slate-50">
+                  <td className="px-5 py-4 font-bold text-[var(--sandstone-navy)]">
+                    {row.task}
+                  </td>
+                  <td className="px-5 py-4 text-slate-700">{row.where}</td>
+                  <td className="px-5 py-4">
+                    <span className="rounded-full bg-[#f5efe5] px-3 py-1 text-xs font-bold text-[var(--sandstone-navy)]">
+                      {row.priority}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </Table>
+          </div>
+        </section>
 
-            <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
-              <h3 className="text-xl font-bold text-[#26356f]">
-                IDX / Listing Carousel Placeholder
-              </h3>
-              <p className="mt-2 text-slate-600">
-                Add the property listing widget here when ready.
+        <section className="bg-slate-50 px-6 py-16 md:py-20">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2">
+            <ChecklistCard title="VA Loan Documents Checklist" items={vaDocs} />
+            <TimelineCard />
+          </div>
+        </section>
+
+        <section className="px-6 py-16 md:py-20">
+          <div className="mx-auto max-w-6xl">
+            <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm md:p-12">
+              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+                Homes Near Fort Bliss
               </p>
+
+              <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+                Browse homes by gate and budget
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-3xl leading-8 text-[var(--sandstone-charcoal)]">
+                Search El Paso, Horizon City, West El Paso, Northeast El Paso,
+                and Santa Teresa homes based on commute, budget, and your Fort
+                Bliss assignment.
+              </p>
+
+              <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-10">
+                <h3 className="font-heading text-xl font-bold text-[var(--sandstone-navy)]">
+                  IDX / Listing Carousel Placeholder
+                </h3>
+
+                <p className="mt-2 text-slate-600">
+                  Add the property listing widget here when ready.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="contact" className="px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="rounded-3xl bg-[#26356f] p-8 text-white md:p-12">
-              <h2 className="text-3xl font-bold">
-                PCS to Fort Bliss? Let&apos;s Talk Now.
+        <section id="contact" className="bg-slate-50 px-6 py-16 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+                Relocation Support
+              </p>
+
+              <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+                PCS to Fort Bliss? Let&apos;s talk now.
               </h2>
 
-              <p className="mt-4 max-w-3xl text-white/80">
-                Sandstone&apos;s military relocation team works around your
-                schedule with evening calls, weekend availability, video
-                walkthroughs, remote searches, and remote closing support.
+              <p className="mx-auto mt-4 max-w-2xl leading-8 text-[var(--sandstone-charcoal)]">
+                Sandstone&apos;s military relocation team can help with remote
+                home searches, VA loan timelines, neighborhood recommendations,
+                and buyer support before you arrive.
               </p>
             </div>
 
-            <div className="mt-10">
-              <ContactForm />
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+              <ContactForm
+                heading="Planning Your PCS to Fort Bliss?"
+                subheading="Tell us about your move and we'll help you compare neighborhoods, commute times, VA loan options, and homes near Fort Bliss."
+            />
             </div>
 
-            <p className="mt-6 text-sm text-slate-500">
+            <p className="mt-6 text-center text-sm leading-7 text-slate-500">
               Information current as of 2026. BAH rates, school districts, and
               military procedures are subject to change. Always verify with
               official sources before making decisions.
