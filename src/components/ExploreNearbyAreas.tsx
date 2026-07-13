@@ -278,7 +278,7 @@ export default function ExploreNearbyAreas({ compact = false, currentAreaHref }:
             Explore Nearby Areas
           </h2>
           <p className="mt-3 text-[1.05rem]" style={{ color: "#6b7280" }}>
-            Find the area that fits your lifestyle, commute, and home goals.
+            Find the neighborhood that fits your lifestyle, commute, and home goals.
           </p>
         </div>
 
