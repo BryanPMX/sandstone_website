@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -130,11 +131,11 @@ interface AreaCard {
   title:       string;
   description: string;
   href:        string;
-  icon:        React.ReactNode;
+  icon:        ReactNode;
   price:       string;
   commute:     string;
   feature:     string;
-  featIcon:    React.ReactNode;
+  featIcon:    ReactNode;
   noLink?:     boolean;
 }
 
@@ -218,6 +219,36 @@ const AREAS: AreaCard[] = [
     commute:     "10–15 min to Fort Bliss",
     feature:     "UTEP & Culture",
     featIcon:    <BLeaf />,
+  },
+  {
+    title:       "Fort Bliss",
+    description: "Military-focused housing guidance near Fort Bliss with quick access to base and surrounding El Paso neighborhoods.",
+    href:        "/areas/fort-bliss",
+    icon:        <IcoShield />,
+    price:       "BAH-friendly options",
+    commute:     "Near Fort Bliss",
+    feature:     "Military Relocation",
+    featIcon:    <BBuilding />,
+  },
+  {
+    title:       "Santa Teresa",
+    description: "A quiet New Mexico community with newer homes, open space, and convenient access to West El Paso.",
+    href:        "/areas/santa-teresa-nm",
+    icon:        <IcoMountain />,
+    price:       "From $250K+",
+    commute:     "25–35 min to El Paso",
+    feature:     "New Mexico Living",
+    featIcon:    <BLeaf />,
+  },
+  {
+    title:       "Sandstone New Builds",
+    description: "Explore new construction opportunities and move-in-ready homes across the El Paso area.",
+    href:        "/areas/sandstones-new-builds",
+    icon:        <IcoHouseTree />,
+    price:       "New construction",
+    commute:     "Varies by community",
+    feature:     "New Builds",
+    featIcon:    <BHome />,
   },
 ];
 
