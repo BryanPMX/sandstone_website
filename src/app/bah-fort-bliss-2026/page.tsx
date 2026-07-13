@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ContactForm } from "@/components/ContactForm";
+import SearchForm from "./SearchForm";
 
 export const metadata = {
   title: "BAH Rates Fort Bliss 2026 | Buy vs. Rent Guide for El Paso | Sandstone",
@@ -70,18 +71,18 @@ function Table({
   children: ReactNode;
 }) {
   return (
-    <div className="mt-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+    <div className="mt-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
       <table className="w-full min-w-[760px] border-collapse text-left text-sm">
-        <thead className="bg-[#26356f] text-white">
+        <thead className="bg-gradient-to-r from-[#26356f] to-[#1e2a58] text-white">
           <tr>
             {headers.map((header) => (
-              <th key={header} className="p-4">
+              <th key={header} className="p-5 font-semibold tracking-wide">
                 {header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody>{children}</tbody>
+        <tbody className="divide-y divide-slate-100">{children}</tbody>
       </table>
     </div>
   );
@@ -93,34 +94,42 @@ export default function FortBlissBahPage() {
       <SiteHeader />
 
       <main className="min-h-screen bg-white text-slate-900">
-        <section className="bg-[#26356f] px-6 py-20 text-white">
-          <div className="mx-auto max-w-6xl">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-[#c6a46a]">
+        <section className="relative overflow-hidden bg-[#0f172a] px-6 py-32 text-white">
+          <div className="absolute inset-0 bg-[url('/uploads/el_paso_luxury_home.jpg')] bg-cover bg-center opacity-70"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a]/60 via-[#0f172a]/70 to-[#0f172a]"></div>
+
+          <div className="relative mx-auto max-w-6xl text-center">
+            <p className="mb-8 text-sm font-light uppercase tracking-[0.3em] text-[#c6a46a]">
               Fort Bliss Housing Guide
             </p>
 
-            <h1 className="max-w-5xl text-4xl font-bold tracking-tight md:text-6xl">
-              BAH Rates Fort Bliss 2026 — Complete Guide for El Paso Home Buyers
+            <h1 className="mx-auto max-w-5xl text-5xl font-light tracking-wide md:text-7xl lg:leading-tight">
+              BAH Rates Fort Bliss 2026
+              <span className="block mt-4 italic text-transparent bg-clip-text bg-gradient-to-r from-[#c6a46a] via-[#e6d0a3] to-[#c6a46a]">
+                The Home Buyers Guide
+              </span>
             </h1>
 
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80">
+            <div className="mx-auto mt-10 h-px w-24 bg-gradient-to-r from-transparent via-[#c6a46a] to-transparent"></div>
+
+            <p className="mx-auto mt-10 max-w-3xl text-lg font-light leading-relaxed text-slate-300 md:text-xl">
               If you are PCSing to Fort Bliss in 2026, your BAH is one of the
               biggest pieces of your housing decision. See what your allowance
               can cover, how buying compares to renting, and which El Paso
               neighborhoods fit your budget.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-12 flex flex-wrap justify-center gap-6">
               <a
                 href="#rates"
-                className="rounded-full bg-[#c6a46a] px-6 py-3 text-sm font-bold normal-case tracking-normal text-white transition hover:bg-[#b89458]"
+                className="bg-[#c6a46a] px-8 py-4 text-sm font-light uppercase tracking-widest text-[#0f172a] transition hover:bg-[#e6d0a3]"
               >
                 View BAH Rates
               </a>
 
               <a
                 href="#contact"
-                className="rounded-full border border-white/30 px-6 py-3 text-sm font-bold normal-case tracking-normal text-white transition hover:bg-white hover:text-[#26356f]"
+                className="border border-[#c6a46a]/50 bg-transparent px-8 py-4 text-sm font-light uppercase tracking-widest text-white transition hover:bg-white/5"
               >
                 Get My BAH Analysis
               </a>
@@ -128,178 +137,220 @@ export default function FortBlissBahPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
+        <section className="px-6 py-24 bg-white">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-light tracking-wide text-[#0f172a] md:text-4xl">
               Understanding Fort Bliss BAH in 2026
             </h2>
+            <div className="mx-auto mt-6 h-px w-16 bg-[#c6a46a]"></div>
 
-            <p className="mt-5 max-w-4xl text-lg leading-8 text-slate-700">
+            <p className="mt-8 text-lg font-light leading-relaxed text-slate-600 md:text-xl">
               Fort Bliss BAH increased 7% over 2025, reflecting El Paso&apos;s
               steady housing market appreciation. For your exact amount by ZIP
               code and dependency status, use the official DoD BAH calculator.
             </p>
 
-            <div className="mt-8 rounded-3xl bg-[#f5efe3] p-6 text-slate-800">
-              <p className="font-semibold">
-                Quick example: an E-5 with dependents may receive up to
-                $1,809/month, which can cover a major portion of a VA loan
-                mortgage payment in El Paso.
+            <div className="mt-12 rounded-none border-l-2 border-[#c6a46a] bg-slate-50 p-8 text-left text-slate-800 shadow-sm">
+              <p className="text-lg font-light italic leading-relaxed">
+                "An E-5 with dependents may receive up to <span className="font-semibold text-[#c6a46a]">$1,809/month</span>, which can cover a major portion of a luxury VA loan mortgage payment in El Paso."
               </p>
             </div>
           </div>
         </section>
 
-        <section id="rates" className="bg-slate-50 px-6 py-16">
+        <section id="rates" className="bg-[#fcfbf9] px-6 py-24">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              Fort Bliss BAH Rates 2026 With Dependents
-            </h2>
+            <div className="text-center">
+              <h2 className="text-3xl font-light tracking-wide text-[#0f172a] md:text-4xl">
+                Fort Bliss BAH Rates 2026 With Dependents
+              </h2>
+              <p className="mx-auto mt-6 max-w-2xl text-lg font-light leading-relaxed text-slate-500">
+                These sample ranges show how different ranks translate into
+                realistic home-buying power with a VA loan.
+              </p>
+            </div>
 
-            <p className="mt-4 max-w-3xl text-slate-700">
-              These sample ranges show how different ranks may translate into
-              realistic home-buying power with a VA loan.
-            </p>
-
-            <Table headers={["Rank", "Monthly BAH", "Annual BAH", "Approx. Home Price Range"]}>
-              {bahRates.map((row) => (
-                <tr key={row.rank} className="border-t border-slate-200">
-                  <td className="p-4 font-semibold">{row.rank}</td>
-                  <td className="p-4">{row.monthly}</td>
-                  <td className="p-4">{row.annual}</td>
-                  <td className="p-4">{row.priceRange}</td>
-                </tr>
+            <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {bahRates.map((row, index) => (
+                <div key={row.rank} className={`group relative bg-white p-10 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${index === 1 ? 'border border-[#c6a46a] shadow-xl' : 'border border-slate-100 shadow-sm'}`}>
+                  {index === 1 && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0f172a] px-6 py-1.5 text-xs font-light uppercase tracking-[0.2em] text-[#c6a46a]">
+                      Most Common
+                    </div>
+                  )}
+                  <h3 className="text-center text-sm font-light uppercase tracking-[0.2em] text-slate-400">{row.rank}</h3>
+                  <div className="mt-6 flex justify-center items-baseline gap-1">
+                    <span className="text-4xl font-light tracking-tight text-[#0f172a]">{row.monthly}</span>
+                    <span className="text-sm font-light text-slate-400">/mo</span>
+                  </div>
+                  <div className="mt-8 border-t border-slate-100 pt-6 text-center">
+                    <p className="text-xs font-light uppercase tracking-widest text-slate-400">Target Home Price</p>
+                    <p className="mt-2 text-lg font-medium text-[#c6a46a]">{row.priceRange}</p>
+                  </div>
+                </div>
               ))}
-            </Table>
+            </div>
 
-            <p className="mt-4 text-sm text-slate-500">
+            <p className="mt-12 text-center text-sm font-light text-slate-400">
               BAH without dependents is lower. Confirm your exact amount using
               the official DoD calculator.
             </p>
           </div>
         </section>
 
-        <section className="px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              Does Your BAH Cover a Mortgage in El Paso?
-            </h2>
-
-            <p className="mt-4 max-w-4xl text-lg leading-8 text-slate-700">
-              In El Paso, the answer is often yes, especially with a VA loan.
-              Here is the sample math for an E-5 with dependents at
-              $1,809/month BAH.
-            </p>
-
-            <Table headers={["Cost Component", "Home at $250K", "Home at $200K"]}>
-              {mortgageMath.map((row) => (
-                <tr key={row.cost} className="border-t border-slate-200">
-                  <td className="p-4 font-semibold">{row.cost}</td>
-                  <td className="p-4">{row.home250}</td>
-                  <td className="p-4">{row.home200}</td>
-                </tr>
-              ))}
-            </Table>
-          </div>
-        </section>
-
-        <section className="bg-[#26356f] px-6 py-16 text-white">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold">
-              Buy vs. Rent: The 2026 Analysis for Fort Bliss
-            </h2>
-
-            <p className="mt-4 max-w-4xl text-lg leading-8 text-white/80">
-              For assignments of two to three years or longer, buying can create
-              meaningful equity while renting sends your BAH to a landlord.
-            </p>
-
-            <div className="mt-8 overflow-x-auto rounded-2xl border border-white/10 bg-white">
-              <table className="w-full min-w-[760px] border-collapse text-left text-sm text-slate-900">
-                <thead className="bg-[#c6a46a] text-white">
-                  <tr>
-                    <th className="p-4">Factor</th>
-                    <th className="p-4">Renting</th>
-                    <th className="p-4">Buying With VA Loan</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {buyVsRent.map((row) => (
-                    <tr key={row.factor} className="border-t border-slate-200">
-                      <td className="p-4 font-semibold">{row.factor}</td>
-                      <td className="p-4">{row.renting}</td>
-                      <td className="p-4">{row.buying}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section className="px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              Which Neighborhoods Fit Which BAH Levels?
-            </h2>
-
-            <Table headers={["Rank Range", "Best Neighborhood", "Home Price Target", "Why It Works"]}>
-              {neighborhoods.map((row) => (
-                <tr key={row.rank} className="border-t border-slate-200">
-                  <td className="p-4 font-semibold">{row.rank}</td>
-                  <td className="p-4">{row.area}</td>
-                  <td className="p-4">{row.price}</td>
-                  <td className="p-4">{row.why}</td>
-                </tr>
-              ))}
-            </Table>
-          </div>
-        </section>
-
-        <section className="bg-slate-50 px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
-              Browse Homes Within Your BAH Range
-            </h2>
-
-            <p className="mt-4 max-w-3xl text-slate-700">
-              Search El Paso homes from approximately $150K–$450K across all
-              major areas near Fort Bliss.
-            </p>
-
-            <div className="mt-8 rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
-              <h3 className="text-xl font-bold text-[#26356f]">
-                IDX / Listing Carousel Placeholder
-              </h3>
-              <p className="mt-2 text-slate-600">
-                Add the property listing widget here when ready.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section id="contact" className="px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="rounded-3xl bg-[#26356f] p-8 text-white md:p-12">
-              <h2 className="text-3xl font-bold">
-                Get Your Personalized BAH Analysis
+        <section className="bg-white px-6 py-24">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center">
+              <h2 className="text-3xl font-light tracking-wide text-[#0f172a] md:text-4xl">
+                Does Your BAH Cover a Mortgage in El Paso?
               </h2>
-
-              <p className="mt-4 max-w-3xl text-white/80">
-                Tell us your rank, dependency status, reporting date, and budget.
-                We will show you what your BAH buys in each El Paso neighborhood
-                and connect you with a VA-experienced lender.
+              <div className="mx-auto mt-6 h-px w-16 bg-[#c6a46a]"></div>
+              <p className="mx-auto mt-8 max-w-3xl text-lg font-light leading-relaxed text-slate-500">
+                In El Paso, the answer is often yes, especially with a VA loan.
+                Here is the sample math for an E-5 with dependents at
+                <span className="font-medium text-[#c6a46a]"> $1,809/month </span> BAH.
               </p>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-16 grid gap-10 lg:grid-cols-2">
+              {[
+                { price: "$250,000 Luxury Residence", dataKey: "home250" },
+                { price: "$200,000 Premium Home", dataKey: "home200" }
+              ].map((tier) => (
+                <div key={tier.price} className="border border-slate-200 bg-white p-10 transition-shadow duration-500 hover:shadow-2xl">
+                  <h3 className="text-center text-xl font-light tracking-wide text-[#0f172a]">{tier.price}</h3>
+                  <div className="mt-8 space-y-6">
+                    {mortgageMath.map((row) => {
+                      const isTotal = row.cost === "Total monthly payment";
+                      const isCoverage = row.cost.includes("coverage");
+                      return (
+                        <div key={row.cost} className={`flex items-center justify-between ${isTotal ? 'border-t border-slate-200 pt-6 mt-6' : ''}`}>
+                          <span className={`text-sm font-light uppercase tracking-wider ${isTotal || isCoverage ? 'text-[#0f172a] font-medium' : 'text-slate-500'}`}>
+                            {row.cost}
+                          </span>
+                          <span className={`text-lg font-light ${isTotal ? 'text-2xl text-[#c6a46a] font-normal' : 'text-[#0f172a]'}`}>
+                            {row[tier.dataKey as "home250" | "home200"]}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[#0f172a] px-6 py-32 text-white">
+          <div className="mx-auto max-w-6xl">
+            <div className="text-center">
+              <h2 className="text-4xl font-light tracking-wide md:text-5xl">
+                Buy vs. Rent: The 2026 Analysis
+              </h2>
+              <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-[#c6a46a] to-transparent"></div>
+              <p className="mx-auto mt-8 max-w-3xl text-lg font-light leading-relaxed text-slate-300">
+                For assignments of two to three years or longer, buying can create
+                meaningful equity while renting sends your BAH directly to a landlord.
+              </p>
+            </div>
+
+            <div className="mt-20 grid gap-8 md:grid-cols-2">
+              <div className="border border-white/10 bg-white/5 p-12 backdrop-blur-md transition-colors hover:bg-white/10">
+                <h3 className="text-center text-2xl font-light tracking-wide text-white">Renting</h3>
+                <div className="mx-auto mt-4 h-px w-12 bg-white/20"></div>
+                <ul className="mt-12 space-y-8">
+                  {buyVsRent.map((row) => (
+                    <li key={row.factor} className="text-center">
+                      <p className="text-xs font-light uppercase tracking-[0.2em] text-white/50">{row.factor}</p>
+                      <p className="mt-2 text-xl font-light text-white/90">{row.renting}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="relative border border-[#c6a46a]/40 bg-gradient-to-b from-[#162032] to-[#0f172a] p-12 shadow-[0_0_50px_rgba(198,164,106,0.1)]">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#c6a46a] px-8 py-2 text-xs font-light uppercase tracking-[0.2em] text-[#0f172a]">
+                  Wealth Builder
+                </div>
+                <h3 className="text-center text-2xl font-light tracking-wide text-[#c6a46a]">Buying With VA Loan</h3>
+                <div className="mx-auto mt-4 h-px w-12 bg-[#c6a46a]/30"></div>
+                <ul className="mt-12 space-y-8">
+                  {buyVsRent.map((row) => (
+                    <li key={row.factor} className="text-center">
+                      <p className="text-xs font-light uppercase tracking-[0.2em] text-[#c6a46a]/70">{row.factor}</p>
+                      <p className="mt-2 text-xl font-light text-white">{row.buying}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[#fcfbf9] px-6 py-32">
+          <div className="mx-auto max-w-6xl">
+            <div className="text-center">
+              <h2 className="text-3xl font-light tracking-wide text-[#0f172a] md:text-4xl">
+                Curated Neighborhoods by BAH Level
+              </h2>
+              <div className="mx-auto mt-6 h-px w-16 bg-[#c6a46a]"></div>
+            </div>
+
+            <div className="mt-20 grid gap-12 md:grid-cols-2">
+              {neighborhoods.map((row) => (
+                <div key={row.rank} className="group flex flex-col border-b border-slate-200 pb-10 transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-light uppercase tracking-[0.2em] text-[#0f172a]">
+                      {row.rank}
+                    </span>
+                    <span className="text-sm font-medium tracking-wide text-[#c6a46a]">{row.price}</span>
+                  </div>
+                  <h3 className="mt-6 text-2xl font-light tracking-wide text-[#0f172a] transition-colors group-hover:text-[#c6a46a]">{row.area}</h3>
+                  <p className="mt-4 text-lg font-light leading-relaxed text-slate-500">{row.why}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="px-6 py-32 bg-white">
+          <div className="mx-auto max-w-5xl">
+            <div className="relative overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url("/uploads/el_paso_neighborhood.jpg")' }}>
+                <div className="absolute inset-0 bg-[#0f172a]/50"></div>
+              </div>
+              <div className="relative z-10 flex flex-col items-center p-16 text-center text-white md:p-24">
+                <h3 className="text-4xl font-light tracking-wide md:text-5xl">
+                  Start Your El Paso Home Search
+                </h3>
+                <div className="mx-auto mt-6 h-px w-16 bg-[#c6a46a]"></div>
+                <p className="mt-8 max-w-2xl text-lg font-light leading-relaxed text-slate-300">
+                  Ready to see what your BAH can buy? Browse active listings near Fort Bliss, filtered by your budget and preferred neighborhoods.
+                </p>
+                <SearchForm />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="bg-[#fcfbf9] px-6 py-32">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="text-3xl font-light tracking-wide text-[#0f172a] md:text-4xl">
+              Get Your Personalized BAH Analysis
+            </h2>
+            <div className="mx-auto mt-6 h-px w-16 bg-[#c6a46a]"></div>
+            <p className="mt-8 text-lg font-light leading-relaxed text-slate-500">
+              Tell us your rank, dependency status, reporting date, and budget.
+              We will show you what your BAH buys in each El Paso luxury neighborhood
+              and connect you with a VA-experienced lender.
+            </p>
+
+            <div className="mt-16 text-left">
               <ContactForm />
             </div>
 
-            <p className="mt-6 text-sm text-slate-500">
-              Mortgage estimates assume a sample 6.5% rate and are approximate.
-              Verify with a licensed lender for your situation.
+            <p className="mt-12 text-xs font-light text-slate-400 uppercase tracking-widest">
+              Mortgage estimates assume a sample 6.5% rate and are approximate. Verify with a licensed lender.
             </p>
           </div>
         </section>
