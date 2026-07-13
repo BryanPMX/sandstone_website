@@ -297,7 +297,14 @@ export default function PcsElPasoChecklistPage() {
 
       <main className="min-h-screen bg-white text-slate-900">
         <section className="relative overflow-hidden bg-[var(--sandstone-navy)] px-6 py-24 text-white md:py-28">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(198,164,106,0.28),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.10),transparent_35%)]" />
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+            style={{
+              backgroundImage: "url('/uploads/pcs-hero-bg.png')",
+            }}
+          />
+
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,53,111,0.97)_0%,rgba(38,53,111,0.88)_45%,rgba(38,53,111,0.58)_100%)]" />
 
           <div className="relative mx-auto max-w-6xl">
             <div className="max-w-4xl">
@@ -534,7 +541,7 @@ export default function PcsElPasoChecklistPage() {
               <ContactForm
                 heading="Planning Your PCS to Fort Bliss?"
                 subheading="Tell us about your move and we'll help you compare neighborhoods, commute times, VA loan options, and homes near Fort Bliss."
-            />
+              />
             </div>
 
             <p className="mt-6 text-center text-sm leading-7 text-slate-500">
