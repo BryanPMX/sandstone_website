@@ -606,6 +606,14 @@ export function filterPropertyCardsWithFilters(
 
   const normalizedQuery = search?.trim().toLowerCase() ?? "";
 
+  if (!Array.isArray(properties)) {
+    console.error(
+      "[filterPropertyCardsWithFilters] Expected properties to be an array, received:",
+      properties
+    );
+    return [];
+  }
+
   return properties.filter((property) => {
     if (listingType) {
       if (listingType === "my") {

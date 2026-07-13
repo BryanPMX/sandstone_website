@@ -1,8 +1,11 @@
 ---
-title: Hello, World!
-description: A quick introduction to our blog system and how it works.
-imageUrl: https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=1400&q=80
+title: "Hello, World!"
+date: "2026-07-12"
+excerpt: "A quick introduction to our blog system and how it works."
+coverImage: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?auto=format&fit=crop&w=1400&q=80"
+area: "El Paso"
 ---
+
 ## Hello World!
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut non lorem diam. Quisque vulputate nibh sodales eros pretium tincidunt. Aenean porttitor efficitur convallis. Nulla sagittis finibus convallis. Phasellus in fermentum quam, eu egestas tortor. Maecenas ac mollis leo. Integer maximus eu nisl vel sagittis.

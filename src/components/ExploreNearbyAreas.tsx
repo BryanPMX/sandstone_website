@@ -192,13 +192,12 @@ const AREAS: AreaCard[] = [
   {
     title:       "East El Paso",
     description: "Convenient access to major corridors, shopping, and everyday amenities.",
-    href:        "",
+    href:        "/areas/east-el-paso",
     icon:        <IcoHouseTree />,
     price:       "From $200K+",
     commute:     "~25 min to Fort Bliss",
     feature:     "Easy Access & Amenities",
     featIcon:    <BBag />,
-    noLink:      true,
   },
   {
     title:       "Canutillo",

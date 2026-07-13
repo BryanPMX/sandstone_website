@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 import { SantaTeresaListings } from "@/components/areas/SantaTeresaListings";
 import { getTurnstileSiteKey } from "@/config";
 import {
@@ -1373,86 +1374,8 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* â”€â”€ Explore More El Paso Areas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-        <section className="bg-white py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
-            <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-              Explore Nearby Areas
-            </h2>
-
-            <p className="mx-auto mt-3 max-w-2xl text-center text-[15px] text-[var(--sandstone-charcoal)]/70">
-              Looking beyond Santa Teresa? Compare nearby neighborhoods,
-              browse homes for sale, and learn more about communities across El Paso.
-            </p>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Link
-                href="/areas/upper-valley"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">Upper Valley</h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  Luxury homes, mature trees, larger lots and peaceful living.
-                </p>
-              </Link>
-
-              <Link
-                href="/areas/west-el-paso"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">West El Paso</h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  Shopping, dining, mountain views and excellent schools.
-                </p>
-              </Link>
-
-              <Link
-                href="/areas/canutillo-tx"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">Canutillo</h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  Northwest El Paso County access near I-10, schools, shopping,
-                  and the Upper Valley.
-                </p>
-              </Link>
-
-              <Link
-                href="/areas/sunland-park-nm"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">Sunland Park</h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  New Mexico border access, nearby shopping, and quick routes into West El Paso.
-                </p>
-              </Link>
-
-              <Link
-                href="/listings"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">
-                Browse All Listings
-                </h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  View every available home across the El Paso area.
-                </p>
-              </Link>
-
-              <Link
-                href="/blog"
-                className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:border-[var(--sandstone-sand-gold)]"
-              >
-                <h3 className="font-heading text-xl font-bold">
-                  Read More Articles
-                </h3>
-                <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                  Local market updates, neighborhood guides and buying tips.
-                </p>
-              </Link>
-            </div>
-          </div>
-        </section>
+        {/* ── Explore More El Paso Areas ───────────────────────── */}
+        <ExploreNearbyAreas compact currentAreaHref="/areas/santa-teresa-nm" />
 
         {/* â”€â”€ Ready to Buy in Santa Teresa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <LeadCaptureSection
@@ -1474,4 +1397,3 @@ export default async function SantaTeresaPage() {
     </>
   );
 }
-
