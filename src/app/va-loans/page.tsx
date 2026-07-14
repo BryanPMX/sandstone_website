@@ -342,7 +342,7 @@ export default function VaLoansPage() {
 
               <div className="mt-6 h-px w-20 bg-[#c6a46a]" />
 
-              <p className="mt-8 max-w-3xl bg-black/25 px-5 py-3 text-base font-light leading-relaxed text-white md:text-lg">
+              <p className="mt-8 max-w-3xl px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
                 Ready to see what your BAH can buy? Browse active listings near
                 Fort Bliss, filtered by your budget and preferred neighborhoods.
               </p>
@@ -368,8 +368,12 @@ export default function VaLoansPage() {
               </p>
             </div>
 
-            <div className="mt-10">
-              <ContactForm />
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+              <ContactForm
+                heading="Have Questions About VA Loans?"
+                subheading="Tell us where you are in the VA loan process and we'll help you understand eligibility, benefits, financing options, and homes in El Paso that may work with VA financing."
+
+              />
             </div>
 
             <p className="mt-6 text-sm text-slate-500">

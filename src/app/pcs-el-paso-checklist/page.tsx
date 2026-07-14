@@ -492,9 +492,9 @@ export default function PcsElPasoChecklistPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16 md:py-20">
-          <div className="mx-auto max-w-6xl">
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+        <section className="py-0">
+          <div className="w-full">
+            <div className="relative min-h-[620px] w-full overflow-hidden shadow-2xl md:min-h-[680px]">
               <div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
@@ -504,24 +504,26 @@ export default function PcsElPasoChecklistPage() {
 
               <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,53,111,0.92)_0%,rgba(38,53,111,0.76)_45%,rgba(38,53,111,0.45)_100%)]" />
 
-              <div className="relative z-10 flex min-h-[520px] flex-col items-center justify-center px-6 text-center md:min-h-[560px]">
-                <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+              <div className="relative z-10 mx-auto flex min-h-[620px] max-w-6xl flex-col items-center justify-center px-6 text-center md:min-h-[680px]">
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-[#c6a46a] md:text-sm">
                   Homes Near Fort Bliss
                 </p>
 
-                <h2 className="mt-4 max-w-5xl font-heading text-4xl font-bold tracking-tight text-white md:text-6xl">
+                <h2 className="max-w-5xl text-4xl font-light leading-tight tracking-[0.16em] text-white md:text-5xl lg:text-6xl">
                   Start Your El Paso Home Search
                 </h2>
 
                 <div className="mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
 
-                <p className="mt-8 max-w-3xl bg-black/25 px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
-                  Ready to see what your BAH can buy? Browse active listings near
-                  Fort Bliss, filtered by your budget and preferred
+                <p className="mt-8 max-w-3xl px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
+                  Ready to see what your BAH can buy? Browse active listings
+                  near Fort Bliss, filtered by your budget and preferred
                   neighborhoods.
                 </p>
 
-                <SearchForm />
+                <div className="mt-10 w-full max-w-3xl">
+                  <SearchForm />
+                </div>
               </div>
             </div>
           </div>
@@ -533,29 +535,19 @@ export default function PcsElPasoChecklistPage() {
               <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
                 Relocation Support
               </p>
-
-              <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                PCS to Fort Bliss? Let&apos;s talk now.
-              </h2>
-
-              <p className="mx-auto mt-4 max-w-2xl leading-8 text-[var(--sandstone-charcoal)]">
-                Sandstone&apos;s military relocation team can help with remote
-                home searches, VA loan timelines, neighborhood recommendations,
-                and buyer support before you arrive.
-              </p>
             </div>
 
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
               <ContactForm
                 heading="Planning Your PCS to Fort Bliss?"
-                subheading="Tell us about your move and we'll help you compare neighborhoods, commute times, VA loan options, and homes near Fort Bliss."
+                subheading="Sandstone's military relocation team can help with remote home searches, VA loan timelines, neighborhood recommendations, and buyer support before you arrive."
               />
             </div>
 
             <p className="mt-6 text-center text-sm leading-7 text-slate-500">
-              Information current as of 2026. BAH rates, school districts, and
-              military procedures are subject to change. Always verify with
-              official sources before making decisions.
+              Information current as of 2026. BAH rates, school districts, VA
+              loan requirements, and military procedures are subject to change.
+              Always verify with official sources before making decisions.
             </p>
           </div>
         </section>
