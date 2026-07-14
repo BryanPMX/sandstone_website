@@ -354,29 +354,54 @@ export default function VaLoansPage() {
           </div>
         </section>
 
-        <section id="contact" className="px-6 py-16">
+        <section id="contact" className="bg-[#f7f5ef] px-6 py-24 md:py-32">
           <div className="mx-auto max-w-6xl">
-            <div className="rounded-3xl bg-[#26356f] p-8 text-white md:p-12">
-              <h2 className="text-3xl font-bold">
+            <div className="rounded-[2rem] bg-[#26356f] px-8 py-12 text-center text-white shadow-lg md:px-14 md:py-16">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#c6a46a]">
+                VA Buyer Guidance
+              </p>
+
+              <h2 className="mx-auto mt-5 max-w-4xl text-3xl font-light leading-tight tracking-wide md:text-5xl">
                 Ready to Use Your VA Benefit in El Paso?
               </h2>
 
-              <p className="mt-4 max-w-3xl text-white/80">
+              <div className="mx-auto mt-6 h-px w-20 bg-[#c6a46a]" />
+
+              <p className="mx-auto mt-6 max-w-3xl text-base font-light leading-8 text-white/80 md:text-lg">
                 Sandstone helps military families close on VA purchases across
                 every El Paso neighborhood. Tell us your rank, reporting date,
                 and budget, and we will help you build a smart home search plan.
               </p>
+
+              <div className="mx-auto mt-10 grid max-w-4xl gap-4 text-left md:grid-cols-3">
+                {[
+                  "$0 down VA loan guidance",
+                  "Fort Bliss neighborhood recommendations",
+                  "Remote PCS home search support",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-2xl border border-white/10 bg-white/10 px-5 py-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#c6a46a]" />
+                      <span className="text-sm font-light leading-6 text-white/85">
+                        {item}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+            <div className="mt-10 rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl md:p-8">
               <ContactForm
                 heading="Have Questions About VA Loans?"
                 subheading="Tell us where you are in the VA loan process and we'll help you understand eligibility, benefits, financing options, and homes in El Paso that may work with VA financing."
-
               />
             </div>
 
-            <p className="mt-6 text-sm text-slate-500">
+            <p className="mx-auto mt-8 max-w-4xl text-center text-sm leading-6 text-slate-500">
               All financial figures are estimates and should be verified with a
               licensed lender. VA entitlement limits and lending rules are
               subject to change.
