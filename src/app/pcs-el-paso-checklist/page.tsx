@@ -1,10 +1,12 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+
 import { ContactForm } from "@/components/ContactForm";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import SearchForm from "../bah-fort-bliss-2026/SearchForm";
 
-export const metadata = {
+export const metadata: Metadata = {
   title:
     "PCS to El Paso Checklist 2026 | Fort Bliss Relocation Guide | Sandstone",
   description:
@@ -155,28 +157,38 @@ function SectionHeader({
   eyebrow,
   title,
   description,
+  inverse = false,
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
+  inverse?: boolean;
 }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      {eyebrow ? (
+      {eyebrow && (
         <p className="mb-3 text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
           {eyebrow}
         </p>
-      ) : null}
+      )}
 
-      <h2 className="font-heading text-3xl font-bold tracking-tight text-[var(--sandstone-navy)] md:text-4xl">
+      <h2
+        className={`font-heading text-3xl font-bold tracking-tight md:text-4xl ${
+          inverse ? "text-white" : "text-[var(--sandstone-navy)]"
+        }`}
+      >
         {title}
       </h2>
 
-      {description ? (
-        <p className="mt-4 text-base leading-8 text-[var(--sandstone-charcoal)] md:text-lg">
+      {description && (
+        <p
+          className={`mt-4 text-base leading-8 md:text-lg ${
+            inverse ? "text-white/75" : "text-[var(--sandstone-charcoal)]"
+          }`}
+        >
           {description}
         </p>
-      ) : null}
+      )}
     </div>
   );
 }
@@ -194,7 +206,7 @@ function ChecklistCard({
 
   return (
     <div
-      className={`rounded-3xl border p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl ${
+      className={`rounded-3xl border p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
         isDark
           ? "border-white/10 bg-[var(--sandstone-navy)] text-white"
           : "border-slate-200 bg-white text-[var(--sandstone-charcoal)]"
@@ -211,7 +223,7 @@ function ChecklistCard({
       <ul className="mt-6 space-y-4">
         {items.map((item) => (
           <li key={item} className="flex gap-3 leading-7">
-            <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] text-xs font-bold text-white">
+            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] text-xs font-bold text-white">
               ✓
             </span>
 
@@ -225,7 +237,7 @@ function ChecklistCard({
   );
 }
 
-function Table({
+function DataTable({
   headers,
   children,
 }: {
@@ -275,9 +287,9 @@ function TimelineCard() {
                 {index + 1}
               </span>
 
-              {index !== timeline.length - 1 ? (
+              {index !== timeline.length - 1 && (
                 <span className="mt-2 h-full w-px bg-white/15" />
-              ) : null}
+              )}
             </div>
 
             <div className="pb-5">
@@ -288,6 +300,30 @@ function TimelineCard() {
         ))}
       </div>
     </div>
+  );
+}
+
+function HeroButton({
+  href,
+  children,
+  variant = "solid",
+}: {
+  href: string;
+  children: ReactNode;
+  variant?: "solid" | "outline";
+}) {
+  const baseClasses =
+    "rounded-full px-8 py-4 text-sm font-bold transition hover:-translate-y-0.5";
+
+  const variantClasses =
+    variant === "solid"
+      ? "bg-[var(--sandstone-sand-gold)] text-white shadow-lg hover:opacity-90"
+      : "border border-white/30 text-white hover:bg-white hover:text-[var(--sandstone-navy)]";
+
+  return (
+    <a href={href} className={`${baseClasses} ${variantClasses}`}>
+      {children}
+    </a>
   );
 }
 
@@ -305,8 +341,7 @@ export default function PcsElPasoChecklistPage() {
             }}
           />
 
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,33,82,0.92)_0%,rgba(20,33,82,0.78)_42%,rgba(20,33,82,0.38)_72%,rgba(20,33,82,0.18)_100%)]" />
-
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,33,82,0.94)_0%,rgba(20,33,82,0.8)_42%,rgba(20,33,82,0.42)_72%,rgba(20,33,82,0.2)_100%)]" />
           <div className="absolute inset-0 bg-black/10" />
 
           <div className="relative mx-auto flex min-h-[460px] max-w-6xl items-center">
@@ -326,25 +361,17 @@ export default function PcsElPasoChecklistPage() {
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
-                <a
-                  href="#checklist"
-                  className="rounded-full bg-[var(--sandstone-sand-gold)] px-8 py-4 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:opacity-90"
-                >
-                  View Checklist →
-                </a>
+                <HeroButton href="#checklist">View Checklist →</HeroButton>
 
-                <a
-                  href="#contact"
-                  className="rounded-full border border-white/30 px-8 py-4 text-sm font-bold text-white transition hover:bg-white hover:text-[var(--sandstone-navy)]"
-                >
+                <HeroButton href="#contact" variant="outline">
                   Get Relocation Help
-                </a>
+                </HeroButton>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="checklist" className="bg-slate-50 px-6 py-16 md:py-20">
+        <section id="checklist" className="bg-slate-50 px-6 py-20 md:py-24">
           <div className="mx-auto max-w-6xl">
             <SectionHeader
               eyebrow="Start Here"
@@ -361,12 +388,13 @@ export default function PcsElPasoChecklistPage() {
               <ChecklistCard
                 title="60–90 Days Before Reporting"
                 items={daysBeforeChecklist}
+                variant="dark"
               />
             </div>
           </div>
         </section>
 
-        <section className="px-6 py-16 md:py-20">
+        <section className="px-6 py-20 md:py-24">
           <div className="mx-auto max-w-6xl">
             <SectionHeader
               eyebrow="Neighborhoods"
@@ -374,7 +402,7 @@ export default function PcsElPasoChecklistPage() {
               description="Choose your target area based on commute, price range, schools, and preferred gate access."
             />
 
-            <Table
+            <DataTable
               headers={[
                 "Gate / Assignment",
                 "Best Neighborhood",
@@ -392,11 +420,11 @@ export default function PcsElPasoChecklistPage() {
                   <td className="px-5 py-4 text-slate-700">{row.commute}</td>
                 </tr>
               ))}
-            </Table>
+            </DataTable>
           </div>
         </section>
 
-        <section className="bg-slate-50 px-6 py-16 md:py-20">
+        <section className="bg-slate-50 px-6 py-20 md:py-24">
           <div className="mx-auto max-w-6xl">
             <SectionHeader
               eyebrow="Schools"
@@ -404,7 +432,7 @@ export default function PcsElPasoChecklistPage() {
               description="Fort Bliss does not have DoDEA schools. Children attend public schools based on home address, so confirm the exact attendance zone before buying."
             />
 
-            <Table headers={["Area", "School District", "Notable Schools"]}>
+            <DataTable headers={["Area", "School District", "Notable Schools"]}>
               {schoolDistricts.map((row) => (
                 <tr key={row.area} className="transition hover:bg-slate-50">
                   <td className="px-5 py-4 font-bold text-[var(--sandstone-navy)]">
@@ -414,11 +442,11 @@ export default function PcsElPasoChecklistPage() {
                   <td className="px-5 py-4 text-slate-700">{row.schools}</td>
                 </tr>
               ))}
-            </Table>
+            </DataTable>
           </div>
         </section>
 
-        <section className="bg-[var(--sandstone-navy)] px-6 py-16 text-white md:py-20">
+        <section className="bg-[var(--sandstone-navy)] px-6 py-20 text-white md:py-24">
           <div className="mx-auto max-w-6xl">
             <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
               <div>
@@ -445,7 +473,7 @@ export default function PcsElPasoChecklistPage() {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm"
+                    className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm transition hover:-translate-y-1 hover:bg-white/15"
                   >
                     <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] font-bold">
                       ✓
@@ -459,7 +487,7 @@ export default function PcsElPasoChecklistPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16 md:py-20">
+        <section className="px-6 py-20 md:py-24">
           <div className="mx-auto max-w-6xl">
             <SectionHeader
               eyebrow="Arrival"
@@ -467,7 +495,7 @@ export default function PcsElPasoChecklistPage() {
               description="Use this list to stay organized during your first few days after arriving at Fort Bliss."
             />
 
-            <Table headers={["Task", "Where / How", "Priority"]}>
+            <DataTable headers={["Task", "Where / How", "Priority"]}>
               {processingChecklist.map((row) => (
                 <tr key={row.task} className="transition hover:bg-slate-50">
                   <td className="px-5 py-4 font-bold text-[var(--sandstone-navy)]">
@@ -481,11 +509,11 @@ export default function PcsElPasoChecklistPage() {
                   </td>
                 </tr>
               ))}
-            </Table>
+            </DataTable>
           </div>
         </section>
 
-        <section className="bg-slate-50 px-6 py-16 md:py-20">
+        <section className="bg-slate-50 px-6 py-20 md:py-24">
           <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2">
             <ChecklistCard title="VA Loan Documents Checklist" items={vaDocs} />
             <TimelineCard />
@@ -493,58 +521,88 @@ export default function PcsElPasoChecklistPage() {
         </section>
 
         <section className="py-0">
-          <div className="w-full">
-            <div className="relative min-h-[620px] w-full overflow-hidden shadow-2xl md:min-h-[680px]">
-              <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: 'url("/uploads/el_paso_neighborhood.jpg")',
-                }}
-              />
+          <div className="relative min-h-[620px] w-full overflow-hidden shadow-2xl md:min-h-[680px]">
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: 'url("/uploads/el_paso_neighborhood.jpg")',
+              }}
+            />
 
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,53,111,0.92)_0%,rgba(38,53,111,0.76)_45%,rgba(38,53,111,0.45)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,53,111,0.92)_0%,rgba(38,53,111,0.76)_45%,rgba(38,53,111,0.45)_100%)]" />
+            <div className="absolute inset-0 bg-black/10" />
 
-              <div className="relative z-10 mx-auto flex min-h-[620px] max-w-6xl flex-col items-center justify-center px-6 text-center md:min-h-[680px]">
-                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-[#c6a46a] md:text-sm">
-                  Homes Near Fort Bliss
-                </p>
+            <div className="relative z-10 mx-auto flex min-h-[620px] max-w-6xl flex-col items-center justify-center px-6 text-center md:min-h-[680px]">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-[#c6a46a] md:text-sm">
+                Homes Near Fort Bliss
+              </p>
 
-                <h2 className="max-w-5xl text-4xl font-light leading-tight tracking-[0.16em] text-white md:text-5xl lg:text-6xl">
-                  Start Your El Paso Home Search
-                </h2>
+              <h2 className="max-w-5xl text-4xl font-light leading-tight tracking-[0.16em] text-white md:text-5xl lg:text-6xl">
+                Start Your El Paso Home Search
+              </h2>
 
-                <div className="mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
+              <div className="mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
 
-                <p className="mt-8 max-w-3xl px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
-                  Ready to see what your BAH can buy? Browse active listings
-                  near Fort Bliss, filtered by your budget and preferred
-                  neighborhoods.
-                </p>
+              <p className="mt-8 max-w-3xl px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
+                Ready to see what your BAH can buy? Browse active listings near
+                Fort Bliss, filtered by your budget and preferred neighborhoods.
+              </p>
 
-                <div className="mt-10 w-full max-w-3xl">
-                  <SearchForm />
-                </div>
+              <div className="mt-10 w-full max-w-3xl">
+                <SearchForm />
               </div>
             </div>
           </div>
         </section>
 
-        <section id="contact" className="bg-slate-50 px-6 py-16 md:py-20">
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+        <section id="contact" className="bg-[#f7f5ef] px-6 py-24 md:py-32">
+          <div className="mx-auto max-w-6xl">
+            <div className="rounded-[2rem] border border-slate-200 bg-white px-8 py-12 text-center shadow-lg md:px-14 md:py-16">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--sandstone-sand-gold)]">
                 Relocation Support
               </p>
+
+              <h2 className="mx-auto mt-5 max-w-4xl font-heading text-3xl font-light leading-tight tracking-wide text-[var(--sandstone-navy)] md:text-5xl">
+                Planning Your PCS to Fort Bliss?
+              </h2>
+
+              <div className="mx-auto mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
+
+              <p className="mx-auto mt-6 max-w-3xl text-base font-light leading-8 text-slate-600 md:text-lg">
+                Sandstone&apos;s military relocation team can help with remote
+                home searches, VA loan timelines, neighborhood recommendations,
+                and buyer support before you arrive.
+              </p>
+
+              <div className="mx-auto mt-10 grid max-w-4xl gap-4 text-left md:grid-cols-3">
+                {[
+                  "Remote home search support",
+                  "VA loan timeline guidance",
+                  "Neighborhood recommendations",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-2xl border border-slate-200 bg-[#f7f5ef] px-5 py-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--sandstone-sand-gold)]" />
+                      <span className="text-sm font-light leading-6 text-slate-700">
+                        {item}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+            <div className="mt-10 rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl md:p-8">
               <ContactForm
                 heading="Planning Your PCS to Fort Bliss?"
                 subheading="Sandstone's military relocation team can help with remote home searches, VA loan timelines, neighborhood recommendations, and buyer support before you arrive."
               />
             </div>
 
-            <p className="mt-6 text-center text-sm leading-7 text-slate-500">
+            <p className="mx-auto mt-8 max-w-4xl text-center text-sm leading-7 text-slate-500">
               Information current as of 2026. BAH rates, school districts, VA
               loan requirements, and military procedures are subject to change.
               Always verify with official sources before making decisions.

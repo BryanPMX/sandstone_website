@@ -1,10 +1,12 @@
+import type { Metadata } from "next";
+
 import Image from "next/image";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ContactForm } from "@/components/ContactForm";
 import SearchForm from "../bah-fort-bliss-2026/SearchForm";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "VA Loan Homes El Paso TX | $0 Down, No PMI | Sandstone Real Estate",
   description:
     "Find VA loan eligible homes in El Paso TX. $0 down, no PMI, competitive rates. Sandstone specializes in VA purchases near Fort Bliss. Get pre-qualified today.",
@@ -356,18 +358,18 @@ export default function VaLoansPage() {
 
         <section id="contact" className="bg-[#f7f5ef] px-6 py-24 md:py-32">
           <div className="mx-auto max-w-6xl">
-            <div className="rounded-[2rem] bg-[#26356f] px-8 py-12 text-center text-white shadow-lg md:px-14 md:py-16">
+            <div className="rounded-[2rem] border border-slate-200 bg-white px-8 py-12 text-center shadow-lg md:px-14 md:py-16">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#c6a46a]">
                 VA Buyer Guidance
               </p>
 
-              <h2 className="mx-auto mt-5 max-w-4xl text-3xl font-light leading-tight tracking-wide md:text-5xl">
+              <h2 className="mx-auto mt-5 max-w-4xl text-3xl font-light leading-tight tracking-wide text-[#26356f] md:text-5xl">
                 Ready to Use Your VA Benefit in El Paso?
               </h2>
 
               <div className="mx-auto mt-6 h-px w-20 bg-[#c6a46a]" />
 
-              <p className="mx-auto mt-6 max-w-3xl text-base font-light leading-8 text-white/80 md:text-lg">
+              <p className="mx-auto mt-6 max-w-3xl text-base font-light leading-8 text-slate-600 md:text-lg">
                 Sandstone helps military families close on VA purchases across
                 every El Paso neighborhood. Tell us your rank, reporting date,
                 and budget, and we will help you build a smart home search plan.
@@ -381,11 +383,11 @@ export default function VaLoansPage() {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="rounded-2xl border border-white/10 bg-white/10 px-5 py-4"
+                    className="rounded-2xl border border-slate-200 bg-[#f7f5ef] px-5 py-4"
                   >
                     <div className="flex items-start gap-3">
                       <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#c6a46a]" />
-                      <span className="text-sm font-light leading-6 text-white/85">
+                      <span className="text-sm font-light leading-6 text-slate-700">
                         {item}
                       </span>
                     </div>
