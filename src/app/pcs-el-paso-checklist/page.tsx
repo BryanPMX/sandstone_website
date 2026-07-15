@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import { ContactForm } from "@/components/ContactForm";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
+import { PcsHeader } from "../pcs/PcsHeader.client";
 import SearchForm from "../bah-fort-bliss-2026/SearchForm";
 
 export const metadata: Metadata = {
@@ -75,7 +75,6 @@ const schoolDistricts = [
     district: "Gadsden ISD",
     schools: "Santa Teresa High School, Middle, Elementary",
   },
-
 ];
 
 const processingChecklist = [
@@ -326,7 +325,7 @@ function HeroButton({
 export default function PcsElPasoChecklistPage() {
   return (
     <>
-      <SiteHeader />
+      <PcsHeader />
 
       <main className="min-h-screen bg-white text-slate-900">
         <section className="relative min-h-[640px] overflow-hidden bg-[var(--sandstone-navy)] px-6 pt-36 pb-24 text-white md:min-h-[700px] md:pt-44">
@@ -420,10 +419,27 @@ export default function PcsElPasoChecklistPage() {
 
             <div className="mt-10 grid gap-5 md:grid-cols-4">
               {[
-                { label: "Closest commute", value: "Northeast El Paso", detail: "5–15 minutes to key Fort Bliss gates." },
-                { label: "Lowest listed price", value: "$231,526", detail: "Northeast El Paso has the lowest sample median price." },
-                { label: "East-side option", value: "Horizon City", detail: "Useful for east units and newer-home inventory." },
-                { label: "West-side option", value: "Santa Teresa", detail: "Longer commute, but a New Mexico alternative." },
+                {
+                  label: "Closest commute",
+                  value: "Northeast El Paso",
+                  detail: "5–15 minutes to key Fort Bliss gates.",
+                },
+                {
+                  label: "Lowest listed price",
+                  value: "$231,526",
+                  detail:
+                    "Northeast El Paso has the lowest sample median price.",
+                },
+                {
+                  label: "East-side option",
+                  value: "Horizon City",
+                  detail: "Useful for east units and newer-home inventory.",
+                },
+                {
+                  label: "West-side option",
+                  value: "Santa Teresa",
+                  detail: "Longer commute, but a New Mexico alternative.",
+                },
               ].map((item) => (
                 <div
                   key={item.label}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import Image from "next/image";
-import { SiteHeader } from "@/components/SiteHeader";
+import { PcsHeader } from "../pcs/PcsHeader.client";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ContactForm } from "@/components/ContactForm";
 import SearchForm from "../bah-fort-bliss-2026/SearchForm";
@@ -20,7 +20,6 @@ const benefits = [
   "Seller can pay closing costs",
   "VA entitlement in El Paso 2026: up to $766,550",
 ];
-
 
 const vaQuickStats = [
   {
@@ -44,22 +43,26 @@ const vaBuyerPath = [
   {
     title: "Best entry budget",
     value: "E-5",
-    detail: "Northeast El Paso is usually the most approachable starting point for VA buyers.",
+    detail:
+      "Northeast El Paso is usually the most approachable starting point for VA buyers.",
   },
   {
     title: "Best east-side option",
     value: "E-6",
-    detail: "Horizon City and Far East El Paso offer newer homes and practical Fort Bliss access.",
+    detail:
+      "Horizon City and Far East El Paso offer newer homes and practical Fort Bliss access.",
   },
   {
     title: "Best west-side fit",
     value: "E-7 / O-3",
-    detail: "West El Paso can work well for buyers prioritizing lifestyle, schools, and amenities.",
+    detail:
+      "West El Paso can work well for buyers prioritizing lifestyle, schools, and amenities.",
   },
   {
     title: "Upper budget range",
     value: "O-5+",
-    detail: "Upper Valley and custom-home areas may fit larger VA-backed purchase budgets.",
+    detail:
+      "Upper Valley and custom-home areas may fit larger VA-backed purchase budgets.",
   },
 ];
 
@@ -140,7 +143,6 @@ const processSteps = [
   },
 ];
 
-
 const faqs = [
   {
     question: "Can I use my VA loan benefit more than once?",
@@ -163,7 +165,6 @@ const faqs = [
       "You can negotiate the price down, pay the difference in cash, or walk away. A strong agent helps you prepare for each option.",
   },
 ];
-
 
 function StatCard({
   value,
@@ -206,7 +207,7 @@ function BuyerPathCard({
 export default function VaLoansPage() {
   return (
     <>
-      <SiteHeader />
+      <PcsHeader />
 
       <main className="min-h-screen bg-white text-slate-900">
         <section className="relative overflow-hidden bg-[#26356f] text-white">
@@ -359,8 +360,8 @@ export default function VaLoansPage() {
                   </h3>
                 </div>
                 <p className="max-w-2xl text-sm leading-6 text-slate-600">
-                  Use these as simple starting points before comparing exact payment,
-                  taxes, insurance, and lender approval.
+                  Use these as simple starting points before comparing exact
+                  payment, taxes, insurance, and lender approval.
                 </p>
               </div>
 
@@ -394,9 +395,10 @@ export default function VaLoansPage() {
                     Keep the process simple
                   </h3>
                   <p className="mt-3 leading-7 text-slate-600">
-                    The biggest takeaway for VA buyers is simple: get pre-approved
-                    before shopping seriously, then expect most purchases to close
-                    in about 30–45 days after an accepted offer.
+                    The biggest takeaway for VA buyers is simple: get
+                    pre-approved before shopping seriously, then expect most
+                    purchases to close in about 30–45 days after an accepted
+                    offer.
                   </p>
                 </div>
 

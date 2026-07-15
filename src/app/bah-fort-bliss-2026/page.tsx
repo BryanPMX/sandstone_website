@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { ContactForm } from "@/components/ContactForm";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
+import { PcsHeader } from "../pcs/PcsHeader.client";
 import SearchForm from "./SearchForm";
 
 export const metadata: Metadata = {
@@ -433,7 +433,7 @@ function NeighborhoodCard({ neighborhood }: { neighborhood: Neighborhood }) {
 export default function FortBlissBahPage() {
   return (
     <>
-      <SiteHeader />
+      <PcsHeader />
 
       <main className="min-h-screen bg-white text-slate-900">
         <section className="relative overflow-hidden bg-[#0f172a] px-6 py-28 text-white md:py-36">
