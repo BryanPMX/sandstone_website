@@ -58,22 +58,22 @@ async function fetchEastElPasoStats() {
 
 const SCHOOLS = {
   elementary: [
-    { name: "Capistrano Elementary School",                 district: "Yselta ISD", zip: "79907" },
-    { name: "Lancaster Elementary School",                  district: "Yselta ISD", zip: "79907" },
-    { name: "Loma Terrace Elementary School",               district: "Yselta ISD", zip: "79907" },
-    { name: "Vista Hills Elementary Schhol",                district: "Yselta ISD", zip: "79935" },
+    { name: "Eastwood Heights Elementary",                district: "Ysleta ISD", zip: "79925" },
+    { name: "REL Washington International School",        district: "Ysleta ISD", zip: "79936" },
+    { name: "Vista Hills Elementary School",              district: "Ysleta ISD", zip: "79935" },
+    {name: "O’Shea Keleher Elementary",                  district: "Socorro ISD", zip: "79936" },
   ],
   middle: [
-    { name: "Del Valle Middle School",    district: "Yselta ISD", zip: "79907" },
-    { name: "Hornedo Middle School",      district: "Yselta ISD", zip: "79925" },
-    { name: "Indian Ridge Middle School", district: "Yselta ISD", zip: "79936" },
-    { name: "Yselta Middle School",       district: "Yselta ISD", zip: "79907" },
+    { name: "Eastwood Middle School",    district: "Ysleta ISD", zip: "79935" },
+    { name: "Hanks Middle School",      district: "Ysleta ISD", zip: "79936" },
+    { name: "SSG Manuel R. Puentes Middle School", district: "Socorro ISD", zip: "79938" },
+    { name: "Montwood Middle School",       district: "Socorro ISD", zip: "79936" },
   ],
   high: [
-    { name: "Bel Air High School",    district: "Yselta ISD", zip: "79905" },
-    { name: "Del Valle High School",  district: "Yselta ISD", zip: "79907" },
-    { name: "Eastwood High School",   district: "Yselta ISD", zip: "79915" },
-    { name: "J.M. Hanks High School", district: "Yselta ISD", zip: "79936" },
+    { name: "Americas High School",    district: "Socorro ISD", zip: "79936" },
+    { name: "Pebble Hills High School",  district: "Socorro ISD", zip: "79938" },
+    { name: "Eastwood High School",   district: "Ysleta ISD", zip: "79925" },
+    { name: "J.M. Hanks High School", district: "Ysleta ISD", zip: "79935" },
   ],
 } as const;
 
@@ -87,7 +87,7 @@ const NEARBY = {
     { name: "Albertsons",             time: "6 min",  img: "/areas/upper-valley/nearby/albertsons.webp"   },
     { name: "Walmart Supercenter (Zaragoza)",    time: "5 min",  img: "/areas/upper-valley/nearby/walmart.webp"      },
     { name: "Food City/Lowes",            time: "7 min", img: "/areas/east-el-paso/nearby/food-city.jpeg"  },
-    { name: "Sams Club (Gateway East)", time: "8 min",  img: "/areas/east-el-paso/nearby/sams-club.jpeg"      },
+    { name: "Sam’s Club (Gateway East)", time: "8 min",  img: "/areas/east-el-paso/nearby/sams-club.jpeg"      },
   ],
   shopping: [
     { name: "Cielo Vista Mall",      time: "On-site / 5 min",  img: "/areas/lower-valley/nearby/cielovista.png" },
@@ -155,15 +155,15 @@ const UTILITIES = [
 
 const FAQS = [
   { icon: "/icons/areas/icon-home.webp",       q: "Is East El Paso a good place to live?",               a: "Yes. Eastside El Paso is one of the city&apos;s most established and connected communities, known for mature neighborhoods, a large retail and dining corridor, and quick access to the airport." },
-  { icon: "/icons/areas/icon-graduation.webp", q: "What school district serves East El Paso?",           a: "Most of Eastside El Paso is served by Yselta ISD. Some addresses near the western edge may fall under El Paso ISD, and far eastern edges may fall under Socorro ISD, so buyers should verify exact zoning by address." },
+  { icon: "/icons/areas/icon-graduation.webp", q: "What school district serves East El Paso?",           a: "Most of Eastside El Paso is served by Ysleta ISD. Some addresses near the western edge may fall under El Paso ISD, and far eastern edges may fall under Socorro ISD, so buyers should verify exact zoning by address." },
   { icon: "/icons/areas/icon-dollar.webp",     q: "How affordable is Eastside El Paso?",                 a: "East El Paso offers a wide range of price points, from entry-level homes near $175,000 to updated or newer-construction properties above $300,000 making it accessible to first-time buyers and move-up buyer alike." },
-  { icon: "/icons/areas/icon-shield.webp",     q: "What is the commute to Fort Bliss like?",             a: "Most Eastside neighborhoods are roughly 20-25 minutes from Fort Bliss&apos;s main or north gate via Loop 375, longer than Northeast El Paso but still commutable for militery households" },
+  { icon: "/icons/areas/icon-shield.webp",     q: "What is the commute to Fort Bliss like?",             a: "Most Eastside neighborhoods are roughly 20-25 minutes from Fort Bliss&apos;s main or north gate via Loop 375, longer than Northeast El Paso but still commutable for military households" },
   { icon: "/icons/areas/icon-diamond.webp",    q: "What is the commute to the airport like?",            a: "Eastside El Paso is one of the closest residential corridors to El Paso International Airport, with most neighborhoods roughly 10-15 minutes away." },
   { icon: "/icons/areas/icon-chart.webp",      q: "Is East El Paso good for military families?",         a: "Yes. While not as close to Fort Bliss as Northeast El Paso, Eastside offers strong values, established neighborhoods, and steady rental demand tied to the base&apos;s military population." },
-  { icon: "/icons/areas/icon-location.webp",   q: "What parks and recreation are nearby?",               a: "The El Paso County Sportsplex, Marty Robbins Park, Edgemere Pond Park, Album Park, and the historc Yselta Mission are all within the Eastsides corridor." },
+  { icon: "/icons/areas/icon-location.webp",   q: "What parks and recreation are nearby?",               a: "The El Paso County Sportsplex, Marty Robbins Park, Edgemere Pond Park, Album Park, and the historic Ysleta Mission are all within the Eastside corridor." },
   { icon: "/icons/areas/icon-home-alt.webp",   q: "Is new construction available in Eastside El Paso?",  a: "Some newer construction is available toward the Vista de Oro and Far East-adjacent corridor, though most Eastside homes are established properties from prior decades. Buyers seeking the newest construction may also want to compare Horizon City and Far East El Paso." },
   { icon: "/icons/areas/icon-horse.webp",      q: "What is the average days on market?",                 a: "Days on market varies by price point and subarea, generally tracking the citywide El Paso average of roughly 44-54 days. Contact Sandstone Real Estate Group for current local market data." },
-  { icon: "/icons/areas/icon-water.webp",      q: "What shopping and dining options are nearby?",        a: "Cielo Vista Mall is the anchor retil destination, with Zaragoza Marketplace, Basset Place, and Fountains at Farag also a short drive away, alongside extensice dining and everyday retail along George Dieter Drive and Loop 375." },
+  { icon: "/icons/areas/icon-water.webp",      q: "What shopping and dining options are nearby?",        a: "Cielo Vista Mall is the anchor retail destination, with Zaragoza Marketplace, Bassett Place, and Fountains at Farah also a short drive away, alongside extensive dining and everyday retail along George Dieter Drive and Loop 375." },
 ];
 
 const CX0 = 48, CY0 = 12, CX1 = 348, CY1 = 162;
@@ -453,7 +453,7 @@ export default async function EastElPasoPage() {
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
                     src="/areas/east-el-paso/schools/eastwoodHs.png"
-                    alt="Coronado High School"
+                    alt="Eastwood High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
                     className="object-cover"
@@ -467,28 +467,28 @@ export default async function EastElPasoPage() {
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/east-el-paso/schools/ysletaMs.png"
-                      alt="Charles Middle School"
+                      src="/areas/east-el-paso/schools/Montwood-Middle.png"
+                      alt="Montwood Middle School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Ysleta<br />Middle School
+                      Montwood<br />Middle School
                     </p>
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src="/areas/east-el-paso/schools/capistrano-elem.webp"
-                      alt="Putnam Elementary School of Science and Technology"
+                      src="/areas/east-el-paso/schools/REL-Washington.png"
+                      alt="REL Washington Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Capristrano Elementary<br />School
+                      REL<br />Washington
                     </p>
                   </div>
                 </div>
@@ -693,10 +693,10 @@ export default async function EastElPasoPage() {
               <div className="flex-1 space-y-7">
                 <div>
                   <p className="text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    East El Paso is one of the city&apos;s most practical choices for buyers seeking established neighborhoods, mature landscaping, and convenient access to shopping, dining, and major transportation routes. Many neighboorhoods feature mature trees, larger lots than newer Far East subdivisions, and excellent connectivity via Loop 375, Zaragoza Road, and George Dieter Drive.
+                    East El Paso is one of the city&apos;s most practical choices for buyers seeking established neighborhoods, mature landscaping, and convenient access to shopping, dining, and major transportation routes. Many neighborhoods feature mature trees, larger lots than newer Far East subdivisions, and excellent connectivity via Loop 375, Zaragoza Road, and George Dieter Drive.
                   </p>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Buyers choose Eastside El Paso for its value, central location, and everyday convenience. The area appeals to firs-time homebuyers, families looking for established communities with parks and youth sports, airport and logistics employees, and investors seeking steady rental demand.
+                    Buyers choose Eastside El Paso for its value, central location, and everyday convenience. The area appeals to first-time homebuyers, families looking for established communities with parks and youth sports, airport and logistics employees, and investors seeking steady rental demand.
                   </p>
                 </div>
 
@@ -705,7 +705,7 @@ export default async function EastElPasoPage() {
                     East El Paso Home Prices in 2026
                   </h2>
                   <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Homes in Eastside El Paso vocer a wide range of price points. Established neighborhoods around Cielo Vista and Ysleta generally range from $175,000 to $250,000, while newer homes toward the Far East corridor commonly range from $200,000 to $320,000. This variety makes Eastisde one of the most accessible markets for both first-time buyers and families looking to upgrade.
+                    Homes in Eastside El Paso cover a wide range of price points. Established neighborhoods around Cielo Vista and Ysleta generally range from $175,000 to $250,000, while newer homes toward the Far East corridor commonly range from $200,000 to $320,000. This variety makes Eastside one of the most accessible markets for both first-time buyers and families looking to upgrade.
                   </p>
                 </div>
 
