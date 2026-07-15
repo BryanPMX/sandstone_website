@@ -18,9 +18,10 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "East El Paso | Sandstone Real Estate Group",
+  title: "East El Paso Real Estate | Sandstone Real Estate Group",
+  description:
+    "Explore East El Paso real estate with Sandstone Real Estate Group, including homes near schools, parks, shopping, Fort Bliss, and growing Eastside neighborhoods.",
 };
-
 export const dynamic = "force-dynamic";
 
 // ── Spark API — market statistics for East El Paso (ZIP 79936) ────────────────
