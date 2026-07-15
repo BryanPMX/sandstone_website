@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
 import Image from "next/image";
 import { PcsHeader } from "../pcs/PcsHeader.client";
@@ -25,7 +26,8 @@ const vaQuickStats = [
   {
     value: "$0",
     label: "Down Payment",
-    detail: "Qualified VA buyers can purchase without a traditional down payment.",
+    detail:
+      "Qualified VA buyers can purchase without a traditional down payment.",
   },
   {
     value: "$0",
@@ -35,7 +37,8 @@ const vaQuickStats = [
   {
     value: "30–45",
     label: "Typical Closing Days",
-    detail: "Most VA purchases can close in about 30 to 45 days after an accepted offer.",
+    detail:
+      "Most VA purchases can close in about 30 to 45 days after an accepted offer.",
   },
 ];
 
@@ -166,6 +169,237 @@ const faqs = [
   },
 ];
 
+type VaIconName =
+  | "shield-home"
+  | "tag"
+  | "shield-check"
+  | "chart"
+  | "calendar"
+  | "handshake"
+  | "house-star"
+  | "document"
+  | "person-check"
+  | "house-heart"
+  | "search-home"
+  | "clipboard-home"
+  | "key"
+  | "military"
+  | "medal"
+  | "shield-star"
+  | "family"
+  | "house"
+  | "pin"
+  | "hardhat"
+  | "dollar";
+
+function VaIcon({
+  name,
+  className = "h-8 w-8",
+}: {
+  name: VaIconName;
+  className?: string;
+}) {
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+
+  const icons: Record<VaIconName, ReactNode> = {
+    "shield-home": (
+      <>
+        <path
+          {...common}
+          d="M12 2.7 20 6v5.6c0 5.1-3.4 8.2-8 9.7-4.6-1.5-8-4.6-8-9.7V6l8-3.3Z"
+        />
+        <path
+          {...common}
+          d="m8.2 12 3.8-3.1 3.8 3.1v4.2h-2.6v-2.5h-2.4v2.5H8.2V12Z"
+        />
+      </>
+    ),
+    tag: (
+      <>
+        <path {...common} d="M4 5.5h7.5l6.5 6.5-6 6-6.5-6.5V5.5Z" />
+        <circle {...common} cx="8.2" cy="9" r="1" />
+        <path {...common} d="M9.7 12.3h4.8M12.1 10.7v3.2" />
+      </>
+    ),
+    "shield-check": (
+      <>
+        <path
+          {...common}
+          d="M12 2.8 19 5.7v5.1c0 4.6-3 7.5-7 9-4-1.5-7-4.4-7-9V5.7L12 2.8Z"
+        />
+        <path {...common} d="m8.8 11.5 2.1 2.1 4.4-4.6" />
+      </>
+    ),
+    chart: (
+      <>
+        <path {...common} d="M4 19V5M4 19h16" />
+        <path {...common} d="M7 16v-4h3v4M12 16V9h3v7M17 16V6h3v10" />
+        <path {...common} d="m7 9 4-3 3 2 5-4" />
+      </>
+    ),
+    calendar: (
+      <>
+        <rect {...common} x="4" y="5.5" width="16" height="14" rx="2" />
+        <path
+          {...common}
+          d="M8 3v5M16 3v5M4 9.5h16M8 13h2M12 13h2M16 13h1M8 16h2M12 16h2"
+        />
+      </>
+    ),
+    handshake: (
+      <>
+        <path {...common} d="m3.5 11 4-4 3 1 2-1 4 4" />
+        <path {...common} d="m7 10 5 5c.8.8 2.1.8 2.9 0l4.6-4.6" />
+        <path
+          {...common}
+          d="m3 9-1.5 3 4.5 3 1.5-1.5M21 9l1.5 3-4.5 3-1.5-1.5"
+        />
+      </>
+    ),
+    "house-star": (
+      <>
+        <path {...common} d="m3 11 9-7 9 7M5.5 10.5V20h13v-9.5" />
+        <path
+          {...common}
+          d="m12 12.3.9 1.8 2 .3-1.5 1.4.4 2-1.8-.9-1.8.9.4-2-1.5-1.4 2-.3.9-1.8Z"
+        />
+      </>
+    ),
+    document: (
+      <>
+        <path {...common} d="M6 3h8l4 4v14H6V3Z" />
+        <path {...common} d="M14 3v5h5M9 11h6M9 15h4" />
+        <circle {...common} cx="16.5" cy="17.5" r="2.5" />
+        <path {...common} d="m15.5 17.5.8.8 1.4-1.7" />
+      </>
+    ),
+    "person-check": (
+      <>
+        <circle {...common} cx="10" cy="7" r="3" />
+        <path {...common} d="M4.5 19c.3-4.2 2.2-6.4 5.5-6.4s5.2 2.2 5.5 6.4" />
+        <circle {...common} cx="17.5" cy="15.5" r="3" />
+        <path {...common} d="m16.2 15.5 1 1 1.8-2" />
+      </>
+    ),
+    "house-heart": (
+      <>
+        <path {...common} d="m3 11 9-7 9 7M5.5 10.5V20h13v-9.5" />
+        <path
+          {...common}
+          d="M12 16.5s-3-1.8-3-4a1.8 1.8 0 0 1 3-1.3 1.8 1.8 0 0 1 3 1.3c0 2.2-3 4-3 4Z"
+        />
+      </>
+    ),
+    "search-home": (
+      <>
+        <path {...common} d="m4 11 8-6 8 6M6.5 10.5V19h7" />
+        <circle {...common} cx="16.2" cy="16.2" r="3.2" />
+        <path {...common} d="m18.6 18.6 2.4 2.4" />
+      </>
+    ),
+    "clipboard-home": (
+      <>
+        <rect {...common} x="5" y="4.5" width="14" height="16" rx="2" />
+        <path {...common} d="M9 4V2.8h6V4M8 9h2M8 12h2M8 15h2" />
+        <path {...common} d="m12 15 3-2.5 3 2.5v3h-6v-3Z" />
+      </>
+    ),
+    key: (
+      <>
+        <circle {...common} cx="8" cy="15" r="3.5" />
+        <path
+          {...common}
+          d="m10.7 12.3 7.1-7.1 2 2-1.4 1.4 1.1 1.1-1.8 1.8-1.1-1.1-3.7 3.7"
+        />
+      </>
+    ),
+    military: (
+      <>
+        <circle {...common} cx="12" cy="7" r="3" />
+        <path
+          {...common}
+          d="M7 21v-4.5c0-3 2-5 5-5s5 2 5 5V21M8 6.2 12 3l4 3.2"
+        />
+        <path {...common} d="M9 16h6M10 19h4" />
+      </>
+    ),
+    medal: (
+      <>
+        <path {...common} d="M8 3h8l-1.5 6h-5L8 3Z" />
+        <circle {...common} cx="12" cy="14.5" r="4.5" />
+        <path
+          {...common}
+          d="m12 12.3.7 1.4 1.6.2-1.2 1.1.3 1.6-1.4-.8-1.4.8.3-1.6-1.2-1.1 1.6-.2.7-1.4Z"
+        />
+      </>
+    ),
+    "shield-star": (
+      <>
+        <path
+          {...common}
+          d="M12 2.7 20 6v5.6c0 5.1-3.4 8.2-8 9.7-4.6-1.5-8-4.6-8-9.7V6l8-3.3Z"
+        />
+        <path
+          {...common}
+          d="m12 8.4.9 1.9 2.1.3-1.5 1.5.4 2.1-1.9-1-1.9 1 .4-2.1-1.5-1.5 2.1-.3.9-1.9Z"
+        />
+      </>
+    ),
+    family: (
+      <>
+        <circle {...common} cx="8" cy="8" r="2.5" />
+        <circle {...common} cx="16" cy="8" r="2.5" />
+        <path
+          {...common}
+          d="M3 19c.2-3.4 1.8-5.5 5-5.5 1.6 0 2.8.5 3.6 1.5M21 19c-.2-3.4-1.8-5.5-5-5.5-1.6 0-2.8.5-3.6 1.5"
+        />
+        <circle {...common} cx="12" cy="12" r="2" />
+        <path {...common} d="M8.5 20c.2-2.8 1.3-4.5 3.5-4.5s3.3 1.7 3.5 4.5" />
+      </>
+    ),
+    house: (
+      <>
+        <path {...common} d="m3 11 9-7 9 7M5.5 10.5V20h13v-9.5M9.5 20v-5h5v5" />
+      </>
+    ),
+    pin: (
+      <>
+        <path
+          {...common}
+          d="M12 21s6-5.3 6-11a6 6 0 1 0-12 0c0 5.7 6 11 6 11Z"
+        />
+        <circle {...common} cx="12" cy="10" r="2.2" />
+      </>
+    ),
+    hardhat: (
+      <>
+        <path {...common} d="M4 15a8 8 0 0 1 16 0M3 15h18v3H3zM9 7v8M15 7v8" />
+      </>
+    ),
+    dollar: (
+      <>
+        <circle {...common} cx="12" cy="12" r="8" />
+        <path
+          {...common}
+          d="M14.8 8.7c-.7-.8-1.7-1.2-2.9-1.2-1.7 0-2.9.9-2.9 2.2 0 1.5 1.3 2 3 2.4 1.8.4 3 1 3 2.5 0 1.4-1.2 2.4-3 2.4-1.4 0-2.7-.5-3.6-1.5M12 6v12"
+        />
+      </>
+    ),
+  };
+
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      {icons[name]}
+    </svg>
+  );
+}
+
 function StatCard({
   value,
   label,
@@ -259,48 +493,69 @@ export default function VaLoansPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
-          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-            <div>
-              <h2 className="text-3xl font-bold text-[#26356f]">
-                Why the VA Loan Works So Well in El Paso
-              </h2>
+        <section className="px-6 py-16 md:py-20">
+          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+            <div className="flex gap-4 md:gap-6">
+              <div className="mt-1 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-[#26356f] shadow-sm md:h-20 md:w-20">
+                <VaIcon
+                  name="shield-home"
+                  className="h-10 w-10 md:h-12 md:w-12"
+                />
+              </div>
 
-              <p className="mt-5 text-lg leading-8 text-slate-700">
-                The VA home loan is one of the most powerful home-buying
-                benefits available to military families. In El Paso, where home
-                prices are still more affordable than many major military
-                markets, your VA benefit can go especially far.
-              </p>
+              <div>
+                <h2 className="max-w-3xl text-3xl font-bold leading-tight tracking-tight text-[#26356f] md:text-4xl">
+                  Why the VA Loan Works So Well in El Paso
+                </h2>
 
-              <p className="mt-4 text-lg leading-8 text-slate-700">
-                With $0 down, no PMI, and strong purchasing power near Fort
-                Bliss, VA buyers can compete for homes across Northeast El Paso,
-                Horizon City, Far East El Paso, West El Paso, and the Upper
-                Valley.
-              </p>
+                <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+                  The VA home loan is one of the most powerful home-buying
+                  benefits available to military families. In El Paso, where
+                  home prices are still more affordable than many major military
+                  markets, your VA benefit can go especially far.
+                </p>
+
+                <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+                  With $0 down, no PMI, and strong purchasing power near Fort
+                  Bliss, VA buyers can compete for homes across Northeast El
+                  Paso, Horizon City, Far East El Paso, West El Paso, and the
+                  Upper Valley.
+                </p>
+              </div>
             </div>
 
-            <div className="rounded-3xl bg-slate-100 p-8">
-              <h3 className="text-xl font-bold text-[#26356f]">
+            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-7 shadow-sm md:p-8">
+              <h3 className="text-2xl font-bold text-[#26356f]">
                 What the VA Loan Gets You
               </h3>
+              <div className="mt-3 h-px w-20 bg-[#c6a46a]" />
 
-              <ul className="mt-6 space-y-4">
-                {benefits.map((benefit) => (
-                  <li key={benefit} className="flex gap-3 text-slate-700">
-                    <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#c6a46a]" />
-                    <span>{benefit}</span>
-                  </li>
+              <div className="mt-6 space-y-4">
+                {[
+                  { icon: "tag" as VaIconName, label: benefits[0] },
+                  { icon: "shield-check" as VaIconName, label: benefits[1] },
+                  { icon: "chart" as VaIconName, label: benefits[2] },
+                  { icon: "calendar" as VaIconName, label: benefits[3] },
+                  { icon: "handshake" as VaIconName, label: benefits[4] },
+                  { icon: "house-star" as VaIconName, label: benefits[5] },
+                ].map((benefit) => (
+                  <div key={benefit.label} className="flex items-center gap-5">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#26356f] shadow-sm">
+                      <VaIcon name={benefit.icon} className="h-6 w-6" />
+                    </div>
+                    <p className="text-base leading-7 text-slate-700">
+                      {benefit.label}
+                    </p>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
         </section>
 
         <section className="bg-slate-50 px-6 py-16">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
+            <h2 className="text-2xl font-bold text-[#26356f]">
               What You Can Buy With Your VA Benefit
             </h2>
 
@@ -379,22 +634,22 @@ export default function VaLoansPage() {
           </div>
         </section>
 
-        <section id="process" className="px-6 py-16">
+        <section id="process" className="px-6 py-16 md:py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
+            <h2 className="text-3xl font-bold tracking-tight text-[#26356f] md:text-4xl">
               The VA Loan Process in El Paso
             </h2>
 
-            <div className="mt-8 rounded-3xl border border-slate-200 bg-[#f7f5ef] p-6 md:p-8">
-              <div className="grid gap-6 md:grid-cols-[0.8fr_1.2fr] md:items-center">
+            <div className="mt-8 rounded-3xl border border-slate-200 bg-[#f7f5ef] p-6 shadow-sm md:p-8">
+              <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#c6a46a]">
+                  <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#c6a46a]">
                     Timeline Snapshot
                   </p>
                   <h3 className="mt-2 text-2xl font-bold text-[#26356f]">
                     Keep the process simple
                   </h3>
-                  <p className="mt-3 leading-7 text-slate-600">
+                  <p className="mt-3 max-w-xl text-base leading-7 text-slate-600">
                     The biggest takeaway for VA buyers is simple: get
                     pre-approved before shopping seriously, then expect most
                     purchases to close in about 30–45 days after an accepted
@@ -404,18 +659,34 @@ export default function VaLoansPage() {
 
                 <div className="grid gap-4 sm:grid-cols-3">
                   {[
-                    { value: "1", label: "Get COE" },
-                    { value: "2", label: "Pre-approve" },
-                    { value: "3", label: "Shop + offer" },
+                    {
+                      icon: "document" as VaIconName,
+                      value: "1",
+                      label: "Get COE",
+                    },
+                    {
+                      icon: "person-check" as VaIconName,
+                      value: "2",
+                      label: "Pre-approve",
+                    },
+                    {
+                      icon: "house-heart" as VaIconName,
+                      value: "3",
+                      label: "Shop + offer",
+                    },
                   ].map((item) => (
                     <div
                       key={item.label}
-                      className="rounded-2xl bg-white p-5 text-center shadow-sm"
+                      className="relative flex min-h-32 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
                     >
-                      <p className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#26356f] text-lg font-bold text-white">
+                      <VaIcon
+                        name={item.icon}
+                        className="h-9 w-9 text-[#26356f]"
+                      />
+                      <div className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#26356f] text-sm font-bold text-white">
                         {item.value}
-                      </p>
-                      <p className="mt-3 text-sm font-bold text-[#26356f]">
+                      </div>
+                      <p className="mt-4 text-base font-bold text-[#26356f]">
                         {item.label}
                       </p>
                     </div>
@@ -424,58 +695,124 @@ export default function VaLoansPage() {
               </div>
             </div>
 
-            <div className="mt-8 grid gap-4">
-              {processSteps.map((item) => (
-                <div
-                  key={item.step}
-                  className="grid gap-4 rounded-2xl border border-slate-200 p-5 md:grid-cols-[220px_1fr_160px]"
-                >
-                  <h3 className="font-bold text-[#26356f]">{item.step}</h3>
-                  <p className="text-slate-700">{item.detail}</p>
-                  <p className="font-semibold text-[#c6a46a]">
-                    {item.timeline}
-                  </p>
-                </div>
-              ))}
+            <div className="relative mt-7 space-y-3 md:pl-14">
+              <div className="absolute bottom-6 left-[18px] top-6 hidden border-l border-dashed border-[#26356f]/30 md:block" />
+
+              {processSteps.map((item, index) => {
+                const icons: VaIconName[] = [
+                  "document",
+                  "person-check",
+                  "search-home",
+                  "handshake",
+                  "clipboard-home",
+                  "search-home",
+                  "key",
+                ];
+                const cleanStep = item.step.replace(/^\d+\.\s*/, "");
+
+                return (
+                  <div key={item.step} className="relative">
+                    <div className="absolute -left-14 top-4 z-10 hidden h-9 w-9 items-center justify-center rounded-full bg-[#26356f] text-sm font-bold text-white shadow-sm md:flex">
+                      {index + 1}
+                    </div>
+
+                    <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[48px_190px_1fr_150px] md:items-center md:p-5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-[#26356f]">
+                        <VaIcon name={icons[index]} className="h-7 w-7" />
+                      </div>
+                      <h3 className="text-base font-bold text-[#26356f]">
+                        {cleanStep}
+                      </h3>
+                      <p className="text-sm leading-6 text-slate-600">
+                        {item.detail}
+                      </p>
+                      <div className="flex items-center gap-3 font-semibold text-[#c69545] md:justify-start">
+                        <VaIcon name="calendar" className="h-6 w-6" />
+                        <span>{item.timeline}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        <section className="bg-[#26356f] px-6 py-16 text-white">
+        <section className="bg-[#26356f] px-6 py-16 text-white md:py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold">Who Qualifies for a VA Loan?</h2>
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+              Who Qualifies for a VA Loan?
+            </h2>
 
             <div className="mt-8 grid gap-5 md:grid-cols-2">
               {[
-                "Active duty service members with qualifying service time",
-                "Veterans with an honorable discharge",
-                "National Guard and Reservists who meet service requirements",
-                "Eligible surviving spouses of service members",
+                {
+                  icon: "military" as VaIconName,
+                  text: "Active duty service members with qualifying service time",
+                },
+                {
+                  icon: "medal" as VaIconName,
+                  text: "Veterans with an honorable discharge",
+                },
+                {
+                  icon: "shield-star" as VaIconName,
+                  text: "National Guard and Reservists who meet service requirements",
+                },
+                {
+                  icon: "family" as VaIconName,
+                  text: "Eligible surviving spouses of service members",
+                },
               ].map((item) => (
-                <div key={item} className="rounded-2xl bg-white/10 p-5">
-                  {item}
+                <div
+                  key={item.text}
+                  className="flex min-h-24 items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.08] px-5 py-4"
+                >
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-white/5 text-[#d4aa5c]">
+                    <VaIcon name={item.icon} className="h-8 w-8" />
+                  </div>
+                  <div className="h-12 w-px shrink-0 bg-white/20" />
+                  <p className="text-base leading-7 text-white/90">{item.text}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section className="px-6 py-16 md:py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-[#26356f]">
+            <h2 className="text-3xl font-bold tracking-tight text-[#26356f] md:text-4xl">
               Common VA Loan Questions El Paso Buyers Ask
             </h2>
 
             <div className="mt-8 grid gap-5 md:grid-cols-2">
-              {faqs.map((faq) => (
-                <div
-                  key={faq.question}
-                  className="rounded-2xl border border-slate-200 p-6"
-                >
-                  <h3 className="font-bold text-[#26356f]">{faq.question}</h3>
-                  <p className="mt-3 text-slate-700">{faq.answer}</p>
-                </div>
-              ))}
+              {faqs.map((faq, index) => {
+                const icons: VaIconName[] = [
+                  "house",
+                  "pin",
+                  "hardhat",
+                  "dollar",
+                ];
+
+                return (
+                  <div
+                    key={faq.question}
+                    className="flex min-h-36 items-center gap-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                  >
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#f3f5fa] text-[#26356f]">
+                      <VaIcon name={icons[index]} className="h-9 w-9" />
+                    </div>
+                    <div className="h-16 w-px shrink-0 bg-[#26356f]/15" />
+                    <div>
+                      <h3 className="text-base font-bold text-[#26356f]">
+                        {faq.question}
+                      </h3>
+                      <p className="mt-3 text-base leading-7 text-slate-700">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
