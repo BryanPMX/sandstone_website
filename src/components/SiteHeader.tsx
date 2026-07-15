@@ -269,12 +269,17 @@ export function SiteHeader({
                           />
                         </button>
 
-                        {isAreasMenuOpen ? (
                           <div
                             id={areasMenuId}
                             role="menu"
                             aria-label="Areas menu"
-                            className="absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-56 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)]"
+                            aria-hidden={!isAreasMenuOpen}
+                            className={cn(
+                              "absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-56 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)]",
+                              isAreasMenuOpen
+                                ?"visible opacity-100 pointer-events-auto"
+                                :"invisible opacity-0 pointer-events-none"
+                            )}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <ul className="py-2">
@@ -291,7 +296,6 @@ export function SiteHeader({
                               ))}
                             </ul>
                           </div>
-                        ) : null}
                       </li>
                     ) : item.href === "/#contact" ? (
                       <li key={item.href} className="relative">
@@ -479,12 +483,17 @@ export function SiteHeader({
                           />
                         </button>
 
-                        {isAreasMenuOpen ? (
                           <div
                             id={areasMenuId}
                             role="menu"
                             aria-label="Areas menu"
-                            className="absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-56 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)]"
+                            aria-hidden={!isAreasMenuOpen}
+                            className={cn(
+                              "absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-56 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)]",
+                              isAreasMenuOpen
+                                ?"visible opacity-100 pointer-events-auto"
+                                :"invisble opacity-0 pointer-events-none"
+                            )}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <ul className="py-2">
@@ -501,7 +510,6 @@ export function SiteHeader({
                               ))}
                             </ul>
                           </div>
-                        ) : null}
                       </li>
                     ) : item.href === "/#contact" ? (
                       <li key={item.href} className="relative">
