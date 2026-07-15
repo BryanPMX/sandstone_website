@@ -1,870 +1,1005 @@
-import Image from "next/image";
-import Link from "next/link";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
-import { EastElPasoListings } from "@/components/areas/EastElPasoListings";
-import { LeadCaptureSection } from "@/components/LeadCaptureSection";
-import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
-import { getTurnstileSiteKey } from "@/config";
-import {
-  Clock,
-  BadgePercent,
-  Home,
-  ArrowUpDown,
-  ExternalLink,
-  Info,
-  ChevronDown,
-} from "lucide-react";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
+import { ContactForm } from "@/components/ContactForm";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
+import SearchForm from "../../bah-fort-bliss-2026/SearchForm";
 export const metadata: Metadata = {
-  title: "East El Paso Real Estate | Sandstone Real Estate Group",
+  title:
+    "PCS to El Paso Checklist 2026 | Fort Bliss Relocation Guide | Sandstone",
   description:
-    "Explore East El Paso real estate with Sandstone Real Estate Group, including homes near schools, parks, shopping, Fort Bliss, and growing Eastside neighborhoods.",
-};
-export const dynamic = "force-dynamic";
-
-// ── Spark API — market statistics for East El Paso (ZIP 79936) ────────────────
-const SPARK_BASE    = "https://replication.sparkapi.com";
-const SPARK_TOKEN   = process.env.SPARK_ACCESS_TOKEN ?? "";
-const SPARK_HEADERS = {
-  Accept: "application/json",
-  Authorization: `Bearer ${SPARK_TOKEN}`,
-  "User-Agent": "sandstone-website/1.0",
+    "Complete PCS to El Paso checklist for Fort Bliss. BAH rates, best neighborhoods, VA loan timeline, schools, and what to do before you arrive. Updated 2026.",
 };
 
-async function fetchEastElPasoStats() {
-  const qs   = "LocationField=PostalCode&LocationValue=79936";
-  const opts = { headers: SPARK_HEADERS, next: { revalidate: 3600 } } as RequestInit;
-  try {
-    const [priceRes, invRes, domRes, ratioRes] = await Promise.all([
-      fetch(`${SPARK_BASE}/v1/marketstatistics/price?${qs}`,     opts),
-      fetch(`${SPARK_BASE}/v1/marketstatistics/inventory?${qs}`, opts),
-      fetch(`${SPARK_BASE}/v1/marketstatistics/dom?${qs}`,       opts),
-      fetch(`${SPARK_BASE}/v1/marketstatistics/ratio?${qs}`,     opts),
-    ]);
-    const [price, inv, dom, ratio] = await Promise.all([
-      priceRes.json(), invRes.json(), domRes.json(), ratioRes.json(),
-    ]);
-    return {
-      p: price?.D?.Results?.[0]  ?? null,
-      i: inv?.D?.Results?.[0]    ?? null,
-      d: dom?.D?.Results?.[0]    ?? null,
-      r: ratio?.D?.Results?.[0]  ?? null,
-    };
-  } catch {
-    return { p: null, i: null, d: null, r: null };
-  }
+const ordersChecklist = [
+  "Confirm your reporting date and contact the Fort Bliss Housing Office.",
+  "Calculate your exact BAH using the official DoD BAH calculator.",
+  "Decide whether buying or renting makes more sense for your assignment length.",
+  "Start VA loan pre-approval with a VA-experienced lender.",
+];
+
+const daysBeforeChecklist = [
+  "Start your home search remotely with video walkthroughs and virtual tours.",
+  "Choose your target neighborhood based on your unit gate and commute.",
+  "Research school districts based on address.",
+  "Arrange PTDY through your losing unit for house hunting.",
+];
+
+const neighborhoodGuide = [
+  {
+    gate: "Cassidy Gate / MSG Peña Gate",
+    area: "Northeast El Paso",
+    price: "$231,526",
+    commute: "5–15 min",
+  },
+  {
+    gate: "Cassidy Gate, east units",
+    area: "Horizon City TX",
+    price: "$324,000",
+    commute: "10–15 min",
+  },
+  {
+    gate: "Biggs Army Airfield",
+    area: "West El Paso",
+    price: "$350,000–$380,000",
+    commute: "25–30 min",
+  },
+  {
+    gate: "West side flexibility / lower taxes",
+    area: "Santa Teresa NM",
+    price: "$346,000",
+    commute: "40–45 min to main gate",
+  },
+];
+
+const schoolDistricts = [
+  {
+    area: "Northeast El Paso",
+    district: "El Paso ISD",
+    schools: "Parkland High School, Transmountain Early College HS",
+  },
+  {
+    area: "West El Paso",
+    district: "El Paso ISD",
+    schools: "Coronado High School, Franklin High School",
+  },
+  {
+    area: "Horizon City / Far East",
+    district: "Socorro ISD",
+    schools: "Eastlake High School, Horizon Heights Elementary",
+  },
+  {
+    area: "Santa Teresa NM",
+    district: "Gadsden ISD",
+    schools: "Santa Teresa High School, Middle, Elementary",
+  },
+  {
+    area: "On-post housing",
+    district: "El Paso ISD",
+    schools: "On-installation elementary schools and high school",
+  },
+];
+
+const processingChecklist = [
+  {
+    task: "Report to Reception Company",
+    where: "Building 1006, Carter Street",
+    priority: "Day 1",
+  },
+  {
+    task: "Complete unit in-processing",
+    where: "Through your unit",
+    priority: "Day 1–3",
+  },
+  {
+    task: "Update military IDs",
+    where: "DEERS / RAPIDS office",
+    priority: "Week 1",
+  },
+  {
+    task: "Enroll children in school",
+    where: "EPISD, SISD, or Gadsden ISD",
+    priority: "Week 1",
+  },
+  {
+    task: "Set up TRICARE",
+    where: "William Beaumont Army Medical Center",
+    priority: "Week 1",
+  },
+  {
+    task: "Register vehicle",
+    where: "El Paso Tax Assessor-Collector office",
+    priority: "Within 90 days",
+  },
+];
+
+const vaDocs = [
+  "Certificate of Eligibility",
+  "Last 2 years of W-2s or LES",
+  "Last 30 days of pay stubs or LES",
+  "Last 2 months of bank statements",
+  "Copy of PCS orders",
+  "VA funding fee information",
+];
+
+const timeline = [
+  {
+    timeframe: "Orders received",
+    action:
+      "Call Housing Office, calculate BAH, decide buy vs. rent, and contact Sandstone.",
+  },
+  {
+    timeframe: "90 days out",
+    action: "Start your remote home search and get VA pre-approved.",
+  },
+  {
+    timeframe: "60 days out",
+    action: "Use PTDY to tour homes, compare areas, and make an offer.",
+  },
+  {
+    timeframe: "30 days out",
+    action:
+      "Complete inspections, escrow steps, lender requests, and moving coordination.",
+  },
+  {
+    timeframe: "Reporting date",
+    action: "In-process at Reception and finalize your housing plan.",
+  },
+  {
+    timeframe: "Within 90 days",
+    action: "Register vehicles in Texas or New Mexico if applicable.",
+  },
+];
+
+const checklistPhaseData = [
+  { label: "Orders received", value: ordersChecklist.length, display: `${ordersChecklist.length} steps` },
+  { label: "60–90 days before", value: daysBeforeChecklist.length, display: `${daysBeforeChecklist.length} steps` },
+  { label: "30–60 days before", value: 4, display: "4 steps" },
+  { label: "Arrival / Week 1", value: processingChecklist.length, display: `${processingChecklist.length} steps` },
+  { label: "VA documents", value: vaDocs.length, display: `${vaDocs.length} docs` },
+];
+
+const arrivalPriorityData = [
+  { label: "Day 1", value: 1, display: "1 task" },
+  { label: "Day 1–3", value: 1, display: "1 task" },
+  { label: "Week 1", value: 3, display: "3 tasks" },
+  { label: "Within 90 days", value: 1, display: "1 task" },
+];
+
+const pcsPhaseTimelineData = [
+  { phase: "Orders", timing: "Now", value: 0, display: "Confirm BAH + housing plan" },
+  { phase: "90 days", timing: "Pre-approval", value: 90, display: "Remote search + lender prep" },
+  { phase: "60 days", timing: "Tour + offer", value: 60, display: "PTDY, video tours, offer strategy" },
+  { phase: "30 days", timing: "Escrow", value: 30, display: "Inspection, documents, move coordination" },
+  { phase: "Report", timing: "Arrival", value: 0, display: "In-process + finish housing setup" },
+];
+
+const neighborhoodComparisonData = [
+  {
+    area: "Northeast El Paso",
+    price: 231526,
+    priceLabel: "$231,526",
+    commute: 10,
+    commuteLabel: "5–15 min",
+    bestFor: "Fastest Fort Bliss access",
+  },
+  {
+    area: "Horizon City",
+    price: 324000,
+    priceLabel: "$324,000",
+    commute: 13,
+    commuteLabel: "10–15 min",
+    bestFor: "Newer homes + east-side units",
+  },
+  {
+    area: "Santa Teresa",
+    price: 346000,
+    priceLabel: "$346,000",
+    commute: 43,
+    commuteLabel: "40–45 min",
+    bestFor: "Lower-tax New Mexico option",
+  },
+  {
+    area: "West El Paso",
+    price: 365000,
+    priceLabel: "$350k–$380k",
+    commute: 28,
+    commuteLabel: "25–30 min",
+    bestFor: "West-side lifestyle + schools",
+  },
+];
+
+function SectionHeader({
+  eyebrow,
+  title,
+  description,
+  inverse = false,
+}: {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  inverse?: boolean;
+}) {
+  return (
+    <div className="mx-auto max-w-3xl text-center">
+      {eyebrow && (
+        <p className="mb-3 text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+          {eyebrow}
+        </p>
+      )}
+
+      <h2
+        className={`font-heading text-3xl font-bold tracking-tight md:text-4xl ${
+          inverse ? "text-white" : "text-[var(--sandstone-navy)]"
+        }`}
+      >
+        {title}
+      </h2>
+
+      {description && (
+        <p
+          className={`mt-4 text-base leading-8 md:text-lg ${
+            inverse ? "text-white/75" : "text-[var(--sandstone-charcoal)]"
+          }`}
+        >
+          {description}
+        </p>
+      )}
+    </div>
+  );
 }
 
-const SCHOOLS = {
-  elementary: [
-    { name: "Eastwood Heights Elementary",                district: "Ysleta ISD", zip: "79925" },
-    { name: "REL Washington International School",        district: "Ysleta ISD", zip: "79936" },
-    { name: "Vista Hills Elementary School",              district: "Ysleta ISD", zip: "79935" },
-    {name: "O’Shea Keleher Elementary",                  district: "Socorro ISD", zip: "79936" },
-  ],
-  middle: [
-    { name: "Eastwood Middle School",    district: "Ysleta ISD", zip: "79935" },
-    { name: "Hanks Middle School",      district: "Ysleta ISD", zip: "79936" },
-    { name: "SSG Manuel R. Puentes Middle School", district: "Socorro ISD", zip: "79938" },
-    { name: "Montwood Middle School",       district: "Socorro ISD", zip: "79936" },
-  ],
-  high: [
-    { name: "Americas High School",    district: "Socorro ISD", zip: "79936" },
-    { name: "Pebble Hills High School",  district: "Socorro ISD", zip: "79938" },
-    { name: "Eastwood High School",   district: "Ysleta ISD", zip: "79925" },
-    { name: "J.M. Hanks High School", district: "Ysleta ISD", zip: "79935" },
-  ],
-} as const;
-
-const NEARBY = {
-  hospitals: [
-    { name: "The Hospitals of Providence East Campus", time: "8 min", img: "/areas/east-el-paso/nearby/providenceEast_2.png" },
-    { name: "Las Palmas Medical Center",               time: "14 min", img: "/areas/east-el-paso/nearby/LasPalmasMC.png"  },
-    { name: "Del Sol Medical Center",                  time: "10 min", img: "/areas/east-el-paso/nearby/delSol_2.png"},
-  ],
-  groceries: [
-    { name: "Albertsons",             time: "6 min",  img: "/areas/upper-valley/nearby/albertsons.webp"   },
-    { name: "Walmart Supercenter (Zaragoza)",    time: "5 min",  img: "/areas/upper-valley/nearby/walmart.webp"      },
-    { name: "Food City/Lowes",            time: "7 min", img: "/areas/east-el-paso/nearby/food-city.jpeg"  },
-    { name: "Sam’s Club (Gateway East)", time: "8 min",  img: "/areas/east-el-paso/nearby/sams-club.jpeg"      },
-  ],
-  shopping: [
-    { name: "Cielo Vista Mall",      time: "On-site / 5 min",  img: "/areas/lower-valley/nearby/cielovista.png" },
-    { name: "Zaragoza Marketplace",  time: "8 min", img: "/areas/west-el-paso/nearby/shoppes-solana.jpg" },
-    { name: "Bassett Place",         time: "10 min", img: "/areas/east-el-paso/nearby/basset.png"    },
-    { name: "Fountains at Farah",    time: "12 min", img: "/areas/east-el-paso/nearby/theFountains.png"},
-  ],
-};
-
-const COMMUTE_TIMES = [
-  { icon: "/icons/areas/icon-office.webp",       time: "20-25 min", label: "Downtown\nEl Paso"       },
-  { icon: "/icons/areas/icon-graduation.webp",   time: "20-25 min", label: "UTEP"                    },
-  { icon: "/icons/areas/icon-star.webp",         time: "20-25 min", label: "Fort Bliss\nMain Gate"   },
-  { icon: "/icons/areas/icon-airport.webp",      time: "10-15 min", label: "El Paso\nAirport"        },
-  { icon: "/icons/areas/icon-location.webp", time: "25-30 min",  label: "Westside\nvia I-10"},
-];
-
-const UTILITIES = [
-  {
-    icon:        "/icons/areas/icon-electric.webp",
-    title:       "Electricity",
-    provider:    "El Paso Electric",
-    description: "Powering homes and businesses across the region.",
-    linkLabel:   "Visit Website",
-    href:        "https://www.epelectric.com",
-    accent:      { bg: "bg-amber-50",  text: "text-amber-500",  border: "border-amber-400"  },
-  },
-  {
-    icon:        "/icons/areas/icon-water.webp",
-    title:       "Water",
-    provider:    "El Paso Water",
-    description: "Providing quality water, wastewater, and stormwater services.",
-    linkLabel:   "Visit Website",
-    href:        "https://www.epwater.org",
-    accent:      { bg: "bg-blue-50",   text: "text-blue-500",   border: "border-blue-400"   },
-  },
-  {
-    icon:        "/icons/areas/icon-flame.webp",
-    title:       "Natural Gas",
-    provider:    "Texas Gas Service",
-    description: "Safe, reliable natural gas service for your home and business.",
-    linkLabel:   "Visit Website",
-    href:        "https://www.texasgasservice.com",
-    accent:      { bg: "bg-violet-50", text: "text-violet-500", border: "border-violet-400" },
-  },
-  {
-    icon:        "/icons/areas/icon-trash.webp",
-    title:       "Trash & Recycling",
-    provider:    "City of El Paso ESD",
-    description: "Waste collection and recycling services to keep our community clean and sustainable.",
-    linkLabel:   "Visit Website",
-    href:        "https://www.elpasotexas.gov/environmental-services",
-    accent:      { bg: "bg-green-50",  text: "text-green-600",  border: "border-green-500"  },
-  },
-  {
-    icon:        "/icons/areas/icon-internet.webp",
-    title:       "Internet Service",
-    provider:    "Multiple Providers",
-    description: "High-speed internet options to keep you connected.",
-    linkLabel:   "",
-    href:        "",
-    accent:      { bg: "bg-blue-50",   text: "text-blue-600",   border: "border-blue-500"   },
-  },
-] as const;
-
-const FAQS = [
-  { icon: "/icons/areas/icon-home.webp",       q: "Is East El Paso a good place to live?",               a: "Yes. Eastside El Paso is one of the city&apos;s most established and connected communities, known for mature neighborhoods, a large retail and dining corridor, and quick access to the airport." },
-  { icon: "/icons/areas/icon-graduation.webp", q: "What school district serves East El Paso?",           a: "Most of Eastside El Paso is served by Ysleta ISD. Some addresses near the western edge may fall under El Paso ISD, and far eastern edges may fall under Socorro ISD, so buyers should verify exact zoning by address." },
-  { icon: "/icons/areas/icon-dollar.webp",     q: "How affordable is Eastside El Paso?",                 a: "East El Paso offers a wide range of price points, from entry-level homes near $175,000 to updated or newer-construction properties above $300,000 making it accessible to first-time buyers and move-up buyer alike." },
-  { icon: "/icons/areas/icon-shield.webp",     q: "What is the commute to Fort Bliss like?",             a: "Most Eastside neighborhoods are roughly 20-25 minutes from Fort Bliss&apos;s main or north gate via Loop 375, longer than Northeast El Paso but still commutable for military households" },
-  { icon: "/icons/areas/icon-diamond.webp",    q: "What is the commute to the airport like?",            a: "Eastside El Paso is one of the closest residential corridors to El Paso International Airport, with most neighborhoods roughly 10-15 minutes away." },
-  { icon: "/icons/areas/icon-chart.webp",      q: "Is East El Paso good for military families?",         a: "Yes. While not as close to Fort Bliss as Northeast El Paso, Eastside offers strong values, established neighborhoods, and steady rental demand tied to the base&apos;s military population." },
-  { icon: "/icons/areas/icon-location.webp",   q: "What parks and recreation are nearby?",               a: "The El Paso County Sportsplex, Marty Robbins Park, Edgemere Pond Park, Album Park, and the historic Ysleta Mission are all within the Eastside corridor." },
-  { icon: "/icons/areas/icon-home-alt.webp",   q: "Is new construction available in Eastside El Paso?",  a: "Some newer construction is available toward the Vista de Oro and Far East-adjacent corridor, though most Eastside homes are established properties from prior decades. Buyers seeking the newest construction may also want to compare Horizon City and Far East El Paso." },
-  { icon: "/icons/areas/icon-horse.webp",      q: "What is the average days on market?",                 a: "Days on market varies by price point and subarea, generally tracking the citywide El Paso average of roughly 44-54 days. Contact Sandstone Real Estate Group for current local market data." },
-  { icon: "/icons/areas/icon-water.webp",      q: "What shopping and dining options are nearby?",        a: "Cielo Vista Mall is the anchor retail destination, with Zaragoza Marketplace, Bassett Place, and Fountains at Farah also a short drive away, alongside extensive dining and everyday retail along George Dieter Drive and Loop 375." },
-];
-
-const CX0 = 48, CY0 = 12, CX1 = 348, CY1 = 162;
-
-export default async function EastElPasoPage() {
-  const turnstileSiteKey = getTurnstileSiteKey();
-  const { p, i, d, r } = await fetchEastElPasoStats();
-
-  const fmtUSD = (v: unknown, fallback: string) =>
-    v != null
-      ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Number(v))
-      : fallback;
-
-  const period = p?.Dates?.[0]
-    ? (() => {
-        const [m, , y] = (p.Dates[0] as string).split("/");
-        return new Date(Number(y), Number(m) - 1).toLocaleDateString("en-US", { month: "short", year: "numeric" });
-      })()
-    : "May 2026";
-
-  const medianPrice       = fmtUSD(p?.ActiveMedianListPrice?.[0], "$366,755");
-  const activeInventory   = String(i?.ActiveListings?.[0]  ?? 154);
-  const newListings       = String(i?.NewListings?.[0]      ?? 28);
-  const avgDom            = d?.AverageDom?.[0] ? String(Math.round(Number(d.AverageDom[0]))) : "45";
-  const listPriceReceived = r?.SaleToOriginalListPriceRatio?.[0]
-    ? `${Number(r.SaleToOriginalListPriceRatio[0]).toFixed(1)}%`
-    : "98.1%";
-
-  const moPct = (curr: unknown, prev: unknown) => {
-    const c = Number(curr), p2 = Number(prev);
-    if (!curr || !prev || !p2) return null;
-    const pct = ((c - p2) / p2) * 100;
-    return { pct: `${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%`, up: pct >= 0 };
-  };
-  const domChange   = moPct(d?.AverageDom?.[0],                   d?.AverageDom?.[1]);
-  const ratioChange = moPct(r?.SaleToOriginalListPriceRatio?.[0], r?.SaleToOriginalListPriceRatio?.[1]);
-  const invChange   = moPct(i?.ActiveListings?.[0],               i?.ActiveListings?.[1]);
-  const newChange   = moPct(i?.NewListings?.[0],                  i?.NewListings?.[1]);
-
-  const STATS_TOP = [
-    { label: "Median Price",  value: medianPrice, sub: null           },
-    { label: "Commute Time",  value: "3.3",       sub: "mi / approx." },
-  ];
-
-  const PRICE_CARD = { current: medianPrice, projection: "$431K", period };
-
-  const STAT_CARDS = [
-    { icon: Clock,        label: "Median Days\non Market", value: avgDom,            change: domChange?.pct,   up: domChange?.up   },
-    { icon: BadgePercent, label: "List Price\nReceived",   value: listPriceReceived, change: ratioChange?.pct, up: ratioChange?.up },
-    { icon: Home,         label: "New Listings",           value: newListings,        change: newChange?.pct,   up: newChange?.up   },
-    { icon: ArrowUpDown,  label: "Active\nInventory",      value: activeInventory,   change: invChange?.pct,   up: invChange?.up   },
-  ];
-
-  const rawDates    = (p?.Dates               as string[] | undefined) ?? [];
-  const rawPrices   = (p?.ActiveMedianListPrice as string[] | undefined) ?? [];
-  const chartDates  = [...rawDates].slice(0, 12).reverse();
-  const chartPricesK = [...rawPrices].slice(0, 12).reverse().map(v => Number(v) / 1000);
-
-  const allK   = chartPricesK.length ? chartPricesK : [340, 430];
-  const Y_MIN  = Math.floor(Math.min(...allK) / 50) * 50;
-  const Y_MAX  = Math.ceil(Math.max(...allK)  / 50) * 50 + 50;
-  const total  = chartPricesK.length || 7;
-
-  const toSvgX = (idx: number) => CX0 + (idx / Math.max(total - 1, 1)) * (CX1 - CX0);
-  const toSvgY = (priceK: number) => CY1 - ((priceK - Y_MIN) / (Y_MAX - Y_MIN)) * (CY1 - CY0);
-
-  const pts      = chartPricesK.map((pk, idx) => [toSvgX(idx), toSvgY(pk)] as [number, number]);
-  const linePath = pts.map(([x, y], idx) => `${idx === 0 ? "M" : "L"}${x},${y}`).join(" ");
-  const areaPath = pts.length ? `${linePath} L${pts[pts.length - 1][0]},${CY1} L${pts[0][0]},${CY1} Z` : "";
-
-  const Y_STEPS  = Math.round((Y_MAX - Y_MIN) / 50);
-  const Y_LABELS = Array.from({ length: Y_STEPS + 1 }, (_, k) => Y_MIN + k * 50).reverse();
-
-  const MONTHS  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const xLabels = chartDates.map(dt => {
-    const [m, , y] = dt.split("/");
-    return `${MONTHS[Number(m) - 1]}'${y.slice(2)}`;
-  });
+function ChecklistCard({
+  title,
+  items,
+  variant = "light",
+}: {
+  title: string;
+  items: string[];
+  variant?: "light" | "dark";
+}) {
+  const isDark = variant === "dark";
 
   return (
-    <>
-      <SiteHeader variant="lead" showDesktopCenterLogo={false} />
-      <main className="min-h-screen bg-[var(--sandstone-off-white)]">
+    <div
+      className={`rounded-3xl border p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${
+        isDark
+          ? "border-white/10 bg-[var(--sandstone-navy)] text-white"
+          : "border-slate-200 bg-white text-[var(--sandstone-charcoal)]"
+      }`}
+    >
+      <h3
+        className={`font-heading text-2xl font-bold ${
+          isDark ? "text-white" : "text-[var(--sandstone-navy)]"
+        }`}
+      >
+        {title}
+      </h3>
 
-        {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
-          <Image
-            src="/areas/east-el-paso/eastHero.png"
-            alt="Southwest-style home in East El Paso at sunset"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)] via-[var(--sandstone-navy)]/50 to-[var(--sandstone-navy)]/10" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/25 to-transparent" />
+      <ul className="mt-6 space-y-4">
+        {items.map((item) => (
+          <li key={item} className="flex gap-3 leading-7">
+            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] text-xs font-bold text-white">
+              ✓
+            </span>
 
-          <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-36 lg:px-6 lg:pb-20">
-            <div className="mb-5 flex items-center gap-3">
-              <span className="h-px w-10 bg-[var(--sandstone-sand-gold)]" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
-                East El Paso · El Paso, TX
-              </span>
-            </div>
+            <span className={isDark ? "text-white/85" : "text-slate-700"}>
+              {item}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
-            <h1 className="max-w-2xl font-heading text-4xl font-bold leading-[1.1] text-white md:text-5xl lg:text-6xl">
-              Homes for Sale in<br />
-              East El Paso, TX
-            </h1>
-
-            <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-white/65">
-              Established neighborhoods, everyday convenience, and easy access to the airport, Fort Bliss, and Loop 375
-              one of El Paso&apos;s most connected residential corridors.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="#listings"
-                className="rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_32px_-12px_rgba(183,150,120,0.9)] transition hover:opacity-90"
-              >
-                Browse Listings
-              </Link>
-              <Link
-                href="#contact"
-                className="rounded-full border border-white/30 bg-white/8 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15"
-              >
-                Talk to an Agent
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Market Snapshot ──────────────────────────────────────────────── */}
-        <section className="bg-white py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
-
-            <div className="mb-10 text-center">
-              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                East El Paso Market Snapshot 2026
-              </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                Explore homes for sale in East El Paso, TX. Learn about neighborhoods, schools, home prices, commute times, and browse the latest listings in one of El Paso&apos;s most desirable areas.
-              </p>
-            </div>
-
-            {/* Top 2 stat cards */}
-            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {STATS_TOP.map(({ label, value, sub }) => (
-                <div key={label} className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
-                  <p className="text-sm font-bold text-[var(--sandstone-navy)]">{label}</p>
-                  <div className="mt-3 flex items-baseline gap-2">
-                    <span className="font-heading text-4xl font-bold text-[var(--sandstone-sand-gold)]">{value}</span>
-                    {sub && <span className="text-sm font-medium text-[var(--sandstone-charcoal)]/55">{sub}</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Price detail card + chart */}
-            <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-
-              <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
-                <p className="text-sm font-bold text-[var(--sandstone-navy)]">Median Price</p>
-                <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
-                      Current ({PRICE_CARD.period})
-                    </p>
-                    <p className="mt-1 font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-                      {PRICE_CARD.current}
-                    </p>
-                  </div>
-                  <div className="flex flex-col items-center gap-1 text-[var(--sandstone-charcoal)]/35">
-                    <div className="h-px w-8 bg-[var(--sandstone-charcoal)]/25" />
-                    <span className="text-lg">→</span>
-                    <div className="h-px w-8 bg-[var(--sandstone-charcoal)]/25" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
-                      Market Projection (2026)
-                    </p>
-                    <p className="mt-1 font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-                      {PRICE_CARD.projection}
-                    </p>
-                    <p className="mt-1 text-[9px] italic text-[var(--sandstone-charcoal)]/35">Editorial estimate</p>
-                  </div>
-                </div>
-                <p className="mt-5 text-xs italic text-[var(--sandstone-charcoal)]/40">
-                  vs market projection / 2026 trend
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
-                <p className="mb-4 text-sm font-bold text-[var(--sandstone-navy)]">
-                  East El Paso Median List Price — 12 Months
-                </p>
-                <svg
-                  viewBox={`0 0 ${CX1 + 16} ${CY1 + 24}`}
-                  className="w-full"
-                  aria-label="East El Paso home price trend — last 12 months"
+function DataTable({
+  headers,
+  children,
+}: {
+  headers: string[];
+  children: ReactNode;
+}) {
+  return (
+    <div className="mt-10 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+          <thead className="bg-[var(--sandstone-navy)] text-white">
+            <tr>
+              {headers.map((header) => (
+                <th
+                  key={header}
+                  className="px-5 py-4 text-xs font-bold uppercase tracking-[0.18em]"
                 >
-                  <defs>
-                    <linearGradient id="chartFillWep" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#b79678" stopOpacity="0.25" />
-                      <stop offset="100%" stopColor="#b79678" stopOpacity="0.02" />
-                    </linearGradient>
-                  </defs>
-                  <path d={areaPath} fill="url(#chartFillWep)" />
-                  {Y_LABELS.map((price) => {
-                    const y = toSvgY(price);
-                    return (
-                      <g key={price}>
-                        <line x1={CX0} y1={y} x2={CX1} y2={y} stroke="#e5e7eb" strokeWidth="1" />
-                        <text x={CX0 - 6} y={y + 4} textAnchor="end" fontSize="9" fill="#9ca3af">${price}K</text>
-                      </g>
-                    );
-                  })}
-                  {xLabels.map((label, idx) =>
-                    idx % 2 === 0 || idx === xLabels.length - 1 ? (
-                      <text key={idx} x={toSvgX(idx)} y={CY1 + 14} textAnchor="middle" fontSize="9" fill="#9ca3af">{label}</text>
-                    ) : null
-                  )}
-                  <path d={linePath} fill="none" stroke="#b79678" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  {pts.map(([x, y], idx) => (
-                    <circle key={idx} cx={x} cy={y} r="4" fill="#b79678" />
-                  ))}
-                </svg>
-              </div>
-            </div>
-
-            {/* Bottom 4 stat cards */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {STAT_CARDS.map(({ icon: Icon, label, value, change, up }) => (
-                <div key={label} className="flex flex-col items-center rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-3 py-5 text-center shadow-sm">
-                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--sandstone-navy)]/12 bg-[var(--sandstone-off-white)]">
-                    <Icon size={18} className="text-[var(--sandstone-navy)]" strokeWidth={1.75} />
-                  </div>
-                  <p className="whitespace-pre-line text-[10px] font-semibold leading-snug text-[var(--sandstone-charcoal)]/60">{label}</p>
-                  <p className="mt-2 font-heading text-2xl font-bold text-[var(--sandstone-sand-gold)]">{value}</p>
-                  {change ? (
-                    <span className={`mt-1.5 inline-flex items-center gap-0.5 text-[10px] font-bold ${up ? "text-green-600" : "text-red-500"}`}>
-                      {change} {up ? "↑" : "↓"}
-                    </span>
-                  ) : (
-                    <span className="mt-1.5 text-[10px] text-[var(--sandstone-charcoal)]/30">—</span>
-                  )}
-                </div>
+                  {header}
+                </th>
               ))}
-            </div>
+            </tr>
+          </thead>
 
-            <p className="mt-6 text-center text-[11px] text-[var(--sandstone-charcoal)]/35">
-              Live data: GEPAR MLS via Spark API · ZIP 79936 · Refreshes hourly
-            </p>
-          </div>
-        </section>
+          <tbody className="divide-y divide-slate-200">{children}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
 
-        {/* ── Browse Listings ──────────────────────────────────────────────── */}
-        <section id="listings" className="bg-white py-16 scroll-mt-20">
-          <div className="mx-auto max-w-6xl px-4 lg:px-6">
-            <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-              Browse East El Paso Listings
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-center text-sm text-[var(--sandstone-charcoal)]/60">
-              Active homes for sale in East El Paso · ZIP 79936 · El Paso, TX
-            </p>
-            <EastElPasoListings />
-          </div>
-        </section>
+function ChartShell({
+  eyebrow,
+  title,
+  description,
+  children,
+  inverse = false,
+}: {
+  eyebrow?: string;
+  title: string;
+  description: string;
+  children: ReactNode;
+  inverse?: boolean;
+}) {
+  return (
+    <div
+      className={`overflow-hidden rounded-[2rem] border shadow-lg ${
+        inverse
+          ? "border-white/10 bg-white/10 text-white"
+          : "border-slate-200 bg-white text-slate-900"
+      }`}
+    >
+      <div
+        className={`border-b px-6 py-6 md:px-8 ${
+          inverse ? "border-white/10" : "border-slate-100"
+        }`}
+      >
+        {eyebrow && (
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+            {eyebrow}
+          </p>
+        )}
+        <h3
+          className={`mt-2 font-heading text-2xl font-bold ${
+            inverse ? "text-white" : "text-[var(--sandstone-navy)]"
+          }`}
+        >
+          {title}
+        </h3>
+        <p className={`mt-3 leading-7 ${inverse ? "text-white/70" : "text-slate-600"}`}>
+          {description}
+        </p>
+      </div>
 
-        {/* ── Schools ──────────────────────────────────────────────────────── */}
-        <section className="bg-white py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+      <div className="p-6 md:p-8">{children}</div>
+    </div>
+  );
+}
 
-            <div className="mb-10 text-center">
-              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Schools Near East El Paso
-              </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                East El Paso is served primarily by Ysleta ISD, with some neighborhoods also falling within El Paso ISD or Socorro ISD depending on the property&apos;s location. Buyers should always verify school attendance boundaries for their specific address.
-              </p>
-            </div>
+function HorizontalBarChart({
+  title,
+  description,
+  data,
+  valuePrefix = "",
+  valueSuffix = "",
+  maxValue,
+  footer,
+}: {
+  title: string;
+  description: string;
+  data: { label: string; value: number; display: string }[];
+  valuePrefix?: string;
+  valueSuffix?: string;
+  maxValue?: number;
+  footer?: string;
+}) {
+  const chartMax = maxValue ?? Math.max(...data.map((item) => item.value));
 
-            <div className="flex flex-col gap-8 lg:flex-row">
+  return (
+    <ChartShell title={title} description={description} eyebrow="Visual Guide">
+      <div className="space-y-6">
+        {data.map((item, index) => {
+          const width = Math.max((item.value / chartMax) * 100, 9);
 
-              {/* Left: school photos */}
-              <div className="w-full lg:sticky lg:top-[116px] lg:self-start lg:flex lg:w-[58%] lg:flex-col">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-                  <Image
-                    src="/areas/east-el-paso/schools/eastwoodHs.png"
-                    alt="Eastwood High School"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 45vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
-                  <p className="absolute bottom-4 left-4 font-heading text-xl font-bold text-white drop-shadow">
-                    Eastwood High School
+          return (
+            <div key={item.label} className="group">
+              <div className="mb-2 flex items-end justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                    {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <p className="mt-1 font-heading text-base font-bold text-[var(--sandstone-navy)]">
+                    {item.label}
                   </p>
                 </div>
+                <p className="shrink-0 rounded-full bg-[#f7f5ef] px-3 py-1 text-sm font-bold text-[var(--sandstone-navy)]">
+                  {valuePrefix}
+                  {item.display}
+                  {valueSuffix}
+                </p>
+              </div>
 
-                <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div className="relative aspect-square overflow-hidden rounded-2xl">
-                    <Image
-                      src="/areas/east-el-paso/schools/Montwood-Middle.png"
-                      alt="Montwood Middle School"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
-                    <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      Montwood<br />Middle School
-                    </p>
-                  </div>
-                  <div className="relative aspect-square overflow-hidden rounded-2xl">
-                    <Image
-                      src="/areas/east-el-paso/schools/REL-Washington.png"
-                      alt="REL Washington Elementary School"
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
-                    <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
-                      REL<br />Washington
-                    </p>
-                  </div>
+              <div className="relative h-5 overflow-hidden rounded-full bg-slate-100 ring-1 ring-slate-200">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(90deg,var(--sandstone-sand-gold),#d8be85)] transition-all duration-500 group-hover:brightness-105"
+                  style={{ width: `${width}%` }}
+                />
+                <div className="absolute inset-y-0 left-1/4 w-px bg-white/70" />
+                <div className="absolute inset-y-0 left-1/2 w-px bg-white/70" />
+                <div className="absolute inset-y-0 left-3/4 w-px bg-white/70" />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {footer && <p className="mt-6 text-sm leading-6 text-slate-500">{footer}</p>}
+    </ChartShell>
+  );
+}
+
+function PcsTimelineGraph() {
+  return (
+    <ChartShell
+      eyebrow="Timeline"
+      title="PCS planning runway"
+      description="The cleanest path is to front-load lender prep and remote search work before PTDY or arrival week."
+    >
+      <div className="relative">
+        <div className="absolute left-5 top-5 hidden h-px w-[calc(100%-2.5rem)] bg-slate-200 md:block" />
+
+        <div className="grid gap-5 md:grid-cols-5">
+          {pcsPhaseTimelineData.map((item, index) => (
+            <div key={item.phase} className="relative rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <span className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-sm font-bold text-white shadow-md">
+                {index + 1}
+              </span>
+              <p className="mt-5 text-xs font-bold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
+                {item.phase}
+              </p>
+              <h4 className="mt-2 font-heading text-lg font-bold text-[var(--sandstone-navy)]">
+                {item.timing}
+              </h4>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{item.display}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </ChartShell>
+  );
+}
+
+function PriorityDistributionChart() {
+  const total = arrivalPriorityData.reduce((sum, item) => sum + item.value, 0);
+
+  return (
+    <ChartShell
+      eyebrow="First Week"
+      title="Arrival task load"
+      description="Most tasks stack into Week 1, so plan admin time instead of filling the first few days with showings only."
+    >
+      <div className="rounded-3xl bg-slate-50 p-5 ring-1 ring-slate-200">
+        <div className="flex h-7 overflow-hidden rounded-full bg-white ring-1 ring-slate-200">
+          {arrivalPriorityData.map((item) => {
+            const width = (item.value / total) * 100;
+            return (
+              <div
+                key={item.label}
+                className="bg-[var(--sandstone-sand-gold)] first:rounded-l-full last:rounded-r-full odd:bg-[var(--sandstone-navy)]"
+                style={{ width: `${width}%` }}
+                title={`${item.label}: ${item.display}`}
+              />
+            );
+          })}
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          {arrivalPriorityData.map((item) => (
+            <div key={item.label} className="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-bold text-[var(--sandstone-navy)]">{item.label}</p>
+                <p className="rounded-full bg-[#f7f5ef] px-3 py-1 text-xs font-bold text-slate-700">
+                  {Math.round((item.value / total) * 100)}%
+                </p>
+              </div>
+              <p className="mt-2 text-sm text-slate-600">{item.display}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </ChartShell>
+  );
+}
+
+function NeighborhoodMarketGraph() {
+  const maxPrice = Math.max(...neighborhoodComparisonData.map((item) => item.price));
+  const maxCommute = Math.max(...neighborhoodComparisonData.map((item) => item.commute));
+
+  return (
+    <ChartShell
+      eyebrow="Neighborhood Comparison"
+      title="Price and commute tradeoffs"
+      description="This combines the two decisions PCS families care about most: how far the drive is and how much home budget the area usually requires."
+    >
+      <div className="space-y-5">
+        {neighborhoodComparisonData.map((item) => {
+          const priceWidth = Math.max((item.price / maxPrice) * 100, 12);
+          const commuteWidth = Math.max((item.commute / maxCommute) * 100, 12);
+
+          return (
+            <div key={item.area} className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+              <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <h4 className="font-heading text-xl font-bold text-[var(--sandstone-navy)]">
+                    {item.area}
+                  </h4>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">{item.bestFor}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-200">
+                    {item.priceLabel}
+                  </span>
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700 ring-1 ring-slate-200">
+                    {item.commuteLabel}
+                  </span>
                 </div>
               </div>
 
-              {/* Right: school tables */}
-              <div className="flex-1 space-y-7">
-                {(["elementary", "middle", "high"] as const).map((level) => {
-                  const titles = { elementary: "Elementary Schools", middle: "Middle Schools", high: "High Schools" };
-                  return (
-                    <div key={level}>
-                      <h3 className="mb-2 font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">{titles[level]}</h3>
-                      <div className="overflow-x-auto">
-                        <table className="w-full min-w-[480px]">
-                          <thead>
-                            <tr className="border-b border-[var(--sandstone-navy)]/10">
-                              <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">School</th>
-                              <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">District</th>
-                              <th className="pb-2 text-right text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">Primary ZIP*</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {SCHOOLS[level].map((school, i) => (
-                              <tr key={i} className="border-b border-[var(--sandstone-navy)]/8 last:border-0">
-                                <td className="py-2 pr-4 text-[13px] font-medium text-[var(--sandstone-charcoal)]">{school.name}</td>
-                                <td className="py-2 pr-4 text-[13px] text-[var(--sandstone-charcoal)]/60">{school.district}</td>
-                                <td className="py-2 text-right text-[13px] text-[var(--sandstone-charcoal)]/60">{school.zip}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <div>
+                  <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+                    <span>Price</span>
+                    <span>{item.priceLabel}</span>
+                  </div>
+                  <div className="h-4 rounded-full bg-white ring-1 ring-slate-200">
+                    <div
+                      className="h-4 rounded-full bg-[var(--sandstone-sand-gold)]"
+                      style={{ width: `${priceWidth}%` }}
+                    />
+                  </div>
+                </div>
 
-                <p className="text-[12px] italic leading-relaxed text-[var(--sandstone-charcoal)]/50">
-                  Families consistently choose East El Paso for its established communities, convenient amenities, and access to quality schools throughout the area. School attendance boundaries may change, so buyers should verify zoning directly with the appropriate school district.
-                </p>
+                <div>
+                  <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+                    <span>Commute</span>
+                    <span>{item.commuteLabel}</span>
+                  </div>
+                  <div className="h-4 rounded-full bg-white ring-1 ring-slate-200">
+                    <div
+                      className="h-4 rounded-full bg-[var(--sandstone-navy)]"
+                      style={{ width: `${commuteWidth}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </ChartShell>
+  );
+}
+
+function StatCard({
+  value,
+  label,
+  detail,
+}: {
+  value: string;
+  label: string;
+  detail: string;
+}) {
+  return (
+    <div className="group rounded-[2rem] border border-white/10 bg-white/[0.08] p-6 text-white shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:bg-white/[0.12]">
+      <div className="flex items-start justify-between gap-4">
+        <p className="font-heading text-5xl font-bold text-[var(--sandstone-sand-gold)]">
+          {value}
+        </p>
+        <span className="mt-2 h-3 w-3 rounded-full bg-[var(--sandstone-sand-gold)] opacity-70 transition group-hover:scale-125" />
+      </div>
+      <h3 className="mt-5 font-heading text-xl font-bold">{label}</h3>
+      <p className="mt-3 leading-7 text-white/75">{detail}</p>
+    </div>
+  );
+}
+
+function TimelineCard() {
+  return (
+    <div className="rounded-3xl bg-[var(--sandstone-navy)] p-8 text-white shadow-xl md:p-10">
+      <p className="text-sm font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+        PCS Timeline
+      </p>
+
+      <h3 className="mt-3 font-heading text-3xl font-bold">
+        Your move at a glance
+      </h3>
+
+      <div className="mt-8 space-y-5">
+        {timeline.map((item, index) => (
+          <div key={item.timeframe} className="flex gap-4">
+            <div className="flex flex-col items-center">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] text-sm font-bold text-white">
+                {index + 1}
+              </span>
+
+              {index !== timeline.length - 1 && (
+                <span className="mt-2 h-full w-px bg-white/15" />
+              )}
+            </div>
+
+            <div className="pb-5">
+              <p className="font-bold text-white">{item.timeframe}</p>
+              <p className="mt-1 leading-7 text-white/75">{item.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HeroButton({
+  href,
+  children,
+  variant = "solid",
+}: {
+  href: string;
+  children: ReactNode;
+  variant?: "solid" | "outline";
+}) {
+  const baseClasses =
+    "rounded-full px-8 py-4 text-sm font-bold transition hover:-translate-y-0.5";
+
+  const variantClasses =
+    variant === "solid"
+      ? "bg-[var(--sandstone-sand-gold)] text-white shadow-lg hover:opacity-90"
+      : "border border-white/30 text-white hover:bg-white hover:text-[var(--sandstone-navy)]";
+
+  return (
+    <a href={href} className={`${baseClasses} ${variantClasses}`}>
+      {children}
+    </a>
+  );
+}
+
+export default function PcsElPasoChecklistPage() {
+  return (
+    <>
+      <SiteHeader />
+
+      <main className="min-h-screen bg-white text-slate-900">
+        <section className="relative min-h-[640px] overflow-hidden bg-[var(--sandstone-navy)] px-6 pt-36 pb-24 text-white md:min-h-[700px] md:pt-44">
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: "url('/uploads/pcs-hero-bg.png')",
+            }}
+          />
+
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,33,82,0.94)_0%,rgba(20,33,82,0.8)_42%,rgba(20,33,82,0.42)_72%,rgba(20,33,82,0.2)_100%)]" />
+          <div className="absolute inset-0 bg-black/10" />
+
+          <div className="relative mx-auto flex min-h-[460px] max-w-6xl items-center">
+            <div className="max-w-4xl">
+              <p className="mb-6 inline-flex rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs font-bold uppercase tracking-[0.28em] text-[var(--sandstone-sand-gold)] backdrop-blur">
+                Fort Bliss Relocation Guide
+              </p>
+
+              <h1 className="font-heading text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
+                PCS to El Paso Checklist 2026
+              </h1>
+
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-white/85 md:text-xl">
+                A complete Fort Bliss relocation guide covering housing, BAH, VA
+                loan prep, school districts, neighborhoods, in-processing, and
+                your first week in El Paso.
+              </p>
+
+              <div className="mt-10 flex flex-wrap gap-4">
+                <HeroButton href="#checklist">View Checklist →</HeroButton>
+
+                <HeroButton href="#contact" variant="outline">
+                  Get Relocation Help
+                </HeroButton>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Convenience at Your Doorstep ─────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+        <section id="checklist" className="bg-slate-50 px-6 py-20 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              eyebrow="Start Here"
+              title="Your PCS checklist by phase"
+              description="Use these steps to stay organized before you arrive at Fort Bliss."
+            />
 
-            <div className="mb-10 text-center">
-              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Convenience at Your Doorstep
-              </h2>
-              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
-                East El Paso offers easy access to healthcare, grocery stores, restaurants, and one of the city&apos;s largest shopping corridors.
+            <div className="mt-12 grid gap-8 md:grid-cols-2">
+              <ChecklistCard
+                title="As Soon As You Get Orders"
+                items={ordersChecklist}
+              />
+
+              <ChecklistCard
+                title="60–90 Days Before Reporting"
+                items={daysBeforeChecklist}
+                variant="dark"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="px-6 py-20 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              eyebrow="PCS Snapshot"
+              title="Move planning at a glance"
+              description="These charts turn the checklist into quick visual benchmarks for timing, documents, and first-week priorities."
+            />
+
+            <div className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+              <PcsTimelineGraph />
+              <PriorityDistributionChart />
+            </div>
+
+            <div className="mt-8">
+              <HorizontalBarChart
+                title="Checklist weight by phase"
+                description="This shows how many action items are attached to each phase, so buyers can see where the planning pressure builds."
+                data={checklistPhaseData}
+                footer="Use this as a planning guide, not an official military timeline."
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="px-6 py-20 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              eyebrow="Neighborhoods"
+              title="Quick neighborhood guide by gate"
+              description="Choose your target area based on commute, price range, schools, and preferred gate access."
+            />
+
+            <DataTable
+              headers={[
+                "Gate / Assignment",
+                "Best Neighborhood",
+                "Median Price",
+                "Commute",
+              ]}
+            >
+              {neighborhoodGuide.map((row) => (
+                <tr key={row.gate} className="transition hover:bg-slate-50">
+                  <td className="px-5 py-4 font-bold text-[var(--sandstone-navy)]">
+                    {row.gate}
+                  </td>
+                  <td className="px-5 py-4 text-slate-700">{row.area}</td>
+                  <td className="px-5 py-4 text-slate-700">{row.price}</td>
+                  <td className="px-5 py-4 text-slate-700">{row.commute}</td>
+                </tr>
+              ))}
+            </DataTable>
+
+            <div className="mt-12">
+              <NeighborhoodMarketGraph />
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-slate-50 px-6 py-20 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              eyebrow="Schools"
+              title="School districts near Fort Bliss"
+              description="Fort Bliss does not have DoDEA schools. Children attend public schools based on home address, so confirm the exact attendance zone before buying."
+            />
+
+            <DataTable headers={["Area", "School District", "Notable Schools"]}>
+              {schoolDistricts.map((row) => (
+                <tr key={row.area} className="transition hover:bg-slate-50">
+                  <td className="px-5 py-4 font-bold text-[var(--sandstone-navy)]">
+                    {row.area}
+                  </td>
+                  <td className="px-5 py-4 text-slate-700">{row.district}</td>
+                  <td className="px-5 py-4 text-slate-700">{row.schools}</td>
+                </tr>
+              ))}
+            </DataTable>
+          </div>
+        </section>
+
+        <section className="bg-[var(--sandstone-navy)] px-6 py-20 text-white md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.24em] text-[var(--sandstone-sand-gold)]">
+                  30–60 Days Out
+                </p>
+
+                <h2 className="mt-3 font-heading text-3xl font-bold md:text-4xl">
+                  Finalize housing and move details before reporting
+                </h2>
+
+                <p className="mt-5 leading-8 text-white/75">
+                  This is the window to tighten up inspections, lender
+                  documents, moving logistics, and your arrival plan.
+                </p>
+              </div>
+
+              <div className="grid gap-5 md:grid-cols-2">
+                {[
+                  "Make an offer and open escrow.",
+                  "Schedule a home inspection.",
+                  "Coordinate your DITY / PPM move if applicable.",
+                  "Register vehicles in Texas within 90 days of establishing residency.",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-3xl border border-white/10 bg-white/10 p-6 shadow-sm transition hover:-translate-y-1 hover:bg-white/15"
+                  >
+                    <span className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] font-bold">
+                      ✓
+                    </span>
+
+                    <p className="leading-7 text-white/85">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[var(--sandstone-navy)] px-6 py-20 text-white md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              eyebrow="Relocation Numbers"
+              title="Key PCS planning metrics"
+              description="Use these numbers as simple checkpoints while planning your Fort Bliss move."
+              inverse
+            />
+
+            <div className="mt-12 grid gap-5 md:grid-cols-3">
+              <StatCard
+                value="90"
+                label="Days to plan ahead"
+                detail="Start BAH, VA pre-approval, and remote tours as soon as orders arrive."
+              />
+              <StatCard
+                value="6"
+                label="VA documents"
+                detail="Keep your COE, orders, LES, W-2s, bank statements, and funding fee info ready."
+              />
+              <StatCard
+                value="4"
+                label="Main housing areas"
+                detail="Northeast, Horizon City, West El Paso, and Santa Teresa each fit different commute needs."
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="px-6 py-20 md:py-24">
+          <div className="mx-auto max-w-6xl">
+            <SectionHeader
+              eyebrow="Arrival"
+              title="El Paso in-processing checklist"
+              description="Use this list to stay organized during your first few days after arriving at Fort Bliss."
+            />
+
+            <DataTable headers={["Task", "Where / How", "Priority"]}>
+              {processingChecklist.map((row) => (
+                <tr key={row.task} className="transition hover:bg-slate-50">
+                  <td className="px-5 py-4 font-bold text-[var(--sandstone-navy)]">
+                    {row.task}
+                  </td>
+                  <td className="px-5 py-4 text-slate-700">{row.where}</td>
+                  <td className="px-5 py-4">
+                    <span className="rounded-full bg-[#f5efe5] px-3 py-1 text-xs font-bold text-[var(--sandstone-navy)]">
+                      {row.priority}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </DataTable>
+          </div>
+        </section>
+
+        <section className="bg-slate-50 px-6 py-20 md:py-24">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-2">
+            <ChecklistCard title="VA Loan Documents Checklist" items={vaDocs} />
+            <TimelineCard />
+          </div>
+        </section>
+
+        <section className="py-0">
+          <div className="relative min-h-[620px] w-full overflow-hidden shadow-2xl md:min-h-[680px]">
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: 'url("/uploads/el_paso_neighborhood.jpg")',
+              }}
+            />
+
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,53,111,0.92)_0%,rgba(38,53,111,0.76)_45%,rgba(38,53,111,0.45)_100%)]" />
+            <div className="absolute inset-0 bg-black/10" />
+
+            <div className="relative z-10 mx-auto flex min-h-[620px] max-w-6xl flex-col items-center justify-center px-6 text-center md:min-h-[680px]">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-[#c6a46a] md:text-sm">
+                Homes Near Fort Bliss
               </p>
+
+              <h2 className="max-w-5xl text-4xl font-light leading-tight tracking-[0.16em] text-white md:text-5xl lg:text-6xl">
+                Start Your El Paso Home Search
+              </h2>
+
+              <div className="mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
+
+              <p className="mt-8 max-w-3xl px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
+                Ready to see what your BAH can buy? Browse active listings near
+                Fort Bliss, filtered by your budget and preferred neighborhoods.
+              </p>
+
+              <div className="mt-10 w-full max-w-3xl">
+                <SearchForm />
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <section id="contact" className="bg-[#f7f5ef] px-6 py-24 md:py-32">
+          <div className="mx-auto max-w-6xl">
+            <div className="rounded-[2rem] border border-slate-200 bg-white px-8 py-12 text-center shadow-lg md:px-14 md:py-16">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--sandstone-sand-gold)]">
+                Relocation Support
+              </p>
 
-              {/* Hospitals */}
-              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
-                    <Image src="/icons/areas/icon-hospital.webp" alt="" width={26} height={26} />
-                  </div>
-                  <div>
-                    <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Hospitals</h3>
-                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Top-rated medical care just minutes away.</p>
-                  </div>
-                </div>
-                <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
-                <div className="flex-1 space-y-3">
-                  {NEARBY.hospitals.map((item) => (
-                    <div key={item.name} className="flex items-center gap-3">
-                      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg">
-                        <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover" />
-                      </div>
-                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
-                      <div className="shrink-0 text-right">
-                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
-                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View all healthcare options →
-                  </Link>
-                </div>
-              </div>
+              <h2 className="mx-auto mt-5 max-w-4xl font-heading text-3xl font-light leading-tight tracking-wide text-[var(--sandstone-navy)] md:text-5xl">
+                Planning Your PCS to Fort Bliss?
+              </h2>
 
-              {/* Grocery Stores */}
-              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
-                    <Image src="/icons/areas/icon-grocery.webp" alt="" width={26} height={26} />
-                  </div>
-                  <div>
-                    <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Grocery Stores</h3>
-                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Everything you need, from daily essentials to specialty items.</p>
-                  </div>
-                </div>
-                <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
-                <div className="flex-1 space-y-3">
-                  {NEARBY.groceries.map((item) => (
-                    <div key={item.name} className="flex items-center gap-3">
-                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[var(--sandstone-navy)]/8">
-                        <Image src={item.img} alt={item.name} fill sizes="40px" className="object-cover" />
-                      </div>
-                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
-                      <div className="shrink-0 text-right">
-                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
-                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View more grocery options →
-                  </Link>
-                </div>
-              </div>
+              <div className="mx-auto mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
 
-              {/* Shopping */}
-              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
-                    <Image src="/icons/areas/icon-shopping-bag.webp" alt="" width={26} height={26} />
-                  </div>
-                  <div>
-                    <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Shopping</h3>
-                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Retail, boutiques, and entertainment all within easy reach.</p>
-                  </div>
-                </div>
-                <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
-                <div className="flex-1 space-y-3">
-                  {NEARBY.shopping.map((item) => (
-                    <div key={item.name} className="flex items-center gap-3">
-                      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg">
-                        <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover" />
-                      </div>
-                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
-                      <div className="shrink-0 text-right">
-                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
-                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View more shopping options →
-                  </Link>
-                </div>
-              </div>
+              <p className="mx-auto mt-6 max-w-3xl text-base font-light leading-8 text-slate-600 md:text-lg">
+                Sandstone&apos;s military relocation team can help with remote
+                home searches, VA loan timelines, neighborhood recommendations,
+                and buyer support before you arrive.
+              </p>
 
-            </div>
-
-            {/* Commute Times */}
-            <div className="mt-4 flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm lg:flex-row lg:items-center">
-              <div className="flex shrink-0 items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
-                  <Image src="/icons/areas/icon-car.webp" alt="" width={26} height={26} />
-                </div>
-                <div>
-                  <p className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Commute Times</p>
-                  <p className="text-[11px] text-[var(--sandstone-charcoal)]/50">Quick access to everything that matters.</p>
-                </div>
-              </div>
-              <div className="hidden w-px self-stretch bg-[var(--sandstone-navy)]/10 lg:block" />
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-                {COMMUTE_TIMES.map((c) => (
-                  <div key={c.label} className="flex items-center gap-3 sm:flex-col sm:items-center sm:gap-1.5 sm:text-center">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-off-white)]">
-                      <Image src={c.icon} alt="" width={22} height={22} />
-                    </div>
-                    <div>
-                      <p className="font-heading text-xl font-bold text-[var(--sandstone-navy)]">{c.time}</p>
-                      <p className="whitespace-pre-line text-[11px] leading-snug text-[var(--sandstone-charcoal)]/55">{c.label}</p>
+              <div className="mx-auto mt-10 grid max-w-4xl gap-4 text-left md:grid-cols-3">
+                {[
+                  "Remote home search support",
+                  "VA loan timeline guidance",
+                  "Neighborhood recommendations",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-2xl border border-slate-200 bg-[#f7f5ef] px-5 py-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--sandstone-sand-gold)]" />
+                      <span className="text-sm font-light leading-6 text-slate-700">
+                        {item}
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-          </div>
-        </section>
-
-        {/* ── Why Buyers Choose East El Paso ───────────────────────────────── */}
-        <section className="bg-white py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
-
-            <h2 className="mb-10 text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-              Why Buyers Choose East El Paso
-            </h2>
-
-            <div className="flex flex-col gap-10 lg:flex-row lg:gap-14">
-
-              {/* Left: editorial text */}
-              <div className="flex-1 space-y-7">
-                <div>
-                  <p className="text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    East El Paso is one of the city&apos;s most practical choices for buyers seeking established neighborhoods, mature landscaping, and convenient access to shopping, dining, and major transportation routes. Many neighborhoods feature mature trees, larger lots than newer Far East subdivisions, and excellent connectivity via Loop 375, Zaragoza Road, and George Dieter Drive.
-                  </p>
-                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Buyers choose Eastside El Paso for its value, central location, and everyday convenience. The area appeals to first-time homebuyers, families looking for established communities with parks and youth sports, airport and logistics employees, and investors seeking steady rental demand.
-                  </p>
-                </div>
-
-                <div>
-                  <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-                    East El Paso Home Prices in 2026
-                  </h2>
-                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    Homes in Eastside El Paso cover a wide range of price points. Established neighborhoods around Cielo Vista and Ysleta generally range from $175,000 to $250,000, while newer homes toward the Far East corridor commonly range from $200,000 to $320,000. This variety makes Eastside one of the most accessible markets for both first-time buyers and families looking to upgrade.
-                  </p>
-                </div>
-
-                <div>
-                  <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-                    Is East El Paso Right for You?
-                  </h2>
-                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                    East El Paso is an excellent fit if top-rated schools, location convenience, and long-term appreciation matter to you. It&apos;s especially popular with:
-                  </p>
-                  <ul className="mt-3 space-y-2">
-                    {[
-                      "First-time homebuyers looking for value and established communities",
-                      "Families who want proximity to parks, youth sports, and community amenities",
-                      "Airport and East Side logistics-corridor employees seeking a short commute",
-                      "Buyers comparing value against West Side and Upper Valley price points",
-                    ].map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
-                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sandstone-sand-gold)]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Right: lifestyle photos */}
-              <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-                  <Image
-                    src="/areas/west-el-paso/lifestyle-mountains.jpg"
-                    alt="Franklin Mountains at sunset, East El Paso"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 38vw"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-                  <Image
-                    src="/areas/west-el-paso/lifestyle-utep.jpg"
-                    alt="University of Texas at El Paso campus"
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 38vw"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* ── Utilities & Local Services ────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
-
-            <div className="mb-10 text-center">
-              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Utilities &amp; Local Services
-              </h2>
-              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
-                Utility providers may vary depending on the specific address and subdivision.
-              </p>
+            <div className="mt-10 rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl md:p-8">
+              <ContactForm
+                heading="Planning Your PCS to Fort Bliss?"
+                subheading="Sandstone's military relocation team can help with remote home searches, VA loan timelines, neighborhood recommendations, and buyer support before you arrive."
+              />
             </div>
 
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {UTILITIES.map(({ icon, title, provider, description, linkLabel, href, accent }) => (
-                <div key={title} className="flex flex-col items-center rounded-2xl bg-white p-5 text-center shadow-sm">
-                  <div className={`mb-4 flex h-24 w-24 items-center justify-center rounded-full ${accent.bg}`}>
-                    <Image src={icon} alt="" width={44} height={44} />
-                  </div>
-                  <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">{title}</h3>
-                  <p className={`mt-1 text-[13px] font-semibold ${accent.text}`}>{provider}</p>
-                  <p className="mt-3 flex-1 text-[12px] leading-relaxed text-[var(--sandstone-charcoal)]/55">{description}</p>
-                  {href && (
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg border ${accent.border} px-3 py-2.5 text-[12px] font-semibold ${accent.text} transition hover:opacity-70`}
-                    >
-                      {linkLabel}
-                      <ExternalLink size={12} strokeWidth={2.5} />
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <p className="mt-6 flex items-center justify-center gap-1.5 text-[12px] text-[var(--sandstone-charcoal)]/40">
-              <Info size={14} strokeWidth={1.75} />
-              Providers and service availability may vary depending on the specific address and subdivision.
+            <p className="mx-auto mt-8 max-w-4xl text-center text-sm leading-7 text-slate-500">
+              Information current as of 2026. BAH rates, school districts, VA
+              loan requirements, and military procedures are subject to change.
+              Always verify with official sources before making decisions.
             </p>
           </div>
         </section>
-
-        {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
-
-            <div className="mb-10 text-center">
-              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Frequently Asked Questions
-              </h2>
-              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
-                Find answers to the most common questions about living in East El Paso.
-              </p>
-              <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/60">
-                Can&apos;t find what you&apos;re looking for?{" "}
-                <Link href="/#contact" className="font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                  We&apos;re here to help!
-                </Link>
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start">
-              {FAQS.map(({ icon, q, a }) => (
-                <details key={q} className="group rounded-2xl bg-white shadow-sm">
-                  <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-navy)]/8">
-                      <Image src={icon} alt="" width={22} height={22} />
-                    </div>
-                    <span className="flex-1 text-[14px] font-semibold text-[var(--sandstone-navy)]">{q}</span>
-                    <ChevronDown
-                      size={18}
-                      strokeWidth={2}
-                      className="shrink-0 text-[var(--sandstone-navy)]/50 transition-transform duration-200 group-open:rotate-180"
-                    />
-                  </summary>
-                  <div className="border-t border-[var(--sandstone-navy)]/8 px-5 py-4 pl-20">
-                    <p className="text-[13px] leading-relaxed text-[var(--sandstone-charcoal)]/65">{a}</p>
-                  </div>
-                </details>
-              ))}
-            </div>
-
-          </div>
-        </section>
-        {/* ── Explore More El Paso Areas ───────────────────────── */}
-        <ExploreNearbyAreas compact currentAreaHref="/areas/east-el-paso" />
-
-        {/* ── Contact Form ─────────────────────────────────────────────────── */}
-        <LeadCaptureSection
-          formType="contact"
-          sectionId="contact"
-          heading="Ready to Buy in East El Paso?"
-          subheading="The Sandstone team knows East El Paso inside and out — from established neighborhoods near UTEP to newer Eastside subdivisions. Reach out and we&apos;ll help you find the right home."
-          ctaLabel="Schedule a Visit"
-          messagePlaceholder="Tell us about your East El Paso home search..."
-          mappingReference="east-el-paso"
-          asideEyebrow="Ready. Lifestyle. Real."
-          asideTitle="Ready to Make Your Next Move?"
-          asideDescription="Schedule a consultation and get a personalized strategy for your East El Paso property search."
-          asideCtaLabel="Schedule a Consultation"
-          turnstileSiteKey={turnstileSiteKey}
-        />
-
       </main>
+
       <SiteFooter />
     </>
   );

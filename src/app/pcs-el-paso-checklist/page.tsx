@@ -47,7 +47,7 @@ const neighborhoodGuide = [
     commute: "25–30 min",
   },
   {
-    gate: "West side flexibility / lower taxes",
+    gate: "West side",
     area: "Santa Teresa NM",
     price: "$346,000",
     commute: "40–45 min to main gate",
@@ -75,7 +75,7 @@ const schoolDistricts = [
     district: "Gadsden ISD",
     schools: "Santa Teresa High School, Middle, Elementary",
   },
-  
+
 ];
 
 const processingChecklist = [
@@ -147,35 +147,6 @@ const timeline = [
     timeframe: "Within 90 days",
     action: "Register vehicles in Texas or New Mexico if applicable.",
   },
-];
-
-const neighborhoodPriceData = [
-  { label: "Northeast El Paso", value: 231526, display: "$231,526" },
-  { label: "Horizon City", value: 324000, display: "$324,000" },
-  { label: "West El Paso", value: 365000, display: "$350k–$380k" },
-  { label: "Santa Teresa", value: 346000, display: "$346,000" },
-];
-
-const commuteData = [
-  { label: "Northeast El Paso", value: 10, display: "5–15 min" },
-  { label: "Horizon City", value: 13, display: "10–15 min" },
-  { label: "West El Paso", value: 28, display: "25–30 min" },
-  { label: "Santa Teresa", value: 43, display: "40–45 min" },
-];
-
-const checklistPhaseData = [
-  { label: "Orders received", value: ordersChecklist.length, display: `${ordersChecklist.length} steps` },
-  { label: "60–90 days before", value: daysBeforeChecklist.length, display: `${daysBeforeChecklist.length} steps` },
-  { label: "30–60 days before", value: 4, display: "4 steps" },
-  { label: "Arrival / Week 1", value: processingChecklist.length, display: `${processingChecklist.length} steps` },
-  { label: "VA documents", value: vaDocs.length, display: `${vaDocs.length} docs` },
-];
-
-const arrivalPriorityData = [
-  { label: "Day 1", value: 1, display: "1 task" },
-  { label: "Day 1–3", value: 1, display: "1 task" },
-  { label: "Week 1", value: 3, display: "3 tasks" },
-  { label: "Within 90 days", value: 1, display: "1 task" },
 ];
 
 function SectionHeader({
@@ -289,83 +260,6 @@ function DataTable({
           <tbody className="divide-y divide-slate-200">{children}</tbody>
         </table>
       </div>
-    </div>
-  );
-}
-
-function SimpleBarChart({
-  title,
-  description,
-  data,
-  valuePrefix = "",
-  valueSuffix = "",
-  maxValue,
-}: {
-  title: string;
-  description: string;
-  data: { label: string; value: number; display: string }[];
-  valuePrefix?: string;
-  valueSuffix?: string;
-  maxValue?: number;
-}) {
-  const chartMax = maxValue ?? Math.max(...data.map((item) => item.value));
-
-  return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-      <div>
-        <h3 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-          {title}
-        </h3>
-        <p className="mt-3 leading-7 text-slate-600">{description}</p>
-      </div>
-
-      <div className="mt-8 space-y-5">
-        {data.map((item) => {
-          const width = Math.max((item.value / chartMax) * 100, 8);
-
-          return (
-            <div key={item.label}>
-              <div className="mb-2 flex items-center justify-between gap-4 text-sm">
-                <span className="font-bold text-[var(--sandstone-navy)]">
-                  {item.label}
-                </span>
-                <span className="shrink-0 font-semibold text-slate-600">
-                  {valuePrefix}
-                  {item.display}
-                  {valueSuffix}
-                </span>
-              </div>
-
-              <div className="h-4 overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className="h-full rounded-full bg-[var(--sandstone-sand-gold)]"
-                  style={{ width: `${width}%` }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function StatCard({
-  value,
-  label,
-  detail,
-}: {
-  value: string;
-  label: string;
-  detail: string;
-}) {
-  return (
-    <div className="rounded-3xl border border-white/10 bg-white/10 p-6 text-white shadow-sm">
-      <p className="font-heading text-4xl font-bold text-[var(--sandstone-sand-gold)]">
-        {value}
-      </p>
-      <h3 className="mt-3 font-heading text-xl font-bold">{label}</h3>
-      <p className="mt-2 leading-7 text-white/75">{detail}</p>
     </div>
   );
 }
@@ -499,31 +393,6 @@ export default function PcsElPasoChecklistPage() {
         <section className="px-6 py-20 md:py-24">
           <div className="mx-auto max-w-6xl">
             <SectionHeader
-              eyebrow="PCS Snapshot"
-              title="Move planning at a glance"
-              description="These charts turn the checklist into quick visual benchmarks for timing, documents, and first-week priorities."
-            />
-
-            <div className="mt-12 grid gap-8 lg:grid-cols-2">
-              <SimpleBarChart
-                title="Checklist steps by phase"
-                description="A quick view of where most PCS tasks happen, from orders to arrival."
-                data={checklistPhaseData}
-              />
-
-              <SimpleBarChart
-                title="Arrival tasks by priority"
-                description="Most in-processing items should be handled during the first week after arrival."
-                data={arrivalPriorityData}
-                maxValue={3}
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="px-6 py-20 md:py-24">
-          <div className="mx-auto max-w-6xl">
-            <SectionHeader
               eyebrow="Neighborhoods"
               title="Quick neighborhood guide by gate"
               description="Choose your target area based on commute, price range, schools, and preferred gate access."
@@ -549,20 +418,28 @@ export default function PcsElPasoChecklistPage() {
               ))}
             </DataTable>
 
-            <div className="mt-12 grid gap-8 lg:grid-cols-2">
-              <SimpleBarChart
-                title="Median price by area"
-                description="Approximate neighborhood pricing shown from lowest to highest buying-power range."
-                data={neighborhoodPriceData}
-                maxValue={380000}
-              />
-
-              <SimpleBarChart
-                title="Average commute by area"
-                description="Midpoint estimates based on the commute ranges listed in the neighborhood guide."
-                data={commuteData}
-                maxValue={45}
-              />
+            <div className="mt-10 grid gap-5 md:grid-cols-4">
+              {[
+                { label: "Closest commute", value: "Northeast El Paso", detail: "5–15 minutes to key Fort Bliss gates." },
+                { label: "Lowest listed price", value: "$231,526", detail: "Northeast El Paso has the lowest sample median price." },
+                { label: "East-side option", value: "Horizon City", detail: "Useful for east units and newer-home inventory." },
+                { label: "West-side option", value: "Santa Teresa", detail: "Longer commute, but a New Mexico alternative." },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--sandstone-sand-gold)]">
+                    {item.label}
+                  </p>
+                  <h3 className="mt-3 font-heading text-xl font-bold text-[var(--sandstone-navy)]">
+                    {item.value}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    {item.detail}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -626,35 +503,6 @@ export default function PcsElPasoChecklistPage() {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[var(--sandstone-navy)] px-6 py-20 text-white md:py-24">
-          <div className="mx-auto max-w-6xl">
-            <SectionHeader
-              eyebrow="Relocation Numbers"
-              title="Key PCS planning metrics"
-              description="Use these numbers as simple checkpoints while planning your Fort Bliss move."
-              inverse
-            />
-
-            <div className="mt-12 grid gap-5 md:grid-cols-3">
-              <StatCard
-                value="90"
-                label="Days to plan ahead"
-                detail="Start BAH, VA pre-approval, and remote tours as soon as orders arrive."
-              />
-              <StatCard
-                value="6"
-                label="VA documents"
-                detail="Keep your COE, orders, LES, W-2s, bank statements, and funding fee info ready."
-              />
-              <StatCard
-                value="4"
-                label="Main housing areas"
-                detail="Northeast, Horizon City, West El Paso, and Santa Teresa each fit different commute needs."
-              />
             </div>
           </div>
         </section>

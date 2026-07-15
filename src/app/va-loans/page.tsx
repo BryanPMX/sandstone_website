@@ -21,6 +21,48 @@ const benefits = [
   "VA entitlement in El Paso 2026: up to $766,550",
 ];
 
+
+const vaQuickStats = [
+  {
+    value: "$0",
+    label: "Down Payment",
+    detail: "Qualified VA buyers can purchase without a traditional down payment.",
+  },
+  {
+    value: "$0",
+    label: "Monthly PMI",
+    detail: "VA loans do not require private mortgage insurance.",
+  },
+  {
+    value: "30–45",
+    label: "Typical Closing Days",
+    detail: "Most VA purchases can close in about 30 to 45 days after an accepted offer.",
+  },
+];
+
+const vaBuyerPath = [
+  {
+    title: "Best entry budget",
+    value: "E-5",
+    detail: "Northeast El Paso is usually the most approachable starting point for VA buyers.",
+  },
+  {
+    title: "Best east-side option",
+    value: "E-6",
+    detail: "Horizon City and Far East El Paso offer newer homes and practical Fort Bliss access.",
+  },
+  {
+    title: "Best west-side fit",
+    value: "E-7 / O-3",
+    detail: "West El Paso can work well for buyers prioritizing lifestyle, schools, and amenities.",
+  },
+  {
+    title: "Upper budget range",
+    value: "O-5+",
+    detail: "Upper Valley and custom-home areas may fit larger VA-backed purchase budgets.",
+  },
+];
+
 const purchaseRanges = [
   {
     rank: "E-5",
@@ -50,7 +92,7 @@ const purchaseRanges = [
     rank: "O-5+",
     bah: "Higher",
     price: "$450,000+",
-    neighborhood: "Upper Valley / Custom",
+    neighborhood: "Upper Valley",
   },
 ];
 
@@ -99,25 +141,6 @@ const processSteps = [
 ];
 
 
-const buyingPowerChart = [
-  { rank: "E-5", price: 247500 },
-  { rank: "E-6", price: 302500 },
-  { rank: "E-7", price: 355000 },
-  { rank: "O-3", price: 430000 },
-  { rank: "O-5+", price: 450000 },
-];
-
-
-const processTimelineChart = [
-  { label: "COE", days: 3 },
-  { label: "Pre-approval", days: 5 },
-  { label: "Search", days: 56 },
-  { label: "Offer", days: 5 },
-  { label: "Appraisal", days: 14 },
-  { label: "Inspection", days: 5 },
-  { label: "Close", days: 45 },
-];
-
 const faqs = [
   {
     question: "Can I use my VA loan benefit more than once?",
@@ -140,6 +163,45 @@ const faqs = [
       "You can negotiate the price down, pay the difference in cash, or walk away. A strong agent helps you prepare for each option.",
   },
 ];
+
+
+function StatCard({
+  value,
+  label,
+  detail,
+}: {
+  value: string;
+  label: string;
+  detail: string;
+}) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <p className="text-4xl font-bold text-[#c6a46a]">{value}</p>
+      <h3 className="mt-3 text-lg font-bold text-[#26356f]">{label}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{detail}</p>
+    </div>
+  );
+}
+
+function BuyerPathCard({
+  title,
+  value,
+  detail,
+}: {
+  title: string;
+  value: string;
+  detail: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-md">
+      <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#c6a46a]">
+        {title}
+      </p>
+      <h3 className="mt-3 text-2xl font-bold text-[#26356f]">{value}</h3>
+      <p className="mt-3 text-sm leading-6 text-slate-600">{detail}</p>
+    </div>
+  );
+}
 
 export default function VaLoansPage() {
   return (
@@ -275,99 +337,42 @@ export default function VaLoansPage() {
               exact numbers with a licensed lender.
             </p>
 
-            <div className="mt-10 grid gap-6 lg:grid-cols-2">
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-[#26356f]">
-                      Estimated VA Buying Power by Rank
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      Midpoint estimate from each purchase-price range.
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-[#f7f5ef] px-3 py-1 text-xs font-bold text-[#c6a46a]">
-                    VA estimate
-                  </span>
-                </div>
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
+              {vaQuickStats.map((stat) => (
+                <StatCard
+                  key={stat.label}
+                  value={stat.value}
+                  label={stat.label}
+                  detail={stat.detail}
+                />
+              ))}
+            </div>
 
-                <div className="mt-8 space-y-5">
-                  {buyingPowerChart.map((item) => {
-                    const maxPrice = 450000;
-                    const width = Math.round((item.price / maxPrice) * 100);
-
-                    return (
-                      <div key={item.rank}>
-                        <div className="mb-2 flex items-center justify-between text-sm">
-                          <span className="font-bold text-[#26356f]">{item.rank}</span>
-                          <span className="font-semibold text-slate-700">
-                            ${item.price.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="h-4 overflow-hidden rounded-full bg-slate-100">
-                          <div
-                            className="h-full rounded-full bg-[#c6a46a]"
-                            style={{ width: `${width}%` }}
-                            aria-label={`${item.rank} estimated purchase price ${item.price}`}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
+            <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+              <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#c6a46a]">
+                    Buyer Guide
+                  </p>
+                  <h3 className="mt-2 text-2xl font-bold text-[#26356f]">
+                    Quick VA buyer paths by budget
+                  </h3>
                 </div>
+                <p className="max-w-2xl text-sm leading-6 text-slate-600">
+                  Use these as simple starting points before comparing exact payment,
+                  taxes, insurance, and lender approval.
+                </p>
               </div>
 
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-[#26356f]">
-                      VA Loan vs. Conventional
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      Simple side-by-side snapshot of common buyer costs.
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-[#26356f] px-3 py-1 text-xs font-bold text-white">
-                    $0 down
-                  </span>
-                </div>
-
-                <div className="mt-8 space-y-6">
-                  <div>
-                    <div className="mb-2 flex justify-between text-sm">
-                      <span className="font-bold text-[#26356f]">VA down payment</span>
-                      <span className="font-semibold text-slate-700">$0</span>
-                    </div>
-                    <div className="h-4 rounded-full bg-slate-100">
-                      <div className="h-full w-[2%] rounded-full bg-[#c6a46a]" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="mb-2 flex justify-between text-sm">
-                      <span className="font-bold text-[#26356f]">Example 5% conventional down payment</span>
-                      <span className="font-semibold text-slate-700">$15,000</span>
-                    </div>
-                    <div className="h-4 rounded-full bg-slate-100">
-                      <div className="h-full w-full rounded-full bg-slate-400" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 pt-2">
-                    <div className="rounded-2xl bg-[#f7f5ef] p-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#c6a46a]">
-                        VA PMI
-                      </p>
-                      <p className="mt-2 text-3xl font-bold text-[#26356f]">$0</p>
-                    </div>
-                    <div className="rounded-2xl bg-slate-100 p-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        Typical PMI
-                      </p>
-                      <p className="mt-2 text-3xl font-bold text-slate-700">$180/mo</p>
-                    </div>
-                  </div>
-                </div>
+              <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {vaBuyerPath.map((item) => (
+                  <BuyerPathCard
+                    key={item.title}
+                    title={item.title}
+                    value={item.value}
+                    detail={item.detail}
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -379,45 +384,41 @@ export default function VaLoansPage() {
               The VA Loan Process in El Paso
             </h2>
 
-            <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+            <div className="mt-8 rounded-3xl border border-slate-200 bg-[#f7f5ef] p-6 md:p-8">
+              <div className="grid gap-6 md:grid-cols-[0.8fr_1.2fr] md:items-center">
                 <div>
-                  <h3 className="text-xl font-bold text-[#26356f]">
-                    Typical VA Purchase Timeline
+                  <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#c6a46a]">
+                    Timeline Snapshot
+                  </p>
+                  <h3 className="mt-2 text-2xl font-bold text-[#26356f]">
+                    Keep the process simple
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Longest estimated duration for each step, shown in days.
+                  <p className="mt-3 leading-7 text-slate-600">
+                    The biggest takeaway for VA buyers is simple: get pre-approved
+                    before shopping seriously, then expect most purchases to close
+                    in about 30–45 days after an accepted offer.
                   </p>
                 </div>
-                <p className="text-sm font-semibold text-[#c6a46a]">
-                  Most VA purchases close in 30–45 days after accepted offer.
-                </p>
-              </div>
 
-              <div className="mt-8 grid gap-4">
-                {processTimelineChart.map((item) => {
-                  const maxDays = 56;
-                  const width = Math.round((item.days / maxDays) * 100);
-
-                  return (
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {[
+                    { value: "1", label: "Get COE" },
+                    { value: "2", label: "Pre-approve" },
+                    { value: "3", label: "Shop + offer" },
+                  ].map((item) => (
                     <div
                       key={item.label}
-                      className="grid items-center gap-3 md:grid-cols-[120px_1fr_80px]"
+                      className="rounded-2xl bg-white p-5 text-center shadow-sm"
                     >
-                      <p className="text-sm font-bold text-[#26356f]">{item.label}</p>
-                      <div className="h-4 overflow-hidden rounded-full bg-slate-100">
-                        <div
-                          className="h-full rounded-full bg-[#26356f]"
-                          style={{ width: `${width}%` }}
-                          aria-label={`${item.label} estimated timeline ${item.days} days`}
-                        />
-                      </div>
-                      <p className="text-sm font-semibold text-slate-700">
-                        {item.days} days
+                      <p className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#26356f] text-lg font-bold text-white">
+                        {item.value}
+                      </p>
+                      <p className="mt-3 text-sm font-bold text-[#26356f]">
+                        {item.label}
                       </p>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
             </div>
 
