@@ -31,9 +31,15 @@ export function ListingCard({
   const resolvedImageSrc = property.image?.trim() || FALLBACK_LISTING_IMAGE_DATA_URI;
   const bypassOptimization = shouldBypassNextImageOptimization(resolvedImageSrc);
   const details = [
-    property.beds != null && `${property.beds} beds`,
-    property.baths != null && `${property.baths} baths`,
-    property.sqft && `${property.sqft} sq ft`,
+    property.beds != null && property.beds > 0
+      ? `${property.beds} beds`
+      : null,
+    property.baths != null && property.baths > 0
+      ? `${property.baths} baths`
+      : null,
+    property.sqft 
+      ? `${property.sqft} sq ft`
+      : null,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -113,7 +119,15 @@ export function ListingCard({
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
             src={resolvedImageSrc}
-            alt={`${property.title} - ${property.beds} bedroom ${property.baths} bathroom home in ${property.location} for ${property.price}`}
+            alt={[
+              property.title,
+              property.beds != null ? `${property.beds} bedroom` : null,
+              property.baths != null && property.baths > 0 ? `${property.baths} bathroom` : null,
+              property.location,
+              property.price,
+            ]
+              .filter(Boolean)
+              .join(" - ")}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
             className="object-cover transition duration-300 group-hover:scale-105"
