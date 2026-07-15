@@ -75,11 +75,7 @@ const schoolDistricts = [
     district: "Gadsden ISD",
     schools: "Santa Teresa High School, Middle, Elementary",
   },
-  {
-    area: "On-post housing",
-    district: "El Paso ISD",
-    schools: "On-installation elementary schools and high school",
-  },
+  
 ];
 
 const processingChecklist = [
