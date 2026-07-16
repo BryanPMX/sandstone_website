@@ -279,12 +279,12 @@ export function HeroSection() {
             <picture className="absolute inset-0 block h-full w-full">
               <source
                 media="(min-width: 1024px)"
-                srcSet="/desktop%20hero.webp"
+                srcSet="/hero-home.webp"
                 type="image/webp"
               />
               <img
-                src="/mobile%20hero.webp"
-                alt=""
+                src="/hero-home.webp"
+                alt="Luxury modern home in El Paso listed by Sandstone Real Estate"
                 className="h-full w-full object-cover object-[center_45%] lg:object-[center_40%]"
                 fetchPriority="high"
               />
