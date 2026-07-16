@@ -149,3 +149,11 @@ export function getSparkListingsPageSize(): number {
 
   return parsed;
 }
+
+export function getGooglePlacesApiKey(): string | undefined {
+  return getEnv("GOOGLE_PLACES_API_KEY");
+}
+
+export function getGooglePlaceId(): string | undefined {
+  return getEnv("GOOGLE_PLACE_ID");
+}
