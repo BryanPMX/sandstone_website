@@ -559,33 +559,38 @@ export default function PcsElPasoChecklistPage() {
         <section className="py-0">
           <div className="relative min-h-[620px] w-full overflow-hidden shadow-2xl md:min-h-[680px]">
             <div
-              className="absolute inset-0 bg-cover bg-center"
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{
                 backgroundImage: 'url("/uploads/el_paso_neighborhood.jpg")',
               }}
             />
 
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,53,111,0.92)_0%,rgba(38,53,111,0.76)_45%,rgba(38,53,111,0.45)_100%)]" />
+            <div className="absolute inset-0 bg-[rgba(38,53,111,0.72)]" />
             <div className="absolute inset-0 bg-black/10" />
 
-            <div className="relative z-10 mx-auto flex min-h-[620px] max-w-6xl flex-col items-center justify-center px-6 text-center md:min-h-[680px]">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-[#c6a46a] md:text-sm">
-                Homes Near Fort Bliss
-              </p>
+            <div className="relative z-10 flex min-h-[620px] w-full items-center justify-center px-6 text-center md:min-h-[680px]">
+              <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center">
+                <p className="mb-4 text-center text-xs font-semibold uppercase tracking-[0.35em] text-[#c6a46a] md:text-sm">
+                  Homes Near Fort Bliss
+                </p>
 
-              <h2 className="max-w-5xl text-4xl font-light leading-tight tracking-[0.16em] text-white md:text-5xl lg:text-6xl">
-                Start Your El Paso Home Search
-              </h2>
+                <h2 className="mx-auto max-w-5xl text-center text-4xl font-light leading-tight tracking-[0.16em] text-white md:text-5xl lg:text-6xl">
+                  Start Your El Paso Home Search
+                </h2>
 
-              <div className="mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
+                <div className="mx-auto mt-6 h-px w-20 bg-[var(--sandstone-sand-gold)]" />
 
-              <p className="mt-8 max-w-3xl px-6 py-3 text-lg font-light leading-relaxed text-white md:text-xl">
-                Ready to see what your BAH can buy? Browse active listings near
-                Fort Bliss, filtered by your budget and preferred neighborhoods.
-              </p>
+                <p className="mx-auto mt-8 max-w-3xl text-center text-lg font-light leading-relaxed text-white md:text-xl">
+                  Ready to see what your BAH can buy? Browse active listings near
+                  Fort Bliss, filtered by your budget and preferred
+                  neighborhoods.
+                </p>
 
-              <div className="mt-10 w-full max-w-3xl">
-                <SearchForm />
+                <div className="mx-auto mt-10 flex w-full max-w-3xl justify-center">
+                  <div className="w-full">
+                    <SearchForm />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
