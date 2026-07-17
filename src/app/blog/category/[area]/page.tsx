@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -132,7 +131,7 @@ export default async function BlogCategoryPage({
 
   return (
     <>
-      <SiteHeader variant="lead" showDesktopCenterLogo={false} />
+      <SiteHeader />
 
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <section className="container mx-auto max-w-6xl px-4 pt-10">
@@ -255,38 +254,6 @@ export default async function BlogCategoryPage({
               </div>
             </>
           )}
-
-          <section className="mt-16 rounded-3xl bg-[var(--sandstone-navy)] px-6 py-10 text-center text-white md:px-10">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
-              Need Real Estate Help?
-            </p>
-
-            <h2 className="mx-auto mt-3 max-w-2xl font-heading text-3xl font-bold">
-              Talk with a local El Paso real estate professional.
-            </h2>
-
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/75 md:text-base">
-              Whether you are buying, selling, preparing for a military PCS,
-              or exploring your VA loan options, the Sandstone team is here to
-              help.
-            </p>
-
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/#contact"
-                className="rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-3 text-sm font-bold text-[var(--sandstone-navy)] transition hover:-translate-y-0.5 hover:opacity-95"
-              >
-                Contact Us
-              </Link>
-
-              <Link
-                href="/blog"
-                className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:border-white/50 hover:bg-white/10"
-              >
-                View All Articles
-              </Link>
-            </div>
-          </section>
         </section>
       </main>
 

@@ -80,9 +80,7 @@ export async function generateMetadata({
       images: [
         {
           url: imageUrl,
-          alt:
-            post.coverImageAlt ||
-            post.title,
+          alt: post.coverImageAlt || post.title,
         },
       ],
     },
@@ -107,26 +105,16 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const allPosts =
-    await getSortedPosts();
+  const allPosts = await getSortedPosts();
 
   const relatedPosts = allPosts
-    .filter(
-      (item) =>
-        item.slug !== post.slug
-    )
+    .filter((item) => item.slug !== post.slug)
     .sort((a, b) => {
-      if (
-        a.area === post.area &&
-        b.area !== post.area
-      ) {
+      if (a.area === post.area && b.area !== post.area) {
         return -1;
       }
 
-      if (
-        a.area !== post.area &&
-        b.area === post.area
-      ) {
+      if (a.area !== post.area && b.area === post.area) {
         return 1;
       }
 
@@ -151,61 +139,36 @@ export default async function BlogPostPage({
       : `${siteBase}${post.coverImage}`;
 
   const jsonLd = {
-    "@context":
-      "https://schema.org",
-
-    "@type":
-      "BlogPosting",
-
-    headline:
-      post.title,
-
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
     description:
       post.metaDescription ||
       post.excerpt,
-
-    image:
-      imageUrl,
-
-    datePublished:
-      post.date,
+    image: imageUrl,
+    datePublished: post.date,
 
     mainEntityOfPage: {
-      "@type":
-        "WebPage",
-
-      "@id":
-        canonicalUrl,
+      "@type": "WebPage",
+      "@id": canonicalUrl,
     },
 
     author: {
-      "@type":
-        "Organization",
-
-      name:
-        "Sandstone Real Estate Group",
-
-      url:
-        siteBase,
+      "@type": "Organization",
+      name: "Sandstone Real Estate Group",
+      url: siteBase,
     },
 
     publisher: {
-      "@type":
-        "Organization",
-
-      name:
-        "Sandstone Real Estate Group",
-
-      url:
-        siteBase,
+      "@type": "Organization",
+      name: "Sandstone Real Estate Group",
+      url: siteBase,
     },
   };
 
   const categoryLabel =
     post.area
-      ? getCategoryLabel(
-          post.area
-        ) ?? post.area
+      ? getCategoryLabel(post.area) ?? post.area
       : null;
 
   return (
@@ -213,19 +176,11 @@ export default async function BlogPostPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(
-              jsonLd
-            ),
+          __html: JSON.stringify(jsonLd),
         }}
       />
 
-      <SiteHeader
-        variant="lead"
-        showDesktopCenterLogo={
-          false
-        }
-      />
+      <SiteHeader />
 
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <article className="container mx-auto max-w-4xl px-4 pt-10">
@@ -237,22 +192,17 @@ export default async function BlogPostPage({
           </Link>
 
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            {post.area &&
-              categoryLabel && (
-                <Link
-                  href={`/blog/category/${post.area}`}
-                  className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition-colors hover:bg-[var(--sandstone-sand-gold)]/20"
-                >
-                  {
-                    categoryLabel
-                  }
-                </Link>
-              )}
+            {post.area && categoryLabel && (
+              <Link
+                href={`/blog/category/${post.area}`}
+                className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition-colors hover:bg-[var(--sandstone-sand-gold)]/20"
+              >
+                {categoryLabel}
+              </Link>
+            )}
 
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
-              {formatBlogDate(
-                post.date
-              )}
+              {formatBlogDate(post.date)}
             </p>
           </div>
 
@@ -266,13 +216,8 @@ export default async function BlogPostPage({
 
           <div className="relative mt-8 h-64 w-full overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_24px_70px_-38px_rgba(37,52,113,0.5)] md:h-96">
             <Image
-              src={
-                post.coverImage
-              }
-              alt={
-                post.coverImageAlt ||
-                post.title
-              }
+              src={post.coverImage}
+              alt={post.coverImageAlt || post.title}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 1024px"
@@ -283,87 +228,62 @@ export default async function BlogPostPage({
           <div
             className="prose prose-slate mt-10 max-w-none prose-headings:font-heading prose-headings:text-[var(--sandstone-navy)] prose-a:text-[var(--sandstone-navy)] prose-strong:text-[var(--sandstone-charcoal)]"
             dangerouslySetInnerHTML={{
-              __html:
-                post.contentHtml,
+              __html: post.contentHtml,
             }}
           />
 
-          {relatedPosts.length >
-            0 && (
+          {relatedPosts.length > 0 && (
             <section className="mt-12 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-6 shadow-sm md:p-8">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--sandstone-sand-gold)]">
                 Keep Reading
               </p>
 
               <h2 className="mt-2 font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-                Related
-                Articles
+                Related Articles
               </h2>
 
               <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/70">
-                Continue
-                exploring real
-                estate
-                resources,
-                local guides,
-                and helpful
-                insights from
-                Sandstone.
+                Continue exploring real estate resources, local guides, and
+                helpful insights from Sandstone.
               </p>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {relatedPosts.map(
-                  (
-                    relatedPost
-                  ) => {
-                    const relatedCategoryLabel =
-                      relatedPost.area
-                        ? getCategoryLabel(
-                            relatedPost.area
-                          ) ??
-                          relatedPost.area
-                        : "Sandstone Blog";
+                {relatedPosts.map((relatedPost) => {
+                  const relatedCategoryLabel =
+                    relatedPost.area
+                      ? getCategoryLabel(relatedPost.area) ?? relatedPost.area
+                      : "Sandstone Blog";
 
-                    return (
-                      <Link
-                        key={
-                          relatedPost.slug
-                        }
-                        href={`/blog/${relatedPost.slug}`}
-                        className="group rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:-translate-y-1 hover:border-[var(--sandstone-sand-gold)]/60 hover:shadow-md"
-                      >
-                        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--sandstone-sand-gold)]">
-                          {
-                            relatedCategoryLabel
-                          }
-                        </p>
+                  return (
+                    <Link
+                      key={relatedPost.slug}
+                      href={`/blog/${relatedPost.slug}`}
+                      className="group rounded-2xl border border-[var(--sandstone-navy)]/10 p-5 transition hover:-translate-y-1 hover:border-[var(--sandstone-sand-gold)]/60 hover:shadow-md"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-wide text-[var(--sandstone-sand-gold)]">
+                        {relatedCategoryLabel}
+                      </p>
 
-                        <h3 className="mt-2 font-heading text-lg font-bold text-[var(--sandstone-charcoal)] transition group-hover:text-[var(--sandstone-navy)]">
-                          {
-                            relatedPost.title
-                          }
-                        </h3>
+                      <h3 className="mt-2 font-heading text-lg font-bold text-[var(--sandstone-charcoal)] transition group-hover:text-[var(--sandstone-navy)]">
+                        {relatedPost.title}
+                      </h3>
 
-                        <p className="mt-2 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/70">
-                          {
-                            relatedPost.excerpt
-                          }
-                        </p>
+                      <p className="mt-2 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/70">
+                        {relatedPost.excerpt}
+                      </p>
 
-                        <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[var(--sandstone-navy)]">
-                          Read
-                          article
-                          <span
-                            aria-hidden
-                            className="transition-transform group-hover:translate-x-1"
-                          >
-                            →
-                          </span>
+                      <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[var(--sandstone-navy)]">
+                        Read article
+                        <span
+                          aria-hidden
+                          className="transition-transform group-hover:translate-x-1"
+                        >
+                          →
                         </span>
-                      </Link>
-                    );
-                  }
-                )}
+                      </span>
+                    </Link>
+                  );
+                })}
               </div>
             </section>
           )}
@@ -374,23 +294,12 @@ export default async function BlogPostPage({
             </p>
 
             <h2 className="mt-2 font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-              Helpful
-              Sandstone
-              Resources
+              Helpful Sandstone Resources
             </h2>
 
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/70">
-              Explore local
-              real estate
-              resources, Fort
-              Bliss PCS
-              guidance, VA
-              loan
-              information,
-              home search
-              tools, and El
-              Paso area
-              guides.
+              Explore local real estate resources, Fort Bliss PCS guidance,
+              VA loan information, home search tools, and El Paso area guides.
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -398,16 +307,14 @@ export default async function BlogPostPage({
                 href="/pcs"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:-translate-y-0.5 hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
               >
-                Military PCS
-                Resources
+                Military PCS Resources
               </Link>
 
               <Link
                 href="/va-loans"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:-translate-y-0.5 hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
               >
-                VA Loan
-                Guide
+                VA Loan Guide
               </Link>
 
               <Link
@@ -428,42 +335,30 @@ export default async function BlogPostPage({
                 href="/areas"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:-translate-y-0.5 hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
               >
-                Explore El
-                Paso Areas
+                Explore El Paso Areas
               </Link>
 
               <Link
                 href="/blog"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:-translate-y-0.5 hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
               >
-                More Blog
-                Articles
+                More Blog Articles
               </Link>
             </div>
           </section>
 
           <section className="mt-12 rounded-3xl bg-[var(--sandstone-navy)] px-6 py-10 text-center text-white md:px-10">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
-              Ready to Make
-              a Move?
+              Ready to Make a Move?
             </p>
 
             <h2 className="mx-auto mt-3 max-w-2xl font-heading text-3xl font-bold">
-              Let Sandstone
-              help with your
-              next move in El
-              Paso.
+              Let Sandstone help with your next move in El Paso.
             </h2>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/75 md:text-base">
-              Whether you are
-              buying,
-              selling,
-              preparing for a
-              PCS, or exploring
-              your VA loan
-              options, our team
-              is here to help.
+              Whether you are buying, selling, preparing for a PCS, or
+              exploring your VA loan options, our team is here to help.
             </p>
 
             <div className="mt-7 flex flex-wrap justify-center gap-3">
@@ -478,8 +373,7 @@ export default async function BlogPostPage({
                 href="/blog"
                 className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:border-white/50 hover:bg-white/10"
               >
-                Browse More
-                Articles
+                Browse More Articles
               </Link>
             </div>
           </section>
