@@ -206,7 +206,7 @@ export default async function EastElPasoPage() {
 
   const STATS_TOP = [
     { label: "Median Price",  value: medianPrice, sub: null           },
-    { label: "Commute Time",  value: "3.3",       sub: "mi / approx." },
+    { label: "Commute Time",  value: "20–25",       sub: "min / approx." },
   ];
 
   const PRICE_CARD = { current: medianPrice, projection: "$431K", period };
@@ -250,19 +250,19 @@ export default async function EastElPasoPage() {
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
 
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
-        <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
+        <section className="relative flex min-h-[640px] items-end overflow-hidden lg:min-h-[760px]">
           <Image
             src="/areas/east-el-paso/eastHero.png"
             alt="Southwest-style home in East El Paso at sunset"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-center scale-[1.01]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)] via-[var(--sandstone-navy)]/50 to-[var(--sandstone-navy)]/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)] via-[var(--sandstone-navy)]/55 to-black/10" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/25 to-transparent" />
 
-          <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-36 lg:px-6 lg:pb-20">
+          <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-16 pt-40 sm:px-6 lg:px-8 lg:pb-24">
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-10 bg-[var(--sandstone-sand-gold)]" />
               <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
@@ -270,26 +270,25 @@ export default async function EastElPasoPage() {
               </span>
             </div>
 
-            <h1 className="max-w-2xl font-heading text-4xl font-bold leading-[1.1] text-white md:text-5xl lg:text-6xl">
+            <h1 className="max-w-3xl font-heading text-5xl font-bold leading-[1.02] tracking-[-0.03em] text-white md:text-6xl lg:text-7xl">
               Homes for Sale in<br />
               East El Paso, TX
             </h1>
 
-            <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-white/65">
-              Established neighborhoods, everyday convenience, and easy access to the airport, Fort Bliss, and Loop 375
-              one of El Paso&apos;s most connected residential corridors.
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/75 md:text-lg">
+              Established neighborhoods, everyday convenience, and easy access to the airport, Fort Bliss, and Loop 375 — one of El Paso&apos;s most connected residential corridors.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="#listings"
-                className="rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_32px_-12px_rgba(183,150,120,0.9)] transition hover:opacity-90"
+                className="rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_16px_35px_-14px_rgba(183,150,120,0.9)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_42px_-14px_rgba(183,150,120,0.95)]"
               >
                 Browse Listings
               </Link>
               <Link
                 href="#contact"
-                className="rounded-full border border-white/30 bg-white/8 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15"
+                className="rounded-full border border-white/25 bg-white/10 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:bg-white/18"
               >
                 Talk to an Agent
               </Link>
@@ -298,8 +297,8 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Market Snapshot ──────────────────────────────────────────────── */}
-        <section className="bg-white py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+        <section className="bg-white py-20 md:py-24">
+          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -313,7 +312,7 @@ export default async function EastElPasoPage() {
             {/* Top 2 stat cards */}
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {STATS_TOP.map(({ label, value, sub }) => (
-                <div key={label} className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
+                <div key={label} className="rounded-[1.5rem] border border-[var(--sandstone-navy)]/10 bg-white px-6 py-7 shadow-[0_18px_45px_-30px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_55px_-30px_rgba(15,23,42,0.34)]">
                   <p className="text-sm font-bold text-[var(--sandstone-navy)]">{label}</p>
                   <div className="mt-3 flex items-baseline gap-2">
                     <span className="font-heading text-4xl font-bold text-[var(--sandstone-sand-gold)]">{value}</span>
@@ -326,7 +325,7 @@ export default async function EastElPasoPage() {
             {/* Price detail card + chart */}
             <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
 
-              <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
+              <div className="rounded-[1.5rem] border border-[var(--sandstone-navy)]/10 bg-white px-6 py-7 shadow-[0_18px_45px_-30px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_55px_-30px_rgba(15,23,42,0.34)]">
                 <p className="text-sm font-bold text-[var(--sandstone-navy)]">Median Price</p>
                 <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
                   <div>
@@ -357,7 +356,7 @@ export default async function EastElPasoPage() {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
+              <div className="rounded-[1.5rem] border border-[var(--sandstone-navy)]/10 bg-white px-6 py-7 shadow-[0_18px_45px_-30px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_55px_-30px_rgba(15,23,42,0.34)]">
                 <p className="mb-4 text-sm font-bold text-[var(--sandstone-navy)]">
                   East El Paso Median List Price — 12 Months
                 </p>
@@ -398,7 +397,7 @@ export default async function EastElPasoPage() {
             {/* Bottom 4 stat cards */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {STAT_CARDS.map(({ icon: Icon, label, value, change, up }) => (
-                <div key={label} className="flex flex-col items-center rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-3 py-5 text-center shadow-sm">
+                <div key={label} className="flex flex-col items-center rounded-[1.35rem] border border-[var(--sandstone-navy)]/10 bg-white px-4 py-6 text-center shadow-[0_16px_38px_-28px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1">
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--sandstone-navy)]/12 bg-[var(--sandstone-off-white)]">
                     <Icon size={18} className="text-[var(--sandstone-navy)]" strokeWidth={1.75} />
                   </div>
@@ -423,7 +422,7 @@ export default async function EastElPasoPage() {
 
         {/* ── Browse Listings ──────────────────────────────────────────────── */}
         <section id="listings" className="bg-white py-16 scroll-mt-20">
-          <div className="mx-auto max-w-6xl px-4 lg:px-6">
+          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
             <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
               Browse East El Paso Listings
             </h2>
@@ -435,8 +434,8 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Schools ──────────────────────────────────────────────────────── */}
-        <section className="bg-white py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+        <section className="bg-white py-20 md:py-24">
+          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -451,13 +450,13 @@ export default async function EastElPasoPage() {
 
               {/* Left: school photos */}
               <div className="w-full lg:sticky lg:top-[116px] lg:self-start lg:flex lg:w-[58%] lg:flex-col">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                <div className="group relative aspect-[4/3] overflow-hidden rounded-[1.5rem] shadow-[0_18px_45px_-30px_rgba(15,23,42,0.32)]">
                   <Image
                     src="/areas/east-el-paso/schools/eastwoodHs.png"
                     alt="Eastwood High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
-                    className="object-cover"
+                    className="object-cover transition duration-700 group-hover:scale-[1.04]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                   <p className="absolute bottom-4 left-4 font-heading text-xl font-bold text-white drop-shadow">
@@ -466,26 +465,26 @@ export default async function EastElPasoPage() {
                 </div>
 
                 <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div className="relative aspect-square overflow-hidden rounded-2xl">
+                  <div className="group relative aspect-square overflow-hidden rounded-[1.35rem] shadow-[0_16px_38px_-30px_rgba(15,23,42,0.28)]">
                     <Image
                       src="/areas/east-el-paso/schools/Montwood-Middle.png"
                       alt="Montwood Middle School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
-                      className="object-cover"
+                      className="object-cover transition duration-700 group-hover:scale-[1.04]"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
                       Montwood<br />Middle School
                     </p>
                   </div>
-                  <div className="relative aspect-square overflow-hidden rounded-2xl">
+                  <div className="group relative aspect-square overflow-hidden rounded-[1.35rem] shadow-[0_16px_38px_-30px_rgba(15,23,42,0.28)]">
                     <Image
                       src="/areas/east-el-paso/schools/REL-Washington.png"
                       alt="REL Washington Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
-                      className="object-cover"
+                      className="object-cover transition duration-700 group-hover:scale-[1.04]"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
                     <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
@@ -535,8 +534,8 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Convenience at Your Doorstep ─────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+        <section className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
+          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -550,7 +549,7 @@ export default async function EastElPasoPage() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
 
               {/* Hospitals */}
-              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+              <div className="flex flex-col rounded-[1.5rem] border border-[var(--sandstone-navy)]/8 bg-white p-6 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1">
                 <div className="flex items-start gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
                     <Image src="/icons/areas/icon-hospital.webp" alt="" width={26} height={26} />
@@ -565,7 +564,7 @@ export default async function EastElPasoPage() {
                   {NEARBY.hospitals.map((item) => (
                     <div key={item.name} className="flex items-center gap-3">
                       <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg">
-                        <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover" />
+                        <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover transition duration-700 group-hover:scale-[1.04]" />
                       </div>
                       <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
                       <div className="shrink-0 text-right">
@@ -583,7 +582,7 @@ export default async function EastElPasoPage() {
               </div>
 
               {/* Grocery Stores */}
-              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+              <div className="flex flex-col rounded-[1.5rem] border border-[var(--sandstone-navy)]/8 bg-white p-6 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1">
                 <div className="flex items-start gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
                     <Image src="/icons/areas/icon-grocery.webp" alt="" width={26} height={26} />
@@ -598,7 +597,7 @@ export default async function EastElPasoPage() {
                   {NEARBY.groceries.map((item) => (
                     <div key={item.name} className="flex items-center gap-3">
                       <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[var(--sandstone-navy)]/8">
-                        <Image src={item.img} alt={item.name} fill sizes="40px" className="object-cover" />
+                        <Image src={item.img} alt={item.name} fill sizes="40px" className="object-cover transition duration-700 group-hover:scale-[1.04]" />
                       </div>
                       <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
                       <div className="shrink-0 text-right">
@@ -616,7 +615,7 @@ export default async function EastElPasoPage() {
               </div>
 
               {/* Shopping */}
-              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+              <div className="flex flex-col rounded-[1.5rem] border border-[var(--sandstone-navy)]/8 bg-white p-6 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1">
                 <div className="flex items-start gap-3">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
                     <Image src="/icons/areas/icon-shopping-bag.webp" alt="" width={26} height={26} />
@@ -631,7 +630,7 @@ export default async function EastElPasoPage() {
                   {NEARBY.shopping.map((item) => (
                     <div key={item.name} className="flex items-center gap-3">
                       <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg">
-                        <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover" />
+                        <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover transition duration-700 group-hover:scale-[1.04]" />
                       </div>
                       <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
                       <div className="shrink-0 text-right">
@@ -651,7 +650,7 @@ export default async function EastElPasoPage() {
             </div>
 
             {/* Commute Times */}
-            <div className="mt-4 flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm lg:flex-row lg:items-center">
+            <div className="mt-6 flex flex-col gap-6 rounded-[1.5rem] border border-[var(--sandstone-navy)]/8 bg-white p-6 shadow-[0_18px_45px_-32px_rgba(15,23,42,0.28)] lg:flex-row lg:items-center">
               <div className="flex shrink-0 items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
                   <Image src="/icons/areas/icon-car.webp" alt="" width={26} height={26} />
@@ -681,8 +680,8 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Why Buyers Choose East El Paso ───────────────────────────────── */}
-        <section className="bg-white py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+        <section className="bg-white py-20 md:py-24">
+          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <h2 className="mb-10 text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
               Why Buyers Choose East El Paso
@@ -735,22 +734,22 @@ export default async function EastElPasoPage() {
 
               {/* Right: lifestyle photos */}
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                <div className="group relative aspect-[4/3] overflow-hidden rounded-[1.5rem] shadow-[0_18px_45px_-30px_rgba(15,23,42,0.32)]">
                   <Image
                     src="/areas/west-el-paso/lifestyle-mountains.jpg"
                     alt="Franklin Mountains at sunset, East El Paso"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
-                    className="object-cover"
+                    className="object-cover transition duration-700 group-hover:scale-[1.04]"
                   />
                 </div>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                <div className="group relative aspect-[4/3] overflow-hidden rounded-[1.5rem] shadow-[0_18px_45px_-30px_rgba(15,23,42,0.32)]">
                   <Image
                     src="/areas/west-el-paso/lifestyle-utep.jpg"
                     alt="University of Texas at El Paso campus"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
-                    className="object-cover"
+                    className="object-cover transition duration-700 group-hover:scale-[1.04]"
                   />
                 </div>
               </div>
@@ -760,8 +759,8 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Utilities & Local Services ────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+        <section className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
+          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -774,7 +773,7 @@ export default async function EastElPasoPage() {
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
               {UTILITIES.map(({ icon, title, provider, description, linkLabel, href, accent }) => (
-                <div key={title} className="flex flex-col items-center rounded-2xl bg-white p-5 text-center shadow-sm">
+                <div key={title} className="flex flex-col items-center rounded-[1.5rem] border border-[var(--sandstone-navy)]/8 bg-white p-6 text-center shadow-[0_18px_45px_-32px_rgba(15,23,42,0.28)] transition duration-300 hover:-translate-y-1">
                   <div className={`mb-4 flex h-24 w-24 items-center justify-center rounded-full ${accent.bg}`}>
                     <Image src={icon} alt="" width={44} height={44} />
                   </div>
@@ -804,8 +803,8 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
-          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+        <section className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
+          <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -824,7 +823,7 @@ export default async function EastElPasoPage() {
 
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start">
               {FAQS.map(({ icon, q, a }) => (
-                <details key={q} className="group rounded-2xl bg-white shadow-sm">
+                <details key={q} className="group overflow-hidden rounded-[1.35rem] border border-[var(--sandstone-navy)]/8 bg-white shadow-[0_16px_38px_-30px_rgba(15,23,42,0.24)] transition duration-300 open:shadow-[0_22px_50px_-30px_rgba(15,23,42,0.32)]">
                   <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-navy)]/8">
                       <Image src={icon} alt="" width={22} height={22} />
