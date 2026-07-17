@@ -1,5 +1,7 @@
+```tsx
 import Link from "next/link";
 import Script from "next/script";
+
 import { SiteHeader } from "@/components/SiteHeader";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsSection";
@@ -9,9 +11,13 @@ import { ContactForm } from "@/components/ContactForm";
 import { GoogleReviews } from "@/components/GoogleReviews";
 import { SiteFooter } from "@/components/SiteFooter";
 import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
+
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
-import { HOME_FAQ_SCHEMA_EN, HOME_FAQ_SCHEMA_ES } from "@/constants/site";
+import {
+  HOME_FAQ_SCHEMA_EN,
+  HOME_FAQ_SCHEMA_ES,
+} from "@/constants/site";
 
 export const revalidate = 600;
 
@@ -101,22 +107,34 @@ export default async function Home() {
 
       <SiteHeader overlayDesktop />
 
-      <main className="min-h-screen">
+      <main className="min-h-screen overflow-x-hidden">
         <HeroSection />
 
-        <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
-          <Link href="/pcs" className="block w-full">
+        <section className="w-full overflow-hidden">
+          <Link
+            href="/pcs"
+            className="block w-full"
+            aria-label="Learn more about military PCS services"
+          >
             <img
               src="/uploads/Banner%20PCS3.jpeg"
               alt="Military PCS Specialist — start your move"
-              className="block h-[90px] w-full object-cover object-[center_85%] md:h-auto"
+              className="
+                block
+                h-[110px]
+                w-full
+                object-cover
+                object-center
+                sm:h-[150px]
+                md:h-auto
+              "
             />
           </Link>
         </section>
 
         <FeaturedListingsSection properties={alejandroSparkProperties} />
 
-        <ExploreNearbyAreas compact={true} />
+        <ExploreNearbyAreas compact />
 
         <BlogTeaserSection posts={latestPosts} />
 
@@ -131,3 +149,4 @@ export default async function Home() {
     </>
   );
 }
+```

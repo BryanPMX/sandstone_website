@@ -274,7 +274,7 @@ export function HeroSection() {
   return (
     <>
       <section className="relative w-full overflow-hidden bg-[var(--sandstone-navy)]">
-        <div className="relative h-[46vh] min-h-[320px] w-full lg:h-[640px] lg:min-h-[640px]">
+        <div className="relative h-[52vh] min-h-[380px] w-full lg:h-[640px] lg:min-h-[640px]">
           <div className="relative h-full w-full">
             <picture className="absolute inset-0 block h-full w-full">
               <source
@@ -525,8 +525,8 @@ export function HeroSection() {
               )}
             </div>
 
-            <div className="mt-5 flex flex-nowrap items-center justify-start gap-3 overflow-x-auto px-1 pb-2 sm:justify-center">
-              <div className="inline-flex shrink-0 items-center rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white p-1 shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)]">
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="col-span-2 inline-flex w-full items-center rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white p-1 shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)]">
                 <button
                   type="button"
                   onClick={() =>
@@ -536,7 +536,7 @@ export function HeroSection() {
                       pricePreset: "any",
                     }))
                   }
-                  className={`rounded-full px-6 py-3 text-[0.95rem] font-medium transition ${
+                  className={`flex-1 rounded-full px-4 py-3 text-[0.95rem] font-medium transition ${
                     filters.listingType === "active"
                       ? "bg-[var(--sandstone-navy)] text-white shadow-[0_4px_14px_-6px_rgba(37,52,113,0.75)]"
                       : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
@@ -553,7 +553,7 @@ export function HeroSection() {
                       pricePreset: "any",
                     }))
                   }
-                  className={`rounded-full px-6 py-3 text-[0.95rem] font-medium transition ${
+                  className={`flex-1 rounded-full px-4 py-3 text-[0.95rem] font-medium transition ${
                     filters.listingType === "rental"
                       ? "bg-[var(--sandstone-navy)] text-white shadow-[0_4px_14px_-6px_rgba(37,52,113,0.75)]"
                       : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
@@ -563,8 +563,8 @@ export function HeroSection() {
                 </button>
               </div>
 
-              <div className="relative shrink-0 focus-within:outline-none">
-                <div className="inline-flex h-[50px] items-center gap-1 rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white px-5 text-[0.95rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+              <div className="relative w-full focus-within:outline-none">
+                <div className="flex h-[50px] w-full items-center justify-between gap-1 rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white px-5 text-[0.95rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                   <span>
                     {filters.pricePreset === "any"
                       ? "Price"
@@ -595,8 +595,8 @@ export function HeroSection() {
                 </select>
               </div>
 
-              <div className="relative shrink-0 focus-within:outline-none">
-                <div className="inline-flex h-[50px] items-center gap-1 rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white px-5 text-[0.95rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+              <div className="relative w-full focus-within:outline-none">
+                <div className="flex h-[50px] w-full items-center justify-between gap-1 rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white px-5 text-[0.95rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                   <span>
                     {filters.bedsPreset === "any"
                       ? "Beds"
@@ -627,8 +627,8 @@ export function HeroSection() {
                 </select>
               </div>
 
-              <div className="relative shrink-0 focus-within:outline-none">
-                <div className="inline-flex h-[50px] items-center gap-1 rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white px-5 text-[0.95rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+              <div className="relative w-full focus-within:outline-none">
+                <div className="flex h-[50px] w-full items-center justify-between gap-1 rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white px-5 text-[0.95rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
                   <span>
                     {filters.bathsPreset === "any"
                       ? "Baths"
