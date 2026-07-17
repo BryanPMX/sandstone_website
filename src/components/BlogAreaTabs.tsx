@@ -1,34 +1,37 @@
 import Link from "next/link";
-import { BLOG_AREAS } from "@/config/blog-areas";
+import { BLOG_CATEGORIES } from "@/config/blog-areas";
 
-interface BlogAreaTabsProps {
-  activeArea?: string;
+interface BlogCategoryTabsProps {
+  activeCategory?: string;
 }
 
-export function BlogAreaTabs({ activeArea }: BlogAreaTabsProps) {
+export function BlogAreaTabs({
+  activeCategory,
+}: BlogCategoryTabsProps) {
   return (
     <div className="mt-6 flex flex-wrap gap-2">
       <Link
         href="/blog"
         className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-          !activeArea
+          !activeCategory
             ? "bg-[var(--sandstone-navy)] text-white"
             : "border border-[var(--sandstone-navy)]/15 bg-white text-[var(--sandstone-charcoal)] hover:border-[var(--sandstone-navy)]/30 hover:text-[var(--sandstone-navy)]"
         }`}
       >
         All Posts
       </Link>
-      {BLOG_AREAS.map((area) => (
+
+      {BLOG_CATEGORIES.map((category) => (
         <Link
-          key={area.slug}
-          href={`/blog/category/${area.slug}`}
+          key={category.slug}
+          href={`/blog/category/${category.slug}`}
           className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-            activeArea === area.slug
+            activeCategory === category.slug
               ? "bg-[var(--sandstone-navy)] text-white"
               : "border border-[var(--sandstone-navy)]/15 bg-white text-[var(--sandstone-charcoal)] hover:border-[var(--sandstone-navy)]/30 hover:text-[var(--sandstone-navy)]"
           }`}
         >
-          {area.label}
+          {category.label}
         </Link>
       ))}
     </div>

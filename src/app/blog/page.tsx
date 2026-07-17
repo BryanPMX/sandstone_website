@@ -4,12 +4,12 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { BlogAreaTabs } from "@/components/BlogAreaTabs";
 import { getSortedPosts } from "@/services";
-import { getAreaLabel } from "@/config/blog-areas";
+import { getCategoryLabel } from "@/config/blog-areas";
 
 export const metadata = {
-  title: "Blog | Sandstone Real Estate Group",
+  title: "El Paso Real Estate Blog | Sandstone Real Estate Group",
   description:
-    "Real estate market updates, home buying tips, and community insights from Sandstone Real Estate Group.",
+    "Explore El Paso real estate insights, Fort Bliss PCS resources, VA loan guidance, home buying and selling tips, neighborhood guides, market updates, and local lifestyle content from Sandstone Real Estate Group.",
   alternates: {
     canonical: "https://sandstone.homes/blog",
   },
@@ -29,75 +29,172 @@ export default async function BlogIndexPage() {
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
-      <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-16">
+
+      <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <section className="container mx-auto max-w-6xl px-4 pt-10">
           <Link
             href="/"
-            className="text-sm font-medium text-[var(--sandstone-sand-gold)] hover:underline"
+            className="text-sm font-medium text-[var(--sandstone-sand-gold)] transition hover:underline"
           >
-            Back to home
+            ← Back to home
           </Link>
-          <h1 className="mt-4 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
-            Sandstone Blog
-          </h1>
-          <p className="mt-3 max-w-3xl text-[var(--sandstone-charcoal)]/78">
-            Market trends, local updates, and practical guidance for buyers and sellers across El Paso.
-          </p>
 
+          {/* Page header */}
+          <div className="mt-6 max-w-4xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
+              Resources & Insights
+            </p>
+
+            <h1 className="mt-2 font-heading text-4xl font-bold text-[var(--sandstone-charcoal)] md:text-5xl">
+              El Paso Real Estate Blog
+            </h1>
+
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-[var(--sandstone-charcoal)]/75 md:text-lg">
+              Local real estate insights, Fort Bliss PCS resources, VA loan
+              guidance, neighborhood guides, market updates, and practical
+              advice for buyers and sellers throughout El Paso.
+            </p>
+          </div>
+
+          {/* Blog category filters */}
           <BlogAreaTabs />
 
+          {/* Blog posts */}
           {posts.length === 0 ? (
-            <div className="mt-10 rounded-2xl border border-[var(--sandstone-navy)]/10 bg-white p-6 text-center">
-              <p className="text-[var(--sandstone-charcoal)]/85">
-                No blog posts published yet.
+            <div className="mt-10 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-10 text-center shadow-sm">
+              <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+                New resources are coming soon
+              </h2>
+
+              <p className="mx-auto mt-3 max-w-xl text-[var(--sandstone-charcoal)]/75">
+                Check back soon for El Paso real estate insights, military PCS
+                guides, VA loan resources, neighborhood information, and local
+                market updates.
               </p>
             </div>
           ) : (
-            <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className="overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_20px_60px_-42px_rgba(37,52,113,0.55)] transition-all duration-200 hover:-translate-y-1"
-                >
-                  <article>
-                    <div className="relative h-44 w-full bg-[var(--sandstone-navy)]/8">
-                      <Image
-                        src={post.coverImage}
-                        alt={post.coverImageAlt || post.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1024px) 100vw, 33vw"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-center gap-2">
-                        {post.area && (
-                          <span className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
-                            {getAreaLabel(post.area) ?? post.area}
-                          </span>
-                        )}
-                        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
-                          {formatBlogDate(post.date)}
-                        </p>
-                      </div>
-                      <h2 className="mt-2 font-heading text-xl font-bold text-[var(--sandstone-navy)]">
-                        {post.title}
-                      </h2>
-                      <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/80">
-                        {post.excerpt}
-                      </p>
-                      <span className="mt-4 inline-flex items-center rounded-full bg-[var(--sandstone-navy)] px-4 py-2 text-sm font-semibold text-white hover:opacity-95">
-                        Read article
-                      </span>
-                    </div>
-                  </article>
-                </Link>
-              ))}
-            </div>
+            <>
+              <div className="mt-10 flex items-end justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--sandstone-sand-gold)]">
+                    Latest Resources
+                  </p>
+
+                  <h2 className="mt-1 font-heading text-2xl font-bold text-[var(--sandstone-navy)] md:text-3xl">
+                    Latest Articles
+                  </h2>
+                </div>
+
+                <p className="hidden text-sm text-[var(--sandstone-charcoal)]/60 sm:block">
+                  {posts.length} {posts.length === 1 ? "article" : "articles"}
+                </p>
+              </div>
+
+              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {posts.map((post) => {
+                  const categoryLabel = post.area
+                    ? getCategoryLabel(post.area) ?? post.area
+                    : null;
+
+                  return (
+                    <Link
+                      key={post.slug}
+                      href={`/blog/${post.slug}`}
+                      className="group overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_20px_60px_-42px_rgba(37,52,113,0.55)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--sandstone-sand-gold)]/40 hover:shadow-[0_28px_70px_-38px_rgba(37,52,113,0.45)]"
+                    >
+                      <article className="flex h-full flex-col">
+                        <div className="relative h-52 w-full overflow-hidden bg-[var(--sandstone-navy)]/8">
+                          <Image
+                            src={post.coverImage}
+                            alt={post.coverImageAlt || post.title}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        </div>
+
+                        <div className="flex flex-1 flex-col p-5">
+                          <div className="flex flex-wrap items-center gap-2">
+                            {categoryLabel && (
+                              <span className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
+                                {categoryLabel}
+                              </span>
+                            )}
+
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[var(--sandstone-charcoal)]/55">
+                              {formatBlogDate(post.date)}
+                            </p>
+                          </div>
+
+                          <h3 className="mt-4 font-heading text-xl font-bold leading-snug text-[var(--sandstone-navy)] transition-colors group-hover:text-[var(--sandstone-sand-gold)]">
+                            {post.title}
+                          </h3>
+
+                          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/75">
+                            {post.excerpt}
+                          </p>
+
+                          <div className="mt-auto pt-5">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-[var(--sandstone-navy)] px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-[var(--sandstone-sand-gold)]">
+                              Read article
+                              <span
+                                aria-hidden
+                                className="transition-transform group-hover:translate-x-1"
+                              >
+                                →
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </article>
+                    </Link>
+                  );
+                })}
+              </div>
+            </>
           )}
+
+          {/* Bottom CTA */}
+          <section className="mt-16 overflow-hidden rounded-3xl bg-[var(--sandstone-navy)] px-6 py-10 text-center text-white md:px-10">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
+              Need Real Estate Help?
+            </p>
+
+            <h2 className="mx-auto mt-3 max-w-2xl font-heading text-3xl font-bold">
+              Ready to make your next move in El Paso?
+            </h2>
+
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/75 md:text-base">
+              Whether you are buying, selling, using a VA loan, or preparing
+              for a PCS to Fort Bliss, the Sandstone team is here to help.
+            </p>
+
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/buy"
+                className="rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-3 text-sm font-bold text-[var(--sandstone-navy)] transition hover:-translate-y-0.5 hover:opacity-95"
+              >
+                Buy a Home
+              </Link>
+
+              <Link
+                href="/sell"
+                className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:border-white/50 hover:bg-white/10"
+              >
+                Sell a Home
+              </Link>
+
+              <Link
+                href="/pcs"
+                className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:border-white/50 hover:bg-white/10"
+              >
+                PCS Resources
+              </Link>
+            </div>
+          </section>
         </section>
       </main>
+
       <SiteFooter />
     </>
   );

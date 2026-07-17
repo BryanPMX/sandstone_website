@@ -1,19 +1,28 @@
-export const BLOG_AREAS = [
-  { slug: 'upper-valley-el-paso', label: 'Upper Valley El Paso' },
-  { slug: 'horizon-city-tx',      label: 'Horizon City TX' },
-  { slug: 'fort-bliss',           label: 'Fort Bliss' },
-  { slug: 'west-el-paso',         label: 'West El Paso' },
-  { slug: 'northeast-el-paso',    label: 'Northeast El Paso' },
-  { slug: 'santa-teresa-nm',      label: 'Santa Teresa NM' },
-  { slug: 'canutillo-tx',         label: 'Canutillo TX' },
+export const BLOG_CATEGORIES = [
+  { slug: "military-pcs", label: "Military PCS" },
+  { slug: "va-loans", label: "VA Loans" },
+  { slug: "buying-a-home", label: "Buying a Home" },
+  { slug: "selling-a-home", label: "Selling a Home" },
+  { slug: "el-paso-neighborhoods", label: "El Paso Neighborhoods" },
+  { slug: "things-to-do-in-el-paso", label: "Things to Do in El Paso" },
+  { slug: "market-updates", label: "Market Updates" },
 ] as const;
 
-export type BlogAreaSlug = typeof BLOG_AREAS[number]['slug'];
+export type BlogCategorySlug =
+  (typeof BLOG_CATEGORIES)[number]["slug"];
 
-export function getAreaLabel(slug: string): string | undefined {
-  return BLOG_AREAS.find((a) => a.slug === slug)?.label;
+export function getCategoryLabel(
+  slug: string
+): string | undefined {
+  return BLOG_CATEGORIES.find(
+    (category) => category.slug === slug
+  )?.label;
 }
 
-export function isValidAreaSlug(slug: string): slug is BlogAreaSlug {
-  return BLOG_AREAS.some((a) => a.slug === slug);
+export function isValidCategorySlug(
+  slug: string
+): slug is BlogCategorySlug {
+  return BLOG_CATEGORIES.some(
+    (category) => category.slug === slug
+  );
 }

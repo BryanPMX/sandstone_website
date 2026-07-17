@@ -19,10 +19,10 @@ keywords:
   - military housing El Paso
   - Fort Bliss neighborhoods
   - PCS Fort Bliss checklist
-area: fort-bliss
+area: military-pcs
 ---
-# How Does a PCS Move to El Paso Work? Your Complete 2026 Guide to Fort Bliss Relocation
 
+# How Does a PCS Move to El Paso Work? Your Complete 2026 Guide to Fort Bliss Relocation
 
 ---
 
@@ -115,19 +115,25 @@ Most military families at Fort Bliss live off post. El Paso offers excellent val
 El Paso is a large city with 139 zip codes. The neighborhood you choose should align with which gate is closest to your unit. Here's a breakdown:
 
 ### Northeast El Paso *(Closest to Main Installation / Cassidy & Sheridan Gates)*
+
 The most popular area for enlisted families. Easy US-54 access to post, family-friendly streets, solid schools, and good variety of homes.
+
 - **Popular areas:** Castner Heights, Park Foothills, Sunrise Acres East, Angel's Triangle, Logan Heights
 - **Typical rent:** $1,300–$1,700/month (2–3 bedroom)
 - **Commute:** 10–15 minutes to Cassidy Gate
 
 ### East El Paso & Horizon City *(Chaffee Gate)*
+
 Newer construction, top-rated schools, and suburban feel. Popular with families wanting more space at lower prices.
+
 - **Popular areas:** Pebble Hills, Tierra Este, Horizon City
 - **Home prices:** $250K–$400K range
 - **Commute:** 15–25 minutes
 
 ### West El Paso *(Biggs AAF Side)*
+
 Best for service members assigned to the Biggs side of the installation. Noticeably higher quality of life with well-rated schools in the Canutillo and EPISD westside zones.
+
 - **Popular areas:** Mesa Hills, Kern Place
 - **Commute:** 25–35 minutes to Biggs AAF
 
