@@ -4,15 +4,14 @@
  */
 
 export const SITE_NAV = [
-  { label: "Buy", href: "/buy" },
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
   { label: "VA Loans", href: "/va-loans" },
   { label: "Areas", href: "/areas" },
-  { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ] as const;
+
 
 export const AREAS_NAV_MENU = [
   { label: "Upper Valley El Paso", href: "/areas/upper-valley" },

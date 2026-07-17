@@ -44,19 +44,17 @@ export function SiteHeader({
    * Desktop navigation layout
    *
    * Left:
-   * Buy
    * Sell
    * Military PCS
    * VA Loans
    *
    * Right:
    * Areas
-   * About
    * Blog
    * Contact
    */
-  const desktopLeftNav = SITE_NAV.slice(0, 4);
-  const desktopRightNav = SITE_NAV.slice(4);
+  const desktopLeftNav = SITE_NAV.slice(0, 3);
+  const desktopRightNav = SITE_NAV.slice(3);
 
   const isHeroHeader = overlayDesktop;
   const isLeadHeader = !overlayDesktop && variant === "lead";
@@ -270,8 +268,6 @@ export function SiteHeader({
             : "py-1 lg:h-[92px]"
         )}
       >
-        {/* Mobile header */}
-
         <div className="flex w-full items-center gap-3 lg:hidden">
           <Link
             href="/"
@@ -305,10 +301,7 @@ export function SiteHeader({
               }
               className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 text-[11px] font-bold uppercase tracking-[0.09em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
             >
-              <span
-                aria-hidden
-                className="inline-flex flex-col gap-1"
-              >
+              <span aria-hidden className="inline-flex flex-col gap-1">
                 <span className="block h-0.5 w-4 rounded-full bg-current" />
                 <span className="block h-0.5 w-4 rounded-full bg-current" />
                 <span className="block h-0.5 w-4 rounded-full bg-current" />
@@ -318,8 +311,6 @@ export function SiteHeader({
             </button>
           </div>
         </div>
-
-        {/* Desktop header */}
 
         <div
           className={cn(
@@ -334,12 +325,7 @@ export function SiteHeader({
         >
           {showLeadCenteredDesktopNav ? (
             <>
-              {/* Left navigation */}
-
-              <nav
-                aria-label="Primary left"
-                className="flex-1"
-              >
+              <nav aria-label="Primary left" className="flex-1">
                 <ul className="flex items-center justify-end gap-1 xl:gap-3">
                   {desktopLeftNav.map((item) => (
                     <li key={item.href}>
@@ -359,8 +345,6 @@ export function SiteHeader({
                 </ul>
               </nav>
 
-              {/* Center Home */}
-
               <Link
                 href="/"
                 className={cn(
@@ -373,29 +357,17 @@ export function SiteHeader({
                 Home
               </Link>
 
-              {/* Right navigation */}
-
-              <nav
-                aria-label="Primary right"
-                className="flex-1"
-              >
+              <nav aria-label="Primary right" className="flex-1">
                 <ul className="flex items-center justify-start gap-1 xl:gap-3">
                   {desktopRightNav.map((item) => {
                     if (item.href === "/areas") {
                       return (
-                        <li
-                          key={item.href}
-                          className="relative"
-                        >
+                        <li key={item.href} className="relative">
                           <button
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
-
-                              setIsAreasMenuOpen(
-                                (previous) => !previous
-                              );
-
+                              setIsAreasMenuOpen((previous) => !previous);
                               setIsContactMenuOpen(false);
                             }}
                             aria-haspopup="menu"
@@ -409,8 +381,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isAreasMenuOpen &&
-                                  "rotate-180"
+                                isAreasMenuOpen && "rotate-180"
                               )}
                             />
                           </button>
@@ -422,19 +393,12 @@ export function SiteHeader({
 
                     if (item.href === "/#contact") {
                       return (
-                        <li
-                          key={item.href}
-                          className="relative"
-                        >
+                        <li key={item.href} className="relative">
                           <button
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
-
-                              setIsContactMenuOpen(
-                                (previous) => !previous
-                              );
-
+                              setIsContactMenuOpen((previous) => !previous);
                               setIsAreasMenuOpen(false);
                             }}
                             aria-haspopup="menu"
@@ -448,8 +412,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isContactMenuOpen &&
-                                  "rotate-180"
+                                isContactMenuOpen && "rotate-180"
                               )}
                             />
                           </button>
@@ -480,8 +443,6 @@ export function SiteHeader({
             </>
           ) : (
             <>
-              {/* Standard desktop left nav */}
-
               <nav aria-label="Primary left">
                 <ul
                   className={cn(
@@ -510,8 +471,6 @@ export function SiteHeader({
                   ))}
                 </ul>
               </nav>
-
-              {/* Center logo */}
 
               {showDesktopCenterLogo ? (
                 <Link
@@ -577,8 +536,6 @@ export function SiteHeader({
                 />
               )}
 
-              {/* Standard desktop right nav */}
-
               <nav aria-label="Primary right">
                 <ul
                   className={cn(
@@ -590,19 +547,12 @@ export function SiteHeader({
                   {desktopRightNav.map((item) => {
                     if (item.href === "/areas") {
                       return (
-                        <li
-                          key={item.href}
-                          className="relative"
-                        >
+                        <li key={item.href} className="relative">
                           <button
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
-
-                              setIsAreasMenuOpen(
-                                (previous) => !previous
-                              );
-
+                              setIsAreasMenuOpen((previous) => !previous);
                               setIsContactMenuOpen(false);
                             }}
                             aria-haspopup="menu"
@@ -621,8 +571,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isAreasMenuOpen &&
-                                  "rotate-180"
+                                isAreasMenuOpen && "rotate-180"
                               )}
                             />
                           </button>
@@ -634,19 +583,12 @@ export function SiteHeader({
 
                     if (item.href === "/#contact") {
                       return (
-                        <li
-                          key={item.href}
-                          className="relative"
-                        >
+                        <li key={item.href} className="relative">
                           <button
                             type="button"
                             onClick={(event) => {
                               event.stopPropagation();
-
-                              setIsContactMenuOpen(
-                                (previous) => !previous
-                              );
-
+                              setIsContactMenuOpen((previous) => !previous);
                               setIsAreasMenuOpen(false);
                             }}
                             aria-haspopup="menu"
@@ -665,8 +607,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isContactMenuOpen &&
-                                  "rotate-180"
+                                isContactMenuOpen && "rotate-180"
                               )}
                             />
                           </button>
