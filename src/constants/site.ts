@@ -2,24 +2,32 @@
  * Site-wide content and links.
  * Single source of truth for labels, legal links, and static copy.
  */
+
 export const SITE_NAV = [
-  { label: "PCS", href: "/pcs" },
-  { label: "Blog", href: "/blog" },
+  { label: "Buy", href: "/buy" },
+  { label: "Sell", href: "/sell" },
+  { label: "Military PCS", href: "/pcs" },
+  { label: "VA Loans", href: "/va-loans" },
   { label: "Areas", href: "/areas" },
-  { label: "Contact Us", href: "/#contact" },
+  { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export const AREAS_NAV_MENU = [
-  { label: "Upper Valley El Paso",         href: "/areas/upper-valley" },
-  { label: "Lower Valley El Paso",         href: "/areas/lower-valley" },
-  { label: "Northeast El Paso",            href: "/areas/northeast-el-paso" },
-  { label: "East El Paso",                 href: "/areas/east-el-paso"},
-  { label: "West El Paso",                 href: "/areas/west-el-paso" },
-  { label: "Horizon City TX",              href: "/areas/horizon-city-tx" },
-  { label: "Santa Teresa NM",              href: "/areas/santa-teresa-nm" },
-  { label: "Canutillo TX",                 href: "/areas/canutillo-tx" },
-  { label: "Downtown / UTEP Area",         href: "/areas/downtown-utep" },
-  { label: "Sandstone's New Builds",       href: "/areas/sandstones-new-builds" },
+  { label: "Upper Valley El Paso", href: "/areas/upper-valley" },
+  { label: "Lower Valley El Paso", href: "/areas/lower-valley" },
+  { label: "Northeast El Paso", href: "/areas/northeast-el-paso" },
+  { label: "East El Paso", href: "/areas/east-el-paso" },
+  { label: "West El Paso", href: "/areas/west-el-paso" },
+  { label: "Horizon City TX", href: "/areas/horizon-city-tx" },
+  { label: "Santa Teresa NM", href: "/areas/santa-teresa-nm" },
+  { label: "Canutillo TX", href: "/areas/canutillo-tx" },
+  { label: "Downtown / UTEP Area", href: "/areas/downtown-utep" },
+  {
+    label: "Sandstone's New Builds",
+    href: "/areas/sandstones-new-builds",
+  },
 ] as const;
 
 export const CONTACT_US_MENU = [
@@ -30,9 +38,14 @@ export const CONTACT_US_MENU = [
 ] as const;
 
 export const FOOTER_NAV = [
-  { label: "PCS", href: "/pcs" },
-  ...CONTACT_US_MENU,
+  { label: "Buy", href: "/buy" },
+  { label: "Sell", href: "/sell" },
+  { label: "Military PCS", href: "/pcs" },
+  { label: "VA Loans", href: "/va-loans" },
+  { label: "Areas", href: "/areas" },
+  { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export const SITE_BRAND = "Sandstone Real Estate Group";
@@ -67,36 +80,53 @@ export const CONTACT_SUBHEADLINE =
 export const CONTACT_CTA = "SCHEDULE A VISIT";
 
 /** Links and labels for legal pages referenced across forms and footer. */
+
 export const PRIVACY_POLICY_HREF = "/privacy-policy";
 export const PRIVACY_POLICY_LABEL = "Privacy Policy";
+
 export const TERMS_AND_CONDITIONS_HREF = "/terms-and-conditions";
 export const TERMS_AND_CONDITIONS_LABEL = "Terms and Conditions";
+
 export const FORM_PHONE_SMS_NOTICE =
   "Entering your phone number alone does not authorize text messages. Use the SMS options below to opt in.";
+
 export const FORM_TRANSACTIONAL_SMS_COPY =
   `I agree to receive transactional text messages from ${SMS_DISCLOSURE_BRAND} at the phone number provided, including inquiry follow-ups, appointment reminders, and service updates. Message frequency may vary. Message & data rates may apply. Reply HELP for help or STOP to opt out.`;
+
 export const FORM_MARKETING_SMS_COPY =
   `I agree to receive marketing and promotional text messages from ${SMS_DISCLOSURE_BRAND} at the phone number provided. Message frequency may vary. Message & data rates may apply. Reply HELP for help or STOP to opt out.`;
 
 export const FOOTER_BRAND = SITE_BRAND;
 export const FOOTER_TAGLINE = "Luxury. Lifestyle. Legacy.";
+
 export const FOOTER_ABOUT =
   "We don't just sell houses - we elevate lifestyles. Trust, innovation, and community in El Paso and the Southwest.";
 
 /** Compliance logos for footer (in /public) */
+
 export const FOOTER_BRAND_IMAGES = [
-  { name: "Keller Williams", src: "/keller-williams.webp", alt: "Keller Williams" },
-  { name: "MLS", src: "/mls.webp", alt: "MLS" },
+  {
+    name: "Keller Williams",
+    src: "/keller-williams.webp",
+    alt: "Keller Williams",
+  },
+  {
+    name: "MLS",
+    src: "/mls.webp",
+    alt: "MLS",
+  },
 ] as const;
 
 export const HOME_FAQ_ES = [
   {
-    question: "¿Cuáles son las mejores empresas de Real Estate Group en El Paso, Texas?",
+    question:
+      "¿Cuáles son las mejores empresas de Real Estate Group en El Paso, Texas?",
     answer:
       "En El Paso, Texas, la mejor empresa de Real Estate Group depende de tus necesidades (compra, venta o inversión). Algunas de las más reconocidas incluyen Keller Williams Realty, RE/MAX, Coldwell Banker, Compass y eXp Realty, todas con presencia en el área de El Paso. Estas empresas destacan por su conocimiento del mercado local, acceso a listados en el MLS y experiencia en propiedades residenciales y comerciales en la región fronteriza.",
   },
   {
-    question: "¿Cuánto cuesta contratar a una empresa de Real Estate Group en El Paso?",
+    question:
+      "¿Cuánto cuesta contratar a una empresa de Real Estate Group en El Paso?",
     answer:
       "En El Paso, el costo de contratar una empresa inmobiliaria generalmente se basa en comisión y no en pagos por adelantado. La comisión estándar suele estar entre el 5% y el 6% del precio de venta de la propiedad. Normalmente, el vendedor paga esta comisión, la cual se divide entre el agente del vendedor y el del comprador. Para compradores, los servicios suelen ser gratuitos en términos de comisión directa, aunque deben considerar costos de cierre que pueden variar entre el 2% y el 5% del valor del préstamo.",
   },
@@ -106,7 +136,8 @@ export const HOME_FAQ_ES = [
       "Un Real Estate Group en El Paso ofrece servicios como análisis de mercado comparativo (CMA) basado en ventas recientes en la ciudad, marketing inmobiliario con fotografía profesional y tours virtuales, publicación en el MLS y portales como Zillow o Realtor.com, negociación de ofertas, gestión de trámites legales, inspecciones y tasaciones, así como asesoría en inversión inmobiliaria en zonas de alto crecimiento dentro de El Paso.",
   },
   {
-    question: "¿Cómo elegir la mejor empresa de Real Estate Group en El Paso?",
+    question:
+      "¿Cómo elegir la mejor empresa de Real Estate Group en El Paso?",
     answer:
       "Para elegir la mejor empresa inmobiliaria en El Paso, es importante considerar su experiencia en vecindarios específicos como West El Paso, Eastside o Horizon City, revisar opiniones en Google, Zillow o Yelp, evaluar las herramientas tecnológicas que utilizan para marketing y búsqueda de propiedades, verificar su especialización (residencial o comercial) y asegurarse de que tengan una comunicación rápida y efectiva en un mercado competitivo.",
   },
@@ -135,7 +166,12 @@ export const HOME_FAQ_EN = [
   },
 ] as const;
 
-const toFaqMainEntity = (items: ReadonlyArray<{ question: string; answer: string }>) =>
+const toFaqMainEntity = (
+  items: ReadonlyArray<{
+    question: string;
+    answer: string;
+  }>
+) =>
   items.map((item) => ({
     "@type": "Question",
     name: item.question,
