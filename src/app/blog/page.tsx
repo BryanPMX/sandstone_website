@@ -39,7 +39,6 @@ export default async function BlogIndexPage() {
             ← Back to home
           </Link>
 
-          {/* Page header */}
           <div className="mt-6 max-w-4xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
               Resources & Insights
@@ -56,10 +55,8 @@ export default async function BlogIndexPage() {
             </p>
           </div>
 
-          {/* Blog category filters */}
           <BlogAreaTabs />
 
-          {/* Blog posts */}
           {posts.length === 0 ? (
             <div className="mt-10 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-10 text-center shadow-sm">
               <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
@@ -153,45 +150,6 @@ export default async function BlogIndexPage() {
               </div>
             </>
           )}
-
-          {/* Bottom CTA */}
-          <section className="mt-16 overflow-hidden rounded-3xl bg-[var(--sandstone-navy)] px-6 py-10 text-center text-white md:px-10">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
-              Need Real Estate Help?
-            </p>
-
-            <h2 className="mx-auto mt-3 max-w-2xl font-heading text-3xl font-bold">
-              Ready to make your next move in El Paso?
-            </h2>
-
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/75 md:text-base">
-              Whether you are buying, selling, using a VA loan, or preparing
-              for a PCS to Fort Bliss, the Sandstone team is here to help.
-            </p>
-
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/buy"
-                className="rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-3 text-sm font-bold text-[var(--sandstone-navy)] transition hover:-translate-y-0.5 hover:opacity-95"
-              >
-                Buy a Home
-              </Link>
-
-              <Link
-                href="/sell"
-                className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:border-white/50 hover:bg-white/10"
-              >
-                Sell a Home
-              </Link>
-
-              <Link
-                href="/pcs"
-                className="rounded-full border border-white/25 px-5 py-3 text-sm font-bold text-white transition hover:border-white/50 hover:bg-white/10"
-              >
-                PCS Resources
-              </Link>
-            </div>
-          </section>
         </section>
       </main>
 
