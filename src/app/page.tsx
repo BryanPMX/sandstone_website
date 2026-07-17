@@ -1,4 +1,3 @@
-```tsx
 import Link from "next/link";
 import Script from "next/script";
 
@@ -119,15 +118,7 @@ export default async function Home() {
             <img
               src="/uploads/Banner%20PCS3.jpeg"
               alt="Military PCS Specialist — start your move"
-              className="
-                block
-                h-[110px]
-                w-full
-                object-cover
-                object-center
-                sm:h-[150px]
-                md:h-auto
-              "
+              className="block h-[110px] w-full object-cover object-center sm:h-[150px] md:h-auto"
             />
           </Link>
         </section>
@@ -149,4 +140,3 @@ export default async function Home() {
     </>
   );
 }
-```
