@@ -37,7 +37,7 @@ export const CONTACT_US_MENU = [
 ] as const;
 
 export const FOOTER_NAV = [
-  { label: "Buy", href: "/buy" },
+  { label: "Buy", href: "/listings?page=1" },
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
   { label: "VA Loans", href: "/va-loans" },

@@ -318,7 +318,7 @@ export default async function BlogPostPage({
               </Link>
 
               <Link
-                href="/buy"
+                href="/listings?page=1"
                 className="rounded-2xl border border-[var(--sandstone-navy)]/10 p-4 font-semibold text-[var(--sandstone-charcoal)] transition hover:-translate-y-0.5 hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy)]"
               >
                 Buy a Home
