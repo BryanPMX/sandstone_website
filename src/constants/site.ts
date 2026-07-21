@@ -41,8 +41,6 @@ export const FOOTER_NAV = [
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
   { label: "VA Loans", href: "/va-loans" },
-  { label: "Areas", href: "/areas" },
-  { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ] as const;
