@@ -15,10 +15,13 @@ import {
   Info,
   ChevronDown,
 } from "lucide-react";
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Upper Valley El Paso | Sandstone Real Estate Group",
+  title: "Upper Valley El Paso Homes for Sale | Sandstone Real Estate Group",
+  description:
+    "Explore homes for sale in Upper Valley El Paso, TX. Discover spacious properties, established neighborhoods, nearby schools, convenient access to Downtown El Paso, and current local real estate market trends.",
 };
 
 export const dynamic = "force-dynamic";
