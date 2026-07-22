@@ -40,7 +40,7 @@ export const FOOTER_NAV = [
   { label: "Buy", href: "/listings?page=1" },
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
-  { label: "VA Loans", href: "/va-loans" },
+  { label: "Midland / Odessa", href: "/areas/sandstones-new-builds" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ] as const;
