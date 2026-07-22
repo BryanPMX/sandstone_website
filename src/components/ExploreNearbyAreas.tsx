@@ -72,6 +72,75 @@ const IcoDowntown = () => (
   </svg>
 );
 
+
+const IcoSchool = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <path
+      d="M20 5L4 13L20 21L36 13L20 5Z"
+      stroke="#C5860A"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9 17V26C9 26 13 31 20 31C27 31 31 26 31 26V17"
+      stroke="#C5860A"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M36 13V25"
+      stroke="#C5860A"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+
+const IcoMilitary = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <path
+      d="M20 4L24.6 13.3L35 14.8L27.5 22.1L29.3 32.4L20 27.5L10.7 32.4L12.5 22.1L5 14.8L15.4 13.3L20 4Z"
+      stroke="#C5860A"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const IcoDesert = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <circle cx="29" cy="10" r="5" stroke="#C5860A" strokeWidth="2" />
+    <path
+      d="M3 34L13 21L20 28L25 23L37 34H3Z"
+      stroke="#C5860A"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const IcoNewBuild = () => (
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <path
+      d="M4 20L18 8L32 20"
+      stroke="#C5860A"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8 18V34H28V18"
+      stroke="#C5860A"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+    <rect x="15" y="25" width="6" height="9" stroke="#C5860A" strokeWidth="1.8" />
+    <path d="M33 9V17" stroke="#C5860A" strokeWidth="2" strokeLinecap="round" />
+    <path d="M29 13H37" stroke="#C5860A" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+);
+
 // ─── Bullet icons ──────────────────────────────────────────────────────────────
 
 const BHome = () => (
@@ -141,114 +210,114 @@ interface AreaCard {
 
 const AREAS: AreaCard[] = [
   {
-    title:       "Upper Valley",
+    title: "Upper Valley",
     description: "Scenic views, larger lots, and some of El Paso's most established communities.",
-    href:        "/areas/upper-valley",
-    icon:        <IcoMountain />,
-    price:       "Median ~$365K",
-    commute:     "~25 min to Fort Bliss",
-    feature:     "Top Rated Schools",
-    featIcon:    <BSchool />,
+    href: "/areas/upper-valley",
+    icon: <IcoMountain />,
+    price: "Median ~$365K",
+    commute: "~25 min to Fort Bliss",
+    feature: "Top Rated Schools",
+    featIcon: <BSchool />,
   },
   {
-    title:       "West El Paso",
+    title: "West El Paso",
     description: "Modern living, top schools, and great shopping near the Franklin Mountains.",
-    href:        "/areas/west-el-paso",
-    icon:        <IcoBuildings />,
-    price:       "Median ~$365K",
-    commute:     "~30 min to Fort Bliss",
-    feature:     "Shopping & Dining",
-    featIcon:    <BBag />,
+    href: "/areas/west-el-paso",
+    icon: <IcoBuildings />,
+    price: "Median ~$365K",
+    commute: "~30 min to Fort Bliss",
+    feature: "Shopping & Dining",
+    featIcon: <BBag />,
   },
   {
-    title:       "Northeast El Paso",
+    title: "Northeast El Paso",
     description: "Affordable options with the shortest commute to Fort Bliss.",
-    href:        "/areas/northeast-el-paso",
-    icon:        <IcoShield />,
-    price:       "From $180K+",
-    commute:     "5–10 min to Fort Bliss",
-    feature:     "Closest to Fort Bliss",
-    featIcon:    <BBuilding />,
+    href: "/areas/northeast-el-paso",
+    icon: <IcoShield />,
+    price: "From $180K+",
+    commute: "5–10 min to Fort Bliss",
+    feature: "Closest to Fort Bliss",
+    featIcon: <BBuilding />,
   },
   {
-    title:       "Horizon City",
+    title: "Horizon City",
     description: "Growing fast with new construction and family-friendly neighborhoods.",
-    href:        "/areas/horizon-city-tx",
-    icon:        <IcoLeaf />,
-    price:       "From $220K+",
-    commute:     "28–32 min to Fort Bliss",
-    feature:     "New Construction",
-    featIcon:    <BHome />,
+    href: "/areas/horizon-city-tx",
+    icon: <IcoLeaf />,
+    price: "From $220K+",
+    commute: "28–32 min to Fort Bliss",
+    feature: "New Construction",
+    featIcon: <BHome />,
   },
   {
-    title:       "Lower Valley",
+    title: "Lower Valley",
     description: "Established neighborhoods with local charm, close to Downtown and the Ysleta Port of Entry.",
-    href:        "/areas/lower-valley",
-    icon:        <IcoFort />,
-    price:       "From $160K+",
-    commute:     "20–25 min to Fort Bliss",
-    feature:     "Near Downtown & I-10",
-    featIcon:    <BBuilding />,
+    href: "/areas/lower-valley",
+    icon: <IcoFort />,
+    price: "From $160K+",
+    commute: "20–25 min to Fort Bliss",
+    feature: "Near Downtown & I-10",
+    featIcon: <BBuilding />,
   },
   {
-    title:       "East El Paso",
+    title: "East El Paso",
     description: "Convenient access to major corridors, shopping, and everyday amenities.",
-    href:        "/areas/east-el-paso",
-    icon:        <IcoHouseTree />,
-    price:       "From $200K+",
-    commute:     "~25 min to Fort Bliss",
-    feature:     "Easy Access & Amenities",
-    featIcon:    <BBag />,
+    href: "/areas/east-el-paso",
+    icon: <IcoHouseTree />,
+    price: "From $200K+",
+    commute: "~25 min to Fort Bliss",
+    feature: "Easy Access & Amenities",
+    featIcon: <BBag />,
   },
   {
-    title:       "Canutillo",
+    title: "Canutillo",
     description: "Family-friendly community with great schools and convenient Northwest El Paso access.",
-    href:        "/areas/canutillo-tx",
-    icon:        <IcoCactus />,
-    price:       "From $200K+",
-    commute:     "20–25 min to Downtown",
-    feature:     "Canutillo ISD Schools",
-    featIcon:    <BSchool />,
+    href: "/areas/canutillo-tx",
+    icon: <IcoCactus />,
+    price: "From $200K+",
+    commute: "20–25 min to Downtown",
+    feature: "Canutillo ISD Schools",
+    featIcon: <BSchool />,
   },
   {
-    title:       "Downtown / UTEP Area",
+    title: "Downtown / UTEP Area",
     description: "Urban living, walkability, cultural landmarks, and strong investment potential.",
-    href:        "/areas/downtown-utep",
-    icon:        <IcoDowntown />,
-    price:       "From $180K+",
-    commute:     "10–15 min to Fort Bliss",
-    feature:     "UTEP & Culture",
-    featIcon:    <BLeaf />,
+    href: "/areas/downtown-utep",
+    icon: <IcoSchool />,
+    price: "From $180K+",
+    commute: "10–15 min to Fort Bliss",
+    feature: "UTEP & Culture",
+    featIcon: <BLeaf />,
   },
   {
-    title:       "Fort Bliss",
+    title: "Military PCSing / Relocation",
     description: "Military-focused housing guidance near Fort Bliss with quick access to base and surrounding El Paso neighborhoods.",
-    href:        "/areas/fort-bliss",
-    icon:        <IcoShield />,
-    price:       "BAH-friendly options",
-    commute:     "Near Fort Bliss",
-    feature:     "Military Relocation",
-    featIcon:    <BBuilding />,
+    href: "/pcs",
+    icon: <IcoMilitary />,
+    price: "BAH-friendly options",
+    commute: "Near Fort Bliss",
+    feature: "Military Relocation",
+    featIcon: <BBuilding />,
   },
   {
-    title:       "Santa Teresa",
+    title: "Santa Teresa",
     description: "A quiet New Mexico community with newer homes, open space, and convenient access to West El Paso.",
-    href:        "/areas/santa-teresa-nm",
-    icon:        <IcoMountain />,
-    price:       "From $250K+",
-    commute:     "25–35 min to El Paso",
-    feature:     "New Mexico Living",
-    featIcon:    <BLeaf />,
+    href: "/areas/santa-teresa-nm",
+    icon: <IcoDesert />,
+    price: "From $250K+",
+    commute: "25–35 min to El Paso",
+    feature: "New Mexico Living",
+    featIcon: <BLeaf />,
   },
   {
-    title:       "Sandstone New Builds",
+    title: "Midland / Odessa",
     description: "Explore new construction opportunities and move-in-ready homes across the El Paso area.",
-    href:        "/areas/sandstones-new-builds",
-    icon:        <IcoHouseTree />,
-    price:       "New construction",
-    commute:     "Varies by community",
-    feature:     "New Builds",
-    featIcon:    <BHome />,
+    href: "/areas/sandstones-new-builds",
+    icon: <IcoNewBuild />,
+    price: "New construction",
+    commute: "Varies by community",
+    feature: "New Builds",
+    featIcon: <BHome />,
   },
 ];
 
