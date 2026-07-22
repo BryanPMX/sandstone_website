@@ -978,14 +978,6 @@ export default async function SantaTeresaPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5">
-                  <Link
-                    href="#contact"
-                    className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
-                  >
-                    Ask about healthcare options -&gt;
-                  </Link>
-                </div>
               </div>
 
               {/* Grocery Stores */}
@@ -1036,14 +1028,6 @@ export default async function SantaTeresaPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5">
-                  <Link
-                    href="#contact"
-                    className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
-                  >
-                    Ask about grocery options -&gt;
-                  </Link>
-                </div>
               </div>
 
               {/* Shopping */}
@@ -1093,14 +1077,6 @@ export default async function SantaTeresaPage() {
                       </div>
                     </div>
                   ))}
-                </div>
-                <div className="mt-5">
-                  <Link
-                    href="#contact"
-                    className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
-                  >
-                    Ask about shopping options -&gt;
-                  </Link>
                 </div>
               </div>
             </div>

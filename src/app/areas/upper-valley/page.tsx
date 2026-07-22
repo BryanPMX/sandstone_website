@@ -654,11 +654,6 @@ export default async function UpperValleyPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View all healthcare options →
-                  </Link>
-                </div>
               </div>
 
               {/* Grocery Stores */}
@@ -686,11 +681,6 @@ export default async function UpperValleyPage() {
                       </div>
                     </div>
                   ))}
-                </div>
-                <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View more grocery options →
-                  </Link>
                 </div>
               </div>
 
@@ -720,13 +710,7 @@ export default async function UpperValleyPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5">
-                  <Link href="#" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View more shopping options →
-                  </Link>
-                </div>
               </div>
-
             </div>
 
             {/* Commute Times bar */}

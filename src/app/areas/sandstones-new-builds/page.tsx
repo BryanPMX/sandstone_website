@@ -404,11 +404,6 @@ export default function SandstoneNewBuildsPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5">
-                  <Link href="#contact" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    Ask about nearby healthcare →
-                  </Link>
-                </div>
               </div>
 
               <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
@@ -435,11 +430,6 @@ export default function SandstoneNewBuildsPage() {
                       </div>
                     </div>
                   ))}
-                </div>
-                <div className="mt-5">
-                  <Link href="#contact" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View more grocery options →
-                  </Link>
                 </div>
               </div>
 
@@ -468,13 +458,7 @@ export default function SandstoneNewBuildsPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5">
-                  <Link href="#contact" className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
-                    View more shopping options →
-                  </Link>
-                </div>
               </div>
-
             </div>
 
             <div className="mt-4 flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm lg:flex-row lg:items-center">

@@ -989,14 +989,6 @@ export default async function NortheastElPasoPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5">
-                  <Link
-                    href="#contact"
-                    className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
-                  >
-                    Ask about healthcare options →
-                  </Link>
-                </div>
               </div>
 
               {/* Grocery Stores */}
@@ -1047,14 +1039,6 @@ export default async function NortheastElPasoPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5">
-                  <Link
-                    href="#contact"
-                    className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
-                  >
-                    Ask about grocery options →
-                  </Link>
-                </div>
               </div>
 
               {/* Shopping */}
@@ -1104,14 +1088,6 @@ export default async function NortheastElPasoPage() {
                       </div>
                     </div>
                   ))}
-                </div>
-                <div className="mt-5">
-                  <Link
-                    href="#contact"
-                    className="text-[12px] font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
-                  >
-                    Ask about shopping options →
-                  </Link>
                 </div>
               </div>
             </div>
