@@ -6,12 +6,11 @@
 export const SITE_NAV = [
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
-  { label: "Midland / Odessa", href: "/areas/sandstones-new-builds" },
   { label: "Areas", href: "/areas" },
+  { label: "Midland / Odessa", href: "/areas/sandstones-new-builds" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ] as const;
-
 
 export const AREAS_NAV_MENU = [
   { label: "Canutillo TX", href: "/areas/canutillo-tx" },

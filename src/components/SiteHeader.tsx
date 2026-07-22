@@ -46,7 +46,7 @@ export function SiteHeader({
    * Left:
    * Sell
    * Military PCS
-   * VA Loans
+   * Midland / Odessa
    *
    * Right:
    * Areas
@@ -262,7 +262,7 @@ export function SiteHeader({
 
       <div
         className={cn(
-          "mx-auto flex w-full max-w-7xl flex-col px-4 lg:flex-row lg:px-6",
+          "mx-auto flex w-full max-w-7xl flex-col px-4 lg:flex-row lg:px-6 lg:-translate-x-19.5",
           isHeroHeader
             ? "py-1 lg:h-28 lg:items-start lg:pt-3"
             : "py-1 lg:h-[92px]"
@@ -314,12 +314,7 @@ export function SiteHeader({
 
         <div
           className={cn(
-            "hidden w-full justify-center lg:flex",
-            showLeadCenteredDesktopNav
-              ? "gap-0"
-              : isLeadHeader
-                ? "gap-3 xl:gap-5"
-                : "gap-5 xl:gap-8",
+            "hidden w-full lg:grid lg:grid-cols-[1fr_auto_1fr]",
             isHeroHeader ? "items-start" : "items-center"
           )}
         >
@@ -327,21 +322,53 @@ export function SiteHeader({
             <>
               <nav aria-label="Primary left" className="flex-1">
                 <ul className="flex items-center justify-end gap-1 xl:gap-3">
-                  {desktopLeftNav.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          "inline-flex items-center whitespace-nowrap px-2 py-2 text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] xl:px-3 xl:text-[13px] xl:tracking-[0.1em]",
-                          isActiveNavItem(item.href) &&
-                            "underline decoration-gray-300 decoration-2 underline-offset-8",
-                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {desktopLeftNav.map((item) => {
+                    if (item.href === "/areas") {
+                      return (
+                        <li key={item.href} className="relative">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setIsAreasMenuOpen((previous) => !previous);
+                              setIsContactMenuOpen(false);
+                            }}
+                            aria-haspopup="menu"
+                            aria-expanded={isAreasMenuOpen}
+                            aria-controls={areasMenuId}
+                            className="inline-flex items-center gap-1 whitespace-nowrap px-2 py-2 text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] xl:px-3 xl:text-[13px] xl:tracking-[0.1em]"
+                          >
+                            <span>{item.label}</span>
+                            <ChevronDown
+                              aria-hidden
+                              className={cn(
+                                "h-4 w-4 transition-transform",
+                                isAreasMenuOpen && "rotate-180"
+                              )}
+                            />
+                          </button>
+
+                          {renderAreasDropdown()}
+                        </li>
+                      );
+                    }
+
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            "inline-flex items-center whitespace-nowrap px-2 py-2 text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] xl:px-3 xl:text-[13px] xl:tracking-[0.1em]",
+                            isActiveNavItem(item.href) &&
+                              "underline decoration-gray-300 decoration-2 underline-offset-8",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </nav>
 
@@ -443,7 +470,7 @@ export function SiteHeader({
             </>
           ) : (
             <>
-              <nav aria-label="Primary left">
+              <nav aria-label="Primary left" className="justify-self-end pr-6 xl:pr-10">
                 <ul
                   className={cn(
                     "flex items-center gap-3 xl:gap-5",
@@ -451,24 +478,61 @@ export function SiteHeader({
                     isHeroHeader ? "pt-1" : "pt-0"
                   )}
                 >
-                  {desktopLeftNav.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          isLeadHeader
-                            ? "inline-flex items-center whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
-                            : "whitespace-nowrap text-[12px] font-light tracking-wide text-[var(--sandstone-off-white)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)] transition-all duration-200 hover:text-gray-300 hover:decoration-gray-300 hover:underline hover:underline-offset-8 hover:decoration-2 xl:text-[13px]",
-                          isLeadHeader &&
-                            isActiveNavItem(item.href) &&
-                            "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] hover:text-[var(--sandstone-navy)]",
-                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
-                        )}
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {desktopLeftNav.map((item) => {
+                    if (item.href === "/areas") {
+                      return (
+                        <li key={item.href} className="relative">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setIsAreasMenuOpen((previous) => !previous);
+                              setIsContactMenuOpen(false);
+                            }}
+                            aria-haspopup="menu"
+                            aria-expanded={isAreasMenuOpen}
+                            aria-controls={areasMenuId}
+                            className={cn(
+                              isLeadHeader
+                                ? "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
+                                : "inline-flex items-center gap-1 whitespace-nowrap text-[12px] font-light tracking-wide text-[var(--sandstone-off-white)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)] transition-all duration-200 hover:text-gray-300 hover:decoration-gray-300 hover:underline hover:underline-offset-8 hover:decoration-2 xl:text-[13px]",
+                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                            )}
+                          >
+                            <span>{item.label}</span>
+                            <ChevronDown
+                              aria-hidden
+                              className={cn(
+                                "h-4 w-4 transition-transform",
+                                isAreasMenuOpen && "rotate-180"
+                              )}
+                            />
+                          </button>
+
+                          {renderAreasDropdown()}
+                        </li>
+                      );
+                    }
+
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            isLeadHeader
+                              ? "inline-flex items-center whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
+                              : "whitespace-nowrap text-[12px] font-light tracking-wide text-[var(--sandstone-off-white)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)] transition-all duration-200 hover:text-gray-300 hover:decoration-gray-300 hover:underline hover:underline-offset-8 hover:decoration-2 xl:text-[13px]",
+                            isLeadHeader &&
+                              isActiveNavItem(item.href) &&
+                              "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] hover:text-[var(--sandstone-navy)]",
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </nav>
 
@@ -476,7 +540,7 @@ export function SiteHeader({
                 <Link
                   href="/"
                   className={cn(
-                    "flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
+                    "justify-self-center flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                     isLeadHeader &&
                       "relative justify-center px-2"
                   )}
@@ -536,7 +600,7 @@ export function SiteHeader({
                 />
               )}
 
-              <nav aria-label="Primary right">
+              <nav aria-label="Primary right" className="justify-self-start pl-6 xl:pl-10">
                 <ul
                   className={cn(
                     "flex items-center gap-3 xl:gap-5",
