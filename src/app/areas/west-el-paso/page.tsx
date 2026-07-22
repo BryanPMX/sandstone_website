@@ -18,7 +18,9 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "West El Paso | Sandstone Real Estate Group",
+  title: "West El Paso Homes for Sale | Sandstone Real Estate Group",
+  description:
+    "Explore homes for sale in West El Paso, TX. Discover established neighborhoods, nearby schools, mountain views, convenient access to UTEP and Downtown El Paso, and current local real estate market trends.",
 };
 
 export const dynamic = "force-dynamic";
