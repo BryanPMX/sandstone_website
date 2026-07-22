@@ -6,6 +6,7 @@ import { LeadCaptureSection } from "@/components/LeadCaptureSection";
 import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 import { LowerValleyListings } from "@/components/areas/LowerValleyListings";
 import { getTurnstileSiteKey } from "@/config";
+
 import {
   Clock,
   BadgePercent,
@@ -15,10 +16,13 @@ import {
   Info,
   ChevronDown,
 } from "lucide-react";
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Lower Valley El Paso | Sandstone Real Estate Group",
+  title: "Lower Valley El Paso Homes for Sale | Sandstone Real Estate Group",
+  description:
+    "Explore homes for sale in Lower Valley El Paso, TX. Discover affordable neighborhoods, Ysleta ISD schools, convenient access to Downtown El Paso, and current local real estate market trends.",
 };
 
 export const dynamic = "force-dynamic";
