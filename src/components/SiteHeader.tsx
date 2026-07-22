@@ -457,7 +457,7 @@ export function SiteHeader({
                         href={item.href}
                         className={cn(
                           isLeadHeader
-                            ? "inline-flex items-center whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
+                            ? "inline-flex items-center whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
                             : "whitespace-nowrap text-[12px] font-light tracking-wide text-[var(--sandstone-off-white)] drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)] transition-all duration-200 hover:text-gray-300 hover:decoration-gray-300 hover:underline hover:underline-offset-8 hover:decoration-2 xl:text-[13px]",
                           isLeadHeader &&
                             isActiveNavItem(item.href) &&
