@@ -6,7 +6,7 @@
 export const SITE_NAV = [
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
-  { label: "VA Loans", href: "/va-loans" },
+  { label: "Midland / Odessa", href: "/areas/sandstones-new-builds" },
   { label: "Areas", href: "/areas" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
