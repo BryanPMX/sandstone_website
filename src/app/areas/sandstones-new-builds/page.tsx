@@ -297,7 +297,7 @@ export default function SandstoneNewBuildsPage() {
               <div className="w-full lg:sticky lg:top-[116px] lg:self-start lg:flex lg:w-[55%] lg:flex-col">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src={`${BASE}/schools/greenwood-high.jpg`}
+                    src={`${BASE}/schools/midland/greenwood.highschool.webp`}
                     alt="Greenwood High School"
                     fill
                     sizes="(max-width: 1024px) 100vw, 45vw"
@@ -311,7 +311,7 @@ export default function SandstoneNewBuildsPage() {
                 <div className="mt-3 grid grid-cols-2 gap-3">
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src={`${BASE}/schools/greenwood-elementary.jpg`}
+                      src={`${BASE}/schools/midland/greenwood.elementary.webp`}
                       alt="Greenwood Elementary School"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -324,7 +324,7 @@ export default function SandstoneNewBuildsPage() {
                   </div>
                   <div className="relative aspect-square overflow-hidden rounded-2xl">
                     <Image
-                      src={`${BASE}/schools/greenwood-isd.jpg`}
+                      src={`${BASE}/schools/midland/greenwood.ISD.webp`}
                       alt="Greenwood ISD Administration"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
@@ -565,7 +565,7 @@ export default function SandstoneNewBuildsPage() {
               <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src={`${BASE}/entrance-sign.jpg`}
+                    src={`${BASE}/Midland.2.webp`}
                     alt="Community entrance monument sign"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
@@ -574,7 +574,7 @@ export default function SandstoneNewBuildsPage() {
                 </div>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
                   <Image
-                    src={`${BASE}/model/maribel-exterior.jpg`}
+                    src={`${BASE}/midland.webp`}
                     alt="Luxury new construction home exterior"
                     fill
                     sizes="(max-width: 1024px) 100vw, 38vw"
