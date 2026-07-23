@@ -5,7 +5,8 @@ import { getTurnstileSiteKey } from "@/config";
 
 export const metadata = {
   title: "Join the Team | Sandstone Real Estate Group",
-  description: "Join Sandstone Real Estate Group. Build your career with a team that elevates lifestyles.",
+  description:
+    "Explore career opportunities with Sandstone Real Estate Group and connect with a team focused on growth, service, and elevating lifestyles.",
 };
 
 export default function JoinPage() {
@@ -14,18 +15,20 @@ export default function JoinPage() {
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
+
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         <LeadCaptureSection
           formType="join"
           sectionId="join-lead"
           heading="Join the Team"
-          subheading="Tell us about your background and goals, and we&apos;ll connect with you about opportunities at Sandstone."
+          subheading="Tell us a little about your experience and goals. We’ll be in touch to explore opportunities with Sandstone."
           showAside={false}
-          ctaLabel="APPLY TO CONNECT"
-          messagePlaceholder="Share your experience, licensing status, and what you are looking for in your next team..."
+          ctaLabel="SUBMIT YOUR INTEREST"
+          messagePlaceholder="Share your experience, licensing status, career goals, and what you’re looking for in your next team..."
           turnstileSiteKey={turnstileSiteKey}
         />
       </main>
+
       <SiteFooter />
     </>
   );
