@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import Script from "next/script";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { FloatingWhatsAppBubble } from "@/components/FloatingWhatsAppBubble";
 import "./globals.css";
 
@@ -42,6 +43,7 @@ export default function RootLayout({
         {children}
         <FloatingWhatsAppBubble />
       </body>
+      <GoogleAnalytics gaId="G-3Q7SVSWGDM" />
     </html>
   );
 }
