@@ -12,7 +12,7 @@ import {
   TERMS_AND_CONDITIONS_LABEL,
 } from "@/constants/site";
 
-const LAST_UPDATED = "February 27, 2026";
+const LAST_UPDATED = "July 30, 2026";
 
 export const metadata = {
   title: `${PRIVACY_POLICY_LABEL} | ${FOOTER_BRAND}`,
