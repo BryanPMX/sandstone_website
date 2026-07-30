@@ -32,6 +32,7 @@ export function SiteHeader({
   logoOnly = false,
 }: SiteHeaderProps) {
   const pathname = usePathname();
+  const isBlogPage = pathname.startsWith("/blog");
 
   const contactMenuId = useId();
   const areasMenuId = useId();
@@ -564,7 +565,7 @@ export function SiteHeader({
                     )}
                   >
                     <Image
-                      src={desktopLogoSrc}
+                      src={isBlogPage ? "/mobile-header-logo.webp" : desktopLogoSrc}
                       alt="Sandstone Real Estate Group"
                       fill
                       className={cn(
