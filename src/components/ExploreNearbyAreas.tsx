@@ -290,7 +290,7 @@ const AREAS: AreaCard[] = [
     featIcon: <BLeaf />,
   },
   {
-    title: "Military PCSing / Relocation",
+    title: "Military PCSing to El Paso",
     description: "Military-focused housing guidance near Fort Bliss with quick access to base and surrounding El Paso neighborhoods.",
     href: "/pcs",
     icon: <IcoMilitary />,
