@@ -19,10 +19,6 @@ export const AREAS_NAV_MENU = [
   { label: "Horizon City TX", href: "/areas/horizon-city-tx" },
   { label: "Lower Valley El Paso", href: "/areas/lower-valley" },
   { label: "Northeast El Paso", href: "/areas/northeast-el-paso" },
-  {
-    label: "Sandstone's New Builds",
-    href: "/areas/sandstones-new-builds",
-  },
   { label: "Santa Teresa NM", href: "/areas/santa-teresa-nm" },
   { label: "Upper Valley El Paso", href: "/areas/upper-valley" },
   { label: "West El Paso", href: "/areas/west-el-paso" },
