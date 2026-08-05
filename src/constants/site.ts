@@ -7,7 +7,7 @@ export const SITE_NAV = [
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
   { label: "Areas", href: "/areas" },
-  { label: "Midland / Odessa", href: "/areas/sandstones-new-builds" },
+  { label: "New Builds", href: "/areas/sandstones-new-builds" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ] as const;
@@ -35,7 +35,7 @@ export const FOOTER_NAV = [
   { label: "Buy", href: "/listings?page=1" },
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
-  { label: "Midland / Odessa", href: "/areas/sandstones-new-builds" },
+  { label: "New Builds", href: "/areas/sandstones-new-builds" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ] as const;
