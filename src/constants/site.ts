@@ -27,7 +27,7 @@ export const AREAS_NAV_MENU = [
 export const CONTACT_US_MENU = [
   { label: "Sell a property", href: "/sell" },
   { label: "Rent a property", href: "/rent" },
-  { label: "Join the Team", href: "/join" },
+  { label: "About the Team", href: "/join" },
   { label: "Contact Us", href: "/#contact" },
 ] as const;
 
