@@ -257,8 +257,62 @@ export default function SandstoneNewBuildsPage() {
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
 
+        {/* ── Hero ─────────────────────────────────────────────────────────── */}
+        <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
+          <Image
+            src={`${BASE}/hero.webp`}
+            alt="Luxury Sandstone new construction home in Midland, Texas"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+
+          {/* Strong bottom gradient with a subtle dark tint across the image */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/78 via-[var(--sandstone-navy)]/48 to-[var(--sandstone-navy)]/22" />
+
+          {/* Left-side vignette keeps the text readable */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+
+          <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-36 lg:px-6 lg:pb-20">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px w-10 bg-[var(--sandstone-sand-gold)]" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+                Sandstone Home Builders · Midland, TX
+              </span>
+            </div>
+
+            <h1 className="max-w-3xl font-heading text-4xl font-bold leading-[1.1] text-white md:text-5xl lg:text-6xl">
+              New Construction Homes
+              <br />
+              in Midland, Texas
+            </h1>
+
+            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-white/85">
+              Custom-quality homes, spacious floor plans, and premium finishes
+              designed for modern West Texas living.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="#models"
+                className="rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_32px_-12px_rgba(183,150,120,0.9)] transition hover:opacity-90"
+              >
+                Explore Home Models
+              </Link>
+
+              <Link
+                href="#contact"
+                className="rounded-full border border-white/30 bg-white/8 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15"
+              >
+                Schedule a Consultation
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* ── Home Models ──────────────────────────────────────────────────── */}
-        <section id="models" className="bg-white pb-16 pt-32 lg:pb-20 lg:pt-40">
+        <section id="models" className="bg-white pb-16 pt-16 lg:pb-20 lg:pt-20">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             <div className="mb-8 flex flex-col items-center text-center">
