@@ -87,7 +87,7 @@ export function BahCalculator() {
                   text: "Estimated monthly principal and interest.",
                 },
                 {
-                  label: "Fort Bliss BAH",
+                  label: "BAH",
                   value: formatMoney(results.bah),
                   text: "Estimated housing allowance.",
                 },

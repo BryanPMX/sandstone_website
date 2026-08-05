@@ -571,7 +571,7 @@ export default function VaLoansPage() {
                     <th className="p-4">Rank</th>
                     <th className="p-4">BAH</th>
                     <th className="p-4">Approx. Purchase Price</th>
-                    <th className="p-4">Best Neighborhood</th>
+                    <th className="p-4">Neighborhoods</th>
                   </tr>
                 </thead>
 

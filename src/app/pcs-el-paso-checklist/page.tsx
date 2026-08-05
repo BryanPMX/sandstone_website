@@ -400,7 +400,7 @@ export default function PcsElPasoChecklistPage() {
             <DataTable
               headers={[
                 "Gate / Assignment",
-                "Best Neighborhood",
+                "Neighborhoods",
                 "Median Price",
                 "Commute",
               ]}
