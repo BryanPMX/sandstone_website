@@ -1367,7 +1367,7 @@ export default async function SantaTeresaPage() {
           asideLayout="agent-profile"
           asideEyebrow="Santa Teresa Area Specialist"
           asideTitle="Meet Alejandro Gamboa"
-          asideDescription="Alejandro Gamboa is a licensed New Mexico broker who helps buyers navigate Santa Teresa and Southern New Mexico, including neighborhoods, schools, new construction, resale homes, and the full buying process."
+          asideDescription="Alejandro Gamboa is a licensed Texas REALTOR® and New Mexico Associate Broker who specializes in PCS relocations and luxury home sales. He helps buyers and sellers navigate Santa Teresa, including neighborhoods, schools, new construction, resale homes, and the entire real estate process."
           asideCtaLabel="Connect With Alejandro"
           asideCtaHref="/agents/alejandro-gamboa"
           turnstileSiteKey={turnstileSiteKey}
