@@ -40,7 +40,7 @@ export const agents: Agent[] = [
     slug: "jorge-gamboa-jr",
     name: "Jorge Gamboa Jr.",
     role: "Texas REALTOR®",
-    image: "/agents/jr-headshot.png",
+    image: "/agents/Jr-headshot.png",
     bio: "Jorge is a dedicated real estate professional who helps clients confidently navigate the home-buying and selling process. He brings a responsive, knowledgeable, and personalized approach to every transaction.",
     specialties: [
       "Residential real estate",
@@ -76,7 +76,7 @@ export const agents: Agent[] = [
     slug: "cassie-majestic",
     name: "Cassie Majestic",
     role: "Texas REALTOR®",
-    image: "/agents/cassie-headshot.png",
+    image: "/agents/Cassie-headshot.png",
     bio: "Cassie is a dedicated real estate professional who helps buyers and sellers move forward with confidence. She provides attentive service, clear communication, and personalized guidance throughout the real estate process.",
     specialties: [
       "Residential real estate",
