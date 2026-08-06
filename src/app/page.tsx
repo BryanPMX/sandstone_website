@@ -119,7 +119,7 @@ export default async function Home() {
             aria-label="Learn more about military PCS services"
           >
             <img
-              src="/uploads/pcs_red_banner.png"
+              src="/uploads/red_pcs.webp"
               alt="Military PCS Specialist — start your move"
               className="block h-auto w-full"
             />
