@@ -18,7 +18,10 @@ type GooglePlacesResponse = {
     user_ratings_total?: number;
   };
   status: string;
+  error_message?: string;
 };
+
+const nowInSeconds = Math.floor(Date.now() / 1000);
 
 const PLACEHOLDER_REVIEWS: GoogleReview[] = [
   {
@@ -28,7 +31,7 @@ const PLACEHOLDER_REVIEWS: GoogleReview[] = [
     rating: 5,
     relative_time_description: "2 months ago",
     text: "Alejandro and his team were absolutely incredible to work with. They made selling our home a breeze and were highly professional throughout the entire process.",
-    time: Date.now() / 1000,
+    time: nowInSeconds - 5_184_000,
   },
   {
     author_name: "Michael Johnson",
@@ -37,7 +40,7 @@ const PLACEHOLDER_REVIEWS: GoogleReview[] = [
     rating: 5,
     relative_time_description: "1 week ago",
     text: "Sandstone Real Estate went above and beyond for our military relocation. They understood our tight timeline and found us the perfect home in El Paso.",
-    time: Date.now() / 1000,
+    time: nowInSeconds - 604_800,
   },
   {
     author_name: "Sarah Davis",
@@ -46,7 +49,25 @@ const PLACEHOLDER_REVIEWS: GoogleReview[] = [
     rating: 5,
     relative_time_description: "3 months ago",
     text: "The level of communication and dedication from this team is unmatched. Highly recommend to anyone looking for a luxury home or a seamless selling experience.",
-    time: Date.now() / 1000,
+    time: nowInSeconds - 7_776_000,
+  },
+  {
+    author_name: "David Martinez",
+    author_url: "#",
+    profile_photo_url: "",
+    rating: 5,
+    relative_time_description: "4 months ago",
+    text: "The Sandstone team made our home-buying experience simple and stress-free. They answered every question and guided us through each step.",
+    time: nowInSeconds - 10_368_000,
+  },
+  {
+    author_name: "Emily Rodriguez",
+    author_url: "#",
+    profile_photo_url: "",
+    rating: 5,
+    relative_time_description: "5 months ago",
+    text: "Professional, knowledgeable, and always responsive. We felt supported throughout the entire process and would gladly work with Sandstone again.",
+    time: nowInSeconds - 12_960_000,
   },
 ];
 
@@ -55,37 +76,67 @@ async function fetchGoogleReviews(): Promise<GoogleReview[]> {
   const placeId = getGooglePlaceId();
 
   if (!apiKey || !placeId) {
-    // Return placeholders if keys are not set so the beautiful design is still visible
-    return PLACEHOLDER_REVIEWS;
+    return [...PLACEHOLDER_REVIEWS].sort((a, b) => b.time - a.time);
   }
 
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,reviews,user_ratings_total&key=${apiKey}`;
+  const params = new URLSearchParams({
+    place_id: placeId,
+    fields: "name,rating,reviews,user_ratings_total",
+    reviews_sort: "newest",
+    key: apiKey,
+  });
+
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?${params.toString()}`;
 
   try {
-    const res = await fetch(url, {
-      next: { revalidate: 86400 }, // Cache for 24 hours
+    const response = await fetch(url, {
+      next: {
+        revalidate: 3600,
+      },
     });
 
-    if (!res.ok) {
-      console.error("Failed to fetch Google Reviews:", res.statusText);
-      return PLACEHOLDER_REVIEWS;
+    if (!response.ok) {
+      console.error(
+        "Failed to fetch Google reviews:",
+        response.status,
+        response.statusText
+      );
+
+      return [...PLACEHOLDER_REVIEWS].sort((a, b) => b.time - a.time);
     }
 
-    const data = (await res.json()) as GooglePlacesResponse;
-    if (data.status === "OK" && data.result?.reviews) {
-      // Return only top reviews, usually Google returns up to 5
-      return data.result.reviews;
+    const data = (await response.json()) as GooglePlacesResponse;
+
+    if (data.status !== "OK") {
+      console.error(
+        "Google Places API error:",
+        data.status,
+        data.error_message ?? "No error message provided"
+      );
+
+      return [...PLACEHOLDER_REVIEWS].sort((a, b) => b.time - a.time);
     }
 
-    return PLACEHOLDER_REVIEWS;
+    const reviews = data.result?.reviews ?? [];
+
+    if (reviews.length === 0) {
+      return [...PLACEHOLDER_REVIEWS].sort((a, b) => b.time - a.time);
+    }
+
+    return [...reviews].sort((a, b) => b.time - a.time);
   } catch (error) {
-    console.error("Error fetching Google Reviews:", error);
-    return PLACEHOLDER_REVIEWS;
+    console.error("Error fetching Google reviews:", error);
+
+    return [...PLACEHOLDER_REVIEWS].sort((a, b) => b.time - a.time);
   }
 }
 
 export async function GoogleReviews() {
+  const apiKey = getGooglePlacesApiKey();
+  const placeId = getGooglePlaceId();
+
   const reviews = await fetchGoogleReviews();
+  const isUsingPlaceholders = !apiKey || !placeId;
 
   return (
     <section className="border-t border-[var(--sandstone-charcoal)]/10 bg-white py-16 md:py-24">
@@ -94,17 +145,30 @@ export async function GoogleReviews() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)] sm:text-sm">
             Client Testimonials
           </p>
+
           <h2 className="mt-3 font-heading text-3xl font-bold text-[var(--sandstone-navy)] sm:text-4xl">
             See what families are saying about Sandstone
           </h2>
+
           <p className="mt-4 text-[15px] leading-relaxed text-[var(--sandstone-charcoal)]/80 sm:text-base">
-            We take pride in delivering exceptional real estate experiences. Don&apos;t just take our word for it—read the stories of those who have successfully bought and sold with us.
+            We take pride in delivering exceptional real estate experiences.
+            Don&apos;t just take our word for it—read the stories of those who
+            have successfully bought and sold with us.
           </p>
         </div>
 
         <GoogleReviewsCarousel reviews={reviews} />
 
-        <div className="mt-14 text-center">
+        <div className="mt-14 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <a
+            href="https://www.google.com/search?q=Sandstone+Real+Estate+Team+by+Alejandro+Gamboa+Reviews"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-8 py-3.5 text-[13px] font-bold uppercase tracking-[0.14em] text-white transition-opacity duration-300 hover:opacity-90"
+          >
+            View All Google Reviews
+          </a>
+
           <a
             href="https://www.google.com/search?q=Sandstone+Real+Estate+Team+by+Alejandro+Gamboa+Reviews"
             target="_blank"
@@ -113,13 +177,15 @@ export async function GoogleReviews() {
           >
             Leave a Google Review
           </a>
-          
-          {!getGooglePlacesApiKey() && (
-             <p className="mt-4 text-xs text-red-500">
-               Note: Currently displaying placeholder reviews. Add GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID to your environment variables to show real reviews.
-             </p>
-          )}
         </div>
+
+        {isUsingPlaceholders && (
+          <p className="mt-4 text-center text-xs text-red-500">
+            Currently displaying placeholder reviews. Add
+            GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID to your environment
+            variables to display real reviews.
+          </p>
+        )}
       </div>
     </section>
   );
