@@ -835,18 +835,21 @@ export default async function EastElPasoPage() {
         <LeadCaptureSection
           formType="contact"
           sectionId="contact"
-          heading="Ready to Buy in East El Paso?"
-          subheading="The Sandstone team knows East El Paso inside and out — from established neighborhoods near UTEP to newer Eastside subdivisions. Reach out and we&apos;ll help you find the right home."
+          heading="Ready to Buy in Santa Teresa?"
+          subheading="The Sandstone team knows Santa Teresa and Southern New Mexico. We help buyers compare neighborhoods, school zones, commute times, resale homes, and nearby communities so they can move with confidence."
           ctaLabel="Schedule a Visit"
-          messagePlaceholder="Tell us about your East El Paso home search..."
-          mappingReference="east-el-paso"
-          asideEyebrow="Ready. Lifestyle. Real."
-          asideTitle="Ready to Make Your Next Move?"
-          asideDescription="Schedule a consultation and get a personalized strategy for your East El Paso property search."
-          asideCtaLabel="Schedule a Consultation"
+          messagePlaceholder="Tell us about your Santa Teresa home search..."
+          mappingReference="santa-teresa-nm"
+          asideImage="/agents/alejandro-headshot.png"
+          asideImageAlt="Alejandro Gamboa, Santa Teresa area specialist"
+          asideLayout="agent-profile"
+          asideEyebrow="Santa Teresa Area Specialist"
+          asideTitle="Meet Alejandro Gamboa"
+          asideDescription="Alejandro Gamboa is a licensed New Mexico broker who helps buyers navigate Santa Teresa and Southern New Mexico, including neighborhoods, schools, new construction, resale homes, and the full buying process."
+          asideCtaLabel="Connect With Alejandro"
+          asideCtaHref="/agents/alejandro-gamboa"
           turnstileSiteKey={turnstileSiteKey}
         />
-
       </main>
       <SiteFooter />
     </>
