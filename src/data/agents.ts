@@ -77,13 +77,8 @@ export const agents: Agent[] = [
     name: "Zachary Carrejo",
     role: "Software Engineer Intern",
     image: "/agents/zachary_headshot.PNG",
-    bio: "Zachary is a Software Engineer Intern focused on building modern, reliable, and user-friendly digital experiences. He supports Sandstone through website development, technical improvements, troubleshooting, and the creation of tools that help the team work more efficiently.",
-    specialties: [
-      "Web development",
-      "Software engineering",
-      "Technical support",
-      "Process automation",
-    ],
+    bio: "I am a Software Engineer Intern focused on building modern, reliable, and user-friendly digital experiences. I support Sandstone through website development, technical improvements, troubleshooting, and creating tools that help the team work more efficiently.",
+    specialties: ["Web development","Software engineering","Technical support","Process automation",],
   },
 ];
 
