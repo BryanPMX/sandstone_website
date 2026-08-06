@@ -1362,10 +1362,13 @@ export default async function SantaTeresaPage() {
           ctaLabel="Schedule a Visit"
           messagePlaceholder="Tell us about your Santa Teresa home search..."
           mappingReference="santa-teresa-nm"
-          asideEyebrow="Ready. Lifestyle. Real."
-          asideTitle="Ready to Make Your Next Move?"
-          asideDescription="Schedule a consultation and get a personalized strategy for your Santa Teresa property search."
-          asideCtaLabel="Schedule a Consultation"
+          asideImage="/agents/alejandro-headshot.png"
+          asideImageAlt="Alejandro Gamboa, Santa Teresa area specialist"
+          asideLayout="agent-profile"
+          asideEyebrow="Santa Teresa Area Specialist"
+          asideTitle="Meet Alejandro Gamboa"
+          asideDescription="Alejandro Gamboa is a licensed New Mexico broker who helps buyers navigate Santa Teresa and Southern New Mexico, including neighborhoods, schools, new construction, resale homes, and the full buying process."
+          asideCtaLabel="Connect With Alejandro"
           turnstileSiteKey={turnstileSiteKey}
         />
       </main>

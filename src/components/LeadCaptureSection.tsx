@@ -123,6 +123,9 @@ export interface LeadCaptureSectionProps {
   asideDescription?: string;
   asideCtaLabel?: string;
   asideCtaHref?: string;
+  asideImage?: string;
+  asideImageAlt?: string;
+  asideLayout?: "default" | "agent-profile";
   hero?: boolean;
   heroBackgroundUrl?: string;
   heroBackgroundAlt?: string;
@@ -147,6 +150,9 @@ export function LeadCaptureSection({
   asideDescription = "Schedule a consultation and get a personalized strategy for your property.",
   asideCtaLabel = "Schedule a Consultation",
   asideCtaHref = `tel:${SITE_CONTACT.phoneRaw}`,
+  asideImage,
+  asideImageAlt = "",
+  asideLayout = "default",
   hero = false,
   heroBackgroundUrl,
   heroBackgroundAlt = "",
@@ -572,37 +578,69 @@ export function LeadCaptureSection({
               {formCard}
 
               {showAside ? (
-                <aside className="relative isolate min-h-[320px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:min-h-[420px] lg:max-w-[420px] lg:justify-self-end xl:min-h-[460px]">
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{
-                      backgroundImage:
-                        "linear-gradient(to top, rgba(37,52,113,0.74) 8%, rgba(37,52,113,0.34) 50%, rgba(37,52,113,0.08) 100%), linear-gradient(135deg, rgba(37,52,113,0.12), rgba(183,150,120,0.14)), url('/house2.webp')",
-                    }}
-                  />
-                  <div
-                    aria-hidden
-                    className="absolute right-[-12%] top-[-8%] h-36 w-36 rounded-full bg-[var(--sandstone-sand-gold)]/20 blur-3xl"
-                  />
-                  <div className="relative flex min-h-[320px] flex-col justify-end p-6 text-white md:p-7 lg:min-h-[420px] xl:min-h-[460px]">
-                    <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
-                      {asideEyebrow}
-                    </p>
-                    <h3 className="mt-2 font-heading text-3xl font-bold leading-tight md:text-4xl">
-                      {asideTitle}
-                    </h3>
-                    <p className="mt-3 max-w-sm text-sm text-white/85">
-                      {asideDescription}
-                    </p>
-                    <Link
-                      href={asideCtaHref}
-                      className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
-                    >
-                      {asideCtaLabel}
-                    </Link>
-                  </div>
-                </aside>
+                asideLayout === "agent-profile" && asideImage ? (
+                  <aside className="overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:max-w-[420px] lg:justify-self-end">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--sandstone-off-white)]">
+                      <Image
+                        src={asideImage}
+                        alt={asideImageAlt}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 420px"
+                        className="object-cover object-top"
+                      />
+                    </div>
+
+                    <div className="p-6 md:p-7">
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--sandstone-sand-gold)]">
+                        {asideEyebrow}
+                      </p>
+                      <h3 className="mt-2 font-heading text-3xl font-bold leading-tight text-[var(--sandstone-navy)] md:text-4xl">
+                        {asideTitle}
+                      </h3>
+                      <p className="mt-3 max-w-sm text-sm leading-6 text-[var(--sandstone-charcoal)]/75">
+                        {asideDescription}
+                      </p>
+                      <Link
+                        href={asideCtaHref}
+                        className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
+                      >
+                        {asideCtaLabel}
+                      </Link>
+                    </div>
+                  </aside>
+                ) : (
+                  <aside className="relative isolate min-h-[320px] overflow-hidden rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)] shadow-[0_24px_40px_-24px_rgba(37,52,113,0.45)] lg:sticky lg:top-24 lg:min-h-[420px] lg:max-w-[420px] lg:justify-self-end xl:min-h-[460px]">
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{
+                        backgroundImage:
+                          "linear-gradient(to top, rgba(37,52,113,0.74) 8%, rgba(37,52,113,0.34) 50%, rgba(37,52,113,0.08) 100%), linear-gradient(135deg, rgba(37,52,113,0.12), rgba(183,150,120,0.14)), url('/house2.webp')",
+                      }}
+                    />
+                    <div
+                      aria-hidden
+                      className="absolute right-[-12%] top-[-8%] h-36 w-36 rounded-full bg-[var(--sandstone-sand-gold)]/20 blur-3xl"
+                    />
+                    <div className="relative flex min-h-[320px] flex-col justify-end p-6 text-white md:p-7 lg:min-h-[420px] xl:min-h-[460px]">
+                      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
+                        {asideEyebrow}
+                      </p>
+                      <h3 className="mt-2 font-heading text-3xl font-bold leading-tight md:text-4xl">
+                        {asideTitle}
+                      </h3>
+                      <p className="mt-3 max-w-sm text-sm text-white/85">
+                        {asideDescription}
+                      </p>
+                      <Link
+                        href={asideCtaHref}
+                        className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
+                      >
+                        {asideCtaLabel}
+                      </Link>
+                    </div>
+                  </aside>
+                )
               ) : null}
             </div>
           </>
