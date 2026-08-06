@@ -8,7 +8,7 @@ type AgentsCarouselProps = {
   agents: Agent[];
 };
 
-const AUTO_PLAY_DELAY = 8000;
+const AUTO_PLAY_DELAY = 5000;
 
 export function AgentsCarousel({ agents }: AgentsCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -78,7 +78,7 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
     >
       <div className="mb-6 flex items-center justify-between gap-4">
         <p className="text-[10px] font-semibold tracking-[0.2em] text-[#8b7355]">
-          {isPaused ? "CAROUSEL PAUSED" : "AUTO-ROTATES EVERY 8 SECONDS"}
+          {isPaused ? "CAROUSEL PAUSED" : "AUTO-ROTATES EVERY 5 SECONDS"}
         </p>
 
         <div className="flex gap-3">
