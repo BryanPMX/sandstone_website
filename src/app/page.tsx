@@ -20,6 +20,8 @@ import {
 
 export const revalidate = 600;
 
+const SHOW_LUXURY_BANNER = false; // Set to true when the luxury homes page is ready to be promoted
+
 export const metadata = {
   title: "Sandstone Real Estate Group | Luxury Homes in El Paso, TX",
   description:
@@ -109,6 +111,7 @@ export default async function Home() {
       <main className="min-h-screen overflow-x-hidden">
         <HeroSection />
 
+        {/* Military PCS Banner */}
         <section className="w-full overflow-hidden">
           <Link
             href="/pcs"
@@ -118,10 +121,27 @@ export default async function Home() {
             <img
               src="/uploads/banner_pcs_red3.png"
               alt="Military PCS Specialist — start your move"
-              className="block h-[110px] w-full object-cover object-center sm:h-[150px] md:h-auto"
+              className="block h-auto w-full"
             />
           </Link>
         </section>
+
+        {/* Luxury Homes Banner — hidden until approved */}
+        {SHOW_LUXURY_BANNER && (
+          <section className="w-full overflow-hidden bg-[#071a33]">
+            <Link
+              href="/luxury-homes"
+              className="block w-full"
+              aria-label="Explore luxury homes with Sandstone Real Estate Team"
+            >
+              <img
+                src="/uploads/luxury_banner.png"
+                alt="Luxury Homes — exclusive properties and exceptional lifestyles"
+                className="block h-auto w-full"
+              />
+            </Link>
+          </section>
+        )}
 
         <FeaturedListingsSection properties={alejandroSparkProperties} />
 
