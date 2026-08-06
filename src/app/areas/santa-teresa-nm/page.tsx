@@ -1369,6 +1369,7 @@ export default async function SantaTeresaPage() {
           asideTitle="Meet Alejandro Gamboa"
           asideDescription="Alejandro Gamboa is a licensed New Mexico broker who helps buyers navigate Santa Teresa and Southern New Mexico, including neighborhoods, schools, new construction, resale homes, and the full buying process."
           asideCtaLabel="Connect With Alejandro"
+          asideCtaHref="/agents/alejandro-gamboa"
           turnstileSiteKey={turnstileSiteKey}
         />
       </main>
