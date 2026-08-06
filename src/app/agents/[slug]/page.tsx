@@ -145,7 +145,7 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
               formType="contact"
               sectionId="agent-contact"
               heading={`Contact ${agent.name}`}
-              subheading={`Send a message to ${agent.name} and a member of the Sandstone team will follow up with you.`}
+              subheading={`Send a message to ${agent.name} and they or a member of the Sandstone team will follow up with you.`}
               showAside={false}
               ctaLabel="SEND MESSAGE"
               messagePlaceholder={`Tell ${firstName} how they can help you...`}

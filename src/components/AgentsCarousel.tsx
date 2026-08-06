@@ -24,14 +24,11 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
     const gap = Number.parseFloat(styles.columnGap || styles.gap || "0");
     const singleCardStep = firstCard.offsetWidth + gap;
 
-    // Determine how many complete cards are currently visible.
     const visibleCards = Math.max(
       1,
       Math.round((carousel.clientWidth + gap) / singleCardStep)
     );
 
-    // Move one full group at a time:
-    // 1 card on mobile, 2 on tablet, and 3 on desktop.
     return singleCardStep * visibleCards;
   }, []);
 
@@ -81,21 +78,21 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
 
   return (
     <div
-      className="relative mt-14"
+      className="relative mt-9"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="mb-6 flex items-center justify-between gap-4">
-        <p className="text-[10px] font-semibold tracking-[0.2em] text-[#8b7355]">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <p className="text-[9px] font-semibold tracking-[0.18em] text-[#8b7355]">
           {isPaused ? "CAROUSEL PAUSED" : "AUTO-ROTATES EVERY 5 SECONDS"}
         </p>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <button
             type="button"
             onClick={() => moveCarousel("left")}
             aria-label="View previous agents"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-[#17211d]/20 bg-white text-xl text-[#17211d] transition hover:border-[#17211d] hover:bg-[#17211d] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#17211d]"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#17211d]/20 bg-white text-lg text-[#17211d] transition hover:border-[#17211d] hover:bg-[#17211d] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#17211d]"
           >
             ←
           </button>
@@ -104,7 +101,7 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
             type="button"
             onClick={() => moveCarousel("right")}
             aria-label="View next agents"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-[#17211d]/20 bg-white text-xl text-[#17211d] transition hover:border-[#17211d] hover:bg-[#17211d] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#17211d]"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#17211d]/20 bg-white text-lg text-[#17211d] transition hover:border-[#17211d] hover:bg-[#17211d] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#17211d]"
           >
             →
           </button>
@@ -114,19 +111,19 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
       <div
         ref={carouselRef}
         aria-label="Sandstone agents"
-        className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {agents.map((agent, index) => (
           <article
             key={agent.slug}
-            className="min-w-[85%] snap-start sm:min-w-[48%] lg:min-w-[31.5%]"
+            className="min-w-full snap-start sm:min-w-[calc((100%-1.25rem)/2)] lg:min-w-[calc((100%-2.5rem)/3)]"
           >
             <Link
               href={`/agents/${agent.slug}`}
               aria-label={`View ${agent.name} bio`}
               className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#17211d]"
             >
-              <div className="relative aspect-[4/5] overflow-hidden bg-[#17211d] shadow-[0_24px_60px_rgba(23,33,29,0.14)]">
+              <div className="relative aspect-[4/4.7] overflow-hidden bg-[#17211d] shadow-[0_18px_45px_rgba(23,33,29,0.12)]">
                 <img
                   src={agent.image}
                   alt={agent.name}
@@ -136,22 +133,22 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#101814]/95 via-[#101814]/10 to-transparent" />
 
-                <div className="absolute inset-4 border border-white/0 transition duration-500 group-hover:inset-5 group-hover:border-white/30" />
+                <div className="absolute inset-3 border border-white/0 transition duration-500 group-hover:inset-4 group-hover:border-white/30" />
 
-                <div className="absolute right-7 top-7 flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-black/15 text-lg text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:opacity-100">
+                <div className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/35 bg-black/15 text-base text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:opacity-100">
                   →
                 </div>
 
-                <div className="absolute inset-x-0 bottom-0 p-7 sm:p-8">
-                  <p className="text-[11px] font-semibold tracking-[0.22em] text-[#d8c3a5]">
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                  <p className="text-[10px] font-semibold tracking-[0.2em] text-[#d8c3a5]">
                     {agent.role}
                   </p>
 
-                  <h3 className="mt-2 font-serif text-3xl text-white sm:text-4xl">
+                  <h3 className="mt-2 font-serif text-2xl leading-tight text-white sm:text-3xl">
                     {agent.name}
                   </h3>
 
-                  <p className="mt-4 text-[10px] font-semibold tracking-[0.18em] text-white/70">
+                  <p className="mt-3 text-[9px] font-semibold tracking-[0.16em] text-white/70">
                     VIEW BIO →
                   </p>
                 </div>
@@ -161,7 +158,7 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
         ))}
       </div>
 
-      <p className="text-center text-[10px] font-semibold tracking-[0.2em] text-[#8b7355] sm:hidden">
+      <p className="text-center text-[9px] font-semibold tracking-[0.18em] text-[#8b7355] sm:hidden">
         SWIPE TO VIEW MORE
       </p>
     </div>
