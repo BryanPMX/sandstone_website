@@ -16,13 +16,9 @@ export const agents: Agent[] = [
     name: "Alejandro Gamboa",
     role: "Texas REALTOR® & New Mexico Broker",
     image: "/agents/alejandro-headshot.png",
-    bio: "Alejandro Gamboa is the Team Leader of the Sandstone Real Estate Team under Keller Williams. Licensed in both Texas and New Mexico, Alejandro brings a strong background in service and leadership. He is a U.S. Navy veteran, a retired El Paso County police officer, and a home builder. Serving and protecting people has always been at the center of his work.",
-    license: "Licensed in Texas and New Mexico",
-    specialties: [
-      "Residential real estate",
-      "Buyer representation",
-      "Seller representation",
-    ],
+    bio:"I specialize in helping clients buy and sell luxury homes, while also proudly serving military families, veterans, and first responders looking to buy, build, or sell near Fort Bliss. I serve the entire El Paso and Las Cruces community with the same integrity, discipline, and dedication I brought to every post I’ve held.",
+    license: "U.S. Navy Veteran • Retired El Paso County Police Officer • Home Builder • REALTOR®",
+    specialties: ["Luxury real estate","Military relocation","New construction","Residential real estate",],
   },
   {
     slug: "adrian-rodriguez",
@@ -30,11 +26,7 @@ export const agents: Agent[] = [
     role: "Marketing Manager",
     image: "/agents/adrian-headshot.png",
     bio: "Adrian supports the Sandstone team through modern marketing, strong brand presentation, and creative strategies that help agents and properties stand out.",
-    specialties: [
-      "Digital marketing",
-      "Brand strategy",
-      "Content creation",
-    ],
+    specialties: ["Digital marketing","Brand strategy","Content creation",],
   },
   {
     slug: "jorge-gamboa-jr",
@@ -42,11 +34,7 @@ export const agents: Agent[] = [
     role: "Texas REALTOR®",
     image: "/agents/Jr-headshot.png",
     bio: "Jorge is a dedicated real estate professional who helps clients confidently navigate the home-buying and selling process. He brings a responsive, knowledgeable, and personalized approach to every transaction.",
-    specialties: [
-      "Residential real estate",
-      "Buyer representation",
-      "Seller representation",
-    ],
+    specialties: ["Residential real estate","Buyer representation","Seller representation"],
   },
   {
     slug: "jorge-gamboa",
