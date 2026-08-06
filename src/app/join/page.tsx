@@ -279,15 +279,16 @@ export default function JoinPage() {
         {/* Application Form */}
         <section className="relative border-t border-[#17211d]/10 bg-[#17211d]">
           <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/10 to-transparent" />
+
           <div className="relative">
             <LeadCaptureSection
               formType="join"
               sectionId="join-lead"
               heading="Let’s Start a Conversation"
-              subheading="Tell us about your experience and goals. We’ll be in touch to explore opportunities with Sandstone."
+              subheading="Tell us about your experience, goals, and what you’re looking for in your next team. A member of the Sandstone team will be in touch."
               showAside={false}
               ctaLabel="SUBMIT YOUR INTEREST"
-              messagePlaceholder="Share your experience, licensing status, career goals, and what you’re looking for in your next team..."
+              messagePlaceholder="Share your real estate experience, licensing status, professional goals, and what you’re looking for in your next opportunity..."
               turnstileSiteKey={turnstileSiteKey}
             />
           </div>
