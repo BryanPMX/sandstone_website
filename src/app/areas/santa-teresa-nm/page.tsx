@@ -493,7 +493,7 @@ export default async function SantaTeresaPage() {
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
-        {/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* Hero */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
             src="/areas/santa teresa/st_hero.png"
@@ -550,7 +550,7 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* â”€â”€ Market Snapshot section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* Market Snapshot section */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
@@ -774,7 +774,7 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* â”€â”€ Browse Listings section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* Browse Listings section */}
         <section id="listings" className="bg-white py-16 scroll-mt-20">
           <div className="mx-auto max-w-6xl px-4 lg:px-6">
             <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -788,7 +788,7 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* Schools Near Santa Teresa  */}
+        {/* Schools Near Santa Teresa */}
         <section className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
@@ -1213,7 +1213,7 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* â”€â”€ Utilities & Local Services â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* Utilities & Local Services */}
         <section className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
@@ -1293,7 +1293,7 @@ export default async function SantaTeresaPage() {
           </div>
         </section>
 
-        {/* â”€â”€ FAQ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* FAQ */}
         <section className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
@@ -1353,7 +1353,7 @@ export default async function SantaTeresaPage() {
         {/* ── Explore More El Paso Areas ───────────────────────── */}
         <ExploreNearbyAreas compact currentAreaHref="/areas/santa-teresa-nm" />
 
-        {/* â”€â”€ Ready to Buy in Santa Teresa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+        {/* Ready to Buy in Santa Teresa */}
         <LeadCaptureSection
           formType="contact"
           sectionId="contact"
