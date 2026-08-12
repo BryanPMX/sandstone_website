@@ -130,13 +130,11 @@ export default async function BlogPostPage({
     "https://sandstone.homes"
   ).replace(/\/+$/, "");
 
-  const canonicalUrl =
-    `${siteBase}/blog/${slug}`;
+  const canonicalUrl = `${siteBase}/blog/${slug}`;
 
-  const imageUrl =
-    post.coverImage.startsWith("http")
-      ? post.coverImage
-      : `${siteBase}${post.coverImage}`;
+  const imageUrl = post.coverImage.startsWith("http")
+    ? post.coverImage
+    : `${siteBase}${post.coverImage}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -180,7 +178,7 @@ export default async function BlogPostPage({
         }}
       />
 
-      <SiteHeader />
+      <SiteHeader variant="lead" showDesktopCenterLogo={false} />
 
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <article className="container mx-auto max-w-4xl px-4 pt-10">

@@ -17,7 +17,7 @@ keywords:
   - improve credit score before mortgage
   - El Paso real estate
   - home loan credit requirements
-area: west-el-paso
+area: el-paso-neighborhoods
 ---
 # 3 Mistakes That Destroy Your Credit Before Buying a Home
 

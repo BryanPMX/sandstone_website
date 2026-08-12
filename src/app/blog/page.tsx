@@ -28,18 +28,11 @@ export default async function BlogIndexPage() {
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader variant="lead" showDesktopCenterLogo={false} />
 
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <section className="container mx-auto max-w-6xl px-4 pt-10">
-          <Link
-            href="/"
-            className="text-sm font-medium text-[var(--sandstone-sand-gold)] transition hover:underline"
-          >
-            ← Back to home
-          </Link>
-
-          <div className="mt-6 max-w-4xl">
+          <div className="max-w-4xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--sandstone-sand-gold)]">
               Resources & Insights
             </p>
@@ -134,6 +127,7 @@ export default async function BlogIndexPage() {
                           <div className="mt-auto pt-5">
                             <span className="inline-flex items-center gap-2 rounded-full bg-[var(--sandstone-navy)] px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-[var(--sandstone-sand-gold)]">
                               Read article
+
                               <span
                                 aria-hidden
                                 className="transition-transform group-hover:translate-x-1"

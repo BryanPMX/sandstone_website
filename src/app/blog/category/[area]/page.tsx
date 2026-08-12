@@ -131,7 +131,7 @@ export default async function BlogCategoryPage({
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader variant="lead" showDesktopCenterLogo={false} />
 
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <section className="container mx-auto max-w-6xl px-4 pt-10">

@@ -5,7 +5,6 @@ export const BLOG_CATEGORIES = [
   { slug: "selling-a-home", label: "Selling a Home" },
   { slug: "el-paso-neighborhoods", label: "El Paso Neighborhoods" },
   { slug: "things-to-do-in-el-paso", label: "Things to Do in El Paso" },
-  { slug: "market-updates", label: "Market Updates" },
 ] as const;
 
 export type BlogCategorySlug =
