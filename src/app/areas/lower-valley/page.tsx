@@ -1,0 +1,996 @@
+import Image from "next/image";
+import Link from "next/link";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
+import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
+import { LowerValleyListings } from "@/components/areas/LowerValleyListings";
+import { getTurnstileSiteKey } from "@/config";
+
+import {
+  Clock,
+  BadgePercent,
+  Home,
+  ArrowUpDown,
+  ExternalLink,
+  Info,
+  ChevronDown,
+} from "lucide-react";
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Lower Valley El Paso Homes for Sale | Sandstone Real Estate Group",
+  description:
+    "Explore homes for sale in Lower Valley El Paso, TX. Discover affordable neighborhoods, Ysleta ISD schools, convenient access to Downtown El Paso, and current local real estate market trends.",
+};
+
+export const dynamic = "force-dynamic";
+
+// ── Spark API — market statistics for Lower Valley (ZIP 79915) ────────────────
+const SPARK_BASE    = "https://replication.sparkapi.com";
+const SPARK_TOKEN   = process.env.SPARK_ACCESS_TOKEN ?? "";
+const SPARK_HEADERS = {
+  Accept: "application/json",
+  Authorization: `Bearer ${SPARK_TOKEN}`,
+  "User-Agent": "sandstone-website/1.0",
+};
+
+async function fetchLowerValleyStats() {
+  const qs   = "LocationField=PostalCode&LocationValue=79915";
+  const opts = { headers: SPARK_HEADERS, next: { revalidate: 3600 } } as RequestInit;
+  try {
+    const [priceRes, invRes, domRes, ratioRes] = await Promise.all([
+      fetch(`${SPARK_BASE}/v1/marketstatistics/price?${qs}`,     opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/inventory?${qs}`, opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/dom?${qs}`,       opts),
+      fetch(`${SPARK_BASE}/v1/marketstatistics/ratio?${qs}`,     opts),
+    ]);
+    const [price, inv, dom, ratio] = await Promise.all([
+      priceRes.json(), invRes.json(), domRes.json(), ratioRes.json(),
+    ]);
+    return {
+      p: price?.D?.Results?.[0]  ?? null,
+      i: inv?.D?.Results?.[0]    ?? null,
+      d: dom?.D?.Results?.[0]    ?? null,
+      r: ratio?.D?.Results?.[0]  ?? null,
+    };
+  } catch {
+    return { p: null, i: null, d: null, r: null };
+  }
+}
+
+
+const SCHOOLS = {
+  elementary: [
+    { name: "Ascarate Elementary School",                   district: "Ysleta ISD", zip: "79905"    },
+    { name: "Hueco Elementary",                             district: "Ysleta ISD", zip: "79907"    },
+    { name: "Presa Elementary",                             district: "Ysleta ISD", zip: "79907"    },
+    { name: "Riverside Elementary School",                  district: "Ysleta ISD", zip: "79915"    },
+  ],
+  middle: [
+    { name: "Del Valle Middle School",                      district: "Ysleta ISD", zip: "79907"    },
+    { name: "Riverside Middle School",                      district: "Ysleta ISD", zip: "79915"    },
+    { name: "Valley View Middle School",                    district: "Ysleta ISD", zip: "79915"    },
+  ],
+  high: [
+    { name: "Del Valle High School",                        district: "Ysleta ISD", zip: "79907"     },
+    { name: "Riverside High School",                        district: "Ysleta ISD", zip: "79915"     },
+    { name: "Ysleta High School",                           district: "Ysleta ISD", zip: "79907"     },
+  ],
+} as const;
+
+const NEARBY = {
+  hospitals: [
+    { name: "Del Sol Medical Center",                     time: "12 min", img: "/areas/lower-valley/nearby/delSol.png" },
+    { name: "Las Palmas Medical Center",                  time: "10 min", img: "/areas/lower-valley/nearby/lasPalmas.png" },
+    { name: "University Medical Center",                  time: "15 min", img: "/areas/lower-valley/nearby/uniMc.png" },
+  ],
+  groceries: [
+    { name: "Albertsons",             time: "8 min",  img: "/areas/lower-valley/nearby/albertsons.webp" },
+    { name: "El Super",               time: "7 min",  img: "/areas/lower-valley/nearby/elSuper.jpg"},
+    { name: "Food King Cost Plus",    time: "9 min",  img: "/areas/lower-valley/nearby/foodKing.jpg"},
+    { name: "Walmart Supercenter",    time: "6 min",  img: "/areas/lower-valley/nearby/walmart.webp" },
+  ],
+  shopping: [
+    { name: "The Fountains at Farah",        time: "12 min", img: "/areas/lower-valley/nearby/theFountains.png" },
+    { name: "Bassett Place Mall",            time: "10 min", img: "/areas/lower-valley/nearby/basset.png" },
+    { name: "Cielo Vista Mall",              time: "11 min", img: "/areas/lower-valley/nearby/cielovista.png" },
+  ],
+};
+
+const COMMUTE_TIMES = [
+  { icon: "/icons/areas/icon-office.webp",       time: "12-18 min", label: "Downtown\nEl Paso"       },
+  { icon: "/icons/areas/icon-graduation.webp",   time: "15-20 min", label: "UTEP"                    },
+  { icon: "/icons/areas/icon-star.webp",         time: "20-25 min", label: "Fort Bliss\nCassidy Gate"},
+  { icon: "/icons/areas/icon-airport.webp",      time: "15-20 min", label: "El Paso\nAirport"        },
+  { icon: "/icons/areas/icon-location.webp", time: "8-12 min",  label: "Ysleta Port\nof Entry" },
+];
+
+const UTILITIES = [
+  {
+    icon:        "/icons/areas/icon-electric.webp",
+    title:       "Electricity",
+    provider:    "El Paso Electric",
+    description: "Powering homes and businesses across the region.",
+    linkLabel:   "Visit Website",
+    href:        "https://www.epelectric.com",
+    accent:      { bg: "bg-amber-50",  text: "text-amber-500",  border: "border-amber-400"  },
+  },
+  {
+    icon:        "/icons/areas/icon-water.webp",
+    title:       "Water",
+    provider:    "El Paso Water",
+    description: "Providing quality water, wastewater, and stormwater services.",
+    linkLabel:   "Visit Website",
+    href:        "https://www.epwater.org",
+    accent:      { bg: "bg-blue-50",   text: "text-blue-500",   border: "border-blue-400"   },
+  },
+  {
+    icon:        "/icons/areas/icon-flame.webp",
+    title:       "Natural Gas",
+    provider:    "Texas Gas Service",
+    description: "Safe, reliable natural gas service for your home and business.",
+    linkLabel:   "Visit Website",
+    href:        "https://www.texasgasservice.com",
+    accent:      { bg: "bg-violet-50", text: "text-violet-500", border: "border-violet-400" },
+  },
+  {
+    icon:        "/icons/areas/icon-trash.webp",
+    title:       "Trash & Recycling",
+    provider:    "City of El Paso ESD",
+    description: "Waste collection and recycling services to keep our community clean and sustainable.",
+    linkLabel:   "Visit Website",
+    href:        "https://www.elpasotexas.gov/environmental-services",
+    accent:      { bg: "bg-green-50",  text: "text-green-600",  border: "border-green-500"  },
+  },
+  {
+    icon:        "/icons/areas/icon-internet.webp",
+    title:       "Internet Service",
+    provider:    "Multiple Providers",
+    description: "High-speed internet options to keep you connected.",
+    linkLabel:   "",
+    href:        "",
+    accent:      { bg: "bg-blue-50",   text: "text-blue-600",   border: "border-blue-500"   },
+  },
+] as const;
+
+// Items interleaved left-col / right-col to match the 2-column grid order
+const FAQS = [
+  { icon: "/icons/areas/icon-home.webp",       q: "Is Lower Valley a good place to live?",     a: "Yes. Lower Valley is known for its established neighborhoods, affordability, and strong sense of community. Residents enjoy convenient access to Downtown El Paso, schools, parks, shopping, and major roadways, making it a popular choice for families, first-time buyers, and long-term residents." },
+  { icon: "/icons/areas/icon-water.webp",      q: "What makes Lower Valley unique?",           a: "Lower Valley is one of El Paso's oldest communities, offering historic neighborhoods, mature landscaping, affordable housing, and a central location with convenient access throughout the city." },
+  { icon: "/icons/areas/icon-dollar.webp",     q: "Is Lower Valley expensive?",                 a: "Lower Valley is generally considered one of the more affordable housing markets in El Paso. Home prices vary by location, size, and condition, making the area attractive to first-time buyers, families, and investors." },
+  { icon: "/icons/areas/icon-horse.webp",      q: "Who is Lower Valley a good fit for?",        a: "Lower Valley appeals to first-time homebuyers, growing families, retirees, and investors looking for established neighborhoods with convenient access to schools, shopping, and employment centers." },
+  { icon: "/icons/areas/icon-diamond.webp",    q: "What types of homes are available",          a: "Lower Valley offers a wide variety of homes, including established single-family residences, remodeled homes, investment properties, and newer construction in select areas. Buyers can find options that fit many different budgets and lifestyles." },
+  { icon: "/icons/areas/icon-shield.webp",     q: "Is Lower Valley safe?",                      a: "Lower Valley benefits from being part of El Paso, which is consistently recognized as one of the safest large cities in the United States. As with any neighborhood, buyers should research specific areas that interest them."},
+  { icon: "/icons/areas/icon-graduation.webp", q: "Which school district serves Lower Valley?", a: "Most of Lower Valley is served by the Ysleta Independent School District (YISD). School attendance boundaries vary by address, so buyers should verify zoning directly with the district before purchasing a home." },
+  { icon: "/icons/areas/icon-chart.webp",      q: "What's the average home price?",             a: "Home prices in Lower Valley change as the market evolves. Visit our Market Snapshot above for the latest pricing trends, inventory, and market statistics powered by live MLS data." },
+  { icon: "/icons/areas/icon-location.webp",   q: "How far is Lower Valley from Fort Bliss?",   a: "Lower Valley is approximately 20–25 minutes from Fort Bliss, depending on traffic and the gate being used. Its location also provides convenient access to Downtown El Paso, Loop 375, and the El Paso International Airport." },
+  { icon: "/icons/areas/icon-home-alt.webp",   q: "Are there new construction homes?",          a: "While Lower Valley is primarily an established neighborhood, buyers can occasionally find new construction or recently renovated homes. Your Sandstone Real Estate Group agent can help you locate the newest available opportunities." },
+];
+
+// ── SVG chart canvas dimensions (fixed, axis labels excluded) ─────────────────
+const CX0 = 48, CY0 = 12, CX1 = 348, CY1 = 162;
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+export default async function LowerValleyPage() {
+  const turnstileSiteKey = getTurnstileSiteKey();
+
+  // ── Live data — market stats only (listings load client-side) ────────────
+  const { p, i, d, r } = await fetchLowerValleyStats();
+
+  const fmtUSD = (v: unknown, fallback: string) =>
+    v != null
+      ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Number(v))
+      : fallback;
+
+  // Current period label from API date ("May 2026" etc.)
+  const period = p?.Dates?.[0]
+    ? (() => {
+        const [m, , y] = (p.Dates[0] as string).split("/");
+        return new Date(Number(y), Number(m) - 1).toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      })()
+    : "May 2026";
+
+  // Live stat values (fallback to last known if API is down)
+  const medianPrice       = fmtUSD(p?.ActiveMedianListPrice?.[0], "$650,000");
+  const activeInventory   = String(i?.ActiveListings?.[0]  ?? 24);
+  const newListings       = String(i?.NewListings?.[0]      ?? 11);
+  const avgDom            = d?.AverageDom?.[0] ? String(Math.round(Number(d.AverageDom[0]))) : "99";
+  const listPriceReceived = r?.SaleToOriginalListPriceRatio?.[0]
+    ? `${Number(r.SaleToOriginalListPriceRatio[0]).toFixed(1)}%`
+    : "97.2%";
+
+  // Month-over-month change helper
+  const moPct = (curr: unknown, prev: unknown) => {
+    const c = Number(curr), p2 = Number(prev);
+    if (!curr || !prev || !p2) return null;
+    const pct = ((c - p2) / p2) * 100;
+    return { pct: `${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%`, up: pct >= 0 };
+  };
+  const domChange   = moPct(d?.AverageDom?.[0],                      d?.AverageDom?.[1]);
+  const ratioChange = moPct(r?.SaleToOriginalListPriceRatio?.[0],    r?.SaleToOriginalListPriceRatio?.[1]);
+  const invChange   = moPct(i?.ActiveListings?.[0],                  i?.ActiveListings?.[1]);
+  const newChange   = moPct(i?.NewListings?.[0],                     i?.NewListings?.[1]);
+
+  // Top 2 summary cards
+  const STATS_TOP = [
+    { label: "Median Price",  value: medianPrice,  sub: null             },
+    { label: "Downtown El Paso",  value: "10-15",  sub: "min (approx.)"   },
+  ];
+
+  // Price detail card
+  const PRICE_CARD = { current: medianPrice, period, };
+
+  // Bottom 4 stat cards
+  const STAT_CARDS = [
+    { icon: Clock,        label: "Median Days\non Market", value: avgDom,            change: domChange?.pct,   up: domChange?.up   },
+    { icon: BadgePercent, label: "List Price\nReceived",   value: listPriceReceived, change: ratioChange?.pct, up: ratioChange?.up },
+    { icon: Home,         label: "New Listings",           value: newListings,        change: newChange?.pct,   up: newChange?.up   },
+    { icon: ArrowUpDown,  label: "Active\nInventory",      value: activeInventory,   change: invChange?.pct,   up: invChange?.up   },
+  ];
+
+  // ── Chart — 12 months of real price data (API returns newest-first) ───────
+  const rawDates   = (p?.Dates               as string[] | undefined) ?? [];
+  const rawPrices  = (p?.ActiveMedianListPrice as string[] | undefined) ?? [];
+  const chartDates  = [...rawDates].slice(0, 12).reverse();
+  const chartPricesK = [...rawPrices].slice(0, 12).reverse().map(v => Number(v) / 1000);
+
+  const allK   = chartPricesK.length ? chartPricesK : [550, 700];
+  const Y_MIN  = Math.floor(Math.min(...allK) / 50) * 50;
+  const Y_MAX  = Math.ceil(Math.max(...allK)  / 50) * 50 + 50;
+  const total  = chartPricesK.length || 7;
+
+  const toSvgX = (idx: number) => CX0 + (idx / Math.max(total - 1, 1)) * (CX1 - CX0);
+  const toSvgY = (priceK: number) => CY1 - ((priceK - Y_MIN) / (Y_MAX - Y_MIN)) * (CY1 - CY0);
+
+  const pts      = chartPricesK.map((pk, idx) => [toSvgX(idx), toSvgY(pk)] as [number, number]);
+  const linePath = pts.map(([x, y], idx) => `${idx === 0 ? "M" : "L"}${x},${y}`).join(" ");
+  const areaPath = pts.length ? `${linePath} L${pts[pts.length - 1][0]},${CY1} L${pts[0][0]},${CY1} Z` : "";
+
+  const Y_STEPS  = Math.round((Y_MAX - Y_MIN) / 50);
+  const Y_LABELS = Array.from({ length: Y_STEPS + 1 }, (_, k) => Y_MIN + k * 50).reverse();
+
+  const MONTHS   = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const xLabels  = chartDates.map(dt => {
+    const [m, , y] = dt.split("/");
+    return `${MONTHS[Number(m) - 1]}'${y.slice(2)}`;
+  });
+
+  return (
+    <>
+      <SiteHeader variant="lead" showDesktopCenterLogo={false} />
+      <main className="min-h-screen bg-[var(--sandstone-off-white)]">
+
+        {/* ── Hero ─────────────────────────────────────────────────────────── */}
+        <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
+          <Image
+            src="/areas/lower-valley/LVHero.png"
+            alt="Lower Valley EL Paso neighborhood "
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+
+          {/* layered gradient: strong at bottom, fades to subtle dark tint at top */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)] via-[var(--sandstone-navy)]/50 to-[var(--sandstone-navy)]/10" />
+
+          {/* left-side vignette so text always reads cleanly */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/25 to-transparent" />
+
+          {/* Content */}
+          <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-36 lg:px-6 lg:pb-20">
+
+            {/* Location breadcrumb */}
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px w-10 bg-[var(--sandstone-sand-gold)]" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+                Lower Valley · El Paso, TX
+              </span>
+            </div>
+
+            {/* Heading */}
+            <h1 className="max-w-2xl font-heading text-4xl font-bold leading-[1.1] text-white md:text-5xl lg:text-6xl">
+              Homes for Sale in<br />
+              Lower Valley El Paso, TX
+            </h1>
+
+            {/* Subtitle */}
+            <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-white/65">
+              Affordable homes, established neighborhoods, and convenient access to Downtown El Paso make Lower Valley one of the city&apos;s most historic communities.
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="#listings"
+                className="rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_32px_-12px_rgba(183,150,120,0.9)] transition hover:opacity-90"
+              >
+                Browse Listings
+              </Link>
+              <Link
+                href="#contact"
+                className="rounded-full border border-white/30 bg-white/8 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15"
+              >
+                Talk to an Agent
+              </Link>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ── Market Snapshot section ──────────────────────────────────────── */}
+        <section className="bg-white py-16">
+          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+
+            {/* Header */}
+            <div className="mb-10 text-center">
+              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+                Lower Valley Market Snapshot 2026
+              </h2>
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
+                Lower Valley offers a unique blend of affordability, established neighborhoods, and convenient access to Downtown El Paso. Homebuyers can find a variety of single-family homes, mature landscaping, and communities with decades of history. Its central location, nearby schools, parks, and shopping make Lower Valley an excellent choice for first-time buyers, growing families, and anyone looking for strong value in the El Paso real estate market
+              </p>
+            </div>
+
+            {/* Top 2 stat cards */}
+            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {STATS_TOP.map(({ label, value, sub }) => (
+                <div
+                  key={label}
+                  className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm"
+                >
+                  <p className="text-sm font-bold text-[var(--sandstone-navy)]">{label}</p>
+                  <div className="mt-3 flex items-baseline gap-2">
+                    <span className="font-heading text-4xl font-bold text-[var(--sandstone-sand-gold)]">
+                      {value}
+                    </span>
+                    {sub && (
+                      <span className="text-sm font-medium text-[var(--sandstone-charcoal)]/55">{sub}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+        
+
+          {/* Dashboard */}
+          <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-[400px_1fr]">
+
+            {/* LEFT COLUMN */}
+            <div className="space-y-4">
+
+              {/* Median Price */}
+              <div className="rounded-2x1 border border-[var(--sandstone-navy)]/12 bg-white p-6 shadow-sm">
+
+                <p className="text-sm font-bold text-[var(--sandstone-navy)]">
+                  Median Price
+                </p>
+
+                <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
+                  Current ({PRICE_CARD.period})
+                </p>
+                <p className="mt-3 font-heading text-5xl font-bold text-[var(--sandstone-sand-gold)]">
+                  {PRICE_CARD.current}
+                </p>
+
+                <p className="mt-4 text-xs text-[var(--sandstone-charcoal)]/55">
+                  Updated hourly from GEPAR MLS via the Spark API.
+                </p>
+              </div>
+
+              {/* Market Stats */}
+              <div className="grid grid-cols-2 gap-3">
+                {STAT_CARDS.map(({icon: Icon, label, value, change, up}) => (
+
+                  <div
+                    key={label}
+                    className="rounded-2x1 border border-[var(--sandstone-navy)]/12 bg-white px-3 py-5 shadow-sm"
+                  >
+                    <div className="mb-3 flex items-center justify-center">
+
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--sandstone-navy)]/12 bg-[var(--sandstone-off-white)]">
+
+                        <Icon 
+                          size={18}
+                          className="text-[var(--sandstone-navy)]"
+                          strokeWidth={1.75}
+                        />
+                      
+                      </div>
+                    
+                    </div>
+
+                    <p className="whitespace-pre-line text-center text-[10x] font-semibold leading-snug text-[var(--sandstone-charcoal)]/60">
+                      {label}
+                    </p>
+
+                    <p className="mt-2 text-center font-heading text-2x1 font-bold text-[var(--sandstone-sand-gold)]">
+                      {value}
+                    </p>
+
+                    {change ? (
+                      
+                      <span
+                        className={`mt-2 flex justify-center text-[10px] font-bold ${
+                          up ? "text-green-600" : "text-red-500"
+                        }`}
+                      >
+                        {change} {up ? "↑" : "↓"}
+                      </span>
+
+                    ) : (
+                      
+                      <span className="mt-2 flex justify-center text-[10px] text-[var(--sandstone-charcoal)]/30">
+                        —
+                      </span>
+
+                    )}
+
+                  </div>
+
+                ))}
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN */}
+            <div className="rounded-2x1 border border-[var(--sandstone-navy)]/12 bg-white p-6 shadow-sm">
+                
+                <p className="mb-5 text-sm font-bold text-[var(--sandstone-navy)]">
+                  Lower Valley Median List Price — Last 12 Months
+                </p>
+
+                <div className="h-[500px] flex items-center">
+
+                  <svg
+                    viewBox={`0 0 ${CX1 + 16} ${CY1 + 24}`}
+                    className="h-full w-full"
+                    aria-label="Lower Valley home price trend — last 12 months"
+                    >
+                      <defs>
+                    <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#b79678" stopOpacity="0.25" />
+                      <stop offset="100%" stopColor="#b79678" stopOpacity="0.02" />
+                    </linearGradient>
+                  </defs>
+                  <path d={areaPath} fill="url(#chartFill)" />
+
+                  {/* Y grid lines */}
+                  {Y_LABELS.map((price) => {
+                    const y = toSvgY(price);
+                    return (
+                      <g key={price}>
+                        <line x1={CX0} y1={y} x2={CX1} y2={y} stroke="#e5e7eb" strokeWidth="1" />
+                        <text x={CX0 - 6} y={y + 4} textAnchor="end" fontSize="9" fill="#9ca3af">
+                          ${price}K
+                        </text>
+                      </g>
+                    );
+                  })}
+
+                  {/* X-axis labels — every other month to avoid crowding */}
+                  {xLabels.map((label, idx) =>
+                    idx % 2 === 0 || idx === xLabels.length - 1 ? (
+                      <text key={idx} x={toSvgX(idx)} y={CY1 + 14} textAnchor="middle" fontSize="9" fill="#9ca3af">
+                        {label}
+                      </text>
+                    ) : null
+                  )}
+
+                  {/* Line */}
+                  <path d={linePath} fill="none" stroke="#b79678" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+                  {/* Dots */}
+                  {pts.map(([x, y], idx) => (
+                    <circle key={idx} cx={x} cy={y} r="4" fill="#b79678" />
+                  ))}
+                </svg>
+              </div>
+            </div>
+          </div>
+
+            
+            {/* Source footnote */}
+            <p className="mt-6 text-center text-[11px] text-[var(--sandstone-charcoal)]/35">
+              Live data: GEPAR MLS via Spark API · ZIP 79915 · Refreshes hourly
+            </p>
+
+          </div>
+        </section>
+
+        {/* ── Browse Listings section ──────────────────────────────────────── */}
+        <section id="listings" className="bg-white py-16 scroll-mt-20">
+          <div className="mx-auto max-w-6xl px-4 lg:px-6">
+
+            <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+              Browse Lower Valley Listings
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-center text-sm text-[var(--sandstone-charcoal)]/60">
+              Active homes for sale in Lower Valley · El Paso, TX
+            </p>
+
+            <LowerValleyListings />
+
+          </div>
+        </section>
+
+        {/* ── Schools Near Lower Valley ────────────────────────────────────── */}
+        <section className="bg-white py-16">
+          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+
+            {/* Header */}
+            <div className="mb-10 text-center">
+              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+                Schools Near Lower Valley
+              </h2>
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
+                The Lower Valley is served primarily by the Ysleta Independent School District
+                (YISD), one of El Paso&apos;s largest and highest-performing school districts.
+                School zoning is address-specific, so buyers should verify attendance
+                boundaries directly with Ysleta ISD before purchasing a home.
+              </p>
+            </div>
+
+            {/* 2-column layout — items-stretch so photos fill right-column height */}
+            <div className="flex flex-col gap-8 lg:flex-row">
+
+              {/* Left: school photos — flex column on desktop so children fill full height */}
+              <div className="w-full lg:sticky lg:top-[116px] lg:self-start lg:flex lg:w-[58%] lg:flex-col">
+                {/* Large — Coronado High (3 parts of the column height) */}
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                  <Image
+                    src="/areas/lower-valley/schools/DVMS.png"
+                    alt="Riverside High School"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 45vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+                  <p className="absolute bottom-4 left-4 font-heading text-xl font-bold text-white drop-shadow">
+                    Del Valle Middle School
+                  </p>
+                </div>
+
+                {/* Two smaller photos (2 parts of the column height) */}
+                <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div className="relative aspect-square overflow-hidden rounded-2xl">
+                    <Image
+                      src="/areas/lower-valley/schools/RSElem.png"
+                      alt="Riverside Elementary School"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+                    <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
+                      Riverside Elementary<br />School
+                    </p>
+                  </div>
+                  <div className="relative aspect-square overflow-hidden rounded-2xl">
+                    <Image
+                      src="/areas/lower-valley/schools/DVHS.png"
+                      alt="Del Valle High School"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 27vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+                    <p className="absolute bottom-3 left-3 font-heading text-[15px] font-bold leading-snug text-white drop-shadow">
+                      Del Valle<br />High School
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: school tables */}
+              <div className="flex-1 space-y-7">
+                {(["elementary", "middle", "high"] as const).map((level) => {
+                  const titles = {
+                    elementary: "Elementary Schools",
+                    middle:     "Middle Schools",
+                    high:       "High Schools",
+                  };
+                  return (
+                    <div key={level}>
+                      <h3 className="mb-2 font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">
+                        {titles[level]}
+                      </h3>
+                      <div className="overflow-x-auto"><table className="w-full min-w-[480px]">
+                        <thead>
+                          <tr className="border-b border-[var(--sandstone-navy)]/10">
+                            <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">School</th>
+                            <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">District</th>
+                            <th className="pb-2 text-right text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">Primary ZIP Codes Served*</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {SCHOOLS[level].map((school, i) => (
+                            <tr key={i} className="border-b border-[var(--sandstone-navy)]/8 last:border-0">
+                              <td className="py-2 pr-4 text-[13px] font-medium text-[var(--sandstone-charcoal)]">{school.name}</td>
+                              <td className="py-2 pr-4 text-[13px] text-[var(--sandstone-charcoal)]/60">{school.district}</td>
+                              <td className="py-2 text-right text-[13px] text-[var(--sandstone-charcoal)]/60">{school.zip}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></div>
+                    </div>
+                  );
+                })}
+
+                {/* Footer note */}
+                <p className="text-[12px] italic leading-relaxed text-[var(--sandstone-charcoal)]/50">
+                  School attendance boundaries are established by Yselta ISD and are subject to change. Buyers should verify current zoning for a specific address directly with the district before purchasing a home.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ── Convenience at Your Doorstep ─────────────────────────────────── */}
+        <section className="bg-[var(--sandstone-off-white)] py-16">
+          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+
+            {/* Header */}
+            <div className="mb-10 text-center">
+              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+                Convenience at Your Doorstep
+              </h2>
+              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
+                Lower Valley provides convenient access to healthcare, shopping, parks, schools, and major transportation routes, making everyday life both comfortable and connected.
+              </p>
+            </div>
+
+            {/* 3-column cards */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+              {/* Hospitals */}
+              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
+                    <Image src="/icons/areas/icon-hospital.webp" alt="" width={26} height={26} />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Hospitals</h3>
+                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Top-rated medical care just minutes away.</p>
+                  </div>
+                </div>
+                <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
+                <div className="flex-1 space-y-3">
+                  {NEARBY.hospitals.map((item) => (
+                    <div key={item.name} className="flex items-center gap-3">
+                      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg">
+                        <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover" />
+                      </div>
+                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
+                      <div className="shrink-0 text-right">
+                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
+                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Grocery Stores */}
+              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
+                    <Image src="/icons/areas/icon-grocery.webp" alt="" width={26} height={26} />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Grocery Stores</h3>
+                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Everything you need, from daily essentials to specialty items.</p>
+                  </div>
+                </div>
+                <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
+                <div className="flex-1 space-y-3">
+                  {NEARBY.groceries.map((item) => (
+                    <div key={item.name} className="flex items-center gap-3">
+                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[var(--sandstone-navy)]/8">
+                        <Image src={item.img} alt={item.name} fill sizes="40px" className="object-cover" />
+                      </div>
+                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
+                      <div className="shrink-0 text-right">
+                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
+                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Shopping */}
+              <div className="flex flex-col rounded-2xl bg-white p-5 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
+                    <Image src="/icons/areas/icon-shopping-bag.webp" alt="" width={26} height={26} />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Shopping</h3>
+                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Retail, boutiques, and entertainment all within easy reach.</p>
+                  </div>
+                </div>
+                <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
+                <div className="flex-1 space-y-3">
+                  {NEARBY.shopping.map((item) => (
+                    <div key={item.name} className="flex items-center gap-3">
+                      <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg">
+                        <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover" />
+                      </div>
+                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
+                      <div className="shrink-0 text-right">
+                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
+                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Commute Times bar */}
+            <div className="mt-4 flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm lg:flex-row lg:items-center">
+
+              {/* Label */}
+              <div className="flex shrink-0 items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--sandstone-off-white)]">
+                  <Image src="/icons/areas/icon-car.webp" alt="" width={26} height={26} />
+                </div>
+                <div>
+                  <p className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Commute Times</p>
+                  <p className="text-[11px] text-[var(--sandstone-charcoal)]/50">Quick access to everything that matters.</p>
+                </div>
+              </div>
+
+              <div className="hidden w-px self-stretch bg-[var(--sandstone-navy)]/10 lg:block" />
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+                {COMMUTE_TIMES.map((c) => (
+                  <div key={c.label} className="flex items-center gap-3 sm:flex-col sm:items-center sm:gap-1.5 sm:text-center">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-off-white)]">
+                      <Image src={c.icon} alt="" width={22} height={22} />
+                    </div>
+                    <div>
+                      <p className="font-heading text-xl font-bold text-[var(--sandstone-navy)]">{c.time}</p>
+                      <p className="whitespace-pre-line text-[11px] leading-snug text-[var(--sandstone-charcoal)]/55">{c.label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        {/* ── Why Buyers Choose Lower Valley ───────────────────────────────── */}
+        <section className="bg-white py-16">
+          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+
+            {/* Full-width centered heading */}
+            <h2 className="mb-10 text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+              Why Buyers Choose Lower Valley
+            </h2>
+
+            {/* Two-column body */}
+            <div className="flex flex-col gap-10 lg:flex-row lg:gap-14">
+
+              {/* Left: editorial text */}
+              <div className="flex-1 space-y-7">
+                <div>
+                  <p className="text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                    Lower Valley is one of El Paso&apos;s most established and affordable communities,
+                    offering a unique blend of historic neighborhoods, convenient access, and strong
+                    community pride. Residents enjoy mature tree-lined streets, long-standing local
+                    businesses, and quick connections to Downtown El Paso, Loop 375, and I-10.
+                  </p>
+
+                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                    Homebuyers are drawn to Lower Valley for its value, central location, and
+                    welcoming atmosphere. With nearby parks, schools, shopping, and community
+                    events, it remains a popular choice for first-time buyers, growing families,
+                    and long-term residents alike.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+                    Lower Valley Home Prices in 2026
+                  </h2>
+                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                    Lower Valley remains one of the most affordable housing markets in the El Paso metro area. Buyers can often find established homes with larger lots at prices below many other neighborhoods, making the community attractive to both homeowners and investors. For the latest pricing, inventory, and market trends, contact Sandstone Real Estate Group.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+                    Is Lower Valley Right for You?
+                  </h2>
+                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                    Lower Valley is an excellent choice for buyers looking for affordability, established neighborhoods, and a convenient central location. It&apos;s especially popular with:
+                  </p>
+                  <ul className="mt-3 space-y-2">
+                    {[
+                      "First-time homebuyers looking for affordable homeownership opportunities",
+                      "Multi-generational families wanting to stay close to established community ties",
+                      "Buyers seeking a shorter commute to Downtown, medical centers, or the Ysleta Port of Entry",
+                      "Investors looking for stable rental demand in an established neighborhood",
+                    ].map((item) => (
+                      <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                        <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sandstone-sand-gold)]" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                    Whether you&apos;re purchasing your first home, investing, or looking for an established neighborhood with excellent access throughout El Paso, Lower Valley offers lasting value and a strong sense of community.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right: stacked lifestyle photos */}
+              <div className="flex flex-col gap-4 lg:w-[38%] lg:self-start lg:sticky lg:top-[116px]">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                  <Image
+                    src="/areas/lower-valley/nearby/park.png"
+                    alt="Ascarate Park"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 38vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+                  <Image
+                    src="/areas/lower-valley/nearby/baseball.png"
+                    alt="Community baseball fields in Lower Valley"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 38vw"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ── Utilities & Local Services ────────────────────────────────────── */}
+        <section className="bg-[var(--sandstone-off-white)] py-16">
+          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+
+            {/* Header */}
+            <div className="mb-10 text-center">
+              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+                Utilities &amp; Local Services
+              </h2>
+              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
+                Utility providers may vary depending on the specific address and subdivision.
+              </p>
+            </div>
+
+            {/* 5-card grid */}
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              {UTILITIES.map(({ icon, title, provider, description, linkLabel, href, accent }) => (
+                <div key={title} className="flex flex-col items-center rounded-2xl bg-white p-5 text-center shadow-sm">
+
+                  {/* Icon circle */}
+                  <div className={`mb-4 flex h-24 w-24 items-center justify-center rounded-full ${accent.bg}`}>
+                    <Image src={icon} alt="" width={44} height={44} />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">
+                    {title}
+                  </h3>
+
+                  {/* Provider */}
+                  <p className={`mt-1 text-[13px] font-semibold ${accent.text}`}>
+                    {provider}
+                  </p>
+
+                  {/* Description */}
+                  <p className="mt-3 flex-1 text-[12px] leading-relaxed text-[var(--sandstone-charcoal)]/55">
+                    {description}
+                  </p>
+
+                  {/* CTA button */}
+                  {href && (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg border ${accent.border} px-3 py-2.5 text-[12px] font-semibold ${accent.text} transition hover:opacity-70`}
+                    >
+                      {linkLabel}
+                      <ExternalLink size={12} strokeWidth={2.5} />
+                    </a>
+                  )}
+
+                </div>
+              ))}
+            </div>
+
+            {/* Footnote */}
+            <p className="mt-6 flex items-center justify-center gap-1.5 text-[12px] text-[var(--sandstone-charcoal)]/40">
+              <Info size={14} strokeWidth={1.75} />
+              Providers and service availability may vary depending on the specific address and subdivision.
+            </p>
+
+          </div>
+        </section>
+
+        {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
+        <section className="bg-[var(--sandstone-off-white)] py-16">
+          <div className="mx-auto max-w-5xl px-4 lg:px-6">
+
+            {/* Header */}
+            <div className="mb-10 text-center">
+              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
+                Frequently Asked Questions
+              </h2>
+              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
+                Find answers to the most common questions about living in Lower Valley.
+              </p>
+              <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/60">
+                Can&apos;t find what you&apos;re looking for?{" "}
+                <Link href="/#contact" className="font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
+                  We&apos;re here to help!
+                </Link>
+              </p>
+            </div>
+
+            {/* 2-column accordion grid */}
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-start">
+              {FAQS.map(({ icon, q, a }) => (
+                <details key={q} className="group rounded-2xl bg-white shadow-sm">
+                  <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4">
+                    {/* Icon circle */}
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--sandstone-navy)]/8">
+                      <Image src={icon} alt="" width={22} height={22} />
+                    </div>
+                    {/* Question */}
+                    <span className="flex-1 text-[14px] font-semibold text-[var(--sandstone-navy)]">{q}</span>
+                    {/* Chevron */}
+                    <ChevronDown
+                      size={18}
+                      strokeWidth={2}
+                      className="shrink-0 text-[var(--sandstone-navy)]/50 transition-transform duration-200 group-open:rotate-180"
+                    />
+                  </summary>
+                  {/* Answer */}
+                  <div className="border-t border-[var(--sandstone-navy)]/8 px-5 py-4 pl-20">
+                    <p className="text-[13px] leading-relaxed text-[var(--sandstone-charcoal)]/65">{a}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
+
+          </div>
+        </section>
+        {/* ── Explore More El Paso Areas ───────────────────────── */}
+        <ExploreNearbyAreas compact currentAreaHref="/areas/lower-valley" />
+
+        <LeadCaptureSection
+  formType="contact"
+  sectionId="contact"
+  heading="Ready to Buy in Lower Valley?"
+  subheading="The Sandstone team knows Lower Valley. We've helped buyers navigate everything from standard resales to large acreage properties with irrigation rights — reach out and we'll walk you through every detail."
+  ctaLabel="Schedule a Visit"
+  messagePlaceholder="Tell us about your Lower Valley search..."
+  mappingReference="lower-valley"
+  asideEyebrow="Ready. Lifestyle. Real."
+  asideTitle="Ready to Make Your Next Move?"
+  asideDescription="Schedule a consultation and get a personalized strategy for your Lower Valley property search."
+  asideCtaLabel="Schedule a Consultation"
+  turnstileSiteKey={turnstileSiteKey}
+/>
+
+      </main>
+      <SiteFooter />
+    </>
+  );
+}

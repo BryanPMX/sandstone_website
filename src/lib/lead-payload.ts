@@ -19,6 +19,8 @@ export function buildLeadWebhookPayload(
     lastName: fields.lastName.trim(),
     email: fields.email.trim(),
     phone: fields.phone.trim(),
+    mappingReference: normalizeText(fields.mappingReference),
+    mapping_reference: normalizeText(fields.mappingReference),
     acceptTransactionalSms: fields.acceptTransactionalSms,
     acceptMarketingSms: fields.acceptMarketingSms,
   } as const;
@@ -57,6 +59,12 @@ export function buildLeadWebhookPayload(
       return {
         ...base,
         formType: "join",
+      };
+    case "pcs":
+      return {
+        ...base,
+        formType: "pcs",
+        message: message ?? "",
       };
     case "giveaway":
       return {

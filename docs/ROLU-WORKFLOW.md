@@ -1,74 +1,64 @@
-# Rolu to Website Workflow Notes
+# Rolu Workflow Notes
 
-Goal: keep listing data fresh and keep lead delivery reliable.
+Goal: keep lead delivery reliable while preserving legacy listings fallback support during Spark operations.
 
-## Environment Contract
+## Current Environment Contract
 
-- `SPARK_ACCESS_TOKEN`: primary server-only listings credential
-- `MSL_FEED_URL`: optional fallback endpoint returning an array of listings
-- `ROLU_WEBHOOK_URL`: backward-compatible contact webhook fallback
-- `ROLU_WEBHOOK_CONTACT_URL`, `ROLU_WEBHOOK_SELL_URL`, `ROLU_WEBHOOK_RENT_URL`, `ROLU_WEBHOOK_JOIN_URL`, `ROLU_WEBHOOK_GIVEAWAY_URL`, `ROLU_WEBHOOK_LISTING_INQUIRY_URL`: preferred form-specific lead webhooks
+- `SPARK_ACCESS_TOKEN` for primary server-side listings access
+- `MSL_FEED_URL` optional legacy listings fallback endpoint
+- `ROLU_WEBHOOK_URL` backward-compatible contact fallback
+- `ROLU_WEBHOOK_CONTACT_URL`
+- `ROLU_WEBHOOK_SELL_URL`
+- `ROLU_WEBHOOK_RENT_URL`
+- `ROLU_WEBHOOK_JOIN_URL`
+- `ROLU_WEBHOOK_GIVEAWAY_URL`
+- `ROLU_WEBHOOK_LISTING_INQUIRY_URL`
 
-## Listings Source Order
+## Listings Resolution Order
 
-1. Spark API via `SPARK_ACCESS_TOKEN`
-2. Legacy `MSL_FEED_URL` JSON feed
-3. Curated demo listings fallback
+1. Spark listings services
+2. Legacy feed via `MSL_FEED_URL`
+3. Demo fallback listings
 
-## Listing Feed Shape
+Use Rolu for listing feed delivery only if the legacy fallback endpoint is still part of your rollout.
 
-The app normalizes each feed item into:
+## Legacy Listing Feed Shape
 
-- `id` (required)
+The app can normalize fallback feed items from common field names:
+
+- `id`
 - `title` or `name`
 - `location` or `address`
 - `price` or `listPrice`
 - `image.url` or `photo`
 - optional: `beds`, `baths`, `sqft`, `featured`
 
-If feed data is missing/unavailable, the app shows fallback demo listings.
+## Lead Delivery Flow
 
-## Recommended Rolu Listing Workflow
+### Standard forms (contact, sell, rent, join, giveaway)
 
-Use this only if you still need the legacy fallback feed during Spark rollout.
+1. Client form submits to server action.
+2. Server action validates with Zod.
+3. Captcha token is verified with Turnstile before submission.
+4. Webhook URL is resolved from form-specific env vars.
+5. Payload is built per form type and sent through `leadSubmissionService`.
 
-1. Trigger on listing create/update.
-2. Send HTTP payload to your feed endpoint (`MSL_FEED_URL` destination).
-3. Include normalized fields shown above.
-4. Enable retry/backoff in Rolu.
+### Listing inquiry form (`/listings/[id]`)
 
-Example payload template:
-
-```json
-{
-  "id": "{{trigger.id}}",
-  "title": "{{trigger.title || trigger.name}}",
-  "location": "{{trigger.address}}",
-  "price": "{{trigger.price}}",
-  "image": { "url": "{{trigger.photo_url}}" },
-  "beds": "{{trigger.beds}}",
-  "baths": "{{trigger.baths}}",
-  "sqft": "{{trigger.square_feet}}",
-  "featured": "{{trigger.featured}}"
-}
-```
-
-## Lead Webhook Notes
-
-Contact form submissions send:
-
-- `firstName`
-- `lastName`
-- `email`
-- `phone`
-- `message`
-
-Listing inquiry submissions on `/listings/[id]` send the same lead contract and append listing context into `message` (route id, MLS number, spark id, list price, listing path, and listing agent when available).
-
-Validation happens server-side before webhook submission.
+1. Listing inquiry card submits to dedicated server action.
+2. Action validates user fields and listing context fields.
+3. Webhook URL resolves from `ROLU_WEBHOOK_LISTING_INQUIRY_URL`, then contact fallback.
+4. Lead is delivered through `leadSubmissionService` with listing context appended into the message.
 
 ## Operational Checks
 
-- If listings look stale, verify Spark credentials first, then `MSL_FEED_URL` if the legacy fallback is enabled.
-- If form submissions fail, verify `ROLU_WEBHOOK_*` values and destination status.
-- Keep listing images accessible over HTTPS for best compatibility.
+- If listing data appears stale, validate Spark credentials first, then verify `MSL_FEED_URL` only if fallback is enabled.
+- If lead delivery fails, confirm relevant `ROLU_WEBHOOK_*` values and receiving endpoint health.
+- If captcha blocks submissions, verify both `TURNSTILE_SECRET_KEY` and `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+- Keep media endpoints HTTPS to avoid mixed-content/browser issues.
+
+## Suggested Rolu Ops Practices
+
+- Use retry/backoff on webhook destinations.
+- Log destination response codes for troubleshooting.
+- Keep separate workflows for listing inquiries vs general contact leads.

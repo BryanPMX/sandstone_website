@@ -20,6 +20,7 @@ export function getLeadWebhookUrl(formType: LeadFormType): string | undefined {
     rent: "ROLU_WEBHOOK_RENT_URL",
     join: "ROLU_WEBHOOK_JOIN_URL",
     giveaway: "ROLU_WEBHOOK_GIVEAWAY_URL",
+    pcs: "ROLU_WEBHOOK_PCS_URL",
   };
 
   const resolved = getEnv(formWebhookEnvKey[formType]);
@@ -147,4 +148,12 @@ export function getSparkListingsPageSize(): number {
   }
 
   return parsed;
+}
+
+export function getGooglePlacesApiKey(): string | undefined {
+  return getEnv("GOOGLE_PLACES_API_KEY");
+}
+
+export function getGooglePlaceId(): string | undefined {
+  return getEnv("GOOGLE_PLACE_ID");
 }

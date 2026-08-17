@@ -1,73 +1,71 @@
 # Architecture & Design Principles
 
-This codebase is structured for a clean, maintainable marketing site with clear boundaries between UI, validation, and integrations.
+This codebase is organized as a layered Next.js App Router application with clear boundaries between UI composition, validation, domain helpers, and external integrations.
 
 ## Layer Responsibilities
 
-- `app/`: route-level composition and page metadata
-- `components/`: presentational sections and reusable UI blocks
-- `actions/`: server-side orchestration (validation + service invocation)
-- `schemas/`: Zod contracts
-- `services/`: external I/O adapters (Spark listings, legacy feed fallback, Rolu webhook)
-- `config/`: environment access
-- `lib/`: pure helper functions
-- `types/`: shared domain contracts
-- `constants/`: static copy and links
+- `src/app`: route composition, metadata, API route handlers
+- `src/components`: reusable UI blocks and page sections
+- `src/actions`: server actions for lead and inquiry submission
+- `src/schemas`: Zod validation contracts
+- `src/services`: integrations (Spark, legacy feed, captcha, lead delivery)
+- `src/config`: environment accessors and defaults
+- `src/lib`: pure helpers (filtering, query parsing/building, cache helpers)
+- `src/types`: shared domain contracts
+- `src/constants`: static content and links
 
-## SOLID Mapping
+## Core Patterns
 
-| Principle | Current implementation |
-|---|---|
-| Single Responsibility | `submit-lead.ts` orchestrates; `lead.service.ts` performs network I/O; `lead.ts` schema validates; UI components render only. |
-| Open/Closed | New CRM = new `ILeadSubmissionService` implementation; listing data source can change without rewriting listing components. |
-| Liskov Substitution | Any `ILeadSubmissionService` implementation can replace `leadSubmissionService`. |
-| Interface Segregation | Contracts are small: `LeadInput`, `SubmitLeadState`, `PropertyCard`, `LeadSubmissionResult`. |
-| Dependency Inversion | Server action depends on config/services abstractions, not raw `process.env` calls spread across app code. |
+- Service abstraction: lead delivery is encapsulated behind `ILeadSubmissionService`.
+- Boundary normalization: Spark/legacy payloads are normalized into internal property contracts.
+- Shared URL-state model: map/listing query params are generated and parsed through the same property helper APIs.
+- Progressive fallback strategy: Spark -> legacy feed -> demo data.
+- Composition-first pages: app routes orchestrate data and pass typed props to components.
 
-## Patterns in Use
-
-- **Service abstraction:** lead submission is encapsulated behind `ILeadSubmissionService`.
-- **Data normalization at boundaries:** `spark.service.ts` maps Spark listing payloads into the internal `PropertyCard` shape.
-- **Shared search-query model:** `buildListingsMapHref()` and `parseListingsMapSearchParams()` in `lib/properties.ts` keep the home hero and `/listings/map` query state aligned.
-- **Pure filtering helpers:** listing search lives in `lib/properties.ts` (`filterPropertyCards`, `filterPropertyCardsWithFilters`) so pages remain composition-focused.
-- **Section composition:** pages compose sections; sections consume typed props.
-
-## Current App Flow
+## Current Route Flows
 
 ### Home (`/`)
 
-1. Fetch listings from `fetchMyPropertyCards()`.
-2. Try Spark `my/listings` first, then legacy `MSL_FEED_URL`, then demo fallback data.
-3. Render the hero search with a buy-first layout that mirrors the brand comp: compact centered tabs, a refined address field, and content-fit preset price/bed/bath filter pills.
-4. On submit, normalize the hero state into `/listings/map` query params via `buildListingsMapHref()`.
-5. Render hero, carousel, action tiles, about, contact, footer.
+1. Fetches cards via `fetchMyPropertyCards()`.
+2. Applies curation logic (Alejandro/Spark subset).
+3. Renders: header, hero, featured listings, primary action tiles, contact form, footer.
+4. Hero submit builds query state with `buildListingsMapHref()` and navigates to `/listings/map`.
 
-### Listings (`/listings`)
+### Listings Grid (`/listings`)
 
-1. Fetch listings from `fetchActivePropertyCards()`.
-2. Page through all active Spark listings before falling back.
-3. Apply `?search=` query filter.
-4. Render full results grid via reusable `ListingCard`.
+1. Fetches from `fetchMyPropertyCards()`.
+2. Applies curation + search + market filter.
+3. Applies pagination using configured Spark page size.
+4. Renders listing cards with page navigation.
 
 ### Listings Map (`/listings/map`)
 
-1. Read route `searchParams` in the App Router page component.
-2. Normalize search text, radius, and preset filters through `parseListingsMapSearchParams()`.
-3. Apply shared filtering through `filterPropertyCardsWithFilters()`.
-4. Render the map/sidebar results plus a GET search form that preserves active filters on subsequent Enter submits.
+1. Server page preloads data from map cache helpers.
+2. Client map uses shared parsing/filtering helpers for search, listing type, and presets.
+3. Uses map bounds + filter params against listings APIs for responsive map-side filtering.
 
 ### Listing Detail (`/listings/[id]`)
 
-1. Fetch the listing directly by id.
-2. Fall back to legacy/demo sources if Spark is unavailable.
-3. Render detail view or `notFound()`.
+1. Fetches detail by route id and optional Spark hints.
+2. Builds map/share URLs and renders media/spec sections.
+3. Embeds listing inquiry card that submits listing-context lead data.
 
-### Lead Submission
+### Lead + Inquiry Submission
 
-1. `ContactForm` submits to `submitLead` server action.
-2. Action validates via `LeadSchema`.
-3. Action retrieves the form-specific Rolu webhook URL from config.
-4. Action calls `leadSubmissionService.submit(...)`.
+1. Forms submit to server actions.
+2. Inputs are validated with Zod.
+3. Webhook target is resolved from form type and environment config.
+4. Submission passes through `leadSubmissionService`.
+5. Listing inquiry uses dedicated action (`submitListingInquiry`) and appends property context into the message payload.
+
+## API Surface (Listings)
+
+- `/api/listings/my`
+- `/api/listings/active`
+- `/api/listings/rent`
+- `/api/listings/all`
+- `/api/listings/map`
+- `/api/listings/diagnostics`
 
 ## Folder Structure
 
@@ -76,11 +74,9 @@ src/
 ├── actions/
 ├── app/
 ├── components/
-│   ├── properties/
-│   ├── sections/
-│   └── ui/
 ├── config/
 ├── constants/
+├── hooks/
 ├── lib/
 ├── schemas/
 ├── services/
@@ -89,14 +85,14 @@ src/
 
 ## Extension Guidelines
 
-### Add a New CRM
+### Add a New CRM Destination
 
-1. Create a new service implementing `ILeadSubmissionService`.
-2. Select implementation in action/config.
-3. Keep form/action contracts unchanged.
+1. Add a new `ILeadSubmissionService` implementation.
+2. Wire selection through config/service composition.
+3. Keep form contracts and UI stable.
 
 ### Add a New Listings Source
 
-1. Return normalized `PropertyCard[]` from a new service/provider.
-2. Keep UI consuming `PropertyCard[]` only.
-3. Reuse `buildListingsMapHref()`, `parseListingsMapSearchParams()`, and the filtering helpers for search behavior.
+1. Normalize source payloads into internal property contracts.
+2. Plug source into `listings.service.ts` resolution strategy.
+3. Reuse shared filtering/query helpers so UX behavior stays consistent.

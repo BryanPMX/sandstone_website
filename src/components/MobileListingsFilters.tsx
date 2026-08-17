@@ -2,11 +2,8 @@
 
 import type { PropertySearchPresetFilters } from "@/lib";
 import {
-  PROPERTY_SEARCH_MARKET_OPTIONS,
   getPropertySearchPriceOptions,
   type PropertySearchMarket,
-  PROPERTY_SEARCH_BED_OPTIONS,
-  PROPERTY_SEARCH_BATH_OPTIONS,
 } from "@/lib";
 
 interface MobileListingsFiltersProps {
@@ -23,12 +20,10 @@ interface MobileListingsFiltersProps {
 }
 
 export function MobileListingsFilters({
-  market,
   listingType,
   pricePreset,
   bedsPreset,
   bathsPreset,
-  onMarketChange,
   onListingTypeChange,
   onPriceChange,
   onBedsChange,
@@ -37,128 +32,99 @@ export function MobileListingsFilters({
   const priceOptions = getPropertySearchPriceOptions(listingType);
 
   return (
-    <div className="space-y-4 rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
-      <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-[var(--sandstone-charcoal)]">
-          Market
-        </label>
-        <div className="flex gap-2">
-          {PROPERTY_SEARCH_MARKET_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => onMarketChange(option.value)}
-              className={`flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-all ${
-                market === option.value
-                  ? "bg-[var(--sandstone-navy)] text-white shadow-[0_4px_12px_rgba(37,52,113,0.3)]"
-                  : "border-2 border-[var(--sandstone-navy)]/20 bg-white text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/40"
-              }`}
-              aria-pressed={market === option.value}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Buy/Rent Filter - Always visible */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-[var(--sandstone-charcoal)]">
-          Property Type
-        </label>
-        <div className="flex gap-2">
+    <div className="overflow-x-auto">
+      <div className="flex min-w-max items-center gap-3 rounded-[2rem] border border-[var(--sandstone-navy)]/12 bg-white/90 p-4 shadow-[0_20px_46px_-30px_rgba(37,52,113,0.48)]">
+        <div className="flex rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] p-1">
           <button
             type="button"
             onClick={() => onListingTypeChange("active")}
-            className={`flex-1 rounded-lg py-3 px-4 text-sm font-bold transition-all ${
+            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
               listingType === "active"
-                ? "bg-[var(--sandstone-navy)] text-white shadow-[0_4px_12px_rgba(37,52,113,0.3)]"
-                : "border-2 border-[var(--sandstone-navy)]/20 bg-white text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/40"
+                ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
             }`}
           >
             Buy
           </button>
+
           <button
             type="button"
             onClick={() => onListingTypeChange("rental")}
-            className={`flex-1 rounded-lg py-3 px-4 text-sm font-bold transition-all ${
+            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
               listingType === "rental"
-                ? "bg-[var(--sandstone-navy)] text-white shadow-[0_4px_12px_rgba(37,52,113,0.3)]"
-                : "border-2 border-[var(--sandstone-navy)]/20 bg-white text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/40"
+                ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
             }`}
           >
             Rent
           </button>
         </div>
-      </div>
 
-      {/* Price Filter */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-[var(--sandstone-charcoal)]">
-          Price Range
-        </label>
-        <div className="flex flex-wrap gap-2">
+        <select
+          value={pricePreset}
+          onChange={(e) =>
+            onPriceChange(
+              e.target.value as PropertySearchPresetFilters["pricePreset"]
+            )
+          }
+          className="h-12 min-w-[156px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
+          style={{
+            backgroundImage:
+              'url("data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E")',
+            backgroundPosition: "right 0.8rem center",
+            backgroundSize: "12px",
+          }}
+        >
           {priceOptions.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => onPriceChange(option.value)}
-              className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
-                pricePreset === option.value
-                  ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_rgba(37,52,113,0.2)]"
-                  : "border border-[var(--sandstone-navy)]/20 bg-white text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/40"
-              }`}
-            >
-              {option.value === "any" ? "Any" : option.label}
-            </button>
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
-        </div>
-      </div>
+        </select>
 
-      {/* Beds Filter */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-[var(--sandstone-charcoal)]">
-          Bedrooms
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => onBedsChange(option.value)}
-              className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
-                bedsPreset === option.value
-                  ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_rgba(37,52,113,0.2)]"
-                  : "border border-[var(--sandstone-navy)]/20 bg-white text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/40"
-              }`}
-            >
-              {option.value === "any" ? "Any" : option.label}
-            </button>
-          ))}
-        </div>
-      </div>
+        <select
+          value={bedsPreset}
+          onChange={(e) =>
+            onBedsChange(
+              e.target.value as PropertySearchPresetFilters["bedsPreset"]
+            )
+          }
+          className="h-12 min-w-[132px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
+          style={{
+            backgroundImage:
+              'url("data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E")',
+            backgroundPosition: "right 0.8rem center",
+            backgroundSize: "12px",
+          }}
+        >
+          <option value="any">Beds</option>
+          <option value="1">1+ Beds</option>
+          <option value="2">2+ Beds</option>
+          <option value="3">3+ Beds</option>
+          <option value="4">4+ Beds</option>
+        </select>
 
-      {/* Baths Filter */}
-      <div className="space-y-2">
-        <label className="text-xs font-bold uppercase tracking-wider text-[var(--sandstone-charcoal)]">
-          Bathrooms
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => onBathsChange(option.value)}
-              className={`rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
-                bathsPreset === option.value
-                  ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_rgba(37,52,113,0.2)]"
-                  : "border border-[var(--sandstone-navy)]/20 bg-white text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/40"
-              }`}
-            >
-              {option.value === "any" ? "Any" : option.label}
-            </button>
-          ))}
-        </div>
+        <select
+          value={bathsPreset}
+          onChange={(e) =>
+            onBathsChange(
+              e.target.value as PropertySearchPresetFilters["bathsPreset"]
+            )
+          }
+          className="h-12 min-w-[132px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
+          style={{
+            backgroundImage:
+              'url("data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E")',
+            backgroundPosition: "right 0.8rem center",
+            backgroundSize: "12px",
+          }}
+        >
+          <option value="any">Baths</option>
+          <option value="1">1+ Baths</option>
+          <option value="2">2+ Baths</option>
+          <option value="3">3+ Baths</option>
+          <option value="4">4+ Baths</option>
+        </select>
       </div>
     </div>
   );

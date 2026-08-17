@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Host
+Host: https://www.sandstone.homes
+
+# Sitemaps
+Sitemap: https://www.sandstone.homes/sitemap.xml

@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
+import Script from "next/script";
 import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
 import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
 import { ListingShareActions } from "@/components/properties/ListingShareActions.client";
-import { fetchPropertyDetailById } from "@/services";
+import { fetchPropertyDetailById, fetchMyPropertyCards } from "@/services";
 import {
   buildListingsMapHref,
   resolvePropertySearchMarket,
@@ -113,12 +114,46 @@ async function getSiteBaseUrl(): Promise<string> {
 
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
+  const property = await fetchPropertyDetailById(
+    id,
+    undefined,
+    undefined
+  );
+
+  if (!property) {
+    return {
+      title: `Listing ${id} | Sandstone Real Estate Group`,
+      description: "Property details from Sandstone Real Estate Group.",
+    };
+  }
+
+  const stats = [
+    property.beds && `${property.beds} bed`,
+    property.baths && `${property.baths} bath`,
+    property.sqft && `${property.sqft} sq ft`
+  ].filter(Boolean).join(', ');
+
+  const title = `${property.title} | ${property.price} | ${property.location}`;
+  const description = `${stats} home in ${property.location}. ${property.title}. Listed by Sandstone Real Estate Group in El Paso.`;
 
   return {
-    title: `Listing ${id} | Sandstone Real Estate Group`,
-    description: "Property details from Sandstone Real Estate Group.",
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: property.image ? [{ url: property.image, alt: property.title }] : [],
+      type: 'website',
+    },
   };
 }
+
+export async function generateStaticParams() {
+  const properties = await fetchMyPropertyCards();
+  return properties.slice(0, 100).map((p) => ({ id: p.routeId }));
+}
+
+export const revalidate = 3600;
 
 export default async function ListingPage({ params, searchParams }: PageProps) {
   const { id } = await params;
@@ -191,10 +226,63 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
 
   return (
     <>
+      <Script
+        id="property-structured-data"
+        type="application/ld+json"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "RealEstateListing",
+            "name": property.title,
+            "description": `${primaryStats.join(', ')} home in ${property.location}`,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "El Paso",
+              "addressRegion": "TX",
+              "addressCountry": "US"
+            },
+            "geo": property.latitude && property.longitude ? {
+              "@type": "GeoCoordinates",
+              "latitude": property.latitude,
+              "longitude": property.longitude
+            } : undefined,
+            "offers": {
+              "@type": "Offer",
+              "price": property.price.replace(/[^0-9.]/g, ''),
+              "priceCurrency": "USD"
+            },
+            "numberOfRooms": property.beds,
+            "floorSize": property.sqft ? {
+              "@type": "QuantitativeValue",
+              "value": property.sqft
+            } : undefined,
+            "provider": {
+              "@type": "RealEstateAgent",
+              "name": "Sandstone Real Estate Group",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "El Paso",
+                "addressRegion": "TX"
+              }
+            }
+          })
+        }}
+      />
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
         <div className="container mx-auto max-w-6xl px-4 pt-8">
           <ListingBackLink mapBackHref={mapBackHref} fallbackHref="/listings" />
+
+          <nav aria-label="Breadcrumb" className="mt-4">
+            <ol className="flex items-center space-x-2 text-sm">
+              <li><Link href="/" className="text-[var(--sandstone-sand-gold)] hover:underline">Home</Link></li>
+              <li className="text-[var(--sandstone-charcoal)]/50">/</li>
+              <li><Link href="/listings" className="text-[var(--sandstone-sand-gold)] hover:underline">Listings</Link></li>
+              <li className="text-[var(--sandstone-charcoal)]/50">/</li>
+              <li className="text-[var(--sandstone-charcoal)]">{property.title}</li>
+            </ol>
+          </nav>
 
           <section className="mt-6 rounded-[2rem] border border-white/70 bg-white px-4 py-5 shadow-[0_24px_70px_-36px_rgba(37,52,113,0.42)] md:px-6 md:py-7">
             <h1 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)] md:text-4xl">

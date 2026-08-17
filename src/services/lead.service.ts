@@ -24,11 +24,16 @@ async function submitToWebhook(
   payload: LeadInput,
   webhookUrl: string
 ): Promise<LeadSubmissionResult> {
+  console.log("[LeadService] Submitting webhook for form type:", payload.formType);
+  console.log("[LeadService] Payload:", JSON.stringify(payload, null, 2));
+  
   const res = await fetch(webhookUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+
+  console.log("[LeadService] Webhook response status:", res.status);
 
   if (!res.ok) {
     const text = await res.text();
@@ -40,6 +45,7 @@ async function submitToWebhook(
     };
   }
 
+  console.log("[LeadService] Webhook submitted successfully");
   return { ok: true };
 }
 

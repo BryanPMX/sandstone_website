@@ -16,3 +16,10 @@ export {
   type CaptchaVerificationResult,
   type ICaptchaVerificationService,
 } from "./captcha.service";
+export {
+  blogService,
+  getAllPostSlugs,
+  getPostBySlug,
+  getSortedPosts,
+  type IBlogService,
+} from "./blog.service";

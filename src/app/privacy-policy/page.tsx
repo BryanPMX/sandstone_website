@@ -12,123 +12,313 @@ import {
   TERMS_AND_CONDITIONS_LABEL,
 } from "@/constants/site";
 
-const LAST_UPDATED = "February 27, 2026";
+const LAST_UPDATED = "July 30, 2026";
 
 export const metadata = {
   title: `${PRIVACY_POLICY_LABEL} | ${FOOTER_BRAND}`,
-  description: `${PRIVACY_POLICY_LABEL} for ${FOOTER_BRAND}.`,
+  description: `Learn how ${FOOTER_BRAND} collects, uses, protects, and manages personal information.`,
 };
 
 export default function PrivacyPolicyPage() {
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
+
       <main className="min-h-screen bg-[var(--sandstone-off-white)]">
         <LegalDocumentLayout
           title={PRIVACY_POLICY_LABEL}
-          summary={`This policy explains how ${SMS_DISCLOSURE_BRAND} collects, uses, protects, and shares information submitted through our website and forms, including SMS opt-in choices.`}
+          summary={`This Privacy Policy explains how ${SMS_DISCLOSURE_BRAND} collects, uses, protects, and shares information when you use our website, submit a form, or communicate with us.`}
           lastUpdated={LAST_UPDATED}
         >
           <section>
             <p>
-              {SMS_DISCLOSURE_BRAND} (&quot;Sandstone,&quot; &quot;we,&quot; &quot;us,&quot; or
-              &quot;our&quot;) respects your privacy and is committed to protecting your personal information. 
-              This policy explains how we collect, use, disclose, store, and safeguard your information when you visit 
-              our website, submit forms, or communicate with us by phone, email, or SMS.
+              {SMS_DISCLOSURE_BRAND} (&quot;Sandstone,&quot; &quot;we,&quot;
+              &quot;us,&quot; or &quot;our&quot;) respects your privacy and is
+              committed to protecting the personal information you provide to
+              us.
+            </p>
+
+            <p>
+              This Privacy Policy describes the types of information we may
+              collect, how we use that information, when it may be disclosed,
+              and the choices available to you when you interact with our
+              website, forms, real estate services, email communications, and
+              SMS messaging programs.
             </p>
           </section>
 
           <section>
             <h2>1. Information We Collect</h2>
-            <p>We collect personal information you voluntarily provide, including:</p>
+
+            <p>
+              We may collect information that you voluntarily provide to us,
+              including:
+            </p>
+
             <ul>
-              <li>Contact details such as full name, email address, and phone number.</li>
-              <li>Property preferences, physical addresses, and communication preferences.</li>
-              <li>SMS opt-in selections and any other information you voluntarily provide through contact forms or consultations.</li>
               <li>
-                Technical data automatically collected via cookies, including IP addresses, browser types, 
-                pages visited, and time spent on our site.
+                Your name, email address, phone number, and other contact
+                information.
+              </li>
+
+              <li>
+                Property interests, preferences, addresses, and information
+                related to your real estate inquiry.
+              </li>
+
+              <li>
+                Appointment, consultation, or property-showing information.
+              </li>
+
+              <li>
+                Communication preferences, including SMS opt-in selections.
+              </li>
+
+              <li>
+                Information you include in forms, messages, emails, or other
+                communications with us.
               </li>
             </ul>
+
+            <h3>Information Collected Automatically</h3>
+
+            <p>
+              When you use our website, certain technical information may be
+              collected automatically through cookies and similar
+              technologies. This may include your IP address, browser type,
+              device information, pages viewed, referring pages, and general
+              website usage information.
+            </p>
           </section>
 
           <section>
             <h2>2. How We Use Your Information</h2>
+
+            <p>We may use the information we collect to:</p>
+
             <ul>
-              <li>Responding to inquiries and providing requested real estate services.</li>
-              <li>Scheduling appointments, consultations, and property showings.</li>
-              <li>Sending confirmations, reminders, and transactional messages.</li>
+              <li>Respond to inquiries and requests for information.</li>
+
               <li>
-                Sending marketing communications only if you have explicitly opted in.
+                Provide real estate services, property information, and
+                assistance requested by you.
               </li>
-              <li>Improving website functionality and ensuring legal compliance.</li>
+
+              <li>
+                Schedule consultations, appointments, and property showings.
+              </li>
+
+              <li>
+                Send confirmations, reminders, service updates, and other
+                transactional communications.
+              </li>
+
+              <li>
+                Send marketing communications when you have provided the
+                appropriate consent.
+              </li>
+
+              <li>
+                Maintain, operate, secure, and improve our website and services.
+              </li>
+
+              <li>
+                Comply with applicable legal, regulatory, and operational
+                requirements.
+              </li>
             </ul>
           </section>
 
           <section>
-            <h2>3. SMS Communications & Explicit Consent</h2>
+            <h2>3. SMS Communications and Consent</h2>
+
             <p>
-              We comply with TCPA, CTIA, and A2P 10DLC standards. Entering your phone number 
-              alone does not authorize us to send text messages.
+              Providing a phone number through our website does not, by itself,
+              constitute consent to receive marketing text messages.
             </p>
+
+            <p>
+              Where SMS consent is requested, the applicable form will provide
+              information about the type of messages you may receive and allow
+              you to make the appropriate opt-in selection.
+            </p>
+
             <ul>
               <li>
-                We only send SMS to individuals who provide prior express written consent through a 
-                clear, separate, and non-mandatory checkbox.
+                SMS consent is optional and is not a condition of purchasing
+                goods or services.
               </li>
-              <li>Consent is not a condition of purchase, and checkboxes are never pre-checked.</li>
-              <li>Marketing SMS consent is separate from transactional communications.</li>
-              <li>Message frequency varies but typically does not exceed 2-8 messages per month for marketing.</li>
+
+              <li>
+                Marketing SMS consent is obtained separately from other form
+                submissions where applicable.
+              </li>
+
+              <li>SMS consent selections are not pre-checked.</li>
+
+              <li>Message frequency may vary.</li>
+
               <li>Message and data rates may apply.</li>
-              <li><strong>Reply HELP for assistance or STOP to unsubscribe at any time.</strong></li>
+
+              <li>
+                Reply <strong>HELP</strong> for assistance or{" "}
+                <strong>STOP</strong> to opt out of text messages.
+              </li>
             </ul>
           </section>
 
           <section>
-            <h2>4. Data Sharing Statement</h2>
+            <h2>4. How We Share Information</h2>
+
             <p>
-              We do not sell, rent, or trade your personal information. 
+              We do not sell or rent your personal information for third-party
+              marketing purposes.
             </p>
+
             <p>
-              <strong>Mobile Privacy Clause:</strong> Mobile information and SMS opt-in data will not be shared, 
-              sold, rented, or transferred to third parties or affiliates for marketing or promotional purposes. 
-              We share data only with service providers necessary to deliver messaging services (such as GoHighLevel), 
-              who are contractually required to safeguard your data.
+              We may share information with service providers that perform
+              services on our behalf, such as website hosting, customer
+              relationship management, communications, analytics, and
+              messaging services.
+            </p>
+
+            <h3>Mobile Information and SMS Consent</h3>
+
+            <p>
+              Mobile information and SMS opt-in data are not sold, rented, or
+              shared with third parties or affiliates for their independent
+              marketing or promotional purposes.
+            </p>
+
+            <p>
+              Information may be provided to service providers, messaging
+              platforms, telecommunications providers, or other vendors when
+              necessary to operate and deliver our messaging services.
+            </p>
+
+            <p>
+              We may also disclose information when required by law, legal
+              process, regulation, or governmental request.
             </p>
           </section>
 
           <section>
-            <h2>5. Data Security & Your Rights</h2>
+            <h2>5. Cookies and Website Analytics</h2>
+
             <p>
-              We implement technical and physical safeguards, including SSL encrypted connections and secure 
-              hosting environments, to protect your data. 
+              Our website may use cookies and similar technologies to remember
+              preferences, understand how visitors use the site, improve
+              performance, and measure website activity.
             </p>
+
             <p>
-              Under the Texas Data Privacy and Security Act (TDPSA), you may have the right to access, 
-              correct, or request the deletion of your personal data. To exercise these rights, please contact us via email.
+              You may be able to control or disable cookies through your browser
+              settings. Disabling certain cookies may affect the functionality
+              of some portions of the website.
             </p>
           </section>
 
           <section>
-            <h2>6. Contact Us</h2>
+            <h2>6. Data Security</h2>
+
             <p>
-              If you have questions about this policy or our privacy practices, please reach out:
+              We use reasonable administrative, technical, and organizational
+              safeguards designed to protect personal information from
+              unauthorized access, disclosure, alteration, or destruction.
             </p>
+
             <p>
-              <strong>Email:</strong> <Link href={`mailto:${SITE_CONTACT.email}`}>{SITE_CONTACT.email}</Link><br />
-              <strong>Phone:</strong> <Link href={`tel:${SITE_CONTACT.phoneRaw}`}>{SITE_CONTACT.phone}</Link>
+              No internet transmission or electronic storage system can be
+              guaranteed to be completely secure, and we cannot guarantee the
+              absolute security of information transmitted through our website.
             </p>
-            <p>{SITE_ADDRESS.full}</p>
+          </section>
+
+          <section>
+            <h2>7. Your Privacy Choices</h2>
+
             <p>
-              Review our{" "}
+              Depending on your location and applicable law, you may have
+              certain rights regarding your personal information, including the
+              ability to request access to, correction of, or deletion of
+              certain information.
+            </p>
+
+            <p>
+              You may also unsubscribe from marketing emails through the
+              unsubscribe option provided in those messages and opt out of SMS
+              communications by replying <strong>STOP</strong>.
+            </p>
+
+            <p>
+              To submit a privacy-related request, contact us using the
+              information below.
+            </p>
+          </section>
+
+          <section>
+            <h2>8. Third-Party Services and Links</h2>
+
+            <p>
+              Our website may contain links to websites or services operated by
+              third parties. Their privacy practices are governed by their own
+              policies, and we are not responsible for the privacy practices or
+              content of third-party services.
+            </p>
+          </section>
+
+          <section>
+            <h2>9. Changes to This Privacy Policy</h2>
+
+            <p>
+              We may update this Privacy Policy periodically to reflect changes
+              to our practices, services, or legal requirements.
+            </p>
+
+            <p>
+              When changes are made, the updated version will be posted on this
+              page with a revised &quot;Last updated&quot; date.
+            </p>
+          </section>
+
+          <section>
+            <h2>10. Contact Us</h2>
+
+            <p>
+              For questions about this Privacy Policy, our privacy practices, or
+              your personal information, contact us at:
+            </p>
+
+            <address className="mt-3 not-italic">
+              <strong>{FOOTER_BRAND}</strong>
+              <br />
+
+              {SITE_ADDRESS.full}
+              <br />
+
+              <strong>Email:</strong>{" "}
+              <Link href={`mailto:${SITE_CONTACT.email}`}>
+                {SITE_CONTACT.email}
+              </Link>
+              <br />
+
+              <strong>Phone:</strong>{" "}
+              <Link href={`tel:${SITE_CONTACT.phoneRaw}`}>
+                {SITE_CONTACT.phone}
+              </Link>
+            </address>
+
+            <p>
+              Please also review our{" "}
               <Link href={TERMS_AND_CONDITIONS_HREF}>
                 {TERMS_AND_CONDITIONS_LABEL}
               </Link>{" "}
-              for complete website and program terms.
+              for additional website and messaging program terms.
             </p>
           </section>
         </LegalDocumentLayout>
       </main>
+
       <SiteFooter />
     </>
   );

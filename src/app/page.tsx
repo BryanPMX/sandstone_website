@@ -1,32 +1,161 @@
+import Link from "next/link";
+import Script from "next/script";
+
 import { SiteHeader } from "@/components/SiteHeader";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsSection";
-import BlogSection from "@/components/sections/BlogSection";
+import { BlogTeaserSection } from "@/components/sections/BlogTeaserSection";
 import { PrimaryActionTiles } from "@/components/sections/PrimaryActionTiles";
 import { ContactForm } from "@/components/ContactForm";
+import { GoogleReviews } from "@/components/GoogleReviews";
 import { SiteFooter } from "@/components/SiteFooter";
-import { fetchMyPropertyCards } from "@/services";
-import { isAlejandroListing } from "@/lib";
+import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 
-export const revalidate = 300;
-export const dynamic = "force-dynamic";
+import { fetchMyPropertyCards, getSortedPosts } from "@/services";
+import { isAlejandroListing } from "@/lib";
+import {
+  HOME_FAQ_SCHEMA_EN,
+  HOME_FAQ_SCHEMA_ES,
+} from "@/constants/site";
+
+export const revalidate = 600;
+
+const SHOW_LUXURY_BANNER = false; // Set to true when the luxury homes page is ready to be promoted
+
+export const metadata = {
+  title: "Sandstone Real Estate Group | Luxury Homes in El Paso, TX",
+  description:
+    "Explore luxury homes, military relocation services, and real estate opportunities in El Paso, Texas with Sandstone Real Estate Group. Buy, sell, and rent homes near Fort Bliss and across the Southwest.",
+};
 
 export default async function Home() {
-  const properties = await fetchMyPropertyCards();
-  const alejandroSparkProperties = properties.filter(
-    (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
-  );
+  const [properties, posts] = await Promise.all([
+    fetchMyPropertyCards(),
+    getSortedPosts(),
+  ]);
+
+  const latestPosts = posts.slice(0, 3);
+
+  const alejandroSparkProperties = properties
+    .filter(
+      (property) =>
+        Boolean(property.sparkSource) && isAlejandroListing(property)
+    )
+    .slice(0, 12);
 
   return (
     <>
+      <Script
+        id="local-business-structured-data"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": ["RealEstateAgent", "LocalBusiness"],
+            name: "Sandstone Real Estate Group",
+            url: "https://sandstone.homes",
+            description:
+              "Luxury real estate and military PCS specialist serving El Paso, Fort Bliss, Horizon City, Upper Valley, Canutillo, and Santa Teresa.",
+            telephone: "+19152776707",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "El Paso",
+              addressRegion: "TX",
+              addressCountry: "US",
+            },
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: 31.7619,
+              longitude: -106.485,
+            },
+            areaServed: [
+              "El Paso, TX",
+              "Fort Bliss, TX",
+              "Horizon City, TX",
+              "Upper Valley, TX",
+              "Canutillo, TX",
+              "Santa Teresa, NM",
+            ],
+            serviceType: [
+              "Real Estate Sales",
+              "Military PCS",
+              "VA Home Buying",
+              "Luxury Homes",
+              "Home Selling",
+            ],
+          }),
+        }}
+      />
+
+      <Script
+        id="home-faq-schema-es"
+        type="application/ld+json"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(HOME_FAQ_SCHEMA_ES),
+        }}
+      />
+
+      <Script
+        id="home-faq-schema-en"
+        type="application/ld+json"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(HOME_FAQ_SCHEMA_EN),
+        }}
+      />
+
       <SiteHeader overlayDesktop />
-      <main className="min-h-screen">
+
+      <main className="min-h-screen overflow-x-hidden">
         <HeroSection />
+
+        {/* Military PCS Banner */}
+        <section className="w-full overflow-hidden">
+          <Link
+            href="/pcs"
+            className="block w-full"
+            aria-label="Learn more about military PCS services"
+          >
+            <img
+              src="/uploads/new_usa_banner.png"
+              alt="Military PCS Specialist — start your move"
+              className="block h-auto w-full"
+            />
+          </Link>
+        </section>
+
+        {/* Luxury Homes Banner — hidden until approved */}
+        {SHOW_LUXURY_BANNER && (
+          <section className="w-full overflow-hidden bg-[#071a33]">
+            <Link
+              href="/luxury-homes"
+              className="block w-full"
+              aria-label="Explore luxury homes with Sandstone Real Estate Team"
+            >
+              <img
+                src="/uploads/luxury_banner.png"
+                alt="Luxury Homes — exclusive properties and exceptional lifestyles"
+                className="block h-auto w-full"
+              />
+            </Link>
+          </section>
+        )}
+
         <FeaturedListingsSection properties={alejandroSparkProperties} />
+
+        <ExploreNearbyAreas compact />
+
+        <BlogTeaserSection posts={latestPosts} />
+
         <PrimaryActionTiles />
-        <BlogSection />
+
         <ContactForm />
+
+        <GoogleReviews />
       </main>
+
       <SiteFooter />
     </>
   );

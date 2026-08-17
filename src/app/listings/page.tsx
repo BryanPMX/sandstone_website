@@ -3,6 +3,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ListingCard } from "@/components/properties";
 import { fetchMyPropertyCards } from "@/services";
+import { ZipListings } from "@/components/areas/ZipListings";
+import { BackButton } from "@/components/BackButton";
 import {
   DEFAULT_PROPERTY_SEARCH_MARKET,
   PROPERTY_SEARCH_MARKET_OPTIONS,
@@ -77,6 +79,25 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
     : 1;
   const pageSize = getSparkListingsPageSize();
 
+  const isZipSearch = /^\d{5}$/.test(searchQuery);
+  if (isZipSearch) {
+    return (
+      <>
+        <SiteHeader variant="lead" showDesktopCenterLogo={false} />
+        <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-16">
+          <section className="container mx-auto max-w-6xl px-4 pt-10">
+            <BackButton />
+            <h1 className="mt-4 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
+              Listings in {searchQuery}
+            </h1>
+            <ZipListings zip={searchQuery} />
+          </section>
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
+
   const allAlejandroProperties = (await fetchMyPropertyCards()).filter(
     (property) => Boolean(property.sparkSource) && isAlejandroListing(property)
   );
@@ -118,12 +139,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
       <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-16">
         <section className="container mx-auto max-w-6xl px-4 pt-10">
-          <Link
-            href="/#listings"
-            className="text-sm font-medium text-[var(--sandstone-sand-gold)] hover:underline"
-          >
-            ← Back to home listings
-          </Link>
+          <BackButton />
           <h1 className="mt-4 font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-4xl">
             Sandstone All Listings
           </h1>

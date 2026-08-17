@@ -82,8 +82,6 @@ export const PROPERTY_SEARCH_MARKET_OPTIONS: Array<{
   label: string;
 }> = [
   { value: "el-paso", label: "El Paso" },
-  { value: "midland", label: "Midland" },
-  { value: "odessa", label: "Odessa" },
 ];
 
 export const PROPERTY_SEARCH_PRICE_OPTIONS: Array<{
@@ -607,6 +605,14 @@ export function filterPropertyCardsWithFilters(
     radiusMiles > 0;
 
   const normalizedQuery = search?.trim().toLowerCase() ?? "";
+
+  if (!Array.isArray(properties)) {
+    console.error(
+      "[filterPropertyCardsWithFilters] Expected properties to be an array, received:",
+      properties
+    );
+    return [];
+  }
 
   return properties.filter((property) => {
     if (listingType) {

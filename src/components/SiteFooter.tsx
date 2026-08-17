@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  SITE_NAV,
+  FOOTER_NAV,
   FOOTER_BRAND,
   FOOTER_TAGLINE,
   FOOTER_ABOUT,
@@ -21,6 +22,8 @@ interface SiteFooterProps {
 }
 
 export function SiteFooter({ showNav = true }: SiteFooterProps) {
+  const pathname = usePathname?.() ?? "";
+
   return (
     <footer
       id="footer"
@@ -30,7 +33,9 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
         <div
           className={cn(
             "grid gap-8 md:items-start",
-            showNav ? "md:grid-cols-[1.1fr_0.8fr_0.9fr]" : "md:grid-cols-[1fr_auto]"
+            showNav
+              ? "md:grid-cols-[1.1fr_0.8fr_0.9fr]"
+              : "md:grid-cols-[1fr_auto]"
           )}
         >
           <div className="text-center md:text-left">
@@ -51,22 +56,47 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
                 </p>
               </div>
             </div>
+
             <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/78 md:mx-0">
               {FOOTER_ABOUT}
             </p>
+
+            <div className="mt-5">
+              <p className="text-xs uppercase tracking-[0.18em] text-white/60">
+                Call Us
+              </p>
+
+              <Link
+                href="tel:9152776707"
+                className="mt-1 inline-block text-lg font-semibold text-[var(--sandstone-sand-gold)] transition hover:text-white"
+              >
+                (915) 277-6707
+              </Link>
+            </div>
           </div>
 
           <div className="flex items-center justify-center gap-6 md:justify-center">
-            {FOOTER_BRAND_IMAGES.map((img) => (
-              <div key={img.name} className="relative h-10 w-24 opacity-90">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  className="object-contain object-center"
-                />
-              </div>
-            ))}
+            {FOOTER_BRAND_IMAGES.map((img) => {
+              const isMLS = img.name === "MLS";
+
+              return (
+                <div
+                  key={img.name}
+                  className={`relative opacity-90 ${
+                    isMLS ? "h-12 w-28" : "h-10 w-24"
+                  }`}
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className={`object-contain object-center ${
+                      isMLS ? "invert brightness-[11]" : ""
+                    }`}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           {showNav ? (
@@ -74,8 +104,9 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
               <p className="mb-2 text-xs uppercase tracking-[0.18em] text-white/60">
                 Menu
               </p>
+
               <ul className="space-y-1.5 text-sm">
-                {SITE_NAV.map((item) => (
+                {FOOTER_NAV.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
@@ -98,6 +129,7 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
             >
               {PRIVACY_POLICY_LABEL}
             </Link>
+
             <Link
               href={TERMS_AND_CONDITIONS_HREF}
               className="hover:text-[var(--sandstone-sand-gold)]"
@@ -105,6 +137,7 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
               {TERMS_AND_CONDITIONS_LABEL}
             </Link>
           </div>
+
           <p className="mt-2 md:mt-0">
             © {new Date().getFullYear()} {FOOTER_BRAND}
           </p>

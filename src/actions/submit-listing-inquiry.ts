@@ -94,6 +94,8 @@ export async function submitListingInquiry(
       acceptTransactionalSms: false,
       acceptMarketingSms: false,
       message,
+      
+      listingTitle: parsed.data.listingTitle,
     },
     webhookUrl
   );

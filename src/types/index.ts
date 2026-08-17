@@ -17,3 +17,8 @@ export type {
   SellLeadWebhookPayload,
   SubmitLeadState,
 } from "./lead";
+export type {
+  BlogPost,
+  BlogPostFrontmatter,
+  BlogPostListItem,
+} from "./blog";

@@ -55,7 +55,7 @@ export function MortgageCalculator() {
   const totalInterest = Math.max(totalPaid - loanAmount, 0);
 
   return (
-    <section className="bg-white py-14 sm:py-16 lg:py-20">
+    <section id="mortgage-calculator" className="bg-white py-14 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-6xl px-4">
         <div className="grid gap-10 lg:grid-cols-[0.58fr_0.42fr] lg:items-start">
           <div>
