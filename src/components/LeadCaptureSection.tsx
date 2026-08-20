@@ -167,6 +167,7 @@ export function LeadCaptureSection({
   const hasCaptchaError =
     state?.success === false && Boolean(state.fieldErrors?.captcha);
   const id = (field: string) => `${formType}-${field}`;
+  useEffect(() => { if (state?.success) { const w = window as typeof window & { gtag?: (...args: unknown[]) => void }; w.gtag?.("event", "generate_lead", { form_type: formType }); } }, [state?.success, formType]);
   const requiresAddress = formType === "sell" || formType === "rent";
   const showMessageField = formType !== "join";
   const isSellerForm = formType === "sell";
