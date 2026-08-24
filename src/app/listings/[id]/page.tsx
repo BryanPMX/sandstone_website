@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
 import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
 import { ListingShareActions } from "@/components/properties/ListingShareActions.client";
+import { FinancingBanner } from "@/components/FinancingBanner";
 import { fetchPropertyDetailById, fetchMyPropertyCards } from "@/services";
 import {
   buildListingsMapHref,
@@ -396,6 +397,9 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
               />
             </div>
           </section>
+
+          <div className="mt-6 overflow-hidden rounded-[1.5rem] shadow-[0_20px_50px_-30px_rgba(37,52,113,0.4)]">
+          <FinancingBanner rounded /></div>
         </div>
       </main>
       <SiteFooter />
