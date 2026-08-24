@@ -126,8 +126,6 @@ export default async function Home() {
           </Link>
         </section>
 
-        <FinancingBanner />
-
         {SHOW_LUXURY_BANNER && (
           <section className="w-full overflow-hidden bg-[#071a33]">
             <Link
@@ -145,6 +143,8 @@ export default async function Home() {
         )}
 
         <FeaturedListingsSection properties={alejandroSparkProperties} />
+
+        <FinancingBanner />
 
         <ExploreNearbyAreas compact />
 
