@@ -6,6 +6,7 @@ import { fetchMyPropertyCards } from "@/services";
 import type { PropertyCard } from "@/types";
 import { PcsHeroSearch } from "./PcsHeroSearch.client";
 import { PcsHeader } from "./PcsHeader.client";
+import { FinancingBanner } from "@/components/FinancingBanner";
 
 export const metadata = {
   title: "VA Loan Homes in El Paso | Fort Bliss Military Homes",
@@ -254,6 +255,8 @@ export default async function PCSPage() {
             </div>
           </div>
         </section>
+
+        <FinancingBanner />
 
         {/* FEATURED HOMES */}
         <section className="pb-16">
