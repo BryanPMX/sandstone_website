@@ -118,11 +118,17 @@ export default async function Home() {
             className="block w-full"
             aria-label="Learn more about military PCS services"
           >
-            <img
-              src="/uploads/new_usa_banner.png"
-              alt="Military PCS Specialist — start your move"
-              className="block h-auto w-full"
-            />
+            <picture>
+              <source
+                media="(max-width: 768px)"
+                srcSet="/uploads/new_usa_banner-mobile@2x.webp"
+              />
+              <img
+                src="/uploads/new_usa_banner.png"
+                alt="Military PCS Specialist — start your move"
+                className="block h-auto w-full"
+              />
+            </picture>
           </Link>
         </section>
 
