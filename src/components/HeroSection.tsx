@@ -284,6 +284,12 @@ export function HeroSection() {
 
   return (
     <>
+      {/* Explicit preload hint for the LCP image. Without this, both real
+          browsers and Lighthouse's simulated network model can discover
+          this image later than necessary (after other head resources),
+          which inflates measured "resource load delay" for the LCP metric.
+          React/Next.js hoists this <link> into the document <head>. */}
+      <link rel="preload" as="image" href="/hero-home.webp" fetchPriority="high" />
       <section className="relative w-full overflow-hidden bg-[var(--sandstone-navy)]">
         <div className="relative h-[52vh] min-h-[380px] w-full lg:h-[640px] lg:min-h-[640px]">
           <div className="relative h-full w-full">
