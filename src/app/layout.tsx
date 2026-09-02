@@ -36,6 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={montserrat.variable}>
       <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://connect.facebook.net" />
+        <link rel="preconnect" href="https://maps.googleapis.com" />
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-JEJNFNHWV3"
