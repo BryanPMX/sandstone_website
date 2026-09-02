@@ -109,7 +109,18 @@ export function HeroSection() {
     router.prefetch("/rent");
   }, [router]);
 
-  useEffect(() => {
+  const mapsLoadTriggeredRef = useRef(false);
+
+  // Loaded on-demand (first focus/interaction with the search field) instead
+  // of on mount. This ~377 KiB script is not needed to render the hero and
+  // was previously competing with the LCP image for main-thread time on
+  // every homepage load, even for visitors who never use autocomplete.
+  const loadGoogleMaps = () => {
+    if (mapsLoadTriggeredRef.current) {
+      return;
+    }
+    mapsLoadTriggeredRef.current = true;
+
     const googleMapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
     const existingMapsApi = window.google?.maps as
       | GoogleMapsWithPlaces
@@ -168,7 +179,7 @@ export function HeroSection() {
       .catch(() => {
         // Silently fall back to simple text search if Maps fails.
       });
-  }, []);
+  };
 
   useEffect(() => {
     if (!(isNavigatingToMap || isPending)) {
@@ -307,6 +318,7 @@ export function HeroSection() {
                         name="search"
                         value={searchValue}
                         onChange={handleInputChange}
+                        onFocus={loadGoogleMaps}
                         placeholder={SEARCH_PLACEHOLDER}
                         className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-14 font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
                         aria-label="Search by address or ZIP code"
@@ -494,6 +506,7 @@ export function HeroSection() {
                   placeholder={SEARCH_PLACEHOLDER}
                   value={searchValue}
                   onChange={handleInputChange}
+                  onFocus={loadGoogleMaps}
                   className="h-[76px] w-full rounded-full border border-white bg-white pl-7 pr-20 text-[0.98rem] text-[var(--sandstone-charcoal)] placeholder:text-[var(--sandstone-charcoal)]/45 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
                   aria-label="Search by address or ZIP code"
                   autoComplete="off"
