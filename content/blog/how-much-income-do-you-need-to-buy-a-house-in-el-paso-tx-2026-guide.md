@@ -7,7 +7,7 @@ excerpt: How much do you need to earn to buy a home in El Paso? Learn how
 seoTitle: How Much Income to Buy a House in El Paso, TX?
 metaDescription: How much income do you need to buy a house in El Paso, TX?
   Learn how salary, debt, down payment, rates, taxes, and insurance affect
-  affordability.
+  affordability
 coverImage: /uploads/income-needed-to-buy-house-el-paso-tx-2026.webp
 coverImageAlt: Homebuyer evaluating how much income is needed to buy a house in El Paso Texas
 keywords:
