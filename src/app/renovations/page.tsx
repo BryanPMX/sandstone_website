@@ -380,7 +380,7 @@ export default function RenovationsPage() {
           ctaLabel="Request a Consultation"
           messagePlaceholder="Tell us about your renovation project..."
           mappingReference="renovations"
-          asideImage="/agents/jorge-headshot.png"
+          asideImage="/agents/Jr-headshot.png"
           asideImageAlt="Jorge Gamboa, Sandstone Renovation Pros"
           asideLayout="agent-profile"
           asideEyebrow="Sandstone Renovation Pros"
