@@ -63,6 +63,14 @@ export function SiteHeader({
   const desktopLogoSrc = "/desktop-hero-logo.webp";
   const mobileLogoSrc = "/mobile-header-logo.webp";
 
+  // The centered desktop wordmark is navy-on-transparent. That sits on a
+  // solid navy header bar everywhere except the hero-overlay header (home
+  // page style), where the header is transparent on large screens and
+  // reveals a light hero photo underneath. Flip it to white via CSS filter
+  // (instead of shipping a second logo asset) whenever the header itself is
+  // solid navy, so the mark doesn't disappear against it.
+  const useWhiteDesktopLogo = !isHeroHeader;
+
 
   const showLeadCenteredDesktopNav =
     isLeadHeader && !showDesktopCenterLogo;
@@ -571,11 +579,12 @@ export function SiteHeader({
                       fill
                       className={cn(
                         "object-contain",
+                        useWhiteDesktopLogo && "brightness-0 invert",
                         isHeroHeader
                           ? ""
                           : isLeadHeader
                             ? "drop-shadow-[0_4px_10px_rgba(183,150,120,0.15)]"
-                            : "brightness-110"
+                            : ""
                       )}
                       sizes={
                         isHeroHeader
