@@ -8,6 +8,7 @@ export const SITE_NAV = [
   { label: "Military PCS", href: "/pcs" },
   { label: "Areas", href: "/areas" },
   { label: "New Builds", href: "/areas/sandstones-new-builds" },
+  { label: "Renovations", href: "/renovations" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ] as const;
@@ -36,6 +37,7 @@ export const FOOTER_NAV = [
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
   { label: "New Builds", href: "/areas/sandstones-new-builds" },
+  { label: "Renovations", href: "/renovations" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/#contact" },
 ] as const;
