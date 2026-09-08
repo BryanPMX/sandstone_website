@@ -544,7 +544,7 @@ export function HeroSection() {
               )}
             </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="mt-5 hidden grid-cols-2 gap-3">
               <div className="col-span-2 inline-flex w-full items-center rounded-full border border-[var(--sandstone-charcoal)]/12 bg-white p-1 shadow-[0_14px_34px_-22px_rgba(0,0,0,0.6)]">
                 <button
                   type="button"
