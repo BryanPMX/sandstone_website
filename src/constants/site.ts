@@ -4,7 +4,7 @@
  */
 
 export const SITE_NAV = [
-    { label: "Military PCS", href: "/pcs" },
+  { label: "Military PCS", href: "/pcs" },
   { label: "Areas", href: "/areas" },
   { label: "New Builds", href: "/areas/sandstones-new-builds" },
   { label: "Renovations", href: "/renovations" },
