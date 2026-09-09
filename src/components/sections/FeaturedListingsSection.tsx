@@ -19,7 +19,7 @@ export function FeaturedListingsSection({
       <div className="container mx-auto max-w-6xl px-4">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-[2.15rem]">
-            Sandstone Collection
+            Homes listed in El Paso Texas
           </h2>
           {searchQuery ? (
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--sandstone-charcoal)]/70 md:text-base">

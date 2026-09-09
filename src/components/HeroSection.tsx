@@ -311,6 +311,13 @@ export function HeroSection() {
               aria-hidden
             />
 
+            {/* Darkens only the main-menu band at the top of the hero so the
+                nav links stay legible without a per-letter text shadow. */}
+            <div
+              className="absolute inset-x-0 top-0 hidden h-44 bg-gradient-to-b from-black/50 to-transparent lg:block"
+              aria-hidden
+            />
+
             <form
               onSubmit={handleSearchSubmit}
               className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
