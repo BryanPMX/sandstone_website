@@ -91,7 +91,7 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
                     alt={img.alt}
                     fill
                     className={`object-contain object-center ${
-                      isMLS ? "invert brightness-[11]" : ""
+                      isMLS ? "[filter:invert(1)_brightness(1.5)]" : ""
                     }`}
                   />
                 </div>
