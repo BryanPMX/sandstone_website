@@ -243,7 +243,7 @@ export function SiteHeader({
       className={cn(
         "left-0 right-0 z-[80]",
         overlayDesktop
-          ? "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)] lg:absolute lg:top-[40px] lg:border-none lg:bg-transparent"
+          ? "absolute top-4 border-none bg-transparent lg:top-[40px]"
           : cn(
               "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]",
               isLeadHeader &&
@@ -272,7 +272,7 @@ export function SiteHeader({
 
       <div
         className={cn(
-          "mx-auto flex w-full max-w-7xl flex-col px-4 lg:flex-row lg:px-6 lg:-translate-x-20",
+          "mx-auto flex w-full max-w-7xl flex-col px-4 lg:flex-row lg:px-6",
           isHeroHeader
             ? "py-1 lg:h-28 lg:items-start lg:pt-3"
             : "py-1 lg:h-[92px]"
@@ -505,7 +505,7 @@ export function SiteHeader({
                             className={cn(
                               isLeadHeader
                                 ? "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
-                                : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] transition-all duration-200 hover:text-[var(--sandstone-sand-gold)] hover:drop-shadow-[0_2px_5px_rgba(0,0,0,0.95)] hover:underline hover:decoration-[var(--sandstone-sand-gold)] hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
+                                : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
                               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                             )}
                           >
@@ -531,7 +531,7 @@ export function SiteHeader({
                           className={cn(
                             isLeadHeader
                               ? "inline-flex items-center whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] transition duration-200 hover:-translate-y-px hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
-                              : "whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] transition-all duration-200 hover:text-[var(--sandstone-sand-gold)] hover:drop-shadow-[0_2px_5px_rgba(0,0,0,0.95)] hover:underline hover:decoration-[var(--sandstone-sand-gold)] hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
+                              : "whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
                             isLeadHeader &&
                               isActiveNavItem(item.href) &&
                               "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] hover:text-[var(--sandstone-navy)]",
@@ -636,7 +636,7 @@ export function SiteHeader({
                             className={cn(
                               isLeadHeader
                                 ? "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
-                                : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] transition-all duration-200 hover:text-[var(--sandstone-sand-gold)] hover:drop-shadow-[0_2px_5px_rgba(0,0,0,0.95)] hover:underline hover:decoration-[var(--sandstone-sand-gold)] hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
+                                : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
                               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                             )}
                           >
@@ -672,7 +672,7 @@ export function SiteHeader({
                             className={cn(
                               isLeadHeader
                                 ? "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
-                                : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] transition-all duration-200 hover:text-[var(--sandstone-sand-gold)] hover:drop-shadow-[0_2px_5px_rgba(0,0,0,0.95)] hover:underline hover:decoration-[var(--sandstone-sand-gold)] hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
+                                : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
                               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
                             )}
                           >
@@ -699,7 +699,7 @@ export function SiteHeader({
                           className={cn(
                             isLeadHeader
                               ? "inline-flex items-center whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
-                              : "whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] transition-all duration-200 hover:text-[var(--sandstone-sand-gold)] hover:drop-shadow-[0_2px_5px_rgba(0,0,0,0.95)] hover:underline hover:decoration-[var(--sandstone-sand-gold)] hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
+                              : "whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
                             isLeadHeader &&
                               isActiveNavItem(item.href) &&
                               "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] hover:text-[var(--sandstone-navy)]",
