@@ -62,6 +62,10 @@ export function SiteHeader({
 
   const desktopLogoSrc = "/desktop-hero-logo.webp";
   const mobileLogoSrc = "/mobile-header-logo.webp";
+  // Navy recolor of the mobile icon, used only on the transparent
+  // hero-overlay header (home page) where the gold icon has too little
+  // contrast against a light sky photo.
+  const mobileLogoNavySrc = "/mobile-header-logo-navy.webp";
 
   // The centered desktop wordmark is navy-on-transparent. That sits on a
   // solid navy header bar everywhere except the hero-overlay header (home
@@ -281,12 +285,17 @@ export function SiteHeader({
         <div className="flex w-full items-center gap-3 lg:hidden">
           <Link
             href="/"
-            className="flex items-center gap-3 text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]"
+            className={cn(
+              "flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]",
+              isHeroHeader
+                ? "text-[var(--sandstone-navy)] focus-visible:ring-[var(--sandstone-navy)]"
+                : "text-[var(--sandstone-sand-gold)] focus-visible:ring-[var(--sandstone-sand-gold)]"
+            )}
             aria-label="Sandstone Real Estate Group - Home"
           >
             <div className="relative h-10 w-10 shrink-0">
               <Image
-                src={mobileLogoSrc}
+                src={isHeroHeader ? mobileLogoNavySrc : mobileLogoSrc}
                 alt="Sandstone Real Estate Group"
                 fill
                 className="object-contain brightness-110 contrast-110"
@@ -309,7 +318,12 @@ export function SiteHeader({
                   ? "Close navigation menu"
                   : "Open navigation menu"
               }
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 text-[11px] font-bold uppercase tracking-[0.09em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+              className={cn(
+                "inline-flex h-10 items-center gap-2 rounded-full border px-3 text-[11px] font-bold uppercase tracking-[0.09em] transition focus-visible:outline-none focus-visible:ring-2",
+                isHeroHeader
+                  ? "border-[var(--sandstone-navy)]/45 bg-[var(--sandstone-navy)]/8 text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/70 hover:bg-[var(--sandstone-navy)]/16 focus-visible:ring-[var(--sandstone-navy)]"
+                  : "border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 text-[var(--sandstone-sand-gold)] hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/16 focus-visible:ring-[var(--sandstone-sand-gold)]"
+              )}
             >
               <span aria-hidden className="inline-flex flex-col gap-1">
                 <span className="block h-0.5 w-4 rounded-full bg-current" />
@@ -550,7 +564,7 @@ export function SiteHeader({
                 <Link
                   href="/"
                   className={cn(
-                    "justify-self-center flex items-center gap-2 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
+                    "justify-self-center flex items-center gap-2 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                     isLeadHeader &&
                       "relative justify-center px-2"
                   )}
