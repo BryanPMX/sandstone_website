@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { BlogShareButtons } from "@/components/blog/BlogShareButtons";
 import { getAllPostSlugs, getPostBySlug, getSortedPosts } from "@/services";
 import { getCategoryLabel } from "@/config/blog-areas";
 
@@ -57,6 +58,15 @@ export async function generateMetadata({
     ? post.coverImage
     : `${siteBase}${post.coverImage}`;
 
+  // Facebook/LinkedIn/etc. link-preview crawlers don't render .webp
+  // og:image files reliably (they fall back to a tiny generic icon
+  // instead of the big photo preview). Route the share-preview image
+  // through a JPEG conversion proxy so shared posts always show the
+  // full picture; the on-page <Image> below still uses the fast webp.
+  const shareImageUrl = `https://wsrv.nl/?url=${encodeURIComponent(
+    imageUrl
+  )}&output=jpg&w=1200&q=82`;
+
   return {
     title,
     description,
@@ -79,7 +89,9 @@ export async function generateMetadata({
       url: canonicalUrl,
       images: [
         {
-          url: imageUrl,
+          url: shareImageUrl,
+          width: 1200,
+          height: 800,
           alt: post.coverImageAlt || post.title,
         },
       ],
@@ -89,7 +101,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [imageUrl],
+      images: [shareImageUrl],
     },
   };
 }
@@ -211,6 +223,10 @@ export default async function BlogPostPage({
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-[var(--sandstone-charcoal)]/80 md:text-lg">
             {post.excerpt}
           </p>
+
+          <div className="mt-5">
+            <BlogShareButtons url={canonicalUrl} title={post.title} />
+          </div>
 
           <div className="relative mt-8 h-64 w-full overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_24px_70px_-38px_rgba(37,52,113,0.5)] md:h-96">
             <Image

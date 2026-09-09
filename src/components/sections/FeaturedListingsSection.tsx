@@ -14,12 +14,15 @@ export function FeaturedListingsSection({
   return (
     <section
       id="listings"
-      className="scroll-mt-20 bg-gradient-to-b from-[#f1ece4] via-[#f8f6f3] to-white py-16 md:py-20"
+      className="scroll-mt-20 bg-gradient-to-b from-[#f1ece4] via-[#f8f6f3] to-white pt-6 pb-16 sm:pt-16 md:pt-20 md:pb-20"
     >
       <div className="container mx-auto max-w-6xl px-4">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-charcoal)] md:text-[2.15rem]">
-            Homes listed in El Paso Texas
+          <h2 className="font-heading text-xl font-bold whitespace-nowrap text-[var(--sandstone-charcoal)] sm:whitespace-normal sm:text-3xl md:text-[2.15rem]">
+            <span className="sm:hidden">Homes Listed in El Paso, Tx</span>
+            <span className="hidden sm:inline">
+              Homes listed in El Paso Texas
+            </span>
           </h2>
           {searchQuery ? (
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--sandstone-charcoal)]/70 md:text-base">
