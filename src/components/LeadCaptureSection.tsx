@@ -371,24 +371,22 @@ export function LeadCaptureSection({
             )}
           </div>
 
-          {isSellerForm && (
-            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
-              <span>By submitting, you agree to receive SMS updates.</span>
-              <button
-                type="button"
-                aria-expanded={smsExpanded}
-                aria-controls={`${formType}-sms-preferences`}
-                onClick={() => setSmsExpanded((prev) => !prev)}
-                className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
-              >
-                {smsExpanded ? "Show less" : "Show more"}
-              </button>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
+            <span>By submitting, you agree to receive SMS updates.</span>
+            <button
+              type="button"
+              aria-expanded={smsExpanded}
+              aria-controls={`${formType}-sms-preferences`}
+              onClick={() => setSmsExpanded((prev) => !prev)}
+              className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
+            >
+              {smsExpanded ? "Show less" : "Show more"}
+            </button>
+          </div>
 
           <div
             id={`${formType}-sms-preferences`}
-            className={isSellerForm && !smsExpanded ? "hidden" : ""}
+            className={!smsExpanded ? "hidden" : ""}
           >
             <fieldset className="space-y-2.5">
             <legend className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
