@@ -8,8 +8,8 @@ type ContactFormProps = {
 };
 
 export function ContactForm({
-  heading = "Find Out How Much Your Home Is Worth?",
-  subheading = "Enter your property information and our team will prepare a personalized home-value estimate.",
+  heading = "Have a Question or Ready to Get Started?",
+  subheading = "Tell us a bit about what you're looking for — buying, selling, renting, or just exploring — and our team will follow up personally.",
 }: ContactFormProps) {
   const turnstileSiteKey = getTurnstileSiteKey();
 
