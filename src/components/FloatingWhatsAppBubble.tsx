@@ -11,30 +11,66 @@ export function FloatingWhatsAppBubble() {
     "Hi, I would like more information about your listings."
   )}`;
 
-  // The fixed mobile "Call" bubble sits in the bottom-right corner of the
-  // viewport. On pages with a lead-capture form (id="contact"), that same
-  // corner is where the SMS-consent text and submit button end up once the
-  // user scrolls that far — the bubble was visually covering them. Hide the
-  // bubble while the contact form is in view so it never overlaps the form.
+  // The fixed mobile "Call" and WhatsApp bubbles sit in the bottom-right
+  // corner of the viewport. That same corner is where any lead-capture
+  // form's SMS-consent text and submit button end up once the user scrolls
+  // that far — the bubbles were visually covering them. Hide both bubbles
+  // whenever ANY <form> on the page (contact, sell, rent, PCS pages, area
+  // pages, listing inquiry, giveaways, etc.) is in view, so they never
+  // overlap a form anywhere on the site — not just the main contact form.
   const [hideForContactForm, setHideForContactForm] = useState(false);
 
   useEffect(() => {
-    const contactSection = document.getElementById("contact");
-
-    if (!contactSection || typeof IntersectionObserver === "undefined") {
+    if (typeof IntersectionObserver === "undefined") {
       return;
     }
 
+    const intersectingForms = new Set<Element>();
+    const observedForms = new Set<Element>();
+
     const observer = new IntersectionObserver(
-      ([entry]) => setHideForContactForm(entry.isIntersecting),
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            intersectingForms.add(entry.target);
+          } else {
+            intersectingForms.delete(entry.target);
+          }
+        });
+        setHideForContactForm(intersectingForms.size > 0);
+      },
       // Only react once the lower portion of the form (where the bubble
       // would overlap) scrolls into the lower part of the viewport.
       { rootMargin: "0px 0px -15% 0px", threshold: 0 }
     );
 
-    observer.observe(contactSection);
+    const observeForm = (form: Element) => {
+      if (!observedForms.has(form)) {
+        observedForms.add(form);
+        observer.observe(form);
+      }
+    };
 
-    return () => observer.disconnect();
+    document.querySelectorAll("form").forEach(observeForm);
+
+    // Some forms (modals, popups like the giveaway signup) only mount into
+    // the DOM after user interaction. Watch for those too so they're covered.
+    const mutationObserver =
+      typeof MutationObserver !== "undefined"
+        ? new MutationObserver(() => {
+            document.querySelectorAll("form").forEach(observeForm);
+          })
+        : null;
+
+    mutationObserver?.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      observer.disconnect();
+      mutationObserver?.disconnect();
+    };
   }, []);
 
   return (
