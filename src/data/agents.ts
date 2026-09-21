@@ -72,14 +72,6 @@ export const agents: Agent[] = [
       "Seller representation",
     ],
   },
-  {
-    slug: "zachary-carrejo",
-    name: "Zachary Carrejo",
-    role: "Software Engineer Intern",
-    image: "/agents/zachary_headshot.PNG",
-    bio: "I am a Software Engineer Intern focused on building modern, reliable, and user-friendly digital experiences. I support Sandstone through website development, technical improvements, troubleshooting, and creating tools that help the team work more efficiently.",
-    specialties: ["Web development","Software engineering","Technical support","Process automation",],
-  },
 ];
 
 export function getAgentBySlug(slug: string): Agent | undefined {
