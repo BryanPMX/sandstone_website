@@ -184,6 +184,7 @@ export default async function PCSPage() {
 
             <div className="absolute inset-x-0 bottom-28 z-10">
               <div className={SECTION_MAX}>
+                <h1 className="mb-4 text-center font-heading text-2xl font-bold text-white md:text-4xl">Fort Bliss PCS & El Paso Relocation</h1>
                 <PcsHeroSearch formId="pcs-hero-search" showCta={false} />
               </div>
             </div>
