@@ -189,14 +189,17 @@ function SectionHeading({
   title,
   description,
   inverse = false,
+  headingTag = "h2",
 }: {
   title: string;
   description?: string;
   inverse?: boolean;
+  headingTag?: "h1" | "h2";
 }) {
+  const HeadingTag = headingTag;
   return (
     <div className="text-center">
-      <h2
+      <HeadingTag
         className={`font-light tracking-wide ${
           inverse
             ? "text-4xl text-white md:text-5xl lg:text-6xl"
@@ -204,7 +207,7 @@ function SectionHeading({
         }`}
       >
         {title}
-      </h2>
+      </HeadingTag>
 
       <GoldDivider wide={inverse} />
 
@@ -428,7 +431,7 @@ export default function FortBlissBahPage() {
       <main className="min-h-screen bg-white text-slate-900">
         <section className="bg-white px-6 py-20 md:py-24">
           <div className="mx-auto max-w-5xl text-center">
-            <SectionHeading title="Understanding Fort Bliss BAH in 2026" />
+            <SectionHeading headingTag="h1" title="Understanding Fort Bliss BAH in 2026" />
 
             <p className="mx-auto mt-8 max-w-4xl text-lg leading-relaxed text-[#405b8d] md:text-xl">
               Your BAH is one of the biggest factors in deciding whether to rent
