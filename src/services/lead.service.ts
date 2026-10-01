@@ -24,29 +24,22 @@ async function submitToWebhook(
   payload: LeadInput,
   webhookUrl: string
 ): Promise<LeadSubmissionResult> {
-  console.log("[LeadService] Submitting webhook for form type:", payload.formType);
-  console.log("[LeadService] Payload:", JSON.stringify(payload, null, 2));
-  
-  const res = await fetch(webhookUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  console.log("[LeadService] Webhook response status:", res.status);
-
-  if (!res.ok) {
-    const text = await res.text();
-    console.error("[LeadService] webhook error:", res.status, text);
-    return {
-      ok: false,
-      error:
-        "We couldn't send your message. Please try again or contact us directly.",
-    };
+  try {
+    const res = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(15000),
+    });
+    if (res.ok) return { ok: true };
+    console.error("[LeadService] webhook rejected submission:", payload.formType, res.status);
+  } catch {
+    console.error("[LeadService] webhook request failed:", payload.formType);
   }
-
-  console.log("[LeadService] Webhook submitted successfully");
-  return { ok: true };
+  return {
+    ok: false,
+    error: "We couldn't confirm your submission. Please contact us directly, or try again shortly.",
+  };
 }
 
 /**
