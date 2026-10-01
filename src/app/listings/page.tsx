@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/constants/seo";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -15,11 +16,20 @@ import {
 } from "@/lib";
 import { getSparkListingsPageSize } from "@/config";
 
-export const metadata = {
-  title: "Listings | Sandstone Real Estate Group",
-  description:
-    "Browse listings curated by Sandstone Real Estate Group in El Paso and the Southwest.",
-};
+export async function generateMetadata({ searchParams }: ListingsPageProps) {
+  const params = await searchParams;
+  const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
+  const query = new URLSearchParams();
+  if (params.search?.trim()) query.set("search", params.search.trim());
+  if (params.market && params.market !== DEFAULT_PROPERTY_SEARCH_MARKET) query.set("market", resolvePropertySearchMarket(params.market));
+  if (page > 1) query.set("page", String(page));
+  const suffix = page > 1 ? ` — Page ${page}` : "";
+  return {
+    title: `Listings${suffix} | Sandstone Real Estate Group`,
+    description: `Browse Sandstone listings in El Paso and the Southwest${page > 1 ? `, page ${page}` : ""}. Find homes and contact our team for property details.`,
+    alternates: { canonical: `${SITE_ORIGIN}/listings${query.size ? `?${query}` : ""}` },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -121,7 +131,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
   const buildPageHref = (page: number) => {
     const nextParams = new URLSearchParams();
     const targetPage = Math.max(1, page);
-    nextParams.set("page", String(targetPage));
+    if (targetPage > 1) nextParams.set("page", String(targetPage));
 
     if (searchQuery) {
       nextParams.set("search", searchQuery);
@@ -131,7 +141,7 @@ export default async function ListingsPage({ searchParams }: ListingsPageProps) 
       nextParams.set("market", market);
     }
 
-    return `/listings?${nextParams.toString()}`;
+    return nextParams.size ? `/listings?${nextParams.toString()}` : "/listings";
   };
 
   return (
