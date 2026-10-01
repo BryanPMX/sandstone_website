@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/constants/seo";
 import { MetadataRoute } from "next";
 import { cache } from "react";
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
@@ -12,6 +13,12 @@ const getCachedBlogPosts = cache(async () => {
 });
 
 const areaPages = [
+  "/areas",
+  "/areas/canutillo-tx",
+  "/areas/downtown-utep",
+  "/areas/east-el-paso",
+  "/areas/fort-bliss",
+  "/areas/santa-teresa-nm",
   "/areas/horizon-city-tx",
   "/areas/upper-valley",
   "/areas/west-el-paso",
@@ -26,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getCachedBlogPosts(),
   ]);
 
-  const baseUrl = "https://www.sandstone.homes";
+  const baseUrl = SITE_ORIGIN;
 
   const areaUrls = areaPages.map((path) => ({
     url: `${baseUrl}${path}`,
@@ -100,12 +107,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/buy`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
       url: `${baseUrl}/sell`,
       lastModified: new Date(),
       changeFrequency: "weekly",
@@ -116,12 +117,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.6,
     },
     {
       url: `${baseUrl}/join`,
