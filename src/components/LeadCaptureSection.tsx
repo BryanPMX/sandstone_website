@@ -164,10 +164,24 @@ export function LeadCaptureSection({
   const action = submitLeadForForm.bind(null, formType);
   const [state, formAction, isPending] = useActionState(action, initialState);
   const [smsExpanded, setSmsExpanded] = useState(false);
+  const startedRef = useRef(false);
+  const [captchaVersion, setCaptchaVersion] = useState(0);
+  const track = (event: string, extra: Record<string, string> = {}) => {
+    const w = window as typeof window & { gtag?: (...args: unknown[]) => void };
+    w.gtag?.("event", event, { form_type: formType, ...extra });
+  };
   const hasCaptchaError =
     state?.success === false && Boolean(state.fieldErrors?.captcha);
   const id = (field: string) => `${formType}-${field}`;
-  useEffect(() => { if (state?.success) { const w = window as typeof window & { gtag?: (...args: unknown[]) => void }; w.gtag?.("event", "generate_lead", { form_type: formType }); } }, [state?.success, formType]);
+  useEffect(() => {
+    if (!state) return;
+    if (!state.success) setCaptchaVersion((version) => version + 1);
+    const w = window as typeof window & { gtag?: (...args: unknown[]) => void };
+    w.gtag?.("event", state.success ? "generate_lead" : "lead_form_error", {
+      form_type: formType,
+      ...(state.success ? {} : { error_type: state.fieldErrors?.captcha ? "captcha" : state.fieldErrors ? "validation" : "delivery" }),
+    });
+  }, [state, formType]);
   const requiresAddress = formType === "sell" || formType === "rent";
   const showMessageField = formType !== "join";
   const isSellerForm = formType === "sell";
@@ -179,7 +193,17 @@ export function LeadCaptureSection({
     <div
       className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6"
     >
-      <form action={formAction} className={isHero ? "space-y-3.5" : "space-y-4"}>
+      <form
+        action={formAction}
+        className={isHero ? "space-y-3.5" : "space-y-4"}
+        onFocus={() => {
+          if (!startedRef.current) {
+            startedRef.current = true;
+            track("lead_form_start");
+          }
+        }}
+        onSubmit={() => track("lead_form_attempt")}
+      >
         {mappingReference ? (
           <>
             <input type="hidden" name="mappingReference" value={mappingReference} />
@@ -204,6 +228,7 @@ export function LeadCaptureSection({
             <Input
               id={id("firstName")}
               name="firstName"
+              autoComplete="given-name"
               placeholder="Jane"
               required
               disabled={isPending}
@@ -221,12 +246,13 @@ export function LeadCaptureSection({
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor={id("lastName")}>Last Name</Label>
+            <Label htmlFor={id("lastName")}>Last Name{formType === "contact" ? " (optional)" : ""}</Label>
             <Input
               id={id("lastName")}
               name="lastName"
+              autoComplete="family-name"
               placeholder="Smith"
-              required
+              required={formType !== "contact"}
               disabled={isPending}
               className={
                 state?.success === false && state.fieldErrors?.lastName
@@ -248,6 +274,7 @@ export function LeadCaptureSection({
             <Input
               id={id("email")}
               name="email"
+              autoComplete="email"
               type="email"
               placeholder="jane@example.com"
               required
@@ -272,6 +299,7 @@ export function LeadCaptureSection({
             <Input
               id={id("phone")}
               name="phone"
+              autoComplete="tel"
               type="tel"
               placeholder="(555) 123-4567"
               required
@@ -360,19 +388,19 @@ export function LeadCaptureSection({
 
             {turnstileSiteKey ? (
               <TurnstileWidget
-                key={`${formType}-turnstile`}
+                key={`${formType}-turnstile-${captchaVersion}`}
                 formType={formType}
                 siteKey={turnstileSiteKey}
               />
             ) : (
               <p className="text-xs text-red-600">
-                Captcha is not configured. Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+                Security verification is temporarily unavailable. Please contact us directly.
               </p>
             )}
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
-            <span>By submitting, you agree to receive SMS updates.</span>
+            <span>Text updates are optional. Choose your preferences below.</span>
             <button
               type="button"
               aria-expanded={smsExpanded}
@@ -380,7 +408,7 @@ export function LeadCaptureSection({
               onClick={() => setSmsExpanded((prev) => !prev)}
               className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
             >
-              {smsExpanded ? "Show less" : "Show more"}
+              {smsExpanded ? "Hide SMS preferences" : "SMS preferences (optional)"}
             </button>
           </div>
 
