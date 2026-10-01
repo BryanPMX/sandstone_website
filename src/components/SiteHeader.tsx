@@ -31,7 +31,7 @@ export function SiteHeader({
   showDesktopCenterLogo = true,
   logoOnly = false,
 }: SiteHeaderProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const isBlogPage = pathname.startsWith("/blog");
 
   const contactMenuId = useId();

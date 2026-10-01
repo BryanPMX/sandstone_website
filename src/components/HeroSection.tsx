@@ -318,6 +318,8 @@ export function HeroSection() {
               aria-hidden
             />
 
+            <h1 className="absolute inset-x-4 top-[20%] z-10 text-center font-heading text-2xl font-bold text-white drop-shadow-md lg:top-[22%] lg:text-4xl">El Paso Homes & Real Estate</h1>
+
             <form
               onSubmit={handleSearchSubmit}
               className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
