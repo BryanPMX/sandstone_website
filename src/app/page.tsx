@@ -150,6 +150,10 @@ export default async function Home() {
 
         <FeaturedListingsSection properties={alejandroSparkProperties} />
 
+        <GoogleReviews />
+
+        <ContactForm />
+
         <FinancingBanner />
 
         <ExploreNearbyAreas compact />
@@ -157,10 +161,6 @@ export default async function Home() {
         <BlogTeaserSection posts={latestPosts} />
 
         <PrimaryActionTiles />
-
-        <ContactForm />
-
-        <GoogleReviews />
       </main>
 
       <SiteFooter />

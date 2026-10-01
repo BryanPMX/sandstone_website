@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { submitListingInquiry } from "@/actions/submit-listing-inquiry";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,15 @@ export function ListingInquiryCard({
     submitListingInquiry,
     initialState
   );
+
+  useEffect(() => {
+    if (!state) return;
+    const w = window as typeof window & { gtag?: (...args: unknown[]) => void };
+    w.gtag?.("event", state.success ? "generate_lead" : "lead_form_error", {
+      form_type: "listing_inquiry",
+      ...(state.success ? {} : { error_type: state.fieldErrors ? "validation" : "delivery" }),
+    });
+  }, [state]);
 
   return (
     <aside className="rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/70 p-5">
@@ -115,7 +124,7 @@ export function ListingInquiryCard({
           className="mt-1 w-full rounded-lg bg-[var(--sandstone-navy)] py-2.5 text-base font-semibold text-white hover:opacity-95"
           disabled={isPending}
         >
-          {isPending ? "Submitting..." : "Submit"}
+          {isPending ? "Submitting..." : "REQUEST PROPERTY DETAILS"}
         </Button>
 
         <p className="text-center text-xs text-[var(--sandstone-charcoal)]/65">
