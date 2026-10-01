@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/constants/seo";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -39,10 +40,7 @@ export async function generateMetadata({
     };
   }
 
-  const siteBase = (
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-    "https://sandstone.homes"
-  ).replace(/\/+$/, "");
+  const siteBase = SITE_ORIGIN;
 
   const canonicalUrl = `${siteBase}/blog/${slug}`;
 
@@ -137,10 +135,7 @@ export default async function BlogPostPage({
     })
     .slice(0, 4);
 
-  const siteBase = (
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-    "https://sandstone.homes"
-  ).replace(/\/+$/, "");
+  const siteBase = SITE_ORIGIN;
 
   const canonicalUrl = `${siteBase}/blog/${slug}`;
 
