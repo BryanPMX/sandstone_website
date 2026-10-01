@@ -67,11 +67,29 @@ export function FloatingWhatsAppBubble() {
       subtree: true,
     });
 
-    return () => {
+
+  return () => {
       observer.disconnect();
       mutationObserver?.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    const trackContactClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const link = event.target.closest<HTMLAnchorElement>("a[href]");
+      if (!link) return;
+      const href = link.getAttribute("href") ?? "";
+      const eventName = href.startsWith("tel:") ? "phone_click"
+        : /^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href) ? "whatsapp_click" : null;
+      if (!eventName) return;
+      const w = window as typeof window & { gtag?: (...args: unknown[]) => void };
+      w.gtag?.("event", eventName, { contact_method: eventName === "phone_click" ? "phone" : "whatsapp" });
+    };
+    document.addEventListener("click", trackContactClick, true);
+    return () => document.removeEventListener("click", trackContactClick, true);
+  }, []);
+
 
   return (
     <>
