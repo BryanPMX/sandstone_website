@@ -18,7 +18,9 @@ export async function submitLeadForForm(
 ): Promise<SubmitLeadState> {
   const raw = {
     firstName: formData.get("firstName") ?? "",
-    lastName: formData.get("lastName") ?? "",
+    lastName: formType === "contact"
+      ? String(formData.get("lastName") ?? "").trim() || "N/A"
+      : formData.get("lastName") ?? "",
     email: formData.get("email") ?? "",
     phone: formData.get("phone") ?? "",
     address: formData.get("address") ?? "",
@@ -100,7 +102,6 @@ export async function submitLeadForForm(
     };
   }
 
-  console.log(`[submitLeadForForm] Webhook URL resolved for ${formType}:`, webhookUrl.substring(0, 50) + "...");
 
   const leadPayload = buildLeadWebhookPayload(formType, {
     firstName: parsed.data.firstName,
