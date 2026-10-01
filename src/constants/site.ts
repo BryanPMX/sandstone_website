@@ -75,7 +75,7 @@ export const HERO_CTA = "Schedule a Private Tour";
 export const CONTACT_HEADLINE = "Want to learn more about us?";
 export const CONTACT_SUBHEADLINE =
   "We'd be happy to help you find your dream home.";
-export const CONTACT_CTA = "SCHEDULE A VISIT";
+export const CONTACT_CTA = "GET PERSONALIZED HELP";
 
 /** Links and labels for legal pages referenced across forms and footer. */
 
