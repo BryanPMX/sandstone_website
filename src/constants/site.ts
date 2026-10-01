@@ -32,7 +32,12 @@ export const CONTACT_US_MENU = [
 ] as const;
 
 export const FOOTER_NAV = [
-  { label: "Buy", href: "/listings?page=1" },
+  { label: "Map Search", href: "/listings/map" },
+  { label: "Our Team", href: "/join" },
+  { label: "BAH Calculator", href: "/bah-calculator" },
+  { label: "Fort Bliss BAH", href: "/bah-fort-bliss-2026" },
+  { label: "PCS Checklist", href: "/pcs-el-paso-checklist" },
+  { label: "Buy", href: "/listings" },
   { label: "Sell", href: "/sell" },
   { label: "Military PCS", href: "/pcs" },
   { label: "New Builds", href: "/areas/sandstones-new-builds" },
