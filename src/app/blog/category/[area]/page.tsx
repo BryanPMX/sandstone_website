@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/constants/seo";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -60,7 +61,7 @@ export async function generateMetadata({
     description,
 
     alternates: {
-      canonical: `https://sandstone.homes/blog/category/${area}`,
+      canonical: `${SITE_ORIGIN}/blog/category/${area}`,
     },
 
     openGraph: {
