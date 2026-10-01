@@ -1,4 +1,5 @@
 ---
+seoTitle: "El Paso May Lifestyle Guide | Sandstone"
 title: "Sun City Living: Making the Most of May in El Paso"
 date: 2026-05-05T10:00:00.000-06:00
 excerpt: There is a specific energy that hits El Paso in May. The Franklin

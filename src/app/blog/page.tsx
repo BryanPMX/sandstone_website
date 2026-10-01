@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/constants/seo";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -11,7 +12,7 @@ export const metadata = {
   description:
     "Explore El Paso real estate insights, Fort Bliss PCS resources, VA loan guidance, home buying and selling tips, neighborhood guides, market updates, and local lifestyle content from Sandstone Real Estate Group.",
   alternates: {
-    canonical: "https://sandstone.homes/blog",
+    canonical: `${SITE_ORIGIN}/blog`,
   },
 };
 

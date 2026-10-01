@@ -22,7 +22,7 @@ keywords:
 area: military-pcs
 ---
 
-# How Does a PCS Move to El Paso Work? Your Complete 2026 Guide to Fort Bliss Relocation
+## How Does a PCS Move to El Paso Work? Your Complete 2026 Guide to Fort Bliss Relocation
 
 ---
 
@@ -32,7 +32,7 @@ This guide answers all of it — step by step — so you can arrive prepared and
 
 ---
 
-## What Is a PCS Move?
+### What Is a PCS Move?
 
 A **Permanent Change of Station (PCS)** is an official military relocation to a new duty station. Unlike temporary duty (TDY), a PCS move is long-term — typically 2 to 4 years — and comes with relocation benefits including moving allowances, travel pay, and a Basic Allowance for Housing (BAH) tied to your new duty location.
 
@@ -40,7 +40,7 @@ El Paso's primary installation is **Fort Bliss**, home of the 1st Armored Divisi
 
 ---
 
-## Step 1: Receiving Your Orders
+### Step 1: Receiving Your Orders
 
 The PCS process starts when you receive official assignment orders. As soon as you have them, take these steps:
 
@@ -52,7 +52,7 @@ The PCS process starts when you receive official assignment orders. As soon as y
 
 ---
 
-## Step 2: In-Processing at Fort Bliss
+### Step 2: In-Processing at Fort Bliss
 
 All incoming service members report to the **Fort Bliss Reception Detachment** at **Building 909, 909 Pleasonton Road**, which is staffed 24 hours a day. Call (915) 569-5261 if you need airport pickup from El Paso International Airport upon arrival.
 
@@ -68,7 +68,7 @@ Plan to spend approximately **five days** completing finance, medical, and denta
 
 ---
 
-## Step 3: Understanding Your BAH in El Paso
+### Step 3: Understanding Your BAH in El Paso
 
 One of the biggest advantages of a PCS to El Paso is how far your BAH stretches. El Paso's cost of living is well below the national average, with a median home sale price of approximately **$246,000** — roughly 43% below the national median.
 
@@ -86,9 +86,9 @@ For E-5s and above with dependents, BAH is often enough to **cover a full mortga
 
 ---
 
-## Step 4: Choosing Between On-Post and Off-Post Housing
+### Step 4: Choosing Between On-Post and Off-Post Housing
 
-### On-Post Housing
+#### On-Post Housing
 
 Fort Bliss family housing is managed by **Balfour Beatty Communities** (also referenced as Corvias Military Living), with over **4,469 units** across 17 distinct neighborhoods. Homes range from duplexes for junior enlisted to larger single-family homes for senior NCOs and officers. Much of the housing stock has been built or renovated in the last 15 years.
 
@@ -104,17 +104,17 @@ Fort Bliss family housing is managed by **Balfour Beatty Communities** (also ref
 
 Contact the Housing Services Office at **(915) 277-6707** as soon as you receive orders to get on the waitlist.
 
-### Off-Post Housing
+#### Off-Post Housing
 
 Most military families at Fort Bliss live off post. El Paso offers excellent value — your BAH can often cover a mortgage, especially with a VA loan. El Paso has **no VA loan limit** for borrowers with full entitlement, meaning you can finance the full purchase price with zero down and no private mortgage insurance (PMI).
 
 ---
 
-## Step 5: Picking the Right Neighborhood
+### Step 5: Picking the Right Neighborhood
 
 El Paso is a large city with 139 zip codes. The neighborhood you choose should align with which gate is closest to your unit. Here's a breakdown:
 
-### Northeast El Paso *(Closest to Main Installation / Cassidy & Sheridan Gates)*
+#### Northeast El Paso *(Closest to Main Installation / Cassidy & Sheridan Gates)*
 
 The most popular area for enlisted families. Easy US-54 access to post, family-friendly streets, solid schools, and good variety of homes.
 
@@ -122,7 +122,7 @@ The most popular area for enlisted families. Easy US-54 access to post, family-f
 - **Typical rent:** $1,300–$1,700/month (2–3 bedroom)
 - **Commute:** 10–15 minutes to Cassidy Gate
 
-### East El Paso & Horizon City *(Chaffee Gate)*
+#### East El Paso & Horizon City *(Chaffee Gate)*
 
 Newer construction, top-rated schools, and suburban feel. Popular with families wanting more space at lower prices.
 
@@ -130,7 +130,7 @@ Newer construction, top-rated schools, and suburban feel. Popular with families 
 - **Home prices:** $250K–$400K range
 - **Commute:** 15–25 minutes
 
-### West El Paso *(Biggs AAF Side)*
+#### West El Paso *(Biggs AAF Side)*
 
 Best for service members assigned to the Biggs side of the installation. Noticeably higher quality of life with well-rated schools in the Canutillo and EPISD westside zones.
 
@@ -139,7 +139,7 @@ Best for service members assigned to the Biggs side of the installation. Noticea
 
 ---
 
-## What to Expect When You Arrive: Practical Tips
+### What to Expect When You Arrive: Practical Tips
 
 **Housing gap is common.** Many families arrive before their household goods. Plan for 1–3 weeks in temporary lodging. The Fort Bliss on-post lodge (Building T-195) accepts reservations in advance — book early, as it fills fast from May through August.
 
@@ -153,7 +153,7 @@ Best for service members assigned to the Biggs side of the installation. Noticea
 
 ---
 
-## Should You Buy or Rent During a PCS?
+### Should You Buy or Rent During a PCS?
 
 This is one of the most common questions for military families PCSing to El Paso — and the answer depends on your timeline and goals.
 
@@ -171,7 +171,7 @@ El Paso's housing market is one of the most accessible in the country for a city
 
 ---
 
-## Quick Reference: Fort Bliss Key Contacts
+### Quick Reference: Fort Bliss Key Contacts
 
 | Resource | Contact |
 |----------|---------|
@@ -183,7 +183,7 @@ El Paso's housing market is one of the most accessible in the country for a city
 
 ---
 
-## Thinking About Buying a Home Near Fort Bliss?
+### Thinking About Buying a Home Near Fort Bliss?
 
 If you're considering purchasing property during your PCS to El Paso, the timing matters — and so does knowing the right neighborhoods, school districts, and VA loan process for the local market.
 

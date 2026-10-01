@@ -21,6 +21,7 @@ export default function RentPage() {
           formType="rent"
           sectionId="rent-lead"
           heading="Rent My House"
+          headingTag="h1"
           subheading="Tell us about your property and rental goals. We’ll help you understand your options and plan the next steps."
           showAside={false}
           ctaLabel="GET MY RENTAL PLAN"

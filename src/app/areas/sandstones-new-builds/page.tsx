@@ -165,7 +165,7 @@ const UTILITIES = [
     provider:  "City of Midland",
     description: "Waste collection and recycling services by City of Midland Sanitation.",
     linkLabel: "Visit Website",
-    href:      "https://www.midlandtexas.gov/196/Sanitation",
+    href:      "https://midlandtexas.gov/149/Solid-Waste",
   },
   {
     icon:      `${BASE}/icons/internet.jpg`,
@@ -317,9 +317,9 @@ export default function SandstoneNewBuildsPage() {
 
             <div className="mb-8 flex flex-col items-center text-center">
               <span className="mb-3 block h-px w-10 bg-[var(--sandstone-sand-gold)]" />
-              <h1 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl lg:text-5xl">
+              <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl lg:text-5xl">
                 New Construction Homes in Midland, TX
-              </h1>
+              </h2>
               <p className="mt-2 text-[15px] italic text-[var(--sandstone-sand-gold)]">
                 New construction by Sandstone Home Builders · Midland, TX
               </p>

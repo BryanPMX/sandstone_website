@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
@@ -234,6 +235,9 @@ export default function JoinPage() {
             </div>
 
             <AgentsCarousel agents={agents} />
+            <ul className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3" aria-label="Team profiles">
+              {agents.map(agent => <li key={agent.slug}><Link href={`/agents/${agent.slug}`} className="underline underline-offset-4">{agent.name}</Link></li>)}
+            </ul>
           </div>
         </section>
 

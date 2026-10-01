@@ -148,7 +148,7 @@ const NEARBY = {
     {
       name: "Target",
       time: "15 min",
-      img: "/areas/santa-teresa/target.jpg",
+      img: "/areas/santa%20teresa/target.png",
     },
   ],
   shopping: [

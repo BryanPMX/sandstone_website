@@ -37,6 +37,16 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      ...[
+        ["horizon-city-tx", "horizon-city-tx"],
+        ["upper-valley-el-paso", "upper-valley"],
+        ["west-el-paso", "west-el-paso"],
+      ].map(([oldSlug, areaSlug]) => ({
+        source: `/blog/category/${oldSlug}`,
+        destination: `/areas/${areaSlug}`,
+        permanent: true,
+      })),
+
       {
         source: "/blog/category/fort-bliss",
         destination: "/blog/category/military-pcs",

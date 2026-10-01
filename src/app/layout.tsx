@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/constants/seo";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import Script from "next/script";
@@ -13,6 +14,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_ORIGIN),
   title: "Sandstone Real Estate Group | El Paso",
   description:
     "Luxury. Lifestyle. Legacy. Redefining real estate in El Paso and the Southwest through trust, lifestyle, and innovation.",
