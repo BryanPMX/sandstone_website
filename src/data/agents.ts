@@ -60,19 +60,7 @@ export const agents: Agent[] = [
       "Seller representation",
     ],
   },
-  {
-    slug: "cassie-majestic",
-    name: "Cassie Majestic",
-    role: "Texas REALTOR®",
-    image: "/agents/Cassie-headshot.png",
-    bio: "Cassie is a dedicated real estate professional who helps buyers and sellers move forward with confidence. She provides attentive service, clear communication, and personalized guidance throughout the real estate process.",
-    specialties: [
-      "Residential real estate",
-      "Buyer representation",
-      "Seller representation",
-    ],
-  },
-];
+  ];
 
 export function getAgentBySlug(slug: string): Agent | undefined {
   return agents.find((agent) => agent.slug === slug);
