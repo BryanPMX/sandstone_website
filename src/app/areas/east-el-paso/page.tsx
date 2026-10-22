@@ -1,3 +1,4 @@
+import { AreaSectionMenu } from "@/components/areas/AreaSectionMenu";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -247,7 +248,7 @@ export default async function EastElPasoPage() {
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
-      <main className="min-h-screen bg-[var(--sandstone-off-white)]">
+      <main className="area-guide min-h-screen bg-[var(--sandstone-off-white)]">
 
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[640px] items-end overflow-hidden lg:min-h-[760px]">
@@ -296,8 +297,10 @@ export default async function EastElPasoPage() {
           </div>
         </section>
 
+        <AreaSectionMenu />
+
         {/* ── Market Snapshot ──────────────────────────────────────────────── */}
-        <section className="bg-white py-20 md:py-24">
+        <section id="market" className="bg-white py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
@@ -421,7 +424,7 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Browse Listings ──────────────────────────────────────────────── */}
-        <section id="listings" className="bg-white py-16 scroll-mt-20">
+        <section id="listings" className="bg-white py-16">
           <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
             <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
               Browse East El Paso Listings
@@ -434,7 +437,7 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Schools ──────────────────────────────────────────────────────── */}
-        <section className="bg-white py-20 md:py-24">
+        <section id="schools" className="bg-white py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
@@ -534,7 +537,7 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Convenience at Your Doorstep ─────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
+        <section id="nearby" className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
@@ -664,7 +667,7 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Why Buyers Choose East El Paso ───────────────────────────────── */}
-        <section className="bg-white py-20 md:py-24">
+        <section id="lifestyle" className="bg-white py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <h2 className="mb-10 text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -743,7 +746,7 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── Utilities & Local Services ────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
+        <section id="utilities" className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">
@@ -787,7 +790,7 @@ export default async function EastElPasoPage() {
         </section>
 
         {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
+        <section id="faqs" className="bg-[var(--sandstone-off-white)] py-20 md:py-24">
           <div className="mx-auto max-w-6xl px-5 sm:px-6 lg:px-8">
 
             <div className="mb-10 text-center">

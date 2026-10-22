@@ -1,3 +1,4 @@
+import { AreaSectionMenu } from "@/components/areas/AreaSectionMenu";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -492,7 +493,7 @@ export default async function NortheastElPasoPage() {
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
-      <main className="min-h-screen bg-[var(--sandstone-off-white)]">
+      <main className="area-guide min-h-screen bg-[var(--sandstone-off-white)]">
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
           <Image
@@ -551,8 +552,10 @@ export default async function NortheastElPasoPage() {
           </div>
         </section>
 
+        <AreaSectionMenu />
+
         {/* ── Market Snapshot section ──────────────────────────────────────── */}
-        <section className="bg-white py-16">
+        <section id="market" className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
             <div className="mb-10 text-center">
@@ -779,7 +782,7 @@ export default async function NortheastElPasoPage() {
         </section>
 
         {/* ── Browse Listings section ──────────────────────────────────────── */}
-        <section id="listings" className="bg-white py-16 scroll-mt-20">
+        <section id="listings" className="bg-white py-16">
           <div className="mx-auto max-w-6xl px-4 lg:px-6">
             <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
               Browse Northeast El Paso Listings
@@ -793,7 +796,7 @@ export default async function NortheastElPasoPage() {
         </section>
 
         {/* ── Schools Near Northeast El Paso ────────────────────────────────────── */}
-        <section className="bg-white py-16">
+        <section id="schools" className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
             <div className="mb-10 text-center">
@@ -927,7 +930,7 @@ export default async function NortheastElPasoPage() {
         </section>
 
         {/* ── Convenience at Your Doorstep ─────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
+        <section id="nearby" className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
             <div className="mb-10 text-center">
@@ -1142,7 +1145,7 @@ export default async function NortheastElPasoPage() {
         </section>
 
         {/* ── Why Buyers Choose Northeast El Paso ───────────────────────────────── */}
-        <section className="bg-white py-16">
+        <section id="lifestyle" className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Full-width centered heading */}
             <h2 className="mb-10 text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -1242,7 +1245,7 @@ export default async function NortheastElPasoPage() {
         </section>
 
         {/* ── Utilities & Local Services ────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
+        <section id="utilities" className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
             <div className="mb-10 text-center">
@@ -1322,7 +1325,7 @@ export default async function NortheastElPasoPage() {
         </section>
 
         {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
+        <section id="faqs" className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
             {/* Header */}
             <div className="mb-10 text-center">

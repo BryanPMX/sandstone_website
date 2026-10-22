@@ -1,3 +1,4 @@
+import { AreaSectionMenu } from "@/components/areas/AreaSectionMenu";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -260,7 +261,7 @@ export default async function LowerValleyPage() {
   return (
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
-      <main className="min-h-screen bg-[var(--sandstone-off-white)]">
+      <main className="area-guide min-h-screen bg-[var(--sandstone-off-white)]">
 
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative flex min-h-[600px] items-end overflow-hidden lg:min-h-[720px]">
@@ -320,8 +321,10 @@ export default async function LowerValleyPage() {
           </div>
         </section>
 
+        <AreaSectionMenu />
+
         {/* ── Market Snapshot section ──────────────────────────────────────── */}
-        <section className="bg-white py-16">
+        <section id="market" className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             {/* Header */}
@@ -500,7 +503,7 @@ export default async function LowerValleyPage() {
         </section>
 
         {/* ── Browse Listings section ──────────────────────────────────────── */}
-        <section id="listings" className="bg-white py-16 scroll-mt-20">
+        <section id="listings" className="bg-white py-16">
           <div className="mx-auto max-w-6xl px-4 lg:px-6">
 
             <h2 className="text-center font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
@@ -516,7 +519,7 @@ export default async function LowerValleyPage() {
         </section>
 
         {/* ── Schools Near Lower Valley ────────────────────────────────────── */}
-        <section className="bg-white py-16">
+        <section id="schools" className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             {/* Header */}
@@ -629,7 +632,7 @@ export default async function LowerValleyPage() {
         </section>
 
         {/* ── Convenience at Your Doorstep ─────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
+        <section id="nearby" className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             {/* Header */}
@@ -768,7 +771,7 @@ export default async function LowerValleyPage() {
         </section>
 
         {/* ── Why Buyers Choose Lower Valley ───────────────────────────────── */}
-        <section className="bg-white py-16">
+        <section id="lifestyle" className="bg-white py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             {/* Full-width centered heading */}
@@ -859,7 +862,7 @@ export default async function LowerValleyPage() {
         </section>
 
         {/* ── Utilities & Local Services ────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
+        <section id="utilities" className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             {/* Header */}
@@ -924,7 +927,7 @@ export default async function LowerValleyPage() {
         </section>
 
         {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
-        <section className="bg-[var(--sandstone-off-white)] py-16">
+        <section id="faqs" className="bg-[var(--sandstone-off-white)] py-16">
           <div className="mx-auto max-w-5xl px-4 lg:px-6">
 
             {/* Header */}

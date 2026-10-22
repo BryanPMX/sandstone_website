@@ -95,3 +95,14 @@
     animation: sandstone-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 }
+
+/* Neighborhood anchor headings stay below both sticky navigation bars. */
+.area-guide > section[id] {
+  scroll-margin-top: calc(var(--area-header-height, 93px) + var(--area-menu-height, 62px) + 16px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.area-guide) {
+    scroll-behavior: smooth;
+  }
+}
