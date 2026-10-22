@@ -65,12 +65,17 @@ export const agents: Agent[] = [
   {
     slug: "abril-hernandez",
     name: "Abril Hernandez",
-    role: "Texas REALTOR®",
+    role: "Texas REALTOR® | Bachelor’s Degree in Law",
     image: "/agents/Abril-headshot.png",
-    bio: "Meet Abril Hernandez, a member of the Sandstone Real Estate Group team.",
+    bio: "Abril Hernandez is a dedicated Texas REALTOR® with a Bachelor’s Degree in Law from Mexico. Her legal background brings strong negotiation skills, attention to detail, and professionalism to every transaction. Passionate about helping clients achieve their real estate goals, Abril provides personalized service built on trust, integrity, and clear communication. Proudly serving El Paso, Pecos, Midland, and Odessa, she is committed to making every buying or selling experience smooth and successful.",
+    specialties: [
+      "Residential real estate",
+      "Buyer representation",
+      "Seller representation",
+    ]   
   },
 ];
-
+  
 export function getAgentBySlug(slug: string): Agent | undefined {
   return agents.find((agent) => agent.slug === slug);
 }
