@@ -1,4 +1,5 @@
 ---
+cardTitle: "Fort Bliss: Live Like a Local"
 seoTitle: "Fort Bliss PCS: Live Like a Local in El Paso | Sandstone"
 title: PCSing to Fort Bliss? Your 2026 "Live Like a Local" Guide to El Paso
 date: 2026-05-05T22:00:00.000-06:00

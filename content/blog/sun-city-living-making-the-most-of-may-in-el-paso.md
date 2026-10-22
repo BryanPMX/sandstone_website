@@ -1,4 +1,5 @@
 ---
+cardTitle: "Sun City Living: May 2026"
 seoTitle: "El Paso May Lifestyle Guide | Sandstone"
 title: "Sun City Living: Making the Most of May in El Paso"
 date: 2026-05-05T10:00:00.000-06:00
@@ -6,7 +7,7 @@ excerpt: There is a specific energy that hits El Paso in May. The Franklin
   Mountains turn that perfect shade of dusty gold, the patios start filling up,
   and the city’s social calendar officially kicks into high gear.
 coverImage: /uploads/sun-city-living-making-the-most-of-may-in-el-paso.png
-area: el-paso-neighborhoods
+area: things-to-do-in-el-paso
 ---
 ## Whether you’ve lived here for generations or you’re just getting settled in after a military relocation, being a local in El Paso means knowing exactly where to find the best shade and the best views. Here is your insider guide to the Sun City this month.
 

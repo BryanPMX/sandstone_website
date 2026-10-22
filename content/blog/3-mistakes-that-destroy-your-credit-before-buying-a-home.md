@@ -1,4 +1,5 @@
 ---
+cardTitle: "3 Credit Mistakes to Avoid Before Buying"
 title: 3 Mistakes That Destroy Your Credit Before Buying a Home
 date: 2026-07-28T16:52:00.000-06:00
 excerpt: Before you start touring homes, your credit score is already writing
@@ -17,7 +18,7 @@ keywords:
   - improve credit score before mortgage
   - El Paso real estate
   - home loan credit requirements
-area: el-paso-neighborhoods
+area: buying-a-home
 ---
 ## 3 Mistakes That Destroy Your Credit Before Buying a Home
 

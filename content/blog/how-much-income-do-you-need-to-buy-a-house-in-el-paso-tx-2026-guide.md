@@ -1,4 +1,5 @@
 ---
+cardTitle: "How Much Income Do You Need to Buy?"
 title: How Much Income Do You Need to Buy a House in El Paso, TX? (2026 Guide)
 date: 2026-09-03T12:59:00.000-06:00
 excerpt: How much do you need to earn to buy a home in El Paso? Learn how
@@ -19,7 +20,7 @@ keywords:
   - El Paso TX homes for sale
   - mortgage affordability El Paso
   - first time home buyer El Paso
-area: horizon-city-tx
+area: buying-a-home
 ---
 <h1>If you're thinking about buying a home in El Paso, one of your first questions may be:
 “How much money do I need to make to afford a house?”</h1>

@@ -1,4 +1,5 @@
 ---
+cardTitle: "What to Budget for Utilities"
 title: How Much Do Utilities Really Cost in El Paso, TX? (2026 Guide)
 date: 2026-08-25T16:42:00.000-06:00
 excerpt: How much should you budget for electricity, water, gas, and internet in
@@ -22,7 +23,7 @@ keywords:
   - buying a home in El Paso
   - El Paso home expenses
   - El Paso real estate
-area: fort-bliss
+area: homeownership-costs
 ---
 ## **How Much Do Utilities Really Cost in El Paso, TX?**
 

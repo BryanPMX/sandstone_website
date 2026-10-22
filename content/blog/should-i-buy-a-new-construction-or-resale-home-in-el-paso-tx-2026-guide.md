@@ -1,4 +1,5 @@
 ---
+cardTitle: "New Construction vs. Resale: Which Fits You?"
 title: Should I Buy a New Construction or Resale Home in El Paso, TX? (2026 Guide)
 date: 2026-09-16T11:45:00.000-06:00
 excerpt: New construction or resale home in El Paso? Compare costs, maintenance,
@@ -19,7 +20,7 @@ keywords:
   - El Paso home builders
   - new homes for sale El Paso
   - El Paso real estate
-area: west-el-paso
+area: buying-a-home
 ---
 If you're planning to buy a home in El Paso, you may eventually face an important question:
 

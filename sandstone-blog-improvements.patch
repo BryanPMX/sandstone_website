@@ -1,0 +1,1204 @@
+From 80ac39f1d7d94fc4fa76ad454dea3ec511985e81 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Thu, 22 Oct 2026 20:05:54 +0200
+Subject: [PATCH] Improve blog topics, browsing, featured guides and event
+ freshness
+
+---
+ ...estroy-your-credit-before-buying-a-home.md |   3 +-
+ ...y-that-high-in-el-paso-texas-2026-guide.md |   4 +-
+ .../can-i-buy-a-house-with-no-down-payment.md |   1 +
+ ...ute-time-to-fort-bliss-gates-2026-guide.md |   1 +
+ ...ove-to-el-paso-work-complete-2026-guide.md |   1 +
+ ...es-really-cost-in-el-paso-tx-2026-guide.md |   4 +-
+ ...to-buy-a-house-in-el-paso-tx-2026-guide.md |   4 +-
+ ...2026-live-like-a-local-guide-to-el-paso.md |   2 +
+ ...or-resale-home-in-el-paso-tx-2026-guide.md |   4 +-
+ ...iving-making-the-most-of-may-in-el-paso.md |   4 +-
+ ...events-fort-bliss-activities-summer-fun.md |   2 +
+ ...coming-events-in-el-paso-tx-august-2026.md |   2 +
+ public/admin/index.html                       |  21 +--
+ src/app/blog/[slug]/page.tsx                  |  16 ++-
+ src/app/blog/category/[area]/page.tsx         | 115 ++-------------
+ src/app/blog/page.tsx                         | 132 ++++--------------
+ src/components/BlogAreaTabs.tsx               |   6 +-
+ src/components/blog/BlogBrowse.tsx            | 123 ++++++++++++++++
+ src/components/blog/BlogCard.tsx              |  86 ++++++++++++
+ src/components/blog/BlogCta.tsx               |  29 ++++
+ src/components/blog/FeaturedGuide.tsx         |  43 ++++++
+ src/config/blog-areas.ts                      |  28 ++--
+ src/lib/blog-display.ts                       |   9 ++
+ src/schemas/blog.schema.ts                    |   3 +
+ src/services/blog.service.ts                  |  51 +++++--
+ src/types/blog.ts                             |   4 +
+ 26 files changed, 438 insertions(+), 260 deletions(-)
+ create mode 100644 src/components/blog/BlogBrowse.tsx
+ create mode 100644 src/components/blog/BlogCard.tsx
+ create mode 100644 src/components/blog/BlogCta.tsx
+ create mode 100644 src/components/blog/FeaturedGuide.tsx
+ create mode 100644 src/lib/blog-display.ts
+
+diff --git a/content/blog/3-mistakes-that-destroy-your-credit-before-buying-a-home.md b/content/blog/3-mistakes-that-destroy-your-credit-before-buying-a-home.md
+index d37803a..f3bafdf 100644
+--- a/content/blog/3-mistakes-that-destroy-your-credit-before-buying-a-home.md
++++ b/content/blog/3-mistakes-that-destroy-your-credit-before-buying-a-home.md
+@@ -1,4 +1,5 @@
+ ---
++cardTitle: "3 Credit Mistakes to Avoid Before Buying"
+ title: 3 Mistakes That Destroy Your Credit Before Buying a Home
+ date: 2026-07-28T16:52:00.000-06:00
+ excerpt: Before you start touring homes, your credit score is already writing
+@@ -17,7 +18,7 @@ keywords:
+   - improve credit score before mortgage
+   - El Paso real estate
+   - home loan credit requirements
+-area: el-paso-neighborhoods
++area: buying-a-home
+ ---
+ ## 3 Mistakes That Destroy Your Credit Before Buying a Home
+ 
+diff --git a/content/blog/are-property-taxes-really-that-high-in-el-paso-texas-2026-guide.md b/content/blog/are-property-taxes-really-that-high-in-el-paso-texas-2026-guide.md
+index cd69d46..450dd1b 100644
+--- a/content/blog/are-property-taxes-really-that-high-in-el-paso-texas-2026-guide.md
++++ b/content/blog/are-property-taxes-really-that-high-in-el-paso-texas-2026-guide.md
+@@ -1,4 +1,6 @@
+ ---
++cardTitle: "Understanding El Paso Property Taxes"
++location: "Upper Valley, El Paso"
+ title: Are Property Taxes Really That High in El Paso, Texas? (2026 Guide)
+ date: 2026-09-09T13:41:00.000-06:00
+ excerpt: Are property taxes really high in El Paso? Learn how property taxes
+@@ -21,7 +23,7 @@ keywords:
+   - El Paso homeownership costs
+   - buying a home in El Paso
+   - El Paso real estate
+-area: upper-valley-el-paso
++area: homeownership-costs
+ ---
+ If you're considering buying a home in El Paso, Texas, you may have heard one concern come up repeatedly:
+ 
+diff --git a/content/blog/can-i-buy-a-house-with-no-down-payment.md b/content/blog/can-i-buy-a-house-with-no-down-payment.md
+index b705d0a..6f93f76 100644
+--- a/content/blog/can-i-buy-a-house-with-no-down-payment.md
++++ b/content/blog/can-i-buy-a-house-with-no-down-payment.md
+@@ -1,4 +1,5 @@
+ ---
++cardTitle: "Can You Buy With No Down Payment?"
+ title: Can I Buy a House With No Down Payment?
+ date: 2026-06-04T14:29:00.000-06:00
+ excerpt: Buying a home with no down payment is possible through VA loans, USDA
+diff --git a/content/blog/el-paso-neighborhoods-by-commute-time-to-fort-bliss-gates-2026-guide.md b/content/blog/el-paso-neighborhoods-by-commute-time-to-fort-bliss-gates-2026-guide.md
+index c22d972..51b73df 100644
+--- a/content/blog/el-paso-neighborhoods-by-commute-time-to-fort-bliss-gates-2026-guide.md
++++ b/content/blog/el-paso-neighborhoods-by-commute-time-to-fort-bliss-gates-2026-guide.md
+@@ -1,4 +1,5 @@
+ ---
++cardTitle: "Compare Neighborhoods by Fort Bliss Commute"
+ title: El Paso Neighborhoods by Commute Time to Fort Bliss Gates (2026 Guide)
+ date: 2026-06-16T17:36:00.000-06:00
+ excerpt: The wrong neighborhood can add 1,000+ hours to your commute over a
+diff --git a/content/blog/how-does-a-pcs-move-to-el-paso-work-complete-2026-guide.md b/content/blog/how-does-a-pcs-move-to-el-paso-work-complete-2026-guide.md
+index 195d0c0..f5d5e84 100644
+--- a/content/blog/how-does-a-pcs-move-to-el-paso-work-complete-2026-guide.md
++++ b/content/blog/how-does-a-pcs-move-to-el-paso-work-complete-2026-guide.md
+@@ -1,4 +1,5 @@
+ ---
++cardTitle: "Your Guide to a Fort Bliss PCS Move"
+ title: How Does a PCS Move to El Paso Work? Complete 2026 Guide
+ date: 2026-06-10T15:13:00.000-06:00
+ excerpt: Getting PCS orders to El Paso? This guide walks you through every step
+diff --git a/content/blog/how-much-do-utilities-really-cost-in-el-paso-tx-2026-guide.md b/content/blog/how-much-do-utilities-really-cost-in-el-paso-tx-2026-guide.md
+index 4e1875a..67fbd06 100644
+--- a/content/blog/how-much-do-utilities-really-cost-in-el-paso-tx-2026-guide.md
++++ b/content/blog/how-much-do-utilities-really-cost-in-el-paso-tx-2026-guide.md
+@@ -1,4 +1,6 @@
+ ---
++cardTitle: "What to Budget for Utilities"
++location: "Fort Bliss"
+ title: How Much Do Utilities Really Cost in El Paso, TX? (2026 Guide)
+ date: 2026-08-25T16:42:00.000-06:00
+ excerpt: How much should you budget for electricity, water, gas, and internet in
+@@ -22,7 +24,7 @@ keywords:
+   - buying a home in El Paso
+   - El Paso home expenses
+   - El Paso real estate
+-area: fort-bliss
++area: homeownership-costs
+ ---
+ ## **How Much Do Utilities Really Cost in El Paso, TX?**
+ 
+diff --git a/content/blog/how-much-income-do-you-need-to-buy-a-house-in-el-paso-tx-2026-guide.md b/content/blog/how-much-income-do-you-need-to-buy-a-house-in-el-paso-tx-2026-guide.md
+index ff21fec..e4b7df2 100644
+--- a/content/blog/how-much-income-do-you-need-to-buy-a-house-in-el-paso-tx-2026-guide.md
++++ b/content/blog/how-much-income-do-you-need-to-buy-a-house-in-el-paso-tx-2026-guide.md
+@@ -1,4 +1,6 @@
+ ---
++cardTitle: "How Much Income Do You Need to Buy?"
++location: "Horizon City, TX"
+ title: How Much Income Do You Need to Buy a House in El Paso, TX? (2026 Guide)
+ date: 2026-09-03T12:59:00.000-06:00
+ excerpt: How much do you need to earn to buy a home in El Paso? Learn how
+@@ -19,7 +21,7 @@ keywords:
+   - El Paso TX homes for sale
+   - mortgage affordability El Paso
+   - first time home buyer El Paso
+-area: horizon-city-tx
++area: buying-a-home
+ ---
+ <h1>If you're thinking about buying a home in El Paso, one of your first questions may be:
+ “How much money do I need to make to afford a house?”</h1>
+diff --git a/content/blog/pcsing-to-fort-bliss-your-2026-live-like-a-local-guide-to-el-paso.md b/content/blog/pcsing-to-fort-bliss-your-2026-live-like-a-local-guide-to-el-paso.md
+index f70d4a9..a877797 100644
+--- a/content/blog/pcsing-to-fort-bliss-your-2026-live-like-a-local-guide-to-el-paso.md
++++ b/content/blog/pcsing-to-fort-bliss-your-2026-live-like-a-local-guide-to-el-paso.md
+@@ -1,4 +1,6 @@
+ ---
++cardTitle: "Fort Bliss: Live Like a Local"
++eventMonth: "2026-05"
+ seoTitle: "Fort Bliss PCS: Live Like a Local in El Paso | Sandstone"
+ title: PCSing to Fort Bliss? Your 2026 "Live Like a Local" Guide to El Paso
+ date: 2026-05-05T22:00:00.000-06:00
+diff --git a/content/blog/should-i-buy-a-new-construction-or-resale-home-in-el-paso-tx-2026-guide.md b/content/blog/should-i-buy-a-new-construction-or-resale-home-in-el-paso-tx-2026-guide.md
+index ee887ae..ef6dcfc 100644
+--- a/content/blog/should-i-buy-a-new-construction-or-resale-home-in-el-paso-tx-2026-guide.md
++++ b/content/blog/should-i-buy-a-new-construction-or-resale-home-in-el-paso-tx-2026-guide.md
+@@ -1,4 +1,6 @@
+ ---
++cardTitle: "New Construction vs. Resale: Which Fits You?"
++location: "West El Paso"
+ title: Should I Buy a New Construction or Resale Home in El Paso, TX? (2026 Guide)
+ date: 2026-09-16T11:45:00.000-06:00
+ excerpt: New construction or resale home in El Paso? Compare costs, maintenance,
+@@ -19,7 +21,7 @@ keywords:
+   - El Paso home builders
+   - new homes for sale El Paso
+   - El Paso real estate
+-area: west-el-paso
++area: buying-a-home
+ ---
+ If you're planning to buy a home in El Paso, you may eventually face an important question:
+ 
+diff --git a/content/blog/sun-city-living-making-the-most-of-may-in-el-paso.md b/content/blog/sun-city-living-making-the-most-of-may-in-el-paso.md
+index ea2f9f2..aeac6d4 100644
+--- a/content/blog/sun-city-living-making-the-most-of-may-in-el-paso.md
++++ b/content/blog/sun-city-living-making-the-most-of-may-in-el-paso.md
+@@ -1,4 +1,6 @@
+ ---
++cardTitle: "Sun City Living: May 2026"
++eventMonth: "2026-05"
+ seoTitle: "El Paso May Lifestyle Guide | Sandstone"
+ title: "Sun City Living: Making the Most of May in El Paso"
+ date: 2026-05-05T10:00:00.000-06:00
+@@ -6,7 +8,7 @@ excerpt: There is a specific energy that hits El Paso in May. The Franklin
+   Mountains turn that perfect shade of dusty gold, the patios start filling up,
+   and the city’s social calendar officially kicks into high gear.
+ coverImage: /uploads/sun-city-living-making-the-most-of-may-in-el-paso.png
+-area: el-paso-neighborhoods
++area: things-to-do-in-el-paso
+ ---
+ ## Whether you’ve lived here for generations or you’re just getting settled in after a military relocation, being a local in El Paso means knowing exactly where to find the best shade and the best views. Here is your insider guide to the Sun City this month.
+ 
+diff --git a/content/blog/things-to-do-in-el-paso-this-june-2026-family-events-fort-bliss-activities-summer-fun.md b/content/blog/things-to-do-in-el-paso-this-june-2026-family-events-fort-bliss-activities-summer-fun.md
+index fd4d060..dfcfc1b 100644
+--- a/content/blog/things-to-do-in-el-paso-this-june-2026-family-events-fort-bliss-activities-summer-fun.md
++++ b/content/blog/things-to-do-in-el-paso-this-june-2026-family-events-fort-bliss-activities-summer-fun.md
+@@ -1,4 +1,6 @@
+ ---
++cardTitle: "El Paso Events: June 2026"
++eventMonth: "2026-06"
+ title: "Things to Do in El Paso This June 2026: Family Events, Fort Bliss
+   Activities & Summer Fun"
+ date: 2026-06-02T14:14:00.000-06:00
+diff --git a/content/blog/upcoming-events-in-el-paso-tx-august-2026.md b/content/blog/upcoming-events-in-el-paso-tx-august-2026.md
+index a67385f..83221cd 100644
+--- a/content/blog/upcoming-events-in-el-paso-tx-august-2026.md
++++ b/content/blog/upcoming-events-in-el-paso-tx-august-2026.md
+@@ -1,4 +1,6 @@
+ ---
++cardTitle: "El Paso Events: August 2026"
++eventMonth: "2026-08"
+ title: Upcoming Events in El Paso, TX — August 2026
+ date: 2026-08-12T12:57:00.000-06:00
+ excerpt: From arena concerts like Santana and Shinedown to free Fort Bliss family days and weekend markets, here's your complete guide to what's happening in El Paso this August.
+diff --git a/public/admin/index.html b/public/admin/index.html
+index f126537..be01a71 100644
+--- a/public/admin/index.html
++++ b/public/admin/index.html
+@@ -99,6 +99,9 @@
+               format: "frontmatter",
+               fields: [
+                 { label: "Title", name: "title", widget: "string" },
++                { label: "Card Title", name: "cardTitle", widget: "string", required: false, hint: "Optional short title for article cards. The full title remains on the article." },
++                { label: "Location Tag", name: "location", widget: "string", required: false },
++                { label: "Event Month", name: "eventMonth", widget: "string", required: false, pattern: ["^\\d{4}-(0[1-9]|1[0-2])$", "Use YYYY-MM"], hint: "For time-sensitive guides. Past months move to the archive automatically." },
+                 { label: "Date", name: "date", widget: "datetime" },
+                 { label: "Excerpt", name: "excerpt", widget: "text" },
+                 { label: "SEO Title", name: "seoTitle", widget: "seo-counter"},
+@@ -107,18 +110,18 @@
+                 { label: "Image Alt Text", name: "coverImageAlt", widget: "string", hint: "Describe the image for screen readers and SEO. "},
+                 { label: "Keywords", name: "keywords", widget: "list"},
+                 {
+-                  label: "Area",
++                  label: "Topic",
+                   name: "area",
+                   widget: "select",
+-                  hint: "The El Paso area this post is about.",
++                  hint: "Choose the article topic. Add a location separately if relevant.",
+                   options: [
+-                    { label: "Upper Valley El Paso", value: "upper-valley-el-paso" },
+-                    { label: "Horizon City TX",      value: "horizon-city-tx" },
+-                    { label: "Fort Bliss",           value: "fort-bliss" },
+-                    { label: "West El Paso",         value: "west-el-paso" },
+-                    { label: "Northeast El Paso",    value: "northeast-el-paso" },
+-                    { label: "Santa Teresa NM",      value: "santa-teresa-nm" },
+-                    { label: "Canutillo TX",         value: "canutillo-tx" },
++                    { label: "Military PCS", value: "military-pcs" },
++                    { label: "VA Loans", value: "va-loans" },
++                    { label: "Buying a Home", value: "buying-a-home" },
++                    { label: "Homeownership Costs", value: "homeownership-costs" },
++                    { label: "Selling a Home", value: "selling-a-home" },
++                    { label: "El Paso Neighborhoods", value: "el-paso-neighborhoods" },
++                    { label: "Things to Do in El Paso", value: "things-to-do-in-el-paso" },
+                   ],
+                 },
+                 { label: "Body", name: "body", widget: "markdown" },
+diff --git a/src/app/blog/[slug]/page.tsx b/src/app/blog/[slug]/page.tsx
+index 9e86185..8cc2eae 100644
+--- a/src/app/blog/[slug]/page.tsx
++++ b/src/app/blog/[slug]/page.tsx
+@@ -8,6 +8,10 @@ import { BlogShareButtons } from "@/components/blog/BlogShareButtons";
+ import { getAllPostSlugs, getPostBySlug, getSortedPosts } from "@/services";
+ import { getCategoryLabel } from "@/config/blog-areas";
+ 
++import { getBlogMonth } from "@/lib/blog-display";
++
++export const revalidate = 3600;
++
+ interface BlogPostPageProps {
+   params: Promise<{ slug: string }>;
+ }
+@@ -118,7 +122,7 @@ export default async function BlogPostPage({
+   const allPosts = await getSortedPosts();
+ 
+   const relatedPosts = allPosts
+-    .filter((item) => item.slug !== post.slug)
++    .filter((item) => item.slug !== post.slug && (!item.eventMonth || item.eventMonth >= getBlogMonth()))
+     .sort((a, b) => {
+       if (a.area === post.area && b.area !== post.area) {
+         return -1;
+@@ -207,10 +211,16 @@ export default async function BlogPostPage({
+             )}
+ 
+             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
+-              {formatBlogDate(post.date)}
++              {formatBlogDate(post.date)} · {post.readingMinutes} min read
+             </p>
+           </div>
+ 
++          {post.eventMonth && post.eventMonth < getBlogMonth() && (
++            <p className="mt-5 rounded-xl border border-[var(--sandstone-navy)]/15 bg-white p-4 text-sm text-[var(--sandstone-charcoal)]">
++              This guide covers {post.eventMonth}. Event dates and availability may have changed. <Link href="/blog/category/things-to-do-in-el-paso" className="font-semibold underline">Browse local guides</Link>.
++            </p>
++          )}
++
+           <h1 className="mt-3 font-heading text-3xl font-bold leading-tight text-[var(--sandstone-charcoal)] md:text-5xl">
+             {post.title}
+           </h1>
+@@ -274,7 +284,7 @@ export default async function BlogPostPage({
+                       </p>
+ 
+                       <h3 className="mt-2 font-heading text-lg font-bold text-[var(--sandstone-charcoal)] transition group-hover:text-[var(--sandstone-navy)]">
+-                        {relatedPost.title}
++                        {relatedPost.cardTitle || relatedPost.title}
+                       </h3>
+ 
+                       <p className="mt-2 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/70">
+diff --git a/src/app/blog/category/[area]/page.tsx b/src/app/blog/category/[area]/page.tsx
+index ec45d0e..3d64f0f 100644
+--- a/src/app/blog/category/[area]/page.tsx
++++ b/src/app/blog/category/[area]/page.tsx
+@@ -1,5 +1,4 @@
+ import { SITE_ORIGIN } from "@/constants/seo";
+-import Image from "next/image";
+ import Link from "next/link";
+ import { notFound } from "next/navigation";
+ import { SiteFooter } from "@/components/SiteFooter";
+@@ -12,6 +11,12 @@ import {
+   isValidCategorySlug,
+ } from "@/config/blog-areas";
+ 
++import { BlogBrowse } from "@/components/blog/BlogBrowse";
++import { BlogCta } from "@/components/blog/BlogCta";
++import { getBlogMonth } from "@/lib/blog-display";
++
++export const revalidate = 3600;
++
+ interface CategoryPageProps {
+   params: Promise<{ area: string }>;
+ }
+@@ -48,6 +53,7 @@ export async function generateMetadata({
+       "Explore El Paso neighborhoods, communities, nearby cities, and local area guides from Sandstone Real Estate Group.",
+     "things-to-do-in-el-paso":
+       "Discover things to do, local events, attractions, and lifestyle resources throughout El Paso and the surrounding area.",
++    "homeownership-costs": "Understand property taxes, utilities, and the ongoing costs of owning a home in El Paso.",
+     "market-updates":
+       "El Paso real estate market updates, housing trends, and local insights for buyers, sellers, and homeowners.",
+   };
+@@ -78,14 +84,6 @@ export async function generateMetadata({
+   };
+ }
+ 
+-function formatBlogDate(value: string): string {
+-  return new Intl.DateTimeFormat("en-US", {
+-    year: "numeric",
+-    month: "long",
+-    day: "numeric",
+-  }).format(new Date(value));
+-}
+-
+ export default async function BlogCategoryPage({
+   params,
+ }: CategoryPageProps) {
+@@ -122,6 +120,7 @@ export default async function BlogCategoryPage({
+     "things-to-do-in-el-paso":
+       "Discover local events, attractions, restaurants, activities, and community highlights that make living in El Paso unique.",
+ 
++    "homeownership-costs": "Understand property taxes, utilities, and the ongoing costs of owning a home in El Paso.",
+     "market-updates":
+       "Stay informed with local housing trends, market updates, and real estate insights for buyers, sellers, and homeowners throughout El Paso.",
+   };
+@@ -159,102 +158,8 @@ export default async function BlogCategoryPage({
+ 
+           <BlogAreaTabs activeCategory={area} />
+ 
+-          {posts.length === 0 ? (
+-            <div className="mt-10 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-10 text-center shadow-sm">
+-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--sandstone-sand-gold)]">
+-                Coming Soon
+-              </p>
+-
+-              <h2 className="mt-2 font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+-                New {label} articles are on the way
+-              </h2>
+-
+-              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/70">
+-                We are working on more helpful resources for this topic.
+-                Browse all of our latest articles in the meantime.
+-              </p>
+-
+-              <Link
+-                href="/blog"
+-                className="mt-6 inline-flex items-center rounded-full bg-[var(--sandstone-navy)] px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:opacity-95"
+-              >
+-                Browse all articles
+-              </Link>
+-            </div>
+-          ) : (
+-            <>
+-              <div className="mt-10 flex items-end justify-between gap-4">
+-                <div>
+-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--sandstone-sand-gold)]">
+-                    Latest Resources
+-                  </p>
+-
+-                  <h2 className="mt-1 font-heading text-2xl font-bold text-[var(--sandstone-navy)] md:text-3xl">
+-                    {label} Articles
+-                  </h2>
+-                </div>
+-
+-                <p className="hidden text-sm text-[var(--sandstone-charcoal)]/60 sm:block">
+-                  {posts.length}{" "}
+-                  {posts.length === 1 ? "article" : "articles"}
+-                </p>
+-              </div>
+-
+-              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+-                {posts.map((post) => (
+-                  <Link
+-                    key={post.slug}
+-                    href={`/blog/${post.slug}`}
+-                    className="group overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_20px_60px_-42px_rgba(37,52,113,0.55)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--sandstone-sand-gold)]/40 hover:shadow-[0_28px_70px_-38px_rgba(37,52,113,0.45)]"
+-                  >
+-                    <article className="flex h-full flex-col">
+-                      <div className="relative h-52 w-full overflow-hidden bg-[var(--sandstone-navy)]/8">
+-                        <Image
+-                          src={post.coverImage}
+-                          alt={post.coverImageAlt || post.title}
+-                          fill
+-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+-                        />
+-                      </div>
+-
+-                      <div className="flex flex-1 flex-col p-5">
+-                        <div className="flex flex-wrap items-center gap-2">
+-                          <span className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
+-                            {label}
+-                          </span>
+-
+-                          <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[var(--sandstone-charcoal)]/55">
+-                            {formatBlogDate(post.date)}
+-                          </p>
+-                        </div>
+-
+-                        <h3 className="mt-4 font-heading text-xl font-bold leading-snug text-[var(--sandstone-navy)] transition group-hover:text-[var(--sandstone-sand-gold)]">
+-                          {post.title}
+-                        </h3>
+-
+-                        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/75">
+-                          {post.excerpt}
+-                        </p>
+-
+-                        <div className="mt-auto pt-5">
+-                          <span className="inline-flex items-center gap-2 rounded-full bg-[var(--sandstone-navy)] px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-[var(--sandstone-sand-gold)]">
+-                            Read article
+-                            <span
+-                              aria-hidden
+-                              className="transition-transform group-hover:translate-x-1"
+-                            >
+-                              →
+-                            </span>
+-                          </span>
+-                        </div>
+-                      </div>
+-                    </article>
+-                  </Link>
+-                ))}
+-              </div>
+-            </>
+-          )}
++          <BlogBrowse posts={posts} currentMonth={getBlogMonth()} />
++          <BlogCta />
+         </section>
+       </main>
+ 
+diff --git a/src/app/blog/page.tsx b/src/app/blog/page.tsx
+index 801501c..f2b381a 100644
+--- a/src/app/blog/page.tsx
++++ b/src/app/blog/page.tsx
+@@ -1,11 +1,14 @@
+ import { SITE_ORIGIN } from "@/constants/seo";
+-import Image from "next/image";
+-import Link from "next/link";
+ import { SiteFooter } from "@/components/SiteFooter";
+ import { SiteHeader } from "@/components/SiteHeader";
+ import { BlogAreaTabs } from "@/components/BlogAreaTabs";
+ import { getSortedPosts } from "@/services";
+-import { getCategoryLabel } from "@/config/blog-areas";
++import { BlogBrowse } from "@/components/blog/BlogBrowse";
++import { BlogCta } from "@/components/blog/BlogCta";
++import { FeaturedGuide } from "@/components/blog/FeaturedGuide";
++import { getBlogMonth } from "@/lib/blog-display";
++
++export const revalidate = 3600;
+ 
+ export const metadata = {
+   title: "El Paso Real Estate Blog | Sandstone Real Estate Group",
+@@ -16,16 +19,18 @@ export const metadata = {
+   },
+ };
+ 
+-function formatBlogDate(value: string): string {
+-  return new Intl.DateTimeFormat("en-US", {
+-    year: "numeric",
+-    month: "long",
+-    day: "numeric",
+-  }).format(new Date(value));
+-}
+-
+ export default async function BlogIndexPage() {
+   const posts = await getSortedPosts();
++  const currentMonth = getBlogMonth();
++  const guide = posts.find(
++    (post) =>
++      post.slug === "how-does-a-pcs-move-to-el-paso-work-complete-2026-guide",
++  );
++  const events = posts.find(
++    (post) =>
++      post.area === "things-to-do-in-el-paso" &&
++      post.eventMonth === currentMonth,
++  );
+ 
+   return (
+     <>
+@@ -43,112 +48,23 @@ export default async function BlogIndexPage() {
+             </h1>
+ 
+             <p className="mt-4 max-w-3xl text-base leading-relaxed text-[var(--sandstone-charcoal)]/75 md:text-lg">
+-              Local real estate insights, Fort Bliss PCS resources, VA loan
+-              guidance, neighborhood guides, market updates, and practical
+-              advice for buyers and sellers throughout El Paso.
++              Local advice on buying, selling, and settling into El Paso—from
++              neighborhood guides to Fort Bliss PCS resources.
+             </p>
+           </div>
+ 
+           <BlogAreaTabs />
+ 
+-          {posts.length === 0 ? (
+-            <div className="mt-10 rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white p-10 text-center shadow-sm">
+-              <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
+-                New resources are coming soon
+-              </h2>
+-
+-              <p className="mx-auto mt-3 max-w-xl text-[var(--sandstone-charcoal)]/75">
+-                Check back soon for El Paso real estate insights, military PCS
+-                guides, VA loan resources, neighborhood information, and local
+-                market updates.
+-              </p>
+-            </div>
+-          ) : (
+-            <>
+-              <div className="mt-10 flex items-end justify-between gap-4">
+-                <div>
+-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--sandstone-sand-gold)]">
+-                    Latest Resources
+-                  </p>
+-
+-                  <h2 className="mt-1 font-heading text-2xl font-bold text-[var(--sandstone-navy)] md:text-3xl">
+-                    Latest Articles
+-                  </h2>
+-                </div>
+-
+-                <p className="hidden text-sm text-[var(--sandstone-charcoal)]/60 sm:block">
+-                  {posts.length} {posts.length === 1 ? "article" : "articles"}
+-                </p>
+-              </div>
+-
+-              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+-                {posts.map((post) => {
+-                  const categoryLabel = post.area
+-                    ? getCategoryLabel(post.area) ?? post.area
+-                    : null;
+-
+-                  return (
+-                    <Link
+-                      key={post.slug}
+-                      href={`/blog/${post.slug}`}
+-                      className="group overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_20px_60px_-42px_rgba(37,52,113,0.55)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--sandstone-sand-gold)]/40 hover:shadow-[0_28px_70px_-38px_rgba(37,52,113,0.45)]"
+-                    >
+-                      <article className="flex h-full flex-col">
+-                        <div className="relative h-52 w-full overflow-hidden bg-[var(--sandstone-navy)]/8">
+-                          <Image
+-                            src={post.coverImage}
+-                            alt={post.coverImageAlt || post.title}
+-                            fill
+-                            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+-                          />
+-                        </div>
+-
+-                        <div className="flex flex-1 flex-col p-5">
+-                          <div className="flex flex-wrap items-center gap-2">
+-                            {categoryLabel && (
+-                              <span className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
+-                                {categoryLabel}
+-                              </span>
+-                            )}
+-
+-                            <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[var(--sandstone-charcoal)]/55">
+-                              {formatBlogDate(post.date)}
+-                            </p>
+-                          </div>
+-
+-                          <h3 className="mt-4 font-heading text-xl font-bold leading-snug text-[var(--sandstone-navy)] transition-colors group-hover:text-[var(--sandstone-sand-gold)]">
+-                            {post.title}
+-                          </h3>
+-
+-                          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/75">
+-                            {post.excerpt}
+-                          </p>
+-
+-                          <div className="mt-auto pt-5">
+-                            <span className="inline-flex items-center gap-2 rounded-full bg-[var(--sandstone-navy)] px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-[var(--sandstone-sand-gold)]">
+-                              Read article
+-
+-                              <span
+-                                aria-hidden
+-                                className="transition-transform group-hover:translate-x-1"
+-                              >
+-                                →
+-                              </span>
+-                            </span>
+-                          </div>
+-                        </div>
+-                      </article>
+-                    </Link>
+-                  );
+-                })}
+-              </div>
+-            </>
++          {guide && <FeaturedGuide post={guide} />}
++          {events && (
++            <FeaturedGuide post={events} label="This Month in El Paso" />
+           )}
++          <BlogBrowse posts={posts} currentMonth={currentMonth} />
++          <BlogCta />
+         </section>
+       </main>
+ 
+       <SiteFooter />
+     </>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/BlogAreaTabs.tsx b/src/components/BlogAreaTabs.tsx
+index 128809f..367d8c2 100644
+--- a/src/components/BlogAreaTabs.tsx
++++ b/src/components/BlogAreaTabs.tsx
+@@ -9,9 +9,10 @@ export function BlogAreaTabs({
+   activeCategory,
+ }: BlogCategoryTabsProps) {
+   return (
+-    <div className="mt-6 flex flex-wrap gap-2">
++    <nav aria-label="Blog topics" className="mt-6 flex flex-wrap gap-2">
+       <Link
+         href="/blog"
++        aria-current={!activeCategory ? "page" : undefined}
+         className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+           !activeCategory
+             ? "bg-[var(--sandstone-navy)] text-white"
+@@ -24,6 +25,7 @@ export function BlogAreaTabs({
+       {BLOG_CATEGORIES.map((category) => (
+         <Link
+           key={category.slug}
++          aria-current={activeCategory === category.slug ? "page" : undefined}
+           href={`/blog/category/${category.slug}`}
+           className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+             activeCategory === category.slug
+@@ -34,6 +36,6 @@ export function BlogAreaTabs({
+           {category.label}
+         </Link>
+       ))}
+-    </div>
++    </nav>
+   );
+ }
+\ No newline at end of file
+diff --git a/src/components/blog/BlogBrowse.tsx b/src/components/blog/BlogBrowse.tsx
+new file mode 100644
+index 0000000..aad1b33
+--- /dev/null
++++ b/src/components/blog/BlogBrowse.tsx
+@@ -0,0 +1,123 @@
++"use client";
++
++import { useState } from "react";
++import { getCategoryLabel } from "@/config/blog-areas";
++import type { BlogPostListItem } from "@/types";
++import { BlogCard } from "./BlogCard";
++
++export function BlogBrowse({
++  posts,
++  currentMonth,
++}: {
++  posts: BlogPostListItem[];
++  currentMonth: string;
++}) {
++  const [query, setQuery] = useState("");
++  const [showArchive, setShowArchive] = useState(false);
++  const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
++  const matching = posts.filter((post) => {
++    const text = [
++      post.title,
++      post.cardTitle,
++      post.excerpt,
++      post.location,
++      getCategoryLabel(post.area),
++      ...(post.keywords || []),
++    ]
++      .join(" ")
++      .toLowerCase();
++    return terms.every((term) => text.includes(term));
++  });
++  const archived = matching.filter(
++    (post) => post.eventMonth && post.eventMonth < currentMonth,
++  );
++  const current = matching.filter(
++    (post) => !post.eventMonth || post.eventMonth >= currentMonth,
++  );
++  return (
++    <section className="mt-10" aria-labelledby="articles-heading">
++      <div className="flex flex-wrap items-end justify-between gap-4">
++        <h2
++          id="articles-heading"
++          className="font-heading text-2xl font-bold text-[var(--sandstone-navy)] md:text-3xl"
++        >
++          Latest Articles
++        </h2>
++        <div className="w-full sm:w-80">
++          <label
++            htmlFor="blog-search"
++            className="mb-2 block text-sm font-medium text-[var(--sandstone-charcoal)]"
++          >
++            Search articles
++          </label>
++          <input
++            id="blog-search"
++            type="search"
++            value={query}
++            onChange={(event) => setQuery(event.target.value)}
++            placeholder="Try PCS, taxes, or neighborhoods"
++            className="w-full rounded-xl border border-[var(--sandstone-navy)]/25 bg-white px-4 py-3 text-sm text-[var(--sandstone-charcoal)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-navy)]"
++          />
++        </div>
++      </div>
++      <p
++        className="mt-4 text-sm text-[var(--sandstone-charcoal)]/70"
++        role="status"
++      >
++        {current.length} {current.length === 1 ? "article" : "articles"}
++        {archived.length > 0 &&
++          ` · ${archived.length} past event guides in the archive`}
++      </p>
++      {current.length > 0 ? (
++        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
++          {current.map((post) => (
++            <BlogCard key={post.slug} post={post} />
++          ))}
++        </div>
++      ) : (
++        <p className="mt-6 rounded-2xl bg-white p-6 text-[var(--sandstone-charcoal)]">
++          {query
++            ? "No current articles match your search. Try another topic or check the event archive below."
++            : "New resources are coming soon. Explore other topics or browse the event archive below."}
++        </p>
++      )}
++      {archived.length > 0 && (
++        <div className="mt-10">
++          <button
++            type="button"
++            aria-expanded={showArchive}
++            aria-controls="event-archive"
++            onClick={() => setShowArchive(!showArchive)}
++            className="rounded-full border border-[var(--sandstone-navy)]/30 px-5 py-3 font-semibold text-[var(--sandstone-navy)] hover:bg-white focus-visible:outline focus-visible:outline-2"
++          >
++            {showArchive ? "Hide" : "Show"} past event guides ({archived.length}
++            )
++          </button>
++          <div id="event-archive" hidden={!showArchive}>
++            <h3 className="mt-6 font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
++              Event Archive
++            </h3>
++            <p className="mt-2 text-sm text-[var(--sandstone-charcoal)]/75">
++              These guides cover past months. Event dates and availability may
++              have changed.
++            </p>
++            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
++              {archived.map((post) => (
++                <BlogCard key={post.slug} post={post} archived />
++              ))}
++            </div>
++          </div>
++        </div>
++      )}
++      {query && (
++        <button
++          type="button"
++          onClick={() => setQuery("")}
++          className="mt-5 text-sm font-semibold text-[var(--sandstone-navy)] underline"
++        >
++          Clear search
++        </button>
++      )}
++    </section>
++  );
++}
+diff --git a/src/components/blog/BlogCard.tsx b/src/components/blog/BlogCard.tsx
+new file mode 100644
+index 0000000..ab20a22
+--- /dev/null
++++ b/src/components/blog/BlogCard.tsx
+@@ -0,0 +1,86 @@
++import Image from "next/image";
++import Link from "next/link";
++import { getCategoryLabel } from "@/config/blog-areas";
++import type { BlogPostListItem } from "@/types";
++
++function formatBlogDate(value: string) {
++  return new Intl.DateTimeFormat("en-US", {
++    year: "numeric",
++    month: "short",
++    day: "numeric",
++    timeZone: "America/Denver",
++  }).format(new Date(value));
++}
++
++export function BlogCard({
++  post,
++  archived = false,
++}: {
++  post: BlogPostListItem;
++  archived?: boolean;
++}) {
++  const categoryLabel = getCategoryLabel(post.area);
++  return (
++    <Link
++      href={`/blog/${post.slug}`}
++      className="group overflow-hidden rounded-3xl border border-[var(--sandstone-navy)]/10 bg-white shadow-[0_20px_60px_-42px_rgba(37,52,113,0.55)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--sandstone-sand-gold)]/40 hover:shadow-[0_28px_70px_-38px_rgba(37,52,113,0.45)]"
++    >
++      <article className="flex h-full flex-col">
++        <div className="relative h-52 w-full overflow-hidden bg-[var(--sandstone-navy)]/8">
++          <Image
++            src={post.coverImage}
++            alt={post.coverImageAlt || post.title}
++            fill
++            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
++            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
++          />
++        </div>
++
++        <div className="flex flex-1 flex-col p-5">
++          <div className="flex flex-wrap items-center gap-2">
++            {categoryLabel && (
++              <span className="rounded-full bg-[var(--sandstone-sand-gold)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
++                {categoryLabel}
++              </span>
++            )}
++
++            <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[var(--sandstone-charcoal)]/55">
++              <time dateTime={post.date}>{formatBlogDate(post.date)}</time> ·{" "}
++              {post.readingMinutes} min read
++            </p>
++          </div>
++
++          {post.location && (
++            <p className="mt-2 text-xs text-[var(--sandstone-charcoal)]/70">
++              {post.location}
++            </p>
++          )}
++          {archived && (
++            <p className="mt-2 text-xs font-semibold text-[var(--sandstone-charcoal)]/70">
++              Past event guide · {post.eventMonth}
++            </p>
++          )}
++          <h3 className="mt-4 font-heading text-xl font-bold leading-snug text-[var(--sandstone-navy)] transition-colors group-hover:text-[var(--sandstone-sand-gold)]">
++            {post.cardTitle || post.title}
++          </h3>
++
++          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/75">
++            {post.excerpt}
++          </p>
++
++          <div className="mt-auto pt-5">
++            <span className="inline-flex items-center gap-2 rounded-full bg-[var(--sandstone-navy)] px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-[var(--sandstone-sand-gold)]">
++              Read article
++              <span
++                aria-hidden
++                className="transition-transform group-hover:translate-x-1"
++              >
++                →
++              </span>
++            </span>
++          </div>
++        </div>
++      </article>
++    </Link>
++  );
++}
+diff --git a/src/components/blog/BlogCta.tsx b/src/components/blog/BlogCta.tsx
+new file mode 100644
+index 0000000..56d0d8d
+--- /dev/null
++++ b/src/components/blog/BlogCta.tsx
+@@ -0,0 +1,29 @@
++import Link from "next/link";
++
++export function BlogCta() {
++  return (
++    <section className="mt-14 rounded-3xl bg-[var(--sandstone-navy)] px-6 py-10 text-center text-white md:px-10">
++      <h2 className="font-heading text-3xl font-bold">
++        Planning a move to El Paso?
++      </h2>
++      <p className="mx-auto mt-3 max-w-xl text-white/80">
++        Find a home that fits your life, or get local advice from the Sandstone
++        team.
++      </p>
++      <div className="mt-7 flex flex-wrap justify-center gap-3">
++        <Link
++          href="/listings?page=1"
++          className="rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 font-bold text-[var(--sandstone-navy)] hover:opacity-90"
++        >
++          Browse Homes
++        </Link>
++        <Link
++          href="/#contact"
++          className="rounded-full border border-white/50 px-6 py-3 font-bold hover:bg-white/10"
++        >
++          Talk to Our Team
++        </Link>
++      </div>
++    </section>
++  );
++}
+diff --git a/src/components/blog/FeaturedGuide.tsx b/src/components/blog/FeaturedGuide.tsx
+new file mode 100644
+index 0000000..2447cdf
+--- /dev/null
++++ b/src/components/blog/FeaturedGuide.tsx
+@@ -0,0 +1,43 @@
++import Image from "next/image";
++import Link from "next/link";
++import type { BlogPostListItem } from "@/types";
++
++export function FeaturedGuide({
++  post,
++  label = "Start Here · Featured Guide",
++}: {
++  post: BlogPostListItem;
++  label?: string;
++}) {
++  return (
++    <section className="mt-10 overflow-hidden rounded-3xl bg-[var(--sandstone-navy)] text-white">
++      <Link href={`/blog/${post.slug}`} className="group grid md:grid-cols-2">
++        <div className="relative min-h-64 md:min-h-80">
++          <Image
++            src={post.coverImage}
++            alt={post.coverImageAlt || post.title}
++            fill
++            sizes="(max-width: 768px) 100vw, 50vw"
++            className="object-cover"
++            priority
++          />
++        </div>
++        <div className="flex flex-col justify-center p-6 md:p-10">
++          <p className="text-xs font-bold uppercase tracking-widest text-[var(--sandstone-sand-gold)]">
++            {label}
++          </p>
++          <h2 className="mt-3 font-heading text-3xl font-bold">
++            {post.cardTitle || post.title}
++          </h2>
++          <p className="mt-3 leading-relaxed text-white/80">{post.excerpt}</p>
++          <p className="mt-3 text-sm text-white/75">
++            {post.readingMinutes} min read
++          </p>
++          <span className="mt-6 self-start rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-3 font-bold text-[var(--sandstone-navy)] group-hover:opacity-90">
++            Explore the guide <span aria-hidden>→</span>
++          </span>
++        </div>
++      </Link>
++    </section>
++  );
++}
+diff --git a/src/config/blog-areas.ts b/src/config/blog-areas.ts
+index 942d71b..56b4d7d 100644
+--- a/src/config/blog-areas.ts
++++ b/src/config/blog-areas.ts
+@@ -2,26 +2,24 @@ export const BLOG_CATEGORIES = [
+   { slug: "military-pcs", label: "Military PCS" },
+   { slug: "va-loans", label: "VA Loans" },
+   { slug: "buying-a-home", label: "Buying a Home" },
++  { slug: "homeownership-costs", label: "Homeownership Costs" },
+   { slug: "selling-a-home", label: "Selling a Home" },
+   { slug: "el-paso-neighborhoods", label: "El Paso Neighborhoods" },
+   { slug: "things-to-do-in-el-paso", label: "Things to Do in El Paso" },
+ ] as const;
+ 
+-export type BlogCategorySlug =
+-  (typeof BLOG_CATEGORIES)[number]["slug"];
++export type BlogCategorySlug = (typeof BLOG_CATEGORIES)[number]["slug"];
+ 
+-export function getCategoryLabel(
+-  slug: string
+-): string | undefined {
+-  return BLOG_CATEGORIES.find(
+-    (category) => category.slug === slug
+-  )?.label;
++export function getCategoryLabel(slug: string): string | undefined {
++  return (
++    BLOG_CATEGORIES.find((category) => category.slug === slug)?.label ??
++    slug
++      .split("-")
++      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
++      .join(" ")
++  );
+ }
+ 
+-export function isValidCategorySlug(
+-  slug: string
+-): slug is BlogCategorySlug {
+-  return BLOG_CATEGORIES.some(
+-    (category) => category.slug === slug
+-  );
+-}
+\ No newline at end of file
++export function isValidCategorySlug(slug: string): slug is BlogCategorySlug {
++  return BLOG_CATEGORIES.some((category) => category.slug === slug);
++}
+diff --git a/src/lib/blog-display.ts b/src/lib/blog-display.ts
+new file mode 100644
+index 0000000..d760f95
+--- /dev/null
++++ b/src/lib/blog-display.ts
+@@ -0,0 +1,9 @@
++/** Use the local calendar month so event guides expire at El Paso midnight. */
++export function getBlogMonth(date = new Date()): string {
++  const parts = new Intl.DateTimeFormat("en-US", {
++    year: "numeric",
++    month: "2-digit",
++    timeZone: "America/Denver",
++  }).formatToParts(date);
++  return `${parts.find((part) => part.type === "year")!.value}-${parts.find((part) => part.type === "month")!.value}`;
++}
+diff --git a/src/schemas/blog.schema.ts b/src/schemas/blog.schema.ts
+index 4fcd4cc..f7bcf08 100644
+--- a/src/schemas/blog.schema.ts
++++ b/src/schemas/blog.schema.ts
+@@ -21,6 +21,9 @@ const BlogDateSchema = z.preprocess(
+  */
+ export const BlogSchema = z.object({
+   title: z.string().min(1, "Title is required").max(160),
++  cardTitle: z.string().max(90).optional(),
++  location: z.string().max(100).optional(),
++  eventMonth: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/).or(z.literal("")).optional(),
+   date: BlogDateSchema,
+   excerpt: z.string().min(1, "Excerpt is required").max(320),
+   coverImage: z.string().min(1, "Cover image is required").max(500),
+diff --git a/src/services/blog.service.ts b/src/services/blog.service.ts
+index db707d1..7f6b282 100644
+--- a/src/services/blog.service.ts
++++ b/src/services/blog.service.ts
+@@ -45,12 +45,12 @@ async function readBlogFiles(): Promise<BlogFileEntry[]> {
+           throw error;
+         }
+       }
+-    })
++    }),
+   );
+ 
+   if (files.length === 0) {
+     console.warn(
+-      "[BlogService] No markdown files found in content/blog or content/posts at runtime."
++      "[BlogService] No markdown files found in content/blog or content/posts at runtime.",
+     );
+   }
+ 
+@@ -61,6 +61,9 @@ function normalizeListItem(
+   slug: string,
+   input: {
+     title: string;
++    cardTitle?: string;
++    location?: string;
++    eventMonth?: string;
+     date: string;
+     excerpt: string;
+     coverImage: string;
+@@ -69,11 +72,27 @@ function normalizeListItem(
+     seoTitle?: string;
+     metaDescription?: string;
+     area: string;
+-  }
++  },
++  content: string,
+ ): BlogPostListItem {
+   return {
+     slug,
+     title: input.title,
++    cardTitle: input.cardTitle,
++    location: input.location,
++    eventMonth: input.eventMonth,
++    readingMinutes: Math.max(
++      1,
++      Math.ceil(
++        content
++          .replace(/<[^>]*>/g, " ")
++          .replace(/\[[^\]]*\]\([^)]*\)/g, (link) =>
++            link.slice(1, link.indexOf("]")),
++          )
++          .split(/\s+/)
++          .filter(Boolean).length / 225,
++      ),
++    ),
+     date: normalizeDate(input.date),
+     excerpt: input.excerpt,
+     coverImage: input.coverImage,
+@@ -103,12 +122,16 @@ async function getSortedPostsImpl(): Promise<BlogPostListItem[]> {
+       const frontmatter = BlogSchema.safeParse(parsed.data);
+ 
+       if (!frontmatter.success) {
+-        console.error("[BlogService] Invalid frontmatter:", filename, frontmatter.error.flatten());
++        console.error(
++          "[BlogService] Invalid frontmatter:",
++          filename,
++          frontmatter.error.flatten(),
++        );
+         return;
+       }
+ 
+-      posts.push(normalizeListItem(slug, frontmatter.data));
+-    })
++      posts.push(normalizeListItem(slug, frontmatter.data, parsed.content));
++    }),
+   );
+ 
+   return posts.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+@@ -122,7 +145,7 @@ async function getPostBySlugImpl(slug: string): Promise<BlogPost | null> {
+   }
+ 
+   const candidatePaths = BLOG_CONTENT_DIRS.map((directory) =>
+-    path.join(directory, `${sanitizedSlug}.md`)
++    path.join(directory, `${sanitizedSlug}.md`),
+   );
+ 
+   for (const fullPath of candidatePaths) {
+@@ -131,17 +154,19 @@ async function getPostBySlugImpl(slug: string): Promise<BlogPost | null> {
+       const parsed = matter(raw);
+       const frontmatter = BlogSchema.safeParse(parsed.data);
+ 
+-
+-
+       if (!frontmatter.success) {
+-        console.error("[BlogService] Invalid frontmatter:", `${sanitizedSlug}.md`, frontmatter.error.flatten());
++        console.error(
++          "[BlogService] Invalid frontmatter:",
++          `${sanitizedSlug}.md`,
++          frontmatter.error.flatten(),
++        );
+         return null;
+       }
+ 
+       const processed = await remark().use(html).process(parsed.content);
+ 
+       return {
+-        ...normalizeListItem(sanitizedSlug, frontmatter.data),
++        ...normalizeListItem(sanitizedSlug, frontmatter.data, parsed.content),
+         contentHtml: processed.toString(),
+       };
+     } catch (error) {
+@@ -159,7 +184,9 @@ async function getPostBySlugImpl(slug: string): Promise<BlogPost | null> {
+ async function getAllPostSlugsImpl(): Promise<string[]> {
+   const files = await readBlogFiles();
+ 
+-  return Array.from(new Set(files.map((file) => file.filename.replace(/\.md$/, ""))));
++  return Array.from(
++    new Set(files.map((file) => file.filename.replace(/\.md$/, ""))),
++  );
+ }
+ 
+ export const blogService: IBlogService = {
+diff --git a/src/types/blog.ts b/src/types/blog.ts
+index 3191c77..0da9edc 100644
+--- a/src/types/blog.ts
++++ b/src/types/blog.ts
+@@ -3,6 +3,9 @@
+  */
+ export interface BlogPostFrontmatter {
+   title: string;
++  cardTitle?: string;
++  location?: string;
++  eventMonth?: string;
+   date: string;
+   excerpt: string;
+   coverImage: string;
+@@ -15,6 +18,7 @@ export interface BlogPostFrontmatter {
+ 
+ export interface BlogPostListItem extends BlogPostFrontmatter {
+   slug: string;
++  readingMinutes: number;
+ }
+ 
+ export interface BlogPost extends BlogPostListItem {
+-- 
+2.51.1
+

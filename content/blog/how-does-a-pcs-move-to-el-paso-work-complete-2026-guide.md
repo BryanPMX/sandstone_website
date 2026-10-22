@@ -1,4 +1,5 @@
 ---
+cardTitle: "Your Guide to a Fort Bliss PCS Move"
 title: How Does a PCS Move to El Paso Work? Complete 2026 Guide
 date: 2026-06-10T15:13:00.000-06:00
 excerpt: Getting PCS orders to El Paso? This guide walks you through every step

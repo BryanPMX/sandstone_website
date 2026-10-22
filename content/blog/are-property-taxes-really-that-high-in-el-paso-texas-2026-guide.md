@@ -1,4 +1,5 @@
 ---
+cardTitle: "Understanding El Paso Property Taxes"
 title: Are Property Taxes Really That High in El Paso, Texas? (2026 Guide)
 date: 2026-09-09T13:41:00.000-06:00
 excerpt: Are property taxes really high in El Paso? Learn how property taxes
@@ -21,7 +22,7 @@ keywords:
   - El Paso homeownership costs
   - buying a home in El Paso
   - El Paso real estate
-area: upper-valley-el-paso
+area: homeownership-costs
 ---
 If you're considering buying a home in El Paso, Texas, you may have heard one concern come up repeatedly:
 

@@ -21,6 +21,7 @@ const BlogDateSchema = z.preprocess(
  */
 export const BlogSchema = z.object({
   title: z.string().min(1, "Title is required").max(160),
+  cardTitle: z.string().max(90).optional(),
   date: BlogDateSchema,
   excerpt: z.string().min(1, "Excerpt is required").max(320),
   coverImage: z.string().min(1, "Cover image is required").max(500),

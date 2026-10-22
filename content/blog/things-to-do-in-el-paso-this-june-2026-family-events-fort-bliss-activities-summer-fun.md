@@ -1,4 +1,5 @@
 ---
+cardTitle: "El Paso Events: June 2026"
 title: "Things to Do in El Paso This June 2026: Family Events, Fort Bliss
   Activities & Summer Fun"
 date: 2026-06-02T14:14:00.000-06:00

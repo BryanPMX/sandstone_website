@@ -207,7 +207,7 @@ export default async function BlogPostPage({
             )}
 
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)]">
-              {formatBlogDate(post.date)}
+              {formatBlogDate(post.date)} · {post.readingMinutes} min read
             </p>
           </div>
 
@@ -274,7 +274,7 @@ export default async function BlogPostPage({
                       </p>
 
                       <h3 className="mt-2 font-heading text-lg font-bold text-[var(--sandstone-charcoal)] transition group-hover:text-[var(--sandstone-navy)]">
-                        {relatedPost.title}
+                        {relatedPost.cardTitle || relatedPost.title}
                       </h3>
 
                       <p className="mt-2 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/70">

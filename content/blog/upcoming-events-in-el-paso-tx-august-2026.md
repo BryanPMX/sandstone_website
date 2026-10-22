@@ -1,4 +1,5 @@
 ---
+cardTitle: "El Paso Events: August 2026"
 title: Upcoming Events in El Paso, TX — August 2026
 date: 2026-08-12T12:57:00.000-06:00
 excerpt: From arena concerts like Santana and Shinedown to free Fort Bliss family days and weekend markets, here's your complete guide to what's happening in El Paso this August.

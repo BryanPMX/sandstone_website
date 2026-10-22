@@ -3,6 +3,7 @@
  */
 export interface BlogPostFrontmatter {
   title: string;
+  cardTitle?: string;
   date: string;
   excerpt: string;
   coverImage: string;
@@ -15,6 +16,7 @@ export interface BlogPostFrontmatter {
 
 export interface BlogPostListItem extends BlogPostFrontmatter {
   slug: string;
+  readingMinutes: number;
 }
 
 export interface BlogPost extends BlogPostListItem {

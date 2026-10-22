@@ -1,4 +1,5 @@
 ---
+cardTitle: "Compare Neighborhoods by Fort Bliss Commute"
 title: El Paso Neighborhoods by Commute Time to Fort Bliss Gates (2026 Guide)
 date: 2026-06-16T17:36:00.000-06:00
 excerpt: The wrong neighborhood can add 1,000+ hours to your commute over a

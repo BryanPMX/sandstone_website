@@ -225,12 +225,12 @@ export default async function BlogCategoryPage({
                           </span>
 
                           <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[var(--sandstone-charcoal)]/55">
-                            {formatBlogDate(post.date)}
+                            {formatBlogDate(post.date)} · {post.readingMinutes} min read
                           </p>
                         </div>
 
                         <h3 className="mt-4 font-heading text-xl font-bold leading-snug text-[var(--sandstone-navy)] transition group-hover:text-[var(--sandstone-sand-gold)]">
-                          {post.title}
+                          {post.cardTitle || post.title}
                         </h3>
 
                         <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/75">

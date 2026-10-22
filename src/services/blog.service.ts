@@ -45,12 +45,12 @@ async function readBlogFiles(): Promise<BlogFileEntry[]> {
           throw error;
         }
       }
-    })
+    }),
   );
 
   if (files.length === 0) {
     console.warn(
-      "[BlogService] No markdown files found in content/blog or content/posts at runtime."
+      "[BlogService] No markdown files found in content/blog or content/posts at runtime.",
     );
   }
 
@@ -61,6 +61,7 @@ function normalizeListItem(
   slug: string,
   input: {
     title: string;
+    cardTitle?: string;
     date: string;
     excerpt: string;
     coverImage: string;
@@ -69,11 +70,25 @@ function normalizeListItem(
     seoTitle?: string;
     metaDescription?: string;
     area: string;
-  }
+  },
+  content: string,
 ): BlogPostListItem {
   return {
     slug,
     title: input.title,
+    cardTitle: input.cardTitle,
+    readingMinutes: Math.max(
+      1,
+      Math.ceil(
+        content
+          .replace(/<[^>]*>/g, " ")
+          .replace(/\[[^\]]*\]\([^)]*\)/g, (link) =>
+            link.slice(1, link.indexOf("]")),
+          )
+          .split(/\s+/)
+          .filter(Boolean).length / 225,
+      ),
+    ),
     date: normalizeDate(input.date),
     excerpt: input.excerpt,
     coverImage: input.coverImage,
@@ -103,12 +118,16 @@ async function getSortedPostsImpl(): Promise<BlogPostListItem[]> {
       const frontmatter = BlogSchema.safeParse(parsed.data);
 
       if (!frontmatter.success) {
-        console.error("[BlogService] Invalid frontmatter:", filename, frontmatter.error.flatten());
+        console.error(
+          "[BlogService] Invalid frontmatter:",
+          filename,
+          frontmatter.error.flatten(),
+        );
         return;
       }
 
-      posts.push(normalizeListItem(slug, frontmatter.data));
-    })
+      posts.push(normalizeListItem(slug, frontmatter.data, parsed.content));
+    }),
   );
 
   return posts.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
@@ -122,7 +141,7 @@ async function getPostBySlugImpl(slug: string): Promise<BlogPost | null> {
   }
 
   const candidatePaths = BLOG_CONTENT_DIRS.map((directory) =>
-    path.join(directory, `${sanitizedSlug}.md`)
+    path.join(directory, `${sanitizedSlug}.md`),
   );
 
   for (const fullPath of candidatePaths) {
@@ -131,17 +150,19 @@ async function getPostBySlugImpl(slug: string): Promise<BlogPost | null> {
       const parsed = matter(raw);
       const frontmatter = BlogSchema.safeParse(parsed.data);
 
-
-
       if (!frontmatter.success) {
-        console.error("[BlogService] Invalid frontmatter:", `${sanitizedSlug}.md`, frontmatter.error.flatten());
+        console.error(
+          "[BlogService] Invalid frontmatter:",
+          `${sanitizedSlug}.md`,
+          frontmatter.error.flatten(),
+        );
         return null;
       }
 
       const processed = await remark().use(html).process(parsed.content);
 
       return {
-        ...normalizeListItem(sanitizedSlug, frontmatter.data),
+        ...normalizeListItem(sanitizedSlug, frontmatter.data, parsed.content),
         contentHtml: processed.toString(),
       };
     } catch (error) {
@@ -159,7 +180,9 @@ async function getPostBySlugImpl(slug: string): Promise<BlogPost | null> {
 async function getAllPostSlugsImpl(): Promise<string[]> {
   const files = await readBlogFiles();
 
-  return Array.from(new Set(files.map((file) => file.filename.replace(/\.md$/, ""))));
+  return Array.from(
+    new Set(files.map((file) => file.filename.replace(/\.md$/, ""))),
+  );
 }
 
 export const blogService: IBlogService = {
