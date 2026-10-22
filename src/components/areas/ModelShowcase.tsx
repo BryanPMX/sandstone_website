@@ -76,13 +76,23 @@ export function ModelShowcase({ models }: { models: HomeModel[] }) {
 
         {/* Right: price + CTA buttons */}
         <div className="flex flex-col items-start lg:min-w-[220px] lg:items-end">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--sandstone-charcoal)]/45">
-            Starting From
-          </p>
-
-          <p className="mt-1 font-heading text-4xl font-black text-[var(--sandstone-navy)]">
-            {active.price}
-          </p>
+          {active.price.trim() ? (
+            <>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--sandstone-charcoal)]/45">
+                Starting From
+              </p>
+              <p className="mt-1 font-heading text-4xl font-black text-[var(--sandstone-navy)]">
+                {active.price}
+              </p>
+            </>
+          ) : (
+            <Link
+              href="#contact"
+              className="text-sm font-semibold text-[var(--sandstone-navy)] underline underline-offset-4 hover:text-[var(--sandstone-sand-gold)]"
+            >
+              Contact us for current pricing.
+            </Link>
+          )}
 
           <div className="mt-6 flex flex-wrap gap-3">
             <Link

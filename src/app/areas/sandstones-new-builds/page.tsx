@@ -201,7 +201,7 @@ const FAQS = [
   {
     icon: `${BASE}/icons/faq-price.jpg`,
     q:    "How much do these homes cost?",
-    a:    "Pricing starts from the mid $XXX,XXXs depending on model, lot selection, finishes, and upgrades. Contact Sandstone Home Builders for a personalized quote and to learn about current incentives.",
+    a:    "Contact us for current pricing. Pricing varies by model, lot selection, finishes, and upgrades. Contact Sandstone Home Builders for a personalized quote and to learn about current incentives.",
   },
   {
     icon: `${BASE}/icons/faq-build.jpg`,
