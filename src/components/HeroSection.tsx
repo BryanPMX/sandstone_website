@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import {
@@ -291,8 +290,8 @@ export function HeroSection() {
           React/Next.js hoists this <link> into the document <head>. */}
       <link rel="preload" as="image" href="/hero-home.webp" fetchPriority="high" />
       <section className="relative w-full overflow-hidden bg-[var(--sandstone-navy)]">
-        <div className="relative h-[52vh] min-h-[380px] w-full lg:h-[640px] lg:min-h-[640px]">
-          <div className="relative h-full w-full">
+        <div className="relative w-full">
+          <div className="relative min-h-[520px] w-full lg:min-h-[680px]">
             <picture className="absolute inset-0 block h-full w-full">
               <source
                 media="(min-width: 1024px)"
@@ -307,22 +306,23 @@ export function HeroSection() {
               />
             </picture>
             <div
-              className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/62 via-[var(--sandstone-navy)]/26 to-[var(--sandstone-navy)]/10 lg:from-[var(--sandstone-navy)]/70 lg:via-[var(--sandstone-navy)]/30 lg:to-[var(--sandstone-navy)]/12"
+              className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/80 via-[var(--sandstone-navy)]/60 to-[var(--sandstone-navy)]/40"
               aria-hidden
             />
 
             {/* Darkens only the main-menu band at the top of the hero so the
                 nav links stay legible without a per-letter text shadow. */}
             <div
-              className="absolute inset-x-0 top-0 hidden h-44 bg-gradient-to-b from-black/50 to-transparent lg:block"
+              className="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#0b1533]/80 to-transparent"
               aria-hidden
             />
 
-            <h1 className="sr-only">El Paso Homes & Real Estate</h1>
+            <div className="relative z-10 mx-auto w-full max-w-5xl px-5 pb-28 pt-28 text-center sm:px-8 lg:pb-14 lg:pt-[180px]">
+              <h1 className="sr-only">El Paso Homes &amp; Real Estate</h1>
 
             <form
               onSubmit={handleSearchSubmit}
-              className="absolute left-1/2 top-[32%] z-10 hidden w-[min(760px,calc(100%-8rem))] -translate-x-1/2 lg:block xl:top-[34%]"
+              className="mx-auto mt-8 hidden w-full max-w-[760px] lg:block"
             >
               <div className="flex flex-col items-center">
                 <div className="relative w-full max-w-[670px]">
@@ -491,20 +491,12 @@ export function HeroSection() {
                 </div>
               </div>
             </form>
+            </div>
             <div
               className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent via-[var(--sandstone-navy)]/50 via-60% to-[var(--sandstone-navy)] lg:hidden"
               aria-hidden
             />
-            <div className="pointer-events-none absolute bottom-5 left-1/2 z-20 h-[44px] w-[206px] -translate-x-1/2 lg:hidden">
-              <Image
-                src="/mobile-logo-hero.webp"
-                alt="Sandstone Real Estate Group"
-                fill
-                className="object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.45)]"
-                sizes="206px"
-                priority
-              />
-            </div>
+
           </div>
         </div>
 
