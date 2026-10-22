@@ -161,12 +161,12 @@ const UTILITIES = [
 const FAQS = [
   { icon: "/icons/areas/icon-home.webp",       q: "Is Upper Valley a good place to live?",     a: "Yes. Upper Valley consistently ranks as one of El Paso's most desirable neighborhoods — large lots, mature trees, a quiet atmosphere, and easy access to quality schools, dining, and the Rio Grande." },
   { icon: "/icons/areas/icon-water.webp",      q: "Does Upper Valley have irrigation rights?",  a: "Many properties have access to Rio Grande irrigation water through El Paso County Water Improvement District No. 1, allowing homeowners to irrigate large lots at a fraction of municipal water costs." },
-  { icon: "/icons/areas/icon-dollar.webp",     q: "Is Upper Valley expensive?",                 a: "Relative to El Paso, yes. The median price sits around $366,000, with homes ranging from $160K for smaller properties to well over $1M for luxury estates. Compared to similar neighborhoods in other Texas cities, it offers exceptional value." },
+  { icon: "/icons/areas/icon-dollar.webp",     q: "Is Upper Valley expensive?",                 a: "Prices vary by property size, acreage, condition, and location. For asking-price context, see the market snapshot above, which covers active listings in ZIP 79922 for the displayed reporting period. That ZIP-based measure does not represent every Upper Valley neighborhood or the prices buyers paid at closing." },
   { icon: "/icons/areas/icon-horse.webp",      q: "Are there horse properties?",                a: "Yes. Upper Valley is one of the few El Paso areas where equestrian properties are common. Many homes include acreage suited for horses, with nearby riding trails and a deep agricultural heritage." },
   { icon: "/icons/areas/icon-diamond.webp",    q: "Are there luxury homes in Upper Valley?",   a: "Absolutely. Upper Valley is home to some of El Paso's finest properties — custom estates, equestrian ranches, and homes with private pools, large irrigated lots, and mountain views." },
   { icon: "/icons/areas/icon-shield.webp",     q: "Is Upper Valley safe?",                      a: "Upper Valley is one of El Paso's safest, most established neighborhoods. El Paso itself consistently ranks as one of the safest large cities in the United States." },
   { icon: "/icons/areas/icon-graduation.webp", q: "Which school district serves Upper Valley?", a: "Upper Valley is primarily served by El Paso ISD and Canutillo ISD depending on your specific address. Top schools include Coronado High School, Canutillo High School, and Zach White Elementary." },
-  { icon: "/icons/areas/icon-chart.webp",      q: "What's the average home price?",             a: "As of 2026, the median sold price is approximately $366,755. Prices range widely — from around $160K for condos to over $1M for luxury estates on large lots." },
+  { icon: "/icons/areas/icon-chart.webp",      q: "What does the median asking price mean?",             a: "The snapshot reports the median asking price of active listings in ZIP 79922 from GEPAR MLS via Spark API, for the reporting period shown above. The median is the middle asking price when listing prices are ordered; it is not an average or a median sold price. A verified median sold price for the same geography and period is not published on this page. Ask our team for a comparable-sales report for your specific area and dates." },
   { icon: "/icons/areas/icon-location.webp",   q: "How far is Upper Valley from Fort Bliss?",   a: "Upper Valley is approximately 20–25 miles from Fort Bliss, with a typical drive time of 25–35 minutes depending on traffic and the gate you're using." },
   { icon: "/icons/areas/icon-home-alt.webp",   q: "Are there new construction homes?",          a: "New construction is limited due to the established nature of the neighborhood and scarce undeveloped land. Custom builds do occur on vacant lots, and many buyers renovate or expand existing homes." },
 ];
@@ -181,21 +181,29 @@ export default async function UpperValleyPage() {
   // ── Live data — market stats only (listings load client-side) ────────────
   const { p, i, d, r } = await fetchUpperValleyStats();
 
-  const fmtUSD = (v: unknown, fallback: string) =>
-    v != null
-      ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Number(v))
-      : fallback;
+  // Read the reporting month from the API; never substitute a fixed date.
+  const parseReportingMonth = (value: unknown): Date | null => {
+    if (typeof value !== "string") return null;
+    const us = /^(\d{1,2})\/\d{1,2}\/(\d{4})$/.exec(value);
+    const iso = /^(\d{4})-(\d{2})-\d{2}(?:T.*)?$/.exec(value);
+    const year = Number(us?.[2] ?? iso?.[1]);
+    const month = Number(us?.[1] ?? iso?.[2]);
+    if (!Number.isInteger(year) || year < 1900 || month < 1 || month > 12) return null;
+    return new Date(Date.UTC(year, month - 1, 1));
+  };
+  const reportingMonth = parseReportingMonth(p?.Dates?.[0]);
+  const period = reportingMonth
+    ? reportingMonth.toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" })
+    : "Not provided by source";
 
-  // Current period label from API date ("May 2026" etc.)
-  const period = p?.Dates?.[0]
-    ? (() => {
-        const [m, , y] = (p.Dates[0] as string).split("/");
-        return new Date(Number(y), Number(m) - 1).toLocaleDateString("en-US", { month: "short", year: "numeric" });
-      })()
-    : "May 2026";
+  // Unavailable prices must not appear as current MLS observations.
+  const rawMedianPrice = p?.ActiveMedianListPrice?.[0];
+  const medianPriceNumber = Number(rawMedianPrice);
+  const hasMedianPrice = rawMedianPrice != null && Number.isFinite(medianPriceNumber) && medianPriceNumber > 0;
+  const medianPrice = hasMedianPrice
+    ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(medianPriceNumber)
+    : "Unavailable";
 
-  // Live stat values (fallback to last known if API is down)
-  const medianPrice       = fmtUSD(p?.ActiveMedianListPrice?.[0], "$650,000");
   const activeInventory   = String(i?.ActiveListings?.[0]  ?? 24);
   const newListings       = String(i?.NewListings?.[0]      ?? 11);
   const avgDom            = d?.AverageDom?.[0] ? String(Math.round(Number(d.AverageDom[0]))) : "99";
@@ -217,12 +225,12 @@ export default async function UpperValleyPage() {
 
   // Top 2 summary cards
   const STATS_TOP = [
-    { label: "Median Price",  value: medianPrice,  sub: null             },
+    { label: "Median Asking Price · ZIP 79922",  value: medianPrice,  sub: null             },
     { label: "Commute Time",  value: "3.3",        sub: "mi / approx."   },
   ];
 
   // Price detail card
-  const PRICE_CARD = { current: medianPrice, projection: "$728K", period };
+  const PRICE_CARD = { current: medianPrice, period };
 
   // Bottom 4 stat cards
   const STAT_CARDS = [
@@ -253,10 +261,11 @@ export default async function UpperValleyPage() {
   const Y_STEPS  = Math.round((Y_MAX - Y_MIN) / 50);
   const Y_LABELS = Array.from({ length: Y_STEPS + 1 }, (_, k) => Y_MIN + k * 50).reverse();
 
-  const MONTHS   = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const xLabels  = chartDates.map(dt => {
-    const [m, , y] = dt.split("/");
-    return `${MONTHS[Number(m) - 1]}'${y.slice(2)}`;
+  const xLabels = chartDates.map(dt => {
+    const date = parseReportingMonth(dt);
+    return date
+      ? date.toLocaleDateString("en-US", { month: "short", year: "2-digit", timeZone: "UTC" })
+      : "Unknown period";
   });
 
   return (
@@ -329,7 +338,7 @@ export default async function UpperValleyPage() {
             {/* Header */}
             <div className="mb-10 text-center">
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
-                Upper Valley Market Snapshot 2026
+                Upper Valley Market Snapshot
               </h2>
               <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
                 If you&apos;re looking for a beautiful address in El Paso, Upper Valley is where you want to be. This established, tree-lined community along the Rio Grande corridor represents the pinnacle of El Paso living — generous lot sizes, mature landscaping, mountain views, and a lifestyle that&apos;s hard to find anywhere else in the Sun City.
@@ -361,50 +370,33 @@ export default async function UpperValleyPage() {
 
               {/* Left — price detail */}
               <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
-                <p className="text-sm font-bold text-[var(--sandstone-navy)]">Median Price</p>
-
-                <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
-                      Current ({PRICE_CARD.period})
-                    </p>
-                    <p className="mt-1 font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-                      {PRICE_CARD.current}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col items-center gap-1 text-[var(--sandstone-charcoal)]/35">
-                    <div className="h-px w-8 bg-[var(--sandstone-charcoal)]/25" />
-                    <span className="text-lg">→</span>
-                    <div className="h-px w-8 bg-[var(--sandstone-charcoal)]/25" />
-                  </div>
-
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/45">
-                      Market Projection (2026)
-                    </p>
-                    <p className="mt-1 font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
-                      {PRICE_CARD.projection}
-                    </p>
-                    <p className="mt-1 text-[9px] italic text-[var(--sandstone-charcoal)]/35">Editorial estimate</p>
-                  </div>
-                </div>
-
-                <p className="mt-5 text-xs italic text-[var(--sandstone-charcoal)]/40">
-                  vs market projection / 2026 trend
+                <p className="text-sm font-bold text-[var(--sandstone-navy)]">Median Asking Price</p>
+                <p className="mt-4 font-heading text-3xl font-bold text-[var(--sandstone-navy)]">
+                  {PRICE_CARD.current}
+                </p>
+                <dl className="mt-4 space-y-2 text-sm text-[var(--sandstone-charcoal)]/70">
+                  <div><dt className="font-semibold">Geography</dt><dd>ZIP 79922, El Paso, TX</dd></div>
+                  <div><dt className="font-semibold">Reporting period</dt><dd>{PRICE_CARD.period}</dd></div>
+                  <div><dt className="font-semibold">Source</dt><dd>GEPAR MLS via Spark API</dd></div>
+                </dl>
+                <p className="mt-4 text-xs leading-relaxed text-[var(--sandstone-charcoal)]/70">
+                  Median asking price of active listings, not completed sale prices.
+                  ZIP 79922 is the geographic filter used here; its boundaries do not
+                  represent all of Upper Valley. A comparable median sold price is
+                  not published on this page.
                 </p>
               </div>
 
               {/* Right — line chart */}
               <div className="rounded-2xl border border-[var(--sandstone-navy)]/12 bg-white px-6 py-7 shadow-sm">
                 <p className="mb-4 text-sm font-bold text-[var(--sandstone-navy)]">
-                  Upper Valley Median List Price — 12 Months
+                  ZIP 79922 Median Asking Price — Up to 12 Months
                 </p>
 
                 <svg
                   viewBox={`0 0 ${CX1 + 16} ${CY1 + 24}`}
                   className="w-full"
-                  aria-label="Upper Valley home price trend — last 12 months"
+                  aria-label="ZIP 79922 median asking price of active listings — up to 12 reporting months"
                 >
                   <defs>
                     <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
@@ -480,7 +472,9 @@ export default async function UpperValleyPage() {
 
             {/* Source footnote */}
             <p className="mt-6 text-center text-[11px] text-[var(--sandstone-charcoal)]/35">
-              Live data: GEPAR MLS via Spark API · ZIP 79922 · Refreshes hourly
+              Source: GEPAR MLS via Spark API · ZIP 79922 · Asking-price reporting period: {period}.
+              Updates are requested hourly; the reporting period above identifies the month represented by the price.
+              {!hasMedianPrice && " Asking-price data is currently unavailable."}
             </p>
 
           </div>
