@@ -13,7 +13,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "New Construction Homes in Midland, TX | Sandstone Home Builders",
   description:
-    "Explore luxury new construction homes in Midland, TX by Sandstone Home Builders. Tour the Maribel and Clarissa floor plans - 4 bed, 4 bath, 3,600 sq ft in the Greenwood ISD community.",
+    "Explore luxury new construction homes in Midland, TX by Sandstone Home Builders. Tour the Maribel and Clarissa floor plans - 4 bedrooms, 3,600 sq ft, with 4.5 bathrooms in Maribel and 4 in Clarissa in the Greenwood ISD community.",
   openGraph: {
     title: "New Construction Homes in Midland, TX | Sandstone Home Builders",
   },
@@ -21,10 +21,10 @@ export const metadata: Metadata = {
 
 const BASE = "/areas/sandstones-new-builds";
 
-const SPEC_BOXES = (prefix: string) => [
+const SPEC_BOXES = (bathrooms: string) => [
   { icon: `${BASE}/icons/sqft.jpg`,   value: "3,600 SF", label: "Living Area"    },
   { icon: `${BASE}/icons/beds.jpg`,   value: "4",        label: "Bedrooms"       },
-  { icon: `${BASE}/icons/baths.jpg`,  value: "4",        label: "Full Bathrooms" },
+  { icon: `${BASE}/icons/baths.jpg`,  value: bathrooms,  label: "Bathrooms" },
   { icon: `${BASE}/icons/garage.jpg`, value: "3-Car",    label: "Garage"         },
   { icon: `${BASE}/icons/patio.jpg`,  value: "787 SF",   label: "Covered Patio"  },
   { icon: `${BASE}/icons/star.jpg`,   value: "Luxury",   label: "Custom Home"    },
@@ -69,7 +69,7 @@ const MODELS: HomeModel[] = [
       { src: `${BASE}/model/interior/Render Interior 20.webp`, alt: "Maribel Master Bathroom pt.10" },
       { src: `${BASE}/model/interior/Render Interior 21.webp`, alt: "Maribel Master Bathroom pt.11" },
     ],
-    specBoxes: SPEC_BOXES("maribel"),
+    specBoxes: SPEC_BOXES("4 full + 1 half"),
   },
   {
     id:          "clarissa",
@@ -91,7 +91,7 @@ const MODELS: HomeModel[] = [
       { src: `${BASE}/model/clarissa-9.webp`,  alt: "Clarissa patio front"  },
       { src: `${BASE}/model/clarissa-10.webp`, alt: "Clarissa exterior" },
     ],
-    specBoxes: SPEC_BOXES("clarissa"),
+    specBoxes: SPEC_BOXES("4 full"),
   },
 ];
 
@@ -196,7 +196,7 @@ const FAQS = [
   {
     icon: `${BASE}/icons/faq-work.jpg`,
     q:    "What home models are available?",
-    a:    "Sandstone Home Builders is currently offering two models: the Maribel and the Clarissa — both 4-bedroom, 4-bathroom homes with 3,600 sq ft of living area and a 3-car garage. Additional models and lot options are being planned. Contact us to be among the first to hear about new releases.",
+    a:    "Sandstone Home Builders is currently offering two models: the Maribel and the Clarissa. Maribel has 4 full bathrooms plus 1 half bathroom (4.5 total), while Clarissa has 4 full bathrooms. Both models have 4 bedrooms, 3,600 sq ft of living area, and a 3-car garage. Additional models and lot options are being planned. Contact us to be among the first to hear about new releases.",
   },
   {
     icon: `${BASE}/icons/faq-price.jpg`,
