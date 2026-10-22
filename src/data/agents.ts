@@ -66,9 +66,7 @@ export const agents: Agent[] = [
     slug: "abril-hernandez",
     name: "Abril Hernandez",
     role: "Texas REALTOR®",
-    // Initials placeholder until Abril's headshot is available.
-    image:
-      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 1000'%3E%3Cpath fill='%2317211d' d='M0 0h800v1000H0z'/%3E%3Ctext x='400' y='440' text-anchor='middle' fill='%23d8c3a5' font-family='Georgia' font-size='130'%3EAH%3C/text%3E%3C/svg%3E",
+    image: "/agents/Abril-headshot.png",
     bio: "Meet Abril Hernandez, a member of the Sandstone Real Estate Group team.",
   },
 ];
