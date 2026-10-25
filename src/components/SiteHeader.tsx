@@ -62,10 +62,6 @@ export function SiteHeader({
 
   const desktopLogoSrc = "/desktop-hero-logo.webp";
   const mobileLogoSrc = "/mobile-header-logo.webp";
-  // Navy recolor of the mobile icon, used only on the transparent
-  // hero-overlay header (home page) where the gold icon has too little
-  // contrast against a light sky photo.
-  const mobileLogoNavySrc = "/mobile-header-logo-navy.webp";
 
   // The centered desktop wordmark is navy-on-transparent. That sits on a
   // solid navy header bar everywhere except the hero-overlay header (home
@@ -90,19 +86,6 @@ export function SiteHeader({
 
     return pathname === href || pathname.startsWith(`${href}/`);
   };
-
-  useEffect(() => {
-    if (!isMobileMenuOpen) {
-      document.body.style.overflow = "";
-      return;
-    }
-
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -247,7 +230,7 @@ export function SiteHeader({
       className={cn(
         "left-0 right-0 z-[80]",
         overlayDesktop
-          ? "absolute top-4 border-none bg-transparent lg:top-[40px]"
+          ? "absolute top-0 border-none bg-transparent lg:top-[40px]"
           : cn(
               "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]",
               isLeadHeader &&
@@ -278,8 +261,8 @@ export function SiteHeader({
         className={cn(
           "mx-auto flex w-full max-w-7xl flex-col px-4 lg:flex-row lg:px-6",
           isHeroHeader
-            ? "py-1 lg:h-28 lg:items-start lg:pt-3"
-            : "py-1 lg:h-[92px]"
+            ? "py-3 lg:h-28 lg:items-start lg:pt-3"
+            : "py-3 lg:h-[92px] lg:py-1"
         )}
       >
         <div className="flex w-full items-center gap-3 lg:hidden">
@@ -295,10 +278,10 @@ export function SiteHeader({
           >
             <div className="relative h-10 w-10 shrink-0">
               <Image
-                src={isHeroHeader ? mobileLogoNavySrc : mobileLogoSrc}
+                src={mobileLogoSrc}
                 alt="Sandstone Real Estate Group"
                 fill
-                className="object-contain brightness-110 contrast-110"
+                className="object-contain brightness-0 invert"
                 sizes="40px"
                 priority
               />
@@ -319,10 +302,10 @@ export function SiteHeader({
                   : "Open navigation menu"
               }
               className={cn(
-                "inline-flex h-10 items-center gap-2 rounded-full border px-3 text-[11px] font-bold uppercase tracking-[0.09em] transition focus-visible:outline-none focus-visible:ring-2",
+                "inline-flex h-11 items-center gap-2 rounded-full border px-4 text-xs font-semibold uppercase tracking-[0.09em] transition focus-visible:outline-none focus-visible:ring-2",
                 isHeroHeader
-                  ? "border-[var(--sandstone-navy)]/45 bg-[var(--sandstone-navy)]/8 text-[var(--sandstone-navy)] hover:border-[var(--sandstone-navy)]/70 hover:bg-[var(--sandstone-navy)]/16 focus-visible:ring-[var(--sandstone-navy)]"
-                  : "border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 text-[var(--sandstone-sand-gold)] hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/16 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                  ? "border-white/40 bg-[var(--sandstone-navy)]/70 text-white backdrop-blur-md hover:bg-[var(--sandstone-navy)]/90 focus-visible:ring-white"
+                  : "border-white/30 bg-white/5 text-white hover:bg-white/10 focus-visible:ring-white"
               )}
             >
               <span aria-hidden className="inline-flex flex-col gap-1">
@@ -741,9 +724,9 @@ export function SiteHeader({
               item.href !== "/#contact" &&
               item.href !== "/areas"
           ),
-          ...AREAS_NAV_MENU,
-          ...CONTACT_US_MENU,
         ]}
+        areaItems={AREAS_NAV_MENU}
+        contactItems={CONTACT_US_MENU}
       />
     </header>
   );
