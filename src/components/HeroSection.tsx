@@ -24,46 +24,27 @@ interface PlaceSuggestion {
   placeId: string;
 }
 
-interface GooglePlacePrediction {
-  description: string;
-  place_id: string;
-}
-
-interface GooglePlaceDetailsResult {
-  geometry?: {
-    location?: {
-      lat: () => number;
-      lng: () => number;
-    };
-  };
-}
-
 interface GooglePlacesAutocompleteService {
-  getPlacePredictions: (
-    request: {
-      input: string;
-      types?: string[];
-      componentRestrictions?: { country: string };
-    },
-    callback: (
-      predictions: GooglePlacePrediction[] | null,
-      status?: string
-    ) => void
-  ) => void;
+  fetchAutocompleteSuggestions: (request: {
+    input: string;
+    includedRegionCodes: string[];
+  }) => Promise<{
+    suggestions: Array<{
+      placePrediction?: {
+        text: { toString: () => string };
+        placeId: string;
+      };
+    }>;
+  }>;
 }
 
-interface GooglePlacesDetailsService {
-  getDetails: (
-    request: { placeId: string; fields: string[] },
-    callback: (place: GooglePlaceDetailsResult | null, status: string) => void
-  ) => void;
+interface GooglePlacesLibrary {
+  AutocompleteSuggestion: GooglePlacesAutocompleteService;
 }
 
 interface GoogleMapsWithPlaces {
-  places?: {
-    AutocompleteService: new () => GooglePlacesAutocompleteService;
-    PlacesService: new (container: HTMLElement) => GooglePlacesDetailsService;
-  };
+  places?: GooglePlacesLibrary;
+  importLibrary: (library: "places") => Promise<GooglePlacesLibrary>;
 }
 
 declare global {
@@ -101,7 +82,6 @@ export function HeroSection() {
   const [selectedSuggestion, setSelectedSuggestion] = useState<PlaceSuggestion | null>(null);
   const [mapsReady, setMapsReady] = useState(false);
   const autocompleteServiceRef = useRef<GooglePlacesAutocompleteService | null>(null);
-  const placesServiceRef = useRef<GooglePlacesDetailsService | null>(null);
 
   useEffect(() => {
     router.prefetch(LISTINGS_MAP_PATH);
@@ -129,12 +109,9 @@ export function HeroSection() {
       return;
     }
 
-    if (existingMapsApi?.places) {
+    if (existingMapsApi?.places?.AutocompleteSuggestion) {
       autocompleteServiceRef.current =
-        new existingMapsApi.places.AutocompleteService();
-      placesServiceRef.current = new existingMapsApi.places.PlacesService(
-        document.createElement("div")
-      );
+        existingMapsApi.places.AutocompleteSuggestion;
       setMapsReady(true);
       return;
     }
@@ -161,22 +138,21 @@ export function HeroSection() {
     window.__sandstoneGoogleMapsPromise = loaderPromise;
 
     loaderPromise
-      .then(() => {
+      .then(async () => {
         const mapsApi = window.google?.maps as
           | GoogleMapsWithPlaces
           | undefined;
-        if (!mapsApi?.places) {
-          return;
+        if (!mapsApi) {
+          throw new Error("Google Maps did not load.");
         }
-        autocompleteServiceRef.current =
-          new mapsApi.places.AutocompleteService();
-        placesServiceRef.current = new mapsApi.places.PlacesService(
-          document.createElement("div")
-        );
+        const places = await mapsApi.importLibrary("places");
+        autocompleteServiceRef.current = places.AutocompleteSuggestion;
         setMapsReady(true);
       })
       .catch(() => {
-        // Silently fall back to simple text search if Maps fails.
+        // Allow another focus to retry a failed script load.
+        mapsLoadTriggeredRef.current = false;
+        window.__sandstoneGoogleMapsPromise = undefined;
       });
   };
 
@@ -238,33 +214,43 @@ export function HeroSection() {
       setLocationFilter(inferredMarket);
     }
 
-    if (!value.trim() || !mapsReady || !autocompleteServiceRef.current) {
-      setSuggestions([]);
+    setSuggestions([]);
+  };
+
+  useEffect(() => {
+    if (!searchValue.trim() || !mapsReady || selectedSuggestion) {
       return;
     }
 
-    const autocompleteService = autocompleteServiceRef.current;
-    autocompleteService.getPlacePredictions(
-      {
-        input: value,
-        types: ["address"],
-        componentRestrictions: { country: "us" },
-      },
-      (predictions) => {
-        if (!predictions || predictions.length === 0) {
-          setSuggestions([]);
-          return;
+    let cancelled = false;
+    const timeout = window.setTimeout(async () => {
+      try {
+        const result = await autocompleteServiceRef.current?.fetchAutocompleteSuggestions({
+          input: searchValue,
+          includedRegionCodes: ["us"],
+        });
+        if (!cancelled) {
+          setSuggestions(
+            (result?.suggestions ?? []).flatMap(({ placePrediction }) =>
+              placePrediction
+                ? [{ description: placePrediction.text.toString(), placeId: placePrediction.placeId }]
+                : []
+            ).slice(0, 6)
+          );
         }
-
-        const mapped: PlaceSuggestion[] = predictions.slice(0, 6).map((prediction) => ({
-          description: prediction.description,
-          placeId: prediction.place_id,
-        }));
-
-        setSuggestions(mapped);
+      } catch (error) {
+        if (!cancelled) {
+          setSuggestions([]);
+          console.error("Address autocomplete failed. Check Places API (New) access.", error);
+        }
       }
-    );
-  };
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [searchValue, mapsReady, selectedSuggestion]);
 
   const handleSuggestionClick = (suggestion: PlaceSuggestion) => {
     setSearchValue(suggestion.description);
