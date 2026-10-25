@@ -1,23 +1,169 @@
 import Link from "next/link";
+import Script from "next/script";
+
 import { SiteHeader } from "@/components/SiteHeader";
+import { HeroSection } from "@/components/HeroSection";
+import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsSection";
+import { BlogTeaserSection } from "@/components/sections/BlogTeaserSection";
+import { PrimaryActionTiles } from "@/components/sections/PrimaryActionTiles";
+import { ContactForm } from "@/components/ContactForm";
+import { GoogleReviews } from "@/components/GoogleReviews";
 import { SiteFooter } from "@/components/SiteFooter";
-import { AREAS_NAV_MENU } from "@/constants/site";
-import { SITE_ORIGIN } from "@/constants/seo";
+import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
+import { FinancingBanner } from "@/components/FinancingBanner";
+
+import { fetchMyPropertyCards, getSortedPosts } from "@/services";
+import { isAlejandroListing } from "@/lib";
+import {
+  HOME_FAQ_SCHEMA_EN,
+  HOME_FAQ_SCHEMA_ES,
+} from "@/constants/site";
+
+export const revalidate = 600;
+
+const SHOW_LUXURY_BANNER = false;
+
 export const metadata = {
-  title: "El Paso & Santa Teresa Neighborhoods | Sandstone",
-  description: "Explore Sandstone neighborhood guides for El Paso, Horizon City, Canutillo and Santa Teresa. Compare local amenities and browse homes in each area.",
-  alternates: { canonical: `${SITE_ORIGIN}/areas` },
+  title: "Sandstone Real Estate Group | Luxury Homes in El Paso, TX",
+  description:
+    "Explore luxury homes, military relocation services, and real estate opportunities in El Paso, Texas with Sandstone Real Estate Group. Buy, sell, and rent homes near Fort Bliss and across the Southwest.",
 };
-export default function AreasPage() {
-  return <><SiteHeader variant="lead" showDesktopCenterLogo={false} />
-    <main className="min-h-screen bg-[var(--sandstone-off-white)]">
-      <section className="container mx-auto max-w-6xl px-4 py-16">
-        <h1 className="font-heading text-4xl font-bold text-[var(--sandstone-navy)]">Explore Our Neighborhoods</h1>
-        <p className="mt-4 max-w-3xl text-lg">Find local guides for El Paso and the surrounding communities. Explore amenities, neighborhood information and home searches, or contact our team for help choosing an area.</p>
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {AREAS_NAV_MENU.map(area => <li key={area.href}><Link href={area.href} className="block rounded-2xl bg-white p-6 font-heading text-xl text-[var(--sandstone-navy)] shadow-sm hover:underline">{area.label}</Link></li>)}
-        </ul>
-        <Link href="/areas/sandstones-new-builds" className="mt-8 inline-block underline">Explore Sandstone new builds</Link>
-      </section>
-    </main><SiteFooter /></>;
+
+export default async function Home() {
+  const [properties, posts] = await Promise.all([
+    fetchMyPropertyCards(),
+    getSortedPosts(),
+  ]);
+
+  const latestPosts = posts.slice(0, 3);
+
+  const alejandroSparkProperties = properties
+    .filter(
+      (property) =>
+        Boolean(property.sparkSource) && isAlejandroListing(property)
+    )
+    .slice(0, 12);
+
+  return (
+    <>
+      <Script
+        id="local-business-structured-data"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": ["RealEstateAgent", "LocalBusiness"],
+            name: "Sandstone Real Estate Group",
+            url: "https://sandstone.homes",
+            description:
+              "Luxury real estate and military PCS specialist serving El Paso, Fort Bliss, Horizon City, Upper Valley, Canutillo, and Santa Teresa.",
+            telephone: "+19152776707",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "El Paso",
+              addressRegion: "TX",
+              addressCountry: "US",
+            },
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: 31.7619,
+              longitude: -106.485,
+            },
+            areaServed: [
+              "El Paso, TX",
+              "Fort Bliss, TX",
+              "Horizon City, TX",
+              "Upper Valley, TX",
+              "Canutillo, TX",
+              "Santa Teresa, NM",
+            ],
+            serviceType: [
+              "Real Estate Sales",
+              "Military PCS",
+              "VA Home Buying",
+              "Luxury Homes",
+              "Home Selling",
+            ],
+          }),
+        }}
+      />
+
+      <Script
+        id="home-faq-schema-es"
+        type="application/ld+json"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(HOME_FAQ_SCHEMA_ES),
+        }}
+      />
+
+      <Script
+        id="home-faq-schema-en"
+        type="application/ld+json"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(HOME_FAQ_SCHEMA_EN),
+        }}
+      />
+
+      <SiteHeader overlayDesktop />
+
+      <main className="min-h-screen overflow-x-clip">
+        <HeroSection />
+
+        <section className="w-full overflow-hidden">
+          <Link
+            href="/pcs"
+            className="block w-full"
+            aria-label="Learn more about military PCS services"
+          >
+            <picture>
+              <source
+                media="(max-width: 768px)"
+                srcSet="/uploads/new_usa_banner-mobile@2x.webp"
+              />
+              <img
+                src="/uploads/new_usa_banner.png"
+                alt="Military PCS Specialist — start your move"
+                className="block h-auto w-full"
+              />
+            </picture>
+          </Link>
+        </section>
+
+        {SHOW_LUXURY_BANNER && (
+          <section className="w-full overflow-hidden bg-[#071a33]">
+            <Link
+              href="/luxury-homes"
+              className="block w-full"
+              aria-label="Explore luxury homes with Sandstone Real Estate Team"
+            >
+              <img
+                src="/uploads/luxury_banner.png"
+                alt="Luxury Homes — exclusive properties and exceptional lifestyles"
+                className="block h-auto w-full"
+              />
+            </Link>
+          </section>
+        )}
+
+        <FeaturedListingsSection properties={alejandroSparkProperties} />
+
+        <GoogleReviews />
+
+        <ContactForm />
+
+        <FinancingBanner />
+
+        <ExploreNearbyAreas compact />
+
+        <BlogTeaserSection posts={latestPosts} />
+
+        <PrimaryActionTiles />
+      </main>
+
+      <SiteFooter />
+    </>
+  );
 }

@@ -289,7 +289,8 @@ export function HeroSection() {
           which inflates measured "resource load delay" for the LCP metric.
           React/Next.js hoists this <link> into the document <head>. */}
       <link rel="preload" as="image" href="/hero-home.webp" fetchPriority="high" />
-      <section className="relative w-full overflow-hidden bg-[var(--sandstone-navy)]">
+      {/* Let address suggestions extend below the hero and above the next section. */}
+      <section className="relative z-20 w-full overflow-visible bg-[var(--sandstone-navy)]">
         <div className="relative w-full">
           <div className="relative min-h-[520px] w-full lg:min-h-[680px]">
             <picture className="absolute inset-0 block h-full w-full">
