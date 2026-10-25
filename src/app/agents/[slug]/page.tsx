@@ -51,7 +51,7 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
 
       <main className="min-h-screen bg-[#f7f3ec] text-black">
-        <section className="px-6 pb-20 pt-32 sm:pt-40 lg:px-8 lg:pb-28">
+        <section className="px-5 pb-14 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-28 lg:pt-12">
           <div className="mx-auto max-w-7xl">
             <Link
               href="/join#meet-the-agents"
@@ -60,7 +60,7 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
               ← BACK TO THE TEAM
             </Link>
 
-            <div className="mt-10 grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-20">
+            <div className="mt-6 grid gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-12">
               <div className="relative aspect-[4/5] overflow-hidden bg-black shadow-[0_30px_80px_rgba(0,0,0,0.16)]">
                 <img
                   src={agent.image}
@@ -75,43 +75,18 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
                   {agent.role}
                 </p>
 
-                <h1 className="mt-5 font-serif text-5xl leading-none tracking-[-0.035em] text-black sm:text-6xl lg:text-7xl">
+                <h1 className="mt-3 font-serif text-5xl leading-none tracking-[-0.035em] text-black sm:text-6xl lg:text-7xl">
                   {agent.name}
                 </h1>
 
                 {agent.license ? (
-                  <p className="mt-5 text-sm font-semibold tracking-wide text-black/65">
+                  <p className="mt-3 text-sm font-semibold tracking-wide text-black/65">
                     {agent.license}
                   </p>
                 ) : null}
 
-                <div className="mt-9 h-px w-20 bg-[#b89b72]" />
-
-                <p className="mt-9 max-w-2xl text-lg leading-9 text-black/70">
-                  {agent.bio}
-                </p>
-
-                {agent.specialties?.length ? (
-                  <div className="mt-10">
-                    <h2 className="text-xs font-bold tracking-[0.2em] text-[#9b7b56]">
-                      SPECIALTIES
-                    </h2>
-
-                    <div className="mt-4 flex flex-wrap gap-3">
-                      {agent.specialties.map((specialty) => (
-                        <span
-                          key={specialty}
-                          className="border border-black/15 bg-white px-4 py-2 text-sm text-black/70"
-                        >
-                          {specialty}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
                 {agent.email || agent.phone ? (
-                  <div className="mt-11 flex flex-col gap-4 sm:flex-row">
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                     {agent.email ? (
                       <a
                         href={`mailto:${agent.email}`}
@@ -129,6 +104,31 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
                         CALL {firstName.toUpperCase()}
                       </a>
                     ) : null}
+                  </div>
+                ) : null}
+
+                <div className="mt-7 h-px w-20 bg-[#b89b72]" />
+
+                <p className="mt-6 max-w-2xl text-base leading-8 sm:text-lg sm:leading-9 text-black/70">
+                  {agent.bio}
+                </p>
+
+                {agent.specialties?.length ? (
+                  <div className="mt-8">
+                    <h2 className="text-xs font-bold tracking-[0.2em] text-[#9b7b56]">
+                      SPECIALTIES
+                    </h2>
+
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      {agent.specialties.map((specialty) => (
+                        <span
+                          key={specialty}
+                          className="border border-black/15 bg-white px-4 py-2 text-sm text-black/70"
+                        >
+                          {specialty}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 ) : null}
               </div>
