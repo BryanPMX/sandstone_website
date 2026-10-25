@@ -109,7 +109,7 @@ export default async function Home() {
 
       <SiteHeader overlayDesktop />
 
-      <main className="min-h-screen overflow-x-clip">
+      <main className="min-h-screen overflow-x-hidden">
         <HeroSection />
 
         <section className="w-full overflow-hidden">

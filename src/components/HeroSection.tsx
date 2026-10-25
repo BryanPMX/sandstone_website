@@ -24,27 +24,46 @@ interface PlaceSuggestion {
   placeId: string;
 }
 
-interface GooglePlacesAutocompleteService {
-  fetchAutocompleteSuggestions: (request: {
-    input: string;
-    includedRegionCodes: string[];
-  }) => Promise<{
-    suggestions: Array<{
-      placePrediction?: {
-        text: { toString: () => string };
-        placeId: string;
-      };
-    }>;
-  }>;
+interface GooglePlacePrediction {
+  description: string;
+  place_id: string;
 }
 
-interface GooglePlacesLibrary {
-  AutocompleteSuggestion: GooglePlacesAutocompleteService;
+interface GooglePlaceDetailsResult {
+  geometry?: {
+    location?: {
+      lat: () => number;
+      lng: () => number;
+    };
+  };
+}
+
+interface GooglePlacesAutocompleteService {
+  getPlacePredictions: (
+    request: {
+      input: string;
+      types?: string[];
+      componentRestrictions?: { country: string };
+    },
+    callback: (
+      predictions: GooglePlacePrediction[] | null,
+      status?: string
+    ) => void
+  ) => void;
+}
+
+interface GooglePlacesDetailsService {
+  getDetails: (
+    request: { placeId: string; fields: string[] },
+    callback: (place: GooglePlaceDetailsResult | null, status: string) => void
+  ) => void;
 }
 
 interface GoogleMapsWithPlaces {
-  places?: GooglePlacesLibrary;
-  importLibrary: (library: "places") => Promise<GooglePlacesLibrary>;
+  places?: {
+    AutocompleteService: new () => GooglePlacesAutocompleteService;
+    PlacesService: new (container: HTMLElement) => GooglePlacesDetailsService;
+  };
 }
 
 declare global {
@@ -82,6 +101,7 @@ export function HeroSection() {
   const [selectedSuggestion, setSelectedSuggestion] = useState<PlaceSuggestion | null>(null);
   const [mapsReady, setMapsReady] = useState(false);
   const autocompleteServiceRef = useRef<GooglePlacesAutocompleteService | null>(null);
+  const placesServiceRef = useRef<GooglePlacesDetailsService | null>(null);
 
   useEffect(() => {
     router.prefetch(LISTINGS_MAP_PATH);
@@ -109,9 +129,12 @@ export function HeroSection() {
       return;
     }
 
-    if (existingMapsApi?.places?.AutocompleteSuggestion) {
+    if (existingMapsApi?.places) {
       autocompleteServiceRef.current =
-        existingMapsApi.places.AutocompleteSuggestion;
+        new existingMapsApi.places.AutocompleteService();
+      placesServiceRef.current = new existingMapsApi.places.PlacesService(
+        document.createElement("div")
+      );
       setMapsReady(true);
       return;
     }
@@ -138,21 +161,22 @@ export function HeroSection() {
     window.__sandstoneGoogleMapsPromise = loaderPromise;
 
     loaderPromise
-      .then(async () => {
+      .then(() => {
         const mapsApi = window.google?.maps as
           | GoogleMapsWithPlaces
           | undefined;
-        if (!mapsApi) {
-          throw new Error("Google Maps did not load.");
+        if (!mapsApi?.places) {
+          return;
         }
-        const places = await mapsApi.importLibrary("places");
-        autocompleteServiceRef.current = places.AutocompleteSuggestion;
+        autocompleteServiceRef.current =
+          new mapsApi.places.AutocompleteService();
+        placesServiceRef.current = new mapsApi.places.PlacesService(
+          document.createElement("div")
+        );
         setMapsReady(true);
       })
       .catch(() => {
-        // Allow another focus to retry a failed script load.
-        mapsLoadTriggeredRef.current = false;
-        window.__sandstoneGoogleMapsPromise = undefined;
+        // Silently fall back to simple text search if Maps fails.
       });
   };
 
@@ -214,43 +238,33 @@ export function HeroSection() {
       setLocationFilter(inferredMarket);
     }
 
-    setSuggestions([]);
-  };
-
-  useEffect(() => {
-    if (!searchValue.trim() || !mapsReady || selectedSuggestion) {
+    if (!value.trim() || !mapsReady || !autocompleteServiceRef.current) {
+      setSuggestions([]);
       return;
     }
 
-    let cancelled = false;
-    const timeout = window.setTimeout(async () => {
-      try {
-        const result = await autocompleteServiceRef.current?.fetchAutocompleteSuggestions({
-          input: searchValue,
-          includedRegionCodes: ["us"],
-        });
-        if (!cancelled) {
-          setSuggestions(
-            (result?.suggestions ?? []).flatMap(({ placePrediction }) =>
-              placePrediction
-                ? [{ description: placePrediction.text.toString(), placeId: placePrediction.placeId }]
-                : []
-            ).slice(0, 6)
-          );
-        }
-      } catch (error) {
-        if (!cancelled) {
+    const autocompleteService = autocompleteServiceRef.current;
+    autocompleteService.getPlacePredictions(
+      {
+        input: value,
+        types: ["address"],
+        componentRestrictions: { country: "us" },
+      },
+      (predictions) => {
+        if (!predictions || predictions.length === 0) {
           setSuggestions([]);
-          console.error("Address autocomplete failed. Check Places API (New) access.", error);
+          return;
         }
-      }
-    }, 250);
 
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeout);
-    };
-  }, [searchValue, mapsReady, selectedSuggestion]);
+        const mapped: PlaceSuggestion[] = predictions.slice(0, 6).map((prediction) => ({
+          description: prediction.description,
+          placeId: prediction.place_id,
+        }));
+
+        setSuggestions(mapped);
+      }
+    );
+  };
 
   const handleSuggestionClick = (suggestion: PlaceSuggestion) => {
     setSearchValue(suggestion.description);
@@ -275,8 +289,7 @@ export function HeroSection() {
           which inflates measured "resource load delay" for the LCP metric.
           React/Next.js hoists this <link> into the document <head>. */}
       <link rel="preload" as="image" href="/hero-home.webp" fetchPriority="high" />
-      {/* Let address suggestions extend below the hero and above the next section. */}
-      <section className="relative z-20 w-full overflow-visible bg-[var(--sandstone-navy)]">
+      <section className="relative w-full overflow-hidden bg-[var(--sandstone-navy)]">
         <div className="relative w-full">
           <div className="relative min-h-[520px] w-full lg:min-h-[680px]">
             <picture className="absolute inset-0 block h-full w-full">
