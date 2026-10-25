@@ -1,10 +1,12 @@
+import { Suspense } from "react";
 import { ListingsMapClient } from "./ListingsMapClient";
-import { getMapListingsForInitialLoad } from "@/lib/map-listings-cache";
+import ListingsMapLoading from "./loading";
 
-export const revalidate = 0;
-
-export default async function ListingsMapPage() {
-  const mapClientProperties = await getMapListingsForInitialLoad();
-
-  return <ListingsMapClient properties={mapClientProperties} />;
+export default function ListingsMapPage() {
+  // Render the map shell without waiting for the listings API.
+  return (
+    <Suspense fallback={<ListingsMapLoading />}>
+      <ListingsMapClient />
+    </Suspense>
+  );
 }

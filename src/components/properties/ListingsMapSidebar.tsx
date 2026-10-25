@@ -38,6 +38,23 @@ export function ListingsMapSidebar({
   const [currentPage, setCurrentPage] = useState(1);
   const [renderedCardCount, setRenderedCardCount] = useState(SIDEBAR_PAGE_SIZE);
   const containerRef = useRef<HTMLElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    if (!("IntersectionObserver" in window)) {
+      setIsVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        setIsVisible(true);
+        observer.disconnect();
+      }
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
   const deferredProperties = useDeferredValue(properties);
   const totalPages = Math.max(1, Math.ceil(deferredProperties.length / SIDEBAR_PAGE_SIZE));
 
@@ -130,11 +147,11 @@ export function ListingsMapSidebar({
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2">
-        {renderedProperties.map((property, index) => (
+        {isVisible && renderedProperties.map((property) => (
           <ListingCard
             key={property.id}
             property={property}
-            priority={currentPage === 1 && index < 2}
+            priority={false}
             extraQueryParams={mapContextQuery}
           />
         ))}

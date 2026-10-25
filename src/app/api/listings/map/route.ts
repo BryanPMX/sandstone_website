@@ -1,12 +1,13 @@
-import { NextResponse } from "next/server";
-import { refreshMapListingsCache } from "@/lib/map-listings-cache";
+import { NextRequest, NextResponse } from "next/server";
+import { getMapListingsForInitialLoad } from "@/lib/map-listings-cache";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const properties = await refreshMapListingsCache();
+    const listingType = request.nextUrl.searchParams.get("listingType") === "rental" ? "rental" : "active";
+    const properties = await getMapListingsForInitialLoad(listingType);
 
     return NextResponse.json(properties, {
       headers: {

@@ -30,7 +30,6 @@ const EL_PASO_LNG_MAX = -106.23;
 const DEFAULT_MAP_ZOOM = 11;
 const SINGLE_MARKER_ZOOM = 13;
 const VIEWPORT_DEBOUNCE_MS = 240;
-const MAP_REFRESH_INITIAL_DELAY_MS = 60_000; // 1 minute
 const MAP_REFRESH_INTERVAL_MS = 3_600_000; // 1 hour
 
 interface MapViewport {
@@ -66,40 +65,14 @@ function dedupeProperties<T extends { id: string; routeId: string; sparkId?: str
   });
 }
 
-function resolvePropertyIdentity(property: { id: string; routeId: string; sparkId?: string }): string {
-  return property.sparkId ?? property.routeId ?? property.id;
-}
-
-function haveSamePropertyIdentities(current: PropertyCard[], next: PropertyCard[]): boolean {
-  if (current.length !== next.length) {
-    return false;
-  }
-
-  for (let index = 0; index < current.length; index += 1) {
-    if (resolvePropertyIdentity(current[index]) !== resolvePropertyIdentity(next[index])) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-async function fetchLatestMapProperties(signal: AbortSignal): Promise<PropertyCard[] | null> {
-  const response = await fetch("/api/listings/map", {
-    method: "GET",
-    signal,
-  });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  const payload = (await response.json()) as unknown;
-
-  if (!Array.isArray(payload)) {
-    return null;
-  }
-
+async function fetchLatestMapProperties(
+  listingType: ListingType,
+  signal: AbortSignal
+): Promise<PropertyCard[]> {
+  const response = await fetch(`/api/listings/map?listingType=${listingType}`, { signal });
+  if (!response.ok) throw new Error("Unable to load listings");
+  const payload: unknown = await response.json();
+  if (!Array.isArray(payload)) throw new Error("Invalid listings response");
   return dedupeProperties(payload as PropertyCard[]);
 }
 
@@ -291,16 +264,14 @@ function isWithinViewportBounds(property: PropertyCard, viewport: MapViewport): 
   );
 }
 
-interface ListingsMapClientProps {
-  properties: PropertyCard[];
-}
-
-export function ListingsMapClient({ properties }: ListingsMapClientProps) {
+export function ListingsMapClient() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamsString = searchParams?.toString() ?? "";
-  const [liveProperties, setLiveProperties] = useState<PropertyCard[]>(() => properties);
+  const [inventory, setInventory] = useState<Partial<Record<ListingType, PropertyCard[]>>>({});
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const searchQuery = normalizeMapSearchQuery(searchParams?.get("search") ?? "");
   const [searchInput, setSearchInput] = useState(searchQuery);
   const initialCenterLat = parseOptionalNumber(searchParams?.get("lat") ?? null);
@@ -337,6 +308,8 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   const [viewport, setViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
   const [debouncedViewport, setDebouncedViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
   const [isMapRefreshing, setIsMapRefreshing] = useState(false);
+  const liveProperties = useMemo(() => inventory[filters.listingType] ?? [], [inventory, filters.listingType]);
+  const isLoadingListings = inventory[filters.listingType] == null;
 
   useEffect(() => {
     try {
@@ -371,10 +344,6 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   };
 
   useEffect(() => {
-    setLiveProperties(properties);
-  }, [properties]);
-
-  useEffect(() => {
     const timer = window.setTimeout(() => {
       setDebouncedViewport(viewport);
     }, VIEWPORT_DEBOUNCE_MS);
@@ -385,70 +354,42 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
   }, [viewport]);
 
   useEffect(() => {
-    let pollTimer: number | null = null;
-    let cancelled = false;
-    let activeController: AbortController | null = null;
+    const controller = new AbortController();
+    let refreshing = false;
+    const listingType = filters.listingType;
 
     const refreshOnce = async () => {
-      if (cancelled || typeof document !== "undefined" && document.visibilityState === "hidden") {
-        return;
-      }
-
-      if (activeController) {
-        activeController.abort();
-      }
-
-      activeController = new AbortController();
+      if (refreshing || document.visibilityState === "hidden") return;
+      refreshing = true;
       setIsMapRefreshing(true);
-
+      setLoadError(null);
       try {
-        const latest = await fetchLatestMapProperties(activeController.signal);
-
-        if (cancelled || !latest) {
-          return;
+        const latest = await fetchLatestMapProperties(listingType, controller.signal);
+        if (!controller.signal.aborted) {
+          // Compare complete cards so price/status changes are not ignored.
+          setInventory((current) => JSON.stringify(current[listingType]) === JSON.stringify(latest)
+            ? current : { ...current, [listingType]: latest });
         }
-
-        setLiveProperties((current) =>
-          haveSamePropertyIdentities(current, latest) ? current : latest
-        );
       } catch {
-        // Keep existing data when refresh fails.
+        if (!controller.signal.aborted) setLoadError("Listings could not be updated. Please try again.");
       } finally {
-        if (!cancelled) {
-          setIsMapRefreshing(false);
-        }
+        refreshing = false;
+        if (!controller.signal.aborted) setIsMapRefreshing(false);
       }
     };
 
-    const scheduleNextRefresh = (delayMs: number) => {
-      pollTimer = window.setTimeout(async () => {
-        await refreshOnce();
-        scheduleNextRefresh(MAP_REFRESH_INTERVAL_MS);
-      }, delayMs);
-    };
-
+    void refreshOnce();
+    const timer = window.setInterval(() => void refreshOnce(), MAP_REFRESH_INTERVAL_MS);
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        void refreshOnce();
-      }
+      if (document.visibilityState === "visible") void refreshOnce();
     };
-
-    scheduleNextRefresh(MAP_REFRESH_INITIAL_DELAY_MS);
     document.addEventListener("visibilitychange", handleVisibilityChange);
-
     return () => {
-      cancelled = true;
+      controller.abort();
+      window.clearInterval(timer);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-
-      if (pollTimer != null) {
-        window.clearTimeout(pollTimer);
-      }
-
-      if (activeController) {
-        activeController.abort();
-      }
     };
-  }, []);
+  }, [filters.listingType, retryCount]);
 
   const elPasoOnlyProperties = useMemo(
     () => liveProperties.filter((property) => isElPasoListing(property)),
@@ -560,7 +501,7 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
             </div>
             <div className="flex items-center gap-2">
               <p className="text-sm text-[var(--sandstone-charcoal)]/70">
-                Showing {totalCount} listing{totalCount === 1 ? "" : "s"} on the map
+                {isLoadingListings ? "Loading listings…" : `Showing ${totalCount} listing${totalCount === 1 ? "" : "s"} on the map`}
               </p>
               <span className="inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/35 bg-[var(--sandstone-sand-gold)]/12 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-[var(--sandstone-charcoal)]/80">
                 {getPropertySearchMarketLabel(market)}
@@ -721,6 +662,12 @@ export function ListingsMapClient({ properties }: ListingsMapClientProps) {
         </section>
 
         <section className="container mx-auto max-w-[1360px] px-4 pb-3 lg:px-6">
+          {loadError ? (
+            <p role="alert" className="mb-4 rounded-xl bg-white p-4 text-sm text-[var(--sandstone-navy)]">
+              {loadError}{" "}
+              <button type="button" className="font-semibold underline" onClick={() => setRetryCount((count) => count + 1)}>Retry</button>
+            </p>
+          ) : null}
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(340px,0.95fr)]">
             <ListingsMapPanel
               properties={filteredProperties}

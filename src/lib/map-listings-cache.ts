@@ -1,18 +1,14 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
+import { resolvePropertyListingType } from "@/lib/properties";
+
 import {
   fetchActivePropertyCards,
   fetchMyPropertyCards,
   fetchRentalPropertyCards,
 } from "@/services";
 import type { PropertyCard } from "@/types";
-
-const MAP_LISTINGS_CACHE_TTL_MS = 3_600_000; // 1 hour
-const MAP_LISTINGS_REFRESH_COOLDOWN_MS = 30_000; // 30 seconds
-
-let cachedMapListings: PropertyCard[] | null = null;
-let cachedMapListingsAt = 0;
-let inFlightRefreshPromise: Promise<PropertyCard[]> | null = null;
 
 function dedupeProperties<T extends { id: string; routeId: string; sparkId?: string }>(
   properties: T[]
@@ -50,55 +46,21 @@ function toMapClientProperty(property: PropertyCard): PropertyCard {
   };
 }
 
-function isFresh(now: number): boolean {
-  return cachedMapListings != null && now - cachedMapListingsAt <= MAP_LISTINGS_CACHE_TTL_MS;
-}
+// Next's Data Cache survives server instance restarts. Cache each feed separately
+// so opening Buy does not wait for the rental feed (and vice versa).
+const getActive = unstable_cache(fetchActivePropertyCards, ["map-active-v2"], { revalidate: 3600 });
+const getCompany = unstable_cache(fetchMyPropertyCards, ["map-company-v2"], { revalidate: 3600 });
+const getRental = unstable_cache(fetchRentalPropertyCards, ["map-rental-v2"], { revalidate: 3600 });
 
-async function fetchFreshMapListings(): Promise<PropertyCard[]> {
-  const [active, my, rental] = await Promise.all([
-    fetchActivePropertyCards(),
-    fetchMyPropertyCards(),
-    fetchRentalPropertyCards(),
+export async function getMapListingsForInitialLoad(
+  listingType: "active" | "rental" = "active"
+): Promise<PropertyCard[]> {
+  const [inventory, company] = await Promise.all([
+    listingType === "rental" ? getRental() : getActive(),
+    getCompany(),
   ]);
 
-  return dedupeProperties([...active, ...my, ...rental]).map(toMapClientProperty);
-}
-
-export async function refreshMapListingsCache(): Promise<PropertyCard[]> {
-  const now = Date.now();
-
-  if (inFlightRefreshPromise) {
-    return inFlightRefreshPromise;
-  }
-
-  if (cachedMapListings && now - cachedMapListingsAt < MAP_LISTINGS_REFRESH_COOLDOWN_MS) {
-    return cachedMapListings;
-  }
-
-  inFlightRefreshPromise = fetchFreshMapListings()
-    .then((properties) => {
-      cachedMapListings = properties;
-      cachedMapListingsAt = Date.now();
-      return properties;
-    })
-    .finally(() => {
-      inFlightRefreshPromise = null;
-    });
-
-  return inFlightRefreshPromise;
-}
-
-export async function getMapListingsForInitialLoad(): Promise<PropertyCard[]> {
-  const now = Date.now();
-
-  if (isFresh(now) && cachedMapListings) {
-    return cachedMapListings;
-  }
-
-  if (cachedMapListings) {
-    void refreshMapListingsCache();
-    return cachedMapListings;
-  }
-
-  return refreshMapListingsCache();
+  return dedupeProperties([...inventory, ...company])
+    .filter((property) => resolvePropertyListingType(property) === listingType)
+    .map(toMapClientProperty);
 }
