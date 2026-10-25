@@ -1,6 +1,7 @@
 import "server-only";
 
 import { cache } from "react";
+import { SparkRateLimitError } from "@/lib/spark-rate-limit";
 import type { PropertyCard, PropertyDetail } from "@/types";
 import { getMslFeedUrl, getSparkListingsPageSize, hasSparkAccessToken } from "@/config";
 import { fetchLegacyFeedPropertyCards } from "@/services/msl.service";
@@ -339,6 +340,16 @@ function paginateProperties(
   };
 }
 
+// Map caches must reject demo fallback data: otherwise a temporary outage can
+// replace the last successful real inventory for the entire cache lifetime.
+export async function fetchVerifiedMapPropertyCards(target: ListingsTarget): Promise<PropertyCard[]> {
+  const resolution = await resolvePropertyCards(target);
+  if (resolution.source === "demo-fallback") {
+    throw new Error(`Real ${target} listings are temporarily unavailable.`);
+  }
+  return resolution.properties;
+}
+
 async function fetchActivePropertyCardsUncached(): Promise<PropertyCard[]> {
   const resolution = await resolvePropertyCards("active");
   return resolution.properties;
@@ -374,26 +385,34 @@ async function fetchActivePropertyCardsPageUncached(
       };
     } catch (error) {
       const sparkError = formatError(error);
-      console.error("[Listings] Active Spark listings page failed, retrying via full Spark feed.", error);
+      console.error("[Listings] Active Spark listings page failed.", error);
 
-      try {
-        const fullSparkProperties = await fetchAllActiveSparkPropertyCards(options);
-        const paginatedSparkFallback = paginateProperties(
-          fullSparkProperties,
-          currentPage,
-          getSparkListingsPageSize()
-        );
+      // A paged 429 is not a reason to start another complete inventory scan.
+      if (error instanceof SparkRateLimitError || /\(429\)|over rate limit/i.test(sparkError)) {
+        const stale = getSparkStaleCache("active");
+        if (stale) {
+          return { ...paginateProperties(stale, currentPage, getSparkListingsPageSize()), source: "spark", sparkError };
+        }
+      } else {
+        try {
+          const fullSparkProperties = await fetchAllActiveSparkPropertyCards(options);
+          const paginatedSparkFallback = paginateProperties(
+            fullSparkProperties,
+            currentPage,
+            getSparkListingsPageSize()
+          );
 
-        return {
-          ...paginatedSparkFallback,
-          source: "spark",
-          sparkError,
-        };
-      } catch (fullFeedError) {
-        console.error(
-          "[Listings] Full active Spark feed failed after paged fetch error, falling back.",
-          fullFeedError
-        );
+          return {
+            ...paginatedSparkFallback,
+            source: "spark",
+            sparkError,
+          };
+        } catch (fullFeedError) {
+          console.error(
+            "[Listings] Full active Spark feed failed after paged fetch error, falling back.",
+            fullFeedError
+          );
+        }
       }
 
       const fallback = await fetchLegacyPropertyCardsOrFallback(options);

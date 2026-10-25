@@ -3,11 +3,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { resolvePropertyListingType } from "@/lib/properties";
 
-import {
-  fetchActivePropertyCards,
-  fetchMyPropertyCards,
-  fetchRentalPropertyCards,
-} from "@/services";
+import { fetchVerifiedMapPropertyCards } from "@/services/listings.service";
 import type { PropertyCard } from "@/types";
 
 function dedupeProperties<T extends { id: string; routeId: string; sparkId?: string }>(
@@ -48,19 +44,23 @@ function toMapClientProperty(property: PropertyCard): PropertyCard {
 
 // Next's Data Cache survives server instance restarts. Cache each feed separately
 // so opening Buy does not wait for the rental feed (and vice versa).
-const getActive = unstable_cache(fetchActivePropertyCards, ["map-active-v2"], { revalidate: 3600 });
-const getCompany = unstable_cache(fetchMyPropertyCards, ["map-company-v2"], { revalidate: 3600 });
-const getRental = unstable_cache(fetchRentalPropertyCards, ["map-rental-v2"], { revalidate: 3600 });
+const getActive = unstable_cache(() => fetchVerifiedMapPropertyCards("active"), ["map-active-real-v3"], { revalidate: 3600 });
+const getCompany = unstable_cache(() => fetchVerifiedMapPropertyCards("my"), ["map-company-real-v3"], { revalidate: 3600 });
+const getRental = unstable_cache(() => fetchVerifiedMapPropertyCards("rental"), ["map-rental-real-v3"], { revalidate: 3600 });
 
 export async function getMapListingsForInitialLoad(
   listingType: "active" | "rental" = "active"
-): Promise<PropertyCard[]> {
-  const [inventory, company] = await Promise.all([
+): Promise<{ properties: PropertyCard[]; partial: boolean }> {
+  const results = await Promise.allSettled([
     listingType === "rental" ? getRental() : getActive(),
     getCompany(),
   ]);
-
-  return dedupeProperties([...inventory, ...company])
-    .filter((property) => resolvePropertyListingType(property) === listingType)
-    .map(toMapClientProperty);
+  const successful = results.filter((result) => result.status === "fulfilled");
+  if (successful.length === 0) throw new Error("Listing feeds are temporarily unavailable.");
+  return {
+    properties: dedupeProperties(successful.flatMap((result) => result.value))
+      .filter((property) => resolvePropertyListingType(property) === listingType)
+      .map(toMapClientProperty),
+    partial: successful.length < results.length,
+  };
 }

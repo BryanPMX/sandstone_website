@@ -65,15 +65,27 @@ function dedupeProperties<T extends { id: string; routeId: string; sparkId?: str
   });
 }
 
+class ListingsRequestError extends Error {
+  constructor(public readonly retryAfterMs: number) {
+    super("Listings are temporarily unavailable. Retrying automatically.");
+  }
+}
+
 async function fetchLatestMapProperties(
   listingType: ListingType,
   signal: AbortSignal
-): Promise<PropertyCard[]> {
+): Promise<{ properties: PropertyCard[]; partial: boolean; retryAfterMs: number }> {
   const response = await fetch(`/api/listings/map?listingType=${listingType}`, { signal });
-  if (!response.ok) throw new Error("Unable to load listings");
+  const seconds = Number(response.headers.get("Retry-After"));
+  const retryAfterMs = Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 60_000;
+  if (!response.ok) throw new ListingsRequestError(retryAfterMs);
   const payload: unknown = await response.json();
-  if (!Array.isArray(payload)) throw new Error("Invalid listings response");
-  return dedupeProperties(payload as PropertyCard[]);
+  if (!Array.isArray(payload)) throw new ListingsRequestError(retryAfterMs);
+  return {
+    properties: dedupeProperties(payload as PropertyCard[]),
+    partial: response.headers.get("X-Listings-Partial") === "1",
+    retryAfterMs,
+  };
 }
 
 function isWithinElPasoBounds(lat: number, lng: number): boolean {
@@ -356,37 +368,57 @@ export function ListingsMapClient() {
   useEffect(() => {
     const controller = new AbortController();
     let refreshing = false;
+    let lastAttemptAt = 0;
+    let nextAttemptAt = 0;
+    let retryTimer: number | undefined;
     const listingType = filters.listingType;
 
     const refreshOnce = async () => {
-      if (refreshing || document.visibilityState === "hidden") return;
+      if (refreshing || controller.signal.aborted || document.visibilityState === "hidden") return;
+      window.clearTimeout(retryTimer);
       refreshing = true;
+      lastAttemptAt = Date.now();
       setIsMapRefreshing(true);
-      setLoadError(null);
+      let delayMs = MAP_REFRESH_INTERVAL_MS;
       try {
         const latest = await fetchLatestMapProperties(listingType, controller.signal);
         if (!controller.signal.aborted) {
-          // Compare complete cards so price/status changes are not ignored.
-          setInventory((current) => JSON.stringify(current[listingType]) === JSON.stringify(latest)
-            ? current : { ...current, [listingType]: latest });
+          // Preserve a complete inventory when only one upstream feed recovers.
+          setInventory((current) => {
+            if (latest.partial && current[listingType] != null) return current;
+            return JSON.stringify(current[listingType]) === JSON.stringify(latest.properties)
+              ? current : { ...current, [listingType]: latest.properties };
+          });
+          setLoadError(latest.partial
+            ? "Some listings are temporarily unavailable. Showing saved listings and retrying automatically."
+            : null);
+          if (latest.partial) delayMs = latest.retryAfterMs;
         }
-      } catch {
-        if (!controller.signal.aborted) setLoadError("Listings could not be updated. Please try again.");
+      } catch (error) {
+        delayMs = error instanceof ListingsRequestError ? error.retryAfterMs : 60_000;
+        if (!controller.signal.aborted) setLoadError("Listings could not be updated. Saved listings will stay visible. Retrying automatically.");
       } finally {
         refreshing = false;
-        if (!controller.signal.aborted) setIsMapRefreshing(false);
+        if (!controller.signal.aborted) {
+          setIsMapRefreshing(false);
+          nextAttemptAt = Date.now() + delayMs;
+          retryTimer = window.setTimeout(() => void refreshOnce(), delayMs);
+        }
       }
     };
 
     void refreshOnce();
-    const timer = window.setInterval(() => void refreshOnce(), MAP_REFRESH_INTERVAL_MS);
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") void refreshOnce();
+      // Returning to a tab must not bypass an active upstream cooldown.
+      if (document.visibilityState === "visible" &&
+          Date.now() >= nextAttemptAt && Date.now() - lastAttemptAt >= 60_000) {
+        void refreshOnce();
+      }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       controller.abort();
-      window.clearInterval(timer);
+      window.clearTimeout(retryTimer);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [filters.listingType, retryCount]);
@@ -501,7 +533,7 @@ export function ListingsMapClient() {
             </div>
             <div className="flex items-center gap-2">
               <p className="text-sm text-[var(--sandstone-charcoal)]/70">
-                {isLoadingListings ? "Loading listings…" : `Showing ${totalCount} listing${totalCount === 1 ? "" : "s"} on the map`}
+                {isLoadingListings ? (loadError ? "Listings temporarily unavailable" : "Loading listings…") : `Showing ${totalCount} listing${totalCount === 1 ? "" : "s"} on the map`}
               </p>
               <span className="inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/35 bg-[var(--sandstone-sand-gold)]/12 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-[var(--sandstone-charcoal)]/80">
                 {getPropertySearchMarketLabel(market)}

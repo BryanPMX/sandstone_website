@@ -1,5 +1,9 @@
 import "server-only";
 
+import { createHash } from "node:crypto";
+import { unstable_cache } from "next/cache";
+import { fetchWithSparkBackoff } from "@/lib/spark-rate-limit";
+
 import type {
   PropertyCard,
   PropertyDetail,
@@ -1500,18 +1504,18 @@ async function fetchSparkPayload(
     request.next = { revalidate: SPARK_REVALIDATE_SECONDS };
   }
 
-  const response = await fetch(url, request);
+  const response = await fetchWithSparkBackoff(url, request, accessToken);
   const responseText = response.status === 403 ? await response.clone().text() : "";
 
   if (shouldRetryWithReplication(response, responseText, url)) {
     const replicationUrl = rewriteSparkUrlBase(url, REPLICATION_SPARK_API_BASE_URL);
-    return fetch(replicationUrl, request);
+    return fetchWithSparkBackoff(replicationUrl, request, accessToken);
   }
 
   return response;
 }
 
-async function fetchSparkCollectionPage(
+async function fetchSparkCollectionPageUncached(
   request: SparkCollectionRequest,
   options?: SparkFetchOptions,
   sparkSource?: SparkLookupTarget
@@ -1525,6 +1529,25 @@ async function fetchSparkCollectionPage(
     properties: results.map((result, index) => mapSparkListing(result, index, sparkSource)),
     pagination,
   };
+}
+
+// Cache only successful, normalized pages. A failed refresh throws, leaving the
+// previous page in Next's persistent Data Cache instead of saving demo inventory.
+async function fetchSparkCollectionPage(
+  request: SparkCollectionRequest,
+  options?: SparkFetchOptions,
+  sparkSource?: SparkLookupTarget
+): Promise<{ properties: PropertyCard[]; pagination?: SparkPagination }> {
+  const account = createHash("sha256").update(getSparkAccessToken() ?? "").digest("hex");
+  const getPage = unstable_cache(
+    (pageRequest: SparkCollectionRequest, source?: SparkLookupTarget) =>
+      fetchSparkCollectionPageUncached(pageRequest, undefined, source),
+    ["spark-collection-page-v1", account, getSparkApiBaseUrl(), String(resolveSparkRequestLimit())],
+    { revalidate: 3600 }
+  );
+  return options?.fresh
+    ? fetchSparkCollectionPageUncached(request, options, sparkSource)
+    : getPage(request, sparkSource);
 }
 
 async function fetchSparkResults(
@@ -1571,7 +1594,8 @@ async function fetchAllSparkPropertyCards(
     let page = 1;
     let totalPages: number | undefined;
 
-    while (page <= (totalPages ?? MAX_SPARK_PAGES)) {
+    while (page <= Math.min(totalPages ?? MAX_SPARK_PAGES, MAX_SPARK_PAGES)) {
+      const previousCount = properties.length;
       const { properties: pageProperties, pagination } =
         await fetchSparkCollectionPage({
           path,
@@ -1588,6 +1612,8 @@ async function fetchAllSparkPropertyCards(
         properties.push(property);
       }
 
+      // Stop if the upstream API ignores pagination or returns an empty page.
+      if (properties.length === previousCount) break;
       totalPages = pagination?.totalPages ?? totalPages;
 
       const hasMorePages = totalPages

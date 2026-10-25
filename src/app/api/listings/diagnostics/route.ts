@@ -17,9 +17,9 @@ export const revalidate = 0;
 
 export async function GET() {
   const [my, active, rental] = await Promise.all([
-    inspectListingsTarget("my", { fresh: true }),
-    inspectListingsTarget("active", { fresh: true }),
-    inspectListingsTarget("rental", { fresh: true }),
+    inspectListingsTarget("my"),
+    inspectListingsTarget("active"),
+    inspectListingsTarget("rental"),
   ]);
 
   return NextResponse.json({
@@ -38,5 +38,5 @@ export async function GET() {
     my,
     active,
     rental,
-  });
+  }, { headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate=300" } });
 }
