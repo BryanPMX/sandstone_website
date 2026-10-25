@@ -195,7 +195,7 @@ export function LeadCaptureSection({
     >
       <form
         action={formAction}
-        className={isHero ? "space-y-3.5" : "space-y-4"}
+        className={`[&_input:not([type=checkbox])]:min-h-12 [&_input:not([type=checkbox])]:text-base [&_input]:placeholder:text-slate-600 [&_textarea]:text-base [&_textarea]:placeholder:text-slate-600 ${isHero ? "space-y-3.5" : "space-y-4"}`}
         onFocus={() => {
           if (!startedRef.current) {
             startedRef.current = true;
@@ -224,7 +224,7 @@ export function LeadCaptureSection({
 
         <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="space-y-1">
-            <Label htmlFor={id("firstName")}>First Name</Label>
+            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("firstName")}>First Name</Label>
             <Input
               id={id("firstName")}
               name="firstName"
@@ -239,14 +239,14 @@ export function LeadCaptureSection({
               }
             />
             {state?.success === false && state.fieldErrors?.firstName && (
-              <p className="text-xs text-red-600">
+              <p className="text-sm leading-5 text-red-700">
                 {state.fieldErrors.firstName[0]}
               </p>
             )}
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor={id("lastName")}>Last Name{formType === "contact" ? " (optional)" : ""}</Label>
+            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("lastName")}>Last Name{formType === "contact" ? " (optional)" : ""}</Label>
             <Input
               id={id("lastName")}
               name="lastName"
@@ -261,7 +261,7 @@ export function LeadCaptureSection({
               }
             />
             {state?.success === false && state.fieldErrors?.lastName && (
-              <p className="text-xs text-red-600">
+              <p className="text-sm leading-5 text-red-700">
                 {state.fieldErrors.lastName[0]}
               </p>
             )}
@@ -270,7 +270,7 @@ export function LeadCaptureSection({
 
         <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="space-y-1">
-            <Label htmlFor={id("email")}>Email</Label>
+            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("email")}>Email</Label>
             <Input
               id={id("email")}
               name="email"
@@ -286,14 +286,14 @@ export function LeadCaptureSection({
               }
             />
             {state?.success === false && state.fieldErrors?.email && (
-              <p className="text-xs text-red-600">
+              <p className="text-sm leading-5 text-red-700">
                 {state.fieldErrors.email[0]}
               </p>
             )}
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor={id("phone")}>
+            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("phone")}>
               {formType === "join" ? "Phone Number" : "Phone"}
             </Label>
             <Input
@@ -311,11 +311,11 @@ export function LeadCaptureSection({
               }
             />
             {state?.success === false && state.fieldErrors?.phone && (
-              <p className="text-xs text-red-600">
+              <p className="text-sm leading-5 text-red-700">
                 {state.fieldErrors.phone[0]}
               </p>
             )}
-            <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/65">
+            <p className="text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
               {FORM_PHONE_SMS_NOTICE}
             </p>
           </div>
@@ -323,7 +323,7 @@ export function LeadCaptureSection({
 
         {requiresAddress ? (
           <div className="space-y-1">
-            <Label htmlFor={id("address")}>Address</Label>
+            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("address")}>Address</Label>
             <Input
               id={id("address")}
               name="address"
@@ -337,7 +337,7 @@ export function LeadCaptureSection({
               }
             />
             {state?.success === false && state.fieldErrors?.address && (
-              <p className="text-xs text-red-600">
+              <p className="text-sm leading-5 text-red-700">
                 {state.fieldErrors.address[0]}
               </p>
             )}
@@ -346,7 +346,7 @@ export function LeadCaptureSection({
 
         {showMessageField ? (
           <div className={`space-y-1 ${hideMessageField ? "hidden" : ""}`}>
-            <Label htmlFor={id("message")}>Message</Label>
+            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("message")}>Message</Label>
             <Textarea
               id={id("message")}
               name="message"
@@ -363,7 +363,7 @@ export function LeadCaptureSection({
               }
             />
             {state?.success === false && state.fieldErrors?.message && (
-              <p className="text-xs text-red-600">
+              <p className="text-sm leading-5 text-red-700">
                 {state.fieldErrors.message[0]}
               </p>
             )}
@@ -382,7 +382,7 @@ export function LeadCaptureSection({
           )}
 
           <div className="space-y-1.5">
-            <p className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
+            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-navy)]">
               Security Check
             </p>
 
@@ -393,20 +393,20 @@ export function LeadCaptureSection({
                 siteKey={turnstileSiteKey}
               />
             ) : (
-              <p className="text-xs text-red-600">
+              <p className="text-sm leading-5 text-red-700">
                 Security verification is temporarily unavailable. Please contact us directly.
               </p>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
             <span>Text updates are optional. Choose your preferences below.</span>
             <button
               type="button"
               aria-expanded={smsExpanded}
               aria-controls={`${formType}-sms-preferences`}
               onClick={() => setSmsExpanded((prev) => !prev)}
-              className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
+              className="inline-flex min-h-11 items-center font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
             >
               {smsExpanded ? "Hide SMS preferences" : "SMS preferences (optional)"}
             </button>
@@ -417,16 +417,16 @@ export function LeadCaptureSection({
             className={!smsExpanded ? "hidden" : ""}
           >
             <fieldset className="space-y-2.5">
-            <legend className="text-xs font-medium uppercase tracking-[0.12em] text-[var(--sandstone-navy)]/70">
+            <legend className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-navy)]">
               Text Message Preferences
             </legend>
-            <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
+            <p className="text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
               Choose which SMS messages you want from {SMS_DISCLOSURE_BRAND}.
               Both options are optional and do not block form submission.
             </p>
 
             <div className="grid gap-2.5 md:grid-cols-2 md:gap-3">
-              <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-[11px] leading-4 text-sandstone-text/90 sm:text-xs sm:leading-5">
+              <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-sm leading-6 text-[var(--sandstone-charcoal)]">
                 <input
                   type="checkbox"
                   name="acceptTransactionalSms"
@@ -444,7 +444,7 @@ export function LeadCaptureSection({
                 </span>
               </label>
 
-              <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-[11px] leading-4 text-sandstone-text/90 sm:text-xs sm:leading-5">
+              <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-sm leading-6 text-[var(--sandstone-charcoal)]">
                 <input
                   type="checkbox"
                   name="acceptMarketingSms"
@@ -455,7 +455,7 @@ export function LeadCaptureSection({
                 <span>
                   <span className="flex flex-wrap items-center gap-2 font-semibold text-[var(--sandstone-navy)]">
                     <span>Marketing SMS updates</span>
-                    <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[var(--sandstone-bronze)]">
+                    <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-xs uppercase tracking-[0.12em] text-[var(--sandstone-navy)]">
                       Optional
                     </span>
                   </span>
@@ -466,7 +466,7 @@ export function LeadCaptureSection({
               </label>
             </div>
 
-            <p className="text-[11px] leading-4 text-[var(--sandstone-charcoal)]/75 sm:text-xs sm:leading-5">
+            <p className="text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
               Review our{" "}
               <Link
                 href={PRIVACY_POLICY_HREF}
@@ -495,7 +495,7 @@ export function LeadCaptureSection({
         <Button
           type="submit"
           size="lg"
-          className="w-full rounded-full bg-[var(--sandstone-sand-gold)] px-6 py-3 font-semibold uppercase tracking-wider text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+          className="h-auto min-h-12 w-full whitespace-normal rounded-full text-center leading-6 bg-[var(--sandstone-sand-gold)] px-6 py-3 font-semibold uppercase tracking-wide text-[var(--sandstone-navy-deep)] transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
           disabled={isPending}
         >
           {isPending ? "Sending..." : ctaLabel}
@@ -563,7 +563,7 @@ export function LeadCaptureSection({
               {heroCtaLabel && heroCtaHref ? (
                 <Link
                   href={heroCtaHref}
-                  className="mt-6 inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/18"
+                  className="mt-6 inline-flex min-h-12 w-full items-center justify-center text-center sm:w-auto rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/18"
                 >
                   {heroCtaLabel}
                 </Link>
@@ -624,12 +624,12 @@ export function LeadCaptureSection({
                       <h3 className="mt-2 font-heading text-3xl font-bold leading-tight text-[var(--sandstone-navy)] md:text-4xl">
                         {asideTitle}
                       </h3>
-                      <p className="mt-3 max-w-sm text-sm leading-6 text-[var(--sandstone-charcoal)]/75">
+                      <p className="mt-3 max-w-sm text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
                         {asideDescription}
                       </p>
                       <Link
                         href={asideCtaHref}
-                        className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
+                        className="mt-6 inline-flex min-h-12 w-full items-center justify-center text-center sm:w-fit rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-[var(--sandstone-navy-deep)] transition hover:opacity-95"
                       >
                         {asideCtaLabel}
                       </Link>
@@ -661,7 +661,7 @@ export function LeadCaptureSection({
                       </p>
                       <Link
                         href={asideCtaHref}
-                        className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-95"
+                        className="mt-6 inline-flex min-h-12 w-full items-center justify-center text-center sm:w-fit rounded-full bg-[var(--sandstone-sand-gold)] px-5 py-2.5 text-sm font-semibold text-[var(--sandstone-navy-deep)] transition hover:opacity-95"
                       >
                         {asideCtaLabel}
                       </Link>
@@ -676,3 +676,4 @@ export function LeadCaptureSection({
     </section>
   );
 }
+

@@ -31,16 +31,16 @@ export function ModelShowcase({ models }: { models: HomeModel[] }) {
   return (
     <div>
       {/* Tab switcher */}
-      <div className="mb-8 flex justify-center gap-2">
+      <div className="mb-8 flex flex-wrap justify-center gap-2">
         {models.map((m) => (
           <button
             key={m.id}
             type="button"
             onClick={() => setActiveId(m.id)}
-            className={`rounded-full px-7 py-2.5 text-sm font-bold uppercase tracking-wide transition ${
+            className={`min-h-12 rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wide transition ${
               activeId === m.id
                 ? "bg-[var(--sandstone-navy)] text-white shadow-sm"
-                : "border border-[var(--sandstone-navy)]/25 text-[var(--sandstone-navy)] hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-sand-gold)]"
+                : "border border-[var(--sandstone-navy)]/25 text-[var(--sandstone-navy)] hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy-deep)]"
             }`}
           >
             {m.label}
@@ -61,24 +61,24 @@ export function ModelShowcase({ models }: { models: HomeModel[] }) {
             {active.name}
           </p>
 
-          <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+          <p className="mt-1 text-sm font-bold uppercase tracking-[0.12em] text-[var(--sandstone-navy)]">
             {active.community}
           </p>
 
-          <p className="mt-3 text-[13px] text-[var(--sandstone-charcoal)]/60">
+          <p className="mt-3 text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
             {active.specsLine}
           </p>
 
-          <p className="mt-4 text-[13px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+          <p className="mt-4 text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
             {active.description}
           </p>
         </div>
 
         {/* Right: price + CTA buttons */}
-        <div className="flex flex-col items-start lg:min-w-[220px] lg:items-end">
+        <div className="flex min-w-0 flex-col items-start lg:min-w-[220px] lg:items-end">
           {active.price.trim() ? (
             <>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--sandstone-charcoal)]/45">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--sandstone-charcoal)]/85">
                 Starting From
               </p>
               <p className="mt-1 font-heading text-4xl font-black text-[var(--sandstone-navy)]">
@@ -88,16 +88,16 @@ export function ModelShowcase({ models }: { models: HomeModel[] }) {
           ) : (
             <Link
               href="#contact"
-              className="text-sm font-semibold text-[var(--sandstone-navy)] underline underline-offset-4 hover:text-[var(--sandstone-sand-gold)]"
+              className="text-sm font-semibold text-[var(--sandstone-navy)] underline underline-offset-4 hover:text-[var(--sandstone-navy-deep)]"
             >
               Contact us for current pricing.
             </Link>
           )}
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
             <Link
               href="#contact"
-              className="flex items-center gap-2 rounded-lg bg-[var(--sandstone-navy)] px-5 py-3 text-[13px] font-bold uppercase tracking-wide text-white transition hover:opacity-85"
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-lg text-center sm:w-auto bg-[var(--sandstone-navy)] px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:opacity-85"
             >
               <Calendar size={15} strokeWidth={2} />
               Schedule a Tour
@@ -105,7 +105,7 @@ export function ModelShowcase({ models }: { models: HomeModel[] }) {
 
             <Link
               href="#contact"
-              className="flex items-center gap-2 rounded-lg border border-[var(--sandstone-navy)]/25 px-5 py-3 text-[13px] font-bold uppercase tracking-wide text-[var(--sandstone-navy)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-sand-gold)]"
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-lg text-center sm:w-auto border border-[var(--sandstone-navy)]/25 px-5 py-3 text-sm font-bold uppercase tracking-wide text-[var(--sandstone-navy)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy-deep)]"
             >
               <Info size={15} strokeWidth={2} />
               Request Information
@@ -115,7 +115,7 @@ export function ModelShowcase({ models }: { models: HomeModel[] }) {
       </div>
 
       {/* Full-width spec grid */}
-      <div className="mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)]/10 sm:grid-cols-6">
+      <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-navy)]/10 sm:grid-cols-6">
         {active.specBoxes.map(({ icon, value, label }) => (
           <div
             key={label}
@@ -131,11 +131,11 @@ export function ModelShowcase({ models }: { models: HomeModel[] }) {
               />
             </div>
 
-            <p className="font-heading text-[13px] font-bold leading-tight text-[var(--sandstone-navy)]">
+            <p className="font-heading text-base font-bold leading-snug text-[var(--sandstone-navy)]">
               {value}
             </p>
 
-            <p className="text-[10px] leading-snug text-[var(--sandstone-charcoal)]/50">
+            <p className="text-sm leading-snug text-[var(--sandstone-charcoal)]/85">
               {label}
             </p>
           </div>

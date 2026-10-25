@@ -278,7 +278,7 @@ export default function SandstoneNewBuildsPage() {
           <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-36 lg:px-6 lg:pb-20">
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-10 bg-[var(--sandstone-sand-gold)]" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[var(--sandstone-sand-gold)]">
+              <span className="text-sm font-bold uppercase tracking-[0.12em] text-white">
                 Sandstone Home Builders · Midland, TX
               </span>
             </div>
@@ -297,14 +297,14 @@ export default function SandstoneNewBuildsPage() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="#models"
-                className="rounded-full bg-[var(--sandstone-sand-gold)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_32px_-12px_rgba(183,150,120,0.9)] transition hover:opacity-90"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-full sm:w-auto bg-[var(--sandstone-sand-gold)] px-7 py-3.5 text-sm font-bold text-[var(--sandstone-navy-deep)] shadow-[0_12px_32px_-12px_rgba(183,150,120,0.9)] transition hover:opacity-90"
               >
                 Explore Home Models
               </Link>
 
               <Link
                 href="#contact"
-                className="rounded-full border border-white/30 bg-white/8 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-full sm:w-auto border border-white/30 bg-white/8 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15"
               >
                 Schedule a Consultation
               </Link>
@@ -323,10 +323,10 @@ export default function SandstoneNewBuildsPage() {
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl lg:text-5xl">
                 New Construction Homes in Midland, TX
               </h2>
-              <p className="mt-2 text-[15px] italic text-[var(--sandstone-sand-gold)]">
+              <p className="mt-2 text-[15px] italic text-[var(--sandstone-navy)]">
                 New construction by Sandstone Home Builders · Midland, TX
               </p>
-              <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/50">
+              <p className="mx-auto mt-2 max-w-xl text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
                 Explore distinctive floor plans crafted for West Texas living. Select a model below to tour its design and features.
               </p>
             </div>
@@ -344,7 +344,7 @@ export default function SandstoneNewBuildsPage() {
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
                 Schools Near Our Community
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
+              <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
                 Our new builds are served by the Greenwood Independent School District — a close-knit, highly regarded district in the Greenwood area of Midland, TX.
               </p>
             </div>
@@ -402,20 +402,20 @@ export default function SandstoneNewBuildsPage() {
                     <div key={level}>
                       <h3 className="mb-2 font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">{titles[level]}</h3>
                       <div className="overflow-x-auto">
-                        <table className="w-full min-w-[400px]">
+                        <table className="w-full table-fixed">
                           <thead>
                             <tr className="border-b border-[var(--sandstone-navy)]/10">
-                              <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">School</th>
-                              <th className="pb-2 text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">District</th>
-                              <th className="pb-2 text-right text-[11px] font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/40">ZIP</th>
+                              <th className="w-[42%] pb-2 pr-3 text-left text-sm font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/85">School</th>
+                              <th className="w-[42%] pb-2 pr-3 text-left text-sm font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/85">District</th>
+                              <th className="pb-2 text-right text-sm font-semibold uppercase tracking-wide text-[var(--sandstone-charcoal)]/85">ZIP</th>
                             </tr>
                           </thead>
                           <tbody>
                             {SCHOOLS[level].map((school, i) => (
                               <tr key={i} className="border-b border-[var(--sandstone-navy)]/8 last:border-0">
-                                <td className="py-2 pr-4 text-[13px] font-medium text-[var(--sandstone-charcoal)]">{school.name}</td>
-                                <td className="py-2 pr-4 text-[13px] text-[var(--sandstone-charcoal)]/60">{school.district}</td>
-                                <td className="py-2 text-right text-[13px] text-[var(--sandstone-charcoal)]/60">{school.zip}</td>
+                                <td className="py-3 pr-3 align-top break-words text-sm font-medium text-[var(--sandstone-charcoal)]">{school.name}</td>
+                                <td className="py-3 pr-3 align-top break-words text-sm text-[var(--sandstone-charcoal)]/85">{school.district}</td>
+                                <td className="py-2 text-right text-sm text-[var(--sandstone-charcoal)]/85">{school.zip}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -424,14 +424,14 @@ export default function SandstoneNewBuildsPage() {
                     </div>
                   );
                 })}
-                <p className="text-[12px] italic leading-relaxed text-[var(--sandstone-charcoal)]/50">
+                <p className="text-sm italic leading-relaxed text-[var(--sandstone-charcoal)]/85">
                   Greenwood ISD is widely recognized for its strong academics, competitive athletics, and family-oriented culture. Buyers should verify attendance boundaries directly with Greenwood ISD prior to purchase.
                 </p>
                 <a
                   href="https://www.greenwood.esc18.net"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--sandstone-sand-gold)] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--sandstone-navy)] hover:underline"
                 >
                   Visit Greenwood ISD Website
                   <ExternalLink size={13} strokeWidth={2.5} />
@@ -450,7 +450,7 @@ export default function SandstoneNewBuildsPage() {
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
                 Convenience at Your Doorstep
               </h2>
-              <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[var(--sandstone-charcoal)]/60">
+              <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
                 Our community puts Midland&apos;s best healthcare, grocery, and shopping destinations within easy reach.
               </p>
             </div>
@@ -464,7 +464,7 @@ export default function SandstoneNewBuildsPage() {
                   </div>
                   <div>
                     <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Hospitals</h3>
-                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Top-rated Permian Basin medical care close by.</p>
+                    <p className="mt-0.5 text-sm leading-snug text-[var(--sandstone-charcoal)]/85">Top-rated Permian Basin medical care close by.</p>
                   </div>
                 </div>
                 <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
@@ -474,10 +474,10 @@ export default function SandstoneNewBuildsPage() {
                       <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg">
                         <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover" />
                       </div>
-                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
+                      <p className="flex-1 text-sm font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
                       <div className="shrink-0 text-right">
-                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
-                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
+                        <p className="text-sm font-bold text-[var(--sandstone-navy)]">{item.time}</p>
+                        <p className="text-sm text-[var(--sandstone-charcoal)]/85">drive</p>
                       </div>
                     </div>
                   ))}
@@ -491,7 +491,7 @@ export default function SandstoneNewBuildsPage() {
                   </div>
                   <div>
                     <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Grocery Stores</h3>
-                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Everything from daily essentials to specialty items.</p>
+                    <p className="mt-0.5 text-sm leading-snug text-[var(--sandstone-charcoal)]/85">Everything from daily essentials to specialty items.</p>
                   </div>
                 </div>
                 <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
@@ -501,10 +501,10 @@ export default function SandstoneNewBuildsPage() {
                       <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[var(--sandstone-navy)]/8">
                         <Image src={item.img} alt={item.name} fill sizes="40px" className="object-contain p-1" />
                       </div>
-                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
+                      <p className="flex-1 text-sm font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
                       <div className="shrink-0 text-right">
-                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
-                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
+                        <p className="text-sm font-bold text-[var(--sandstone-navy)]">{item.time}</p>
+                        <p className="text-sm text-[var(--sandstone-charcoal)]/85">drive</p>
                       </div>
                     </div>
                   ))}
@@ -518,7 +518,7 @@ export default function SandstoneNewBuildsPage() {
                   </div>
                   <div>
                     <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Shopping &amp; Dining</h3>
-                    <p className="mt-0.5 text-[12px] leading-snug text-[var(--sandstone-charcoal)]/55">Retail, restaurants, and entertainment close at hand.</p>
+                    <p className="mt-0.5 text-sm leading-snug text-[var(--sandstone-charcoal)]/85">Retail, restaurants, and entertainment close at hand.</p>
                   </div>
                 </div>
                 <div className="my-4 border-t border-[var(--sandstone-navy)]/8" />
@@ -528,10 +528,10 @@ export default function SandstoneNewBuildsPage() {
                       <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg">
                         <Image src={item.img} alt={item.name} fill sizes="44px" className="object-cover" />
                       </div>
-                      <p className="flex-1 text-[12px] font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
+                      <p className="flex-1 text-sm font-medium leading-snug text-[var(--sandstone-charcoal)]">{item.name}</p>
                       <div className="shrink-0 text-right">
-                        <p className="text-[12px] font-bold text-[var(--sandstone-navy)]">{item.time}</p>
-                        <p className="text-[11px] text-[var(--sandstone-charcoal)]/45">drive</p>
+                        <p className="text-sm font-bold text-[var(--sandstone-navy)]">{item.time}</p>
+                        <p className="text-sm text-[var(--sandstone-charcoal)]/85">drive</p>
                       </div>
                     </div>
                   ))}
@@ -546,7 +546,7 @@ export default function SandstoneNewBuildsPage() {
                 </div>
                 <div>
                   <p className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">Commute Times</p>
-                  <p className="text-[11px] text-[var(--sandstone-charcoal)]/50">Quick access from Greenwood.</p>
+                  <p className="text-sm text-[var(--sandstone-charcoal)]/85">Quick access from Greenwood.</p>
                 </div>
               </div>
               <div className="hidden w-px self-stretch bg-[var(--sandstone-navy)]/10 lg:block" />
@@ -558,7 +558,7 @@ export default function SandstoneNewBuildsPage() {
                     </div>
                     <div>
                       <p className="font-heading text-xl font-bold text-[var(--sandstone-navy)]">{c.time}</p>
-                      <p className="whitespace-pre-line text-[11px] leading-snug text-[var(--sandstone-charcoal)]/55">{c.label}</p>
+                      <p className="whitespace-pre-line text-sm leading-snug text-[var(--sandstone-charcoal)]/85">{c.label}</p>
                     </div>
                   </div>
                 ))}
@@ -580,10 +580,10 @@ export default function SandstoneNewBuildsPage() {
 
               <div className="flex-1 space-y-7">
                 <div>
-                  <p className="text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                  <p className="text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
                     Sandstone&apos;s New Builds is redefining what new construction means in the Permian Basin. We bring premium materials, thoughtful floor plans, and attention to detail that goes well beyond the standard builder spec — delivering a home that looks and feels custom without the custom price tag.
                   </p>
-                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                  <p className="mt-3 text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
                     Our community&apos;s location in the Greenwood area puts residents within the boundaries of one of West Texas&apos;s most respected school districts, minutes from top medical care, and close to the everyday shopping and dining Midland has to offer.
                   </p>
                 </div>
@@ -592,7 +592,7 @@ export default function SandstoneNewBuildsPage() {
                   <h3 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
                     Built for the Permian Basin Lifestyle
                   </h3>
-                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                  <p className="mt-3 text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
                     Whether you&apos;re relocating for work, putting down roots for your family, or making a long-term investment in West Texas real estate, our homes offer something resale simply can&apos;t — brand-new construction built to your preferences, with no deferred maintenance and a full builder warranty from day one.
                   </p>
                 </div>
@@ -601,7 +601,7 @@ export default function SandstoneNewBuildsPage() {
                   <h3 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
                     Who Are These Homes For?
                   </h3>
-                  <p className="mt-3 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                  <p className="mt-3 text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
                     Our new builds are an exceptional fit for:
                   </p>
                   <ul className="mt-3 space-y-2">
@@ -610,7 +610,7 @@ export default function SandstoneNewBuildsPage() {
                       "Permian Basin professionals and executives seeking a premium custom-quality home",
                       "Buyers who want new construction without compromise — on lot size, finishes, or location",
                     ].map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed text-[var(--sandstone-charcoal)]/65">
+                      <li key={item} className="flex items-start gap-2.5 text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">
                         <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sandstone-sand-gold)]" />
                         {item}
                       </li>
@@ -652,7 +652,7 @@ export default function SandstoneNewBuildsPage() {
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
                 Utilities &amp; Local Services
               </h2>
-              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
+              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/85">
                 Utility providers may vary depending on the specific address and lot.
               </p>
             </div>
@@ -664,14 +664,14 @@ export default function SandstoneNewBuildsPage() {
                     <Image src={icon} alt="" width={80} height={80} className="object-cover" />
                   </div>
                   <h3 className="font-heading text-[15px] font-bold text-[var(--sandstone-navy)]">{title}</h3>
-                  <p className="mt-1 text-[13px] font-semibold text-[var(--sandstone-sand-gold)]">{provider}</p>
-                  <p className="mt-3 flex-1 text-[12px] leading-relaxed text-[var(--sandstone-charcoal)]/55">{description}</p>
+                  <p className="mt-1 text-sm font-semibold text-[var(--sandstone-navy)]">{provider}</p>
+                  <p className="mt-3 flex-1 text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">{description}</p>
                   {href && (
                     <a
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--sandstone-navy)]/20 px-3 py-2.5 text-[12px] font-semibold text-[var(--sandstone-navy)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-sand-gold)]"
+                      className="mt-5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--sandstone-navy)]/20 px-3 py-2.5 text-sm font-semibold text-[var(--sandstone-navy)] transition hover:border-[var(--sandstone-sand-gold)] hover:text-[var(--sandstone-navy-deep)]"
                     >
                       {linkLabel}
                       <ExternalLink size={12} strokeWidth={2.5} />
@@ -681,7 +681,7 @@ export default function SandstoneNewBuildsPage() {
               ))}
             </div>
 
-            <p className="mt-6 flex items-center justify-center gap-1.5 text-[12px] text-[var(--sandstone-charcoal)]/40">
+            <p className="mt-6 flex items-center justify-center gap-1.5 text-sm text-[var(--sandstone-charcoal)]/85">
               <Info size={14} strokeWidth={1.75} />
               Providers and availability may vary by specific address and subdivision phase.
             </p>
@@ -696,12 +696,12 @@ export default function SandstoneNewBuildsPage() {
               <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] md:text-4xl">
                 Frequently Asked Questions
               </h2>
-              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/60">
+              <p className="mt-3 text-sm text-[var(--sandstone-charcoal)]/85">
                 Common questions about our home models and the building process.
               </p>
-              <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/60">
+              <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/85">
                 Have more questions?{" "}
-                <Link href="#contact" className="font-semibold text-[var(--sandstone-sand-gold)] hover:underline">
+                <Link href="#contact" className="font-semibold text-[var(--sandstone-navy)] hover:underline">
                   We&apos;re here to help.
                 </Link>
               </p>
@@ -722,7 +722,7 @@ export default function SandstoneNewBuildsPage() {
                     />
                   </summary>
                   <div className="border-t border-[var(--sandstone-navy)]/8 px-5 py-4 pl-[76px]">
-                    <p className="text-[13px] leading-relaxed text-[var(--sandstone-charcoal)]/65">{a}</p>
+                    <p className="text-base leading-relaxed text-[var(--sandstone-charcoal)]/85">{a}</p>
                   </div>
                 </details>
               ))}
