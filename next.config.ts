@@ -52,7 +52,7 @@ const nextConfig: NextConfig = {
         destination: "/blog/category/military-pcs",
         permanent: true,
       },
-      { source: "/renovations", destination: "https://sandstonepros.com/", permanent: true },
+      { source: "/renovations", destination: "https://www.sandstonepros.com/", permanent: true },
     ];
   },
 };
