@@ -28,7 +28,7 @@ const HOME_STARTING_POINTS = [
   {
     title: "Find a Home",
     description: "Explore available homes and find your next address.",
-    href: "/listings",
+    href: "/listings/map",
     icon: HomeIcon,
   },
   {
