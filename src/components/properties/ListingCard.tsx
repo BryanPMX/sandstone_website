@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { PropertyCard } from "@/types";
-import { shouldBypassNextImageOptimization } from "@/lib";
+import { resolvePropertyListingType, shouldBypassNextImageOptimization } from "@/lib";
 
 const FALLBACK_LISTING_IMAGE_DATA_URI =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='900' viewBox='0 0 1200 900'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ece5dc'/%3E%3Cstop offset='100%25' stop-color='%23d4c4b3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='900' fill='url(%23g)'/%3E%3C/svg%3E";
@@ -30,6 +30,8 @@ export function ListingCard({
   const shouldShowTransitionOverlay = property.sparkSource === "active";
   const resolvedImageSrc = property.image?.trim() || FALLBACK_LISTING_IMAGE_DATA_URI;
   const bypassOptimization = shouldBypassNextImageOptimization(resolvedImageSrc);
+  const isRental = resolvePropertyListingType(property) === "rental";
+  const displayPrice = isRental ? `${property.price}/month` : property.price;
   const details = [
     property.beds != null && property.beds > 0
       ? `${property.beds} beds`
@@ -124,7 +126,7 @@ export function ListingCard({
               property.beds != null ? `${property.beds} bedroom` : null,
               property.baths != null && property.baths > 0 ? `${property.baths} bathroom` : null,
               property.location,
-              property.price,
+              displayPrice,
             ]
               .filter(Boolean)
               .join(" - ")}
@@ -138,9 +140,14 @@ export function ListingCard({
             className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/70 via-transparent to-transparent"
             aria-hidden
           />
-          <p className="absolute left-3 top-3 rounded-full bg-[var(--sandstone-sand-gold)] px-3 py-1 text-xs font-semibold text-white">
-            {property.price}
-          </p>
+          <div className="absolute inset-x-3 top-3 flex flex-wrap items-start justify-between gap-2">
+            <p className="rounded-full bg-[var(--sandstone-sand-gold)] px-3 py-1 text-xs font-semibold text-white">
+              {displayPrice}
+            </p>
+            <p className="rounded-full bg-[var(--sandstone-navy)] px-3 py-1 text-xs font-semibold text-white">
+              {isRental ? "For Rent" : "For Sale"}
+            </p>
+          </div>
         </div>
         <div className="p-4">
           <h3 className="font-heading text-base font-bold text-[var(--sandstone-navy)] md:text-lg">
