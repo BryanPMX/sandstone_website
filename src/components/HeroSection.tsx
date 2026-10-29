@@ -318,13 +318,7 @@ export function HeroSection() {
             />
 
             <div className="relative z-10 mx-auto w-full max-w-5xl px-5 pb-28 pt-28 text-center sm:px-8 lg:pb-14 lg:pt-[180px]">
-              <h1 className="mx-auto max-w-3xl font-heading text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-                Find your next home in El Paso.
-              </h1>
-              <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-white/85 sm:text-lg">
-                Search homes, plan your sale, or start your move to Fort Bliss
-                with Sandstone Real Estate Group.
-              </p>
+              <h1 className="sr-only">El Paso Homes &amp; Real Estate</h1>
 
             <form
               onSubmit={handleSearchSubmit}
