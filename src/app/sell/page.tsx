@@ -100,8 +100,6 @@ export default function SellPage() {
           turnstileSiteKey={turnstileSiteKey}
         />
 
-        <MortgageCalculator />
-
         <section className="bg-white py-14 sm:py-16 lg:py-20">
           <div className="mx-auto max-w-6xl px-4 text-center">
             <h2 className="font-heading text-3xl font-bold text-[var(--sandstone-navy)] sm:text-4xl">
@@ -241,6 +239,7 @@ export default function SellPage() {
             </div>
           </div>
         </section>
+        <MortgageCalculator />
       </main>
       <SiteFooter />
     </>
