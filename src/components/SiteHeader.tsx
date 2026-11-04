@@ -4,11 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  AREAS_NAV_MENU,
-  CONTACT_US_MENU,
-  SITE_NAV,
-} from "@/constants/site";
+import { AREAS_NAV_MENU, CONTACT_US_MENU, SITE_NAV } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { MobileMenuPortal } from "@/components/MobileMenuPortal";
 import { ChevronDown } from "lucide-react";
@@ -63,17 +59,10 @@ export function SiteHeader({
   const desktopLogoSrc = "/desktop-hero-logo.webp";
   const mobileLogoSrc = "/mobile-header-logo.webp";
 
-  // The centered desktop wordmark is navy-on-transparent. That sits on a
-  // solid navy header bar everywhere except the hero-overlay header (home
-  // page style), where the header is transparent on large screens and
-  // reveals a light hero photo underneath. Flip it to white via CSS filter
-  // (instead of shipping a second logo asset) whenever the header itself is
-  // solid navy, so the mark doesn't disappear against it.
-  const useWhiteDesktopLogo = !isHeroHeader;
+  // Display the centered desktop logo in white on every header background.
+  const useWhiteDesktopLogo = true;
 
-
-  const showLeadCenteredDesktopNav =
-    isLeadHeader && !showDesktopCenterLogo;
+  const showLeadCenteredDesktopNav = isLeadHeader && !showDesktopCenterLogo;
 
   const isActiveNavItem = (href: string) => {
     if (href.includes("#")) {
@@ -130,7 +119,7 @@ export function SiteHeader({
           "absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-56 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)] transition",
           isAreasMenuOpen
             ? "visible pointer-events-auto opacity-100"
-            : "invisible pointer-events-none opacity-0"
+            : "invisible pointer-events-none opacity-0",
         )}
         onClick={(event) => event.stopPropagation()}
       >
@@ -233,9 +222,8 @@ export function SiteHeader({
           ? "absolute top-0 border-none bg-transparent lg:top-[40px]"
           : cn(
               "sticky top-0 border-b border-white/10 bg-[var(--sandstone-navy)]",
-              isLeadHeader &&
-                "shadow-[0_10px_24px_-20px_rgba(17,24,61,0.85)]"
-            )
+              isLeadHeader && "shadow-[0_10px_24px_-20px_rgba(17,24,61,0.85)]",
+            ),
       )}
     >
       {showLeadCenteredDesktopNav ? (
@@ -262,7 +250,7 @@ export function SiteHeader({
           "mx-auto flex w-full max-w-7xl flex-col px-4 lg:flex-row lg:px-6",
           isHeroHeader
             ? "py-3 lg:h-28 lg:items-start lg:pt-3"
-            : "py-3 lg:h-[92px] lg:py-1"
+            : "py-3 lg:h-[92px] lg:py-1",
         )}
       >
         <div className="flex w-full items-center gap-3 lg:hidden">
@@ -272,7 +260,7 @@ export function SiteHeader({
               "flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sandstone-navy)]",
               isHeroHeader
                 ? "text-[var(--sandstone-navy)] focus-visible:ring-[var(--sandstone-navy)]"
-                : "text-[var(--sandstone-sand-gold)] focus-visible:ring-[var(--sandstone-sand-gold)]"
+                : "text-[var(--sandstone-sand-gold)] focus-visible:ring-[var(--sandstone-sand-gold)]",
             )}
             aria-label="Sandstone Real Estate Group - Home"
           >
@@ -291,9 +279,7 @@ export function SiteHeader({
           <div className="ml-auto">
             <button
               type="button"
-              onClick={() =>
-                setIsMobileMenuOpen((previous) => !previous)
-              }
+              onClick={() => setIsMobileMenuOpen((previous) => !previous)}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-nav"
               aria-label={
@@ -305,7 +291,7 @@ export function SiteHeader({
                 "inline-flex h-11 items-center gap-2 rounded-full border px-4 text-xs font-semibold uppercase tracking-[0.09em] transition focus-visible:outline-none focus-visible:ring-2",
                 isHeroHeader
                   ? "border-white/40 bg-[var(--sandstone-navy)]/70 text-white backdrop-blur-md hover:bg-[var(--sandstone-navy)]/90 focus-visible:ring-white"
-                  : "border-white/30 bg-white/5 text-white hover:bg-white/10 focus-visible:ring-white"
+                  : "border-white/30 bg-white/5 text-white hover:bg-white/10 focus-visible:ring-white",
               )}
             >
               <span aria-hidden className="inline-flex flex-col gap-1">
@@ -322,7 +308,7 @@ export function SiteHeader({
         <div
           className={cn(
             "hidden w-full lg:grid lg:grid-cols-[1fr_auto_1fr]",
-            isHeroHeader ? "items-start" : "items-center"
+            isHeroHeader ? "items-start" : "items-center",
           )}
         >
           {showLeadCenteredDesktopNav ? (
@@ -350,7 +336,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isAreasMenuOpen && "rotate-180"
+                                isAreasMenuOpen && "rotate-180",
                               )}
                             />
                           </button>
@@ -368,7 +354,7 @@ export function SiteHeader({
                             "inline-flex items-center whitespace-nowrap px-2 py-2 text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] xl:px-3 xl:text-[13px] xl:tracking-[0.1em]",
                             isActiveNavItem(item.href) &&
                               "underline decoration-gray-300 decoration-2 underline-offset-8",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                           )}
                         >
                           {item.label}
@@ -384,7 +370,7 @@ export function SiteHeader({
                 className={cn(
                   "mx-2 inline-flex items-center px-3 py-2 text-[13px] font-bold uppercase tracking-[0.1em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] xl:mx-4",
                   isActiveNavItem("/") &&
-                    "underline decoration-2 underline-offset-8"
+                    "underline decoration-2 underline-offset-8",
                 )}
                 aria-label="Home"
               >
@@ -415,7 +401,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isAreasMenuOpen && "rotate-180"
+                                isAreasMenuOpen && "rotate-180",
                               )}
                             />
                           </button>
@@ -446,7 +432,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isContactMenuOpen && "rotate-180"
+                                isContactMenuOpen && "rotate-180",
                               )}
                             />
                           </button>
@@ -464,7 +450,7 @@ export function SiteHeader({
                             "inline-flex items-center whitespace-nowrap px-2 py-2 text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] xl:px-3 xl:text-[13px] xl:tracking-[0.1em]",
                             isActiveNavItem(item.href) &&
                               "underline decoration-gray-300 decoration-2 underline-offset-8",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                           )}
                         >
                           {item.label}
@@ -477,12 +463,15 @@ export function SiteHeader({
             </>
           ) : (
             <>
-              <nav aria-label="Primary left" className="justify-self-end pr-6 xl:pr-10">
+              <nav
+                aria-label="Primary left"
+                className="justify-self-end pr-6 xl:pr-10"
+              >
                 <ul
                   className={cn(
                     "flex items-center gap-5 xl:gap-7",
                     isLeadHeader && "gap-2",
-                    isHeroHeader ? "pt-1" : "pt-0"
+                    isHeroHeader ? "pt-1" : "pt-0",
                   )}
                 >
                   {desktopLeftNav.map((item) => {
@@ -503,7 +492,7 @@ export function SiteHeader({
                               isLeadHeader
                                 ? "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
                                 : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
-                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                             )}
                           >
                             <span>{item.label}</span>
@@ -511,7 +500,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isAreasMenuOpen && "rotate-180"
+                                isAreasMenuOpen && "rotate-180",
                               )}
                             />
                           </button>
@@ -532,7 +521,7 @@ export function SiteHeader({
                             isLeadHeader &&
                               isActiveNavItem(item.href) &&
                               "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] hover:text-[var(--sandstone-navy)]",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                           )}
                         >
                           {item.label}
@@ -548,8 +537,7 @@ export function SiteHeader({
                   href="/"
                   className={cn(
                     "justify-self-center flex items-center gap-2 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
-                    isLeadHeader &&
-                      "relative justify-center px-2"
+                    isLeadHeader && "relative justify-center px-2",
                   )}
                   aria-label="Sandstone Real Estate Group - Home"
                 >
@@ -567,11 +555,13 @@ export function SiteHeader({
                         ? "h-[118px] w-[170px]"
                         : isLeadHeader
                           ? "h-[110px] w-[165px]"
-                          : "h-[86px] w-[130px]"
+                          : "h-[86px] w-[130px]",
                     )}
                   >
                     <Image
-                      src={isBlogPage ? "/mobile-header-logo.webp" : desktopLogoSrc}
+                      src={
+                        isBlogPage ? "/mobile-header-logo.webp" : desktopLogoSrc
+                      }
                       alt="Sandstone Real Estate Group"
                       fill
                       className={cn(
@@ -581,7 +571,7 @@ export function SiteHeader({
                           ? ""
                           : isLeadHeader
                             ? "drop-shadow-[0_4px_10px_rgba(183,150,120,0.15)]"
-                            : ""
+                            : "",
                       )}
                       sizes={
                         isHeroHeader
@@ -603,17 +593,20 @@ export function SiteHeader({
                       ? "h-[118px] w-[170px]"
                       : isLeadHeader
                         ? "h-[110px] w-[165px]"
-                        : "h-[86px] w-[130px]"
+                        : "h-[86px] w-[130px]",
                   )}
                 />
               )}
 
-              <nav aria-label="Primary right" className="justify-self-start pl-6 xl:pl-10">
+              <nav
+                aria-label="Primary right"
+                className="justify-self-start pl-6 xl:pl-10"
+              >
                 <ul
                   className={cn(
                     "flex items-center gap-5 xl:gap-7",
                     isLeadHeader && "gap-2",
-                    isHeroHeader ? "pt-1" : "pt-0"
+                    isHeroHeader ? "pt-1" : "pt-0",
                   )}
                 >
                   {desktopRightNav.map((item) => {
@@ -634,7 +627,7 @@ export function SiteHeader({
                               isLeadHeader
                                 ? "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
                                 : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
-                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                             )}
                           >
                             <span>{item.label}</span>
@@ -643,7 +636,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isAreasMenuOpen && "rotate-180"
+                                isAreasMenuOpen && "rotate-180",
                               )}
                             />
                           </button>
@@ -670,7 +663,7 @@ export function SiteHeader({
                               isLeadHeader
                                 ? "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
                                 : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
-                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                             )}
                           >
                             <span>{item.label}</span>
@@ -679,7 +672,7 @@ export function SiteHeader({
                               aria-hidden
                               className={cn(
                                 "h-4 w-4 transition-transform",
-                                isContactMenuOpen && "rotate-180"
+                                isContactMenuOpen && "rotate-180",
                               )}
                             />
                           </button>
@@ -700,7 +693,7 @@ export function SiteHeader({
                             isLeadHeader &&
                               isActiveNavItem(item.href) &&
                               "border-[var(--sandstone-sand-gold)] bg-[var(--sandstone-sand-gold)] text-[var(--sandstone-navy)] hover:text-[var(--sandstone-navy)]",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
                           )}
                         >
                           {item.label}
@@ -720,9 +713,7 @@ export function SiteHeader({
         onClose={() => setIsMobileMenuOpen(false)}
         navItems={[
           ...SITE_NAV.filter(
-            (item) =>
-              item.href !== "/#contact" &&
-              item.href !== "/areas"
+            (item) => item.href !== "/#contact" && item.href !== "/areas",
           ),
         ]}
         areaItems={AREAS_NAV_MENU}

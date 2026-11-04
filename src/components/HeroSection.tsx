@@ -47,15 +47,15 @@ interface GooglePlacesAutocompleteService {
     },
     callback: (
       predictions: GooglePlacePrediction[] | null,
-      status?: string
-    ) => void
+      status?: string,
+    ) => void,
   ) => void;
 }
 
 interface GooglePlacesDetailsService {
   getDetails: (
     request: { placeId: string; fields: string[] },
-    callback: (place: GooglePlaceDetailsResult | null, status: string) => void
+    callback: (place: GooglePlaceDetailsResult | null, status: string) => void,
   ) => void;
 }
 
@@ -77,9 +77,13 @@ declare global {
 
 function getSelectedOptionLabel<T extends string>(
   options: Array<{ value: T; label: string }>,
-  value: T
+  value: T,
 ): string {
-  return options.find((option) => option.value === value)?.label ?? options[0]?.label ?? "";
+  return (
+    options.find((option) => option.value === value)?.label ??
+    options[0]?.label ??
+    ""
+  );
 }
 
 export function HeroSection() {
@@ -89,18 +93,21 @@ export function HeroSection() {
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
   const [locationFilter, setLocationFilter] = useState<PropertySearchMarket>(
-    DEFAULT_PROPERTY_SEARCH_MARKET
+    DEFAULT_PROPERTY_SEARCH_MARKET,
   );
-  const [filters, setFilters] = useState<PropertySearchPresetFilters & { listingType: "active" | "rental" }>(
-    {
-      ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
-      listingType: "active",
-    }
-  );
+  const [filters, setFilters] = useState<
+    PropertySearchPresetFilters & { listingType: "active" | "rental" }
+  >({
+    ...DEFAULT_PROPERTY_SEARCH_PRESET_FILTERS,
+    listingType: "active",
+  });
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
-  const [selectedSuggestion, setSelectedSuggestion] = useState<PlaceSuggestion | null>(null);
+  const [selectedSuggestion, setSelectedSuggestion] =
+    useState<PlaceSuggestion | null>(null);
   const [mapsReady, setMapsReady] = useState(false);
-  const autocompleteServiceRef = useRef<GooglePlacesAutocompleteService | null>(null);
+  const autocompleteServiceRef = useRef<GooglePlacesAutocompleteService | null>(
+    null,
+  );
   const placesServiceRef = useRef<GooglePlacesDetailsService | null>(null);
 
   useEffect(() => {
@@ -133,7 +140,7 @@ export function HeroSection() {
       autocompleteServiceRef.current =
         new existingMapsApi.places.AutocompleteService();
       placesServiceRef.current = new existingMapsApi.places.PlacesService(
-        document.createElement("div")
+        document.createElement("div"),
       );
       setMapsReady(true);
       return;
@@ -146,14 +153,16 @@ export function HeroSection() {
       new Promise<void>((resolve, reject) => {
         const script = document.createElement("script");
         script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
-          googleMapsKey
+          googleMapsKey,
         )}&v=weekly&libraries=places`;
         script.async = true;
         script.defer = true;
         script.onload = () => resolve();
         script.onerror = () =>
           reject(
-            new Error("Failed to load Google Maps. Verify NEXT_PUBLIC_GOOGLE_MAPS_API_KEY.")
+            new Error(
+              "Failed to load Google Maps. Verify NEXT_PUBLIC_GOOGLE_MAPS_API_KEY.",
+            ),
           );
         document.head.appendChild(script);
       });
@@ -162,16 +171,14 @@ export function HeroSection() {
 
     loaderPromise
       .then(() => {
-        const mapsApi = window.google?.maps as
-          | GoogleMapsWithPlaces
-          | undefined;
+        const mapsApi = window.google?.maps as GoogleMapsWithPlaces | undefined;
         if (!mapsApi?.places) {
           return;
         }
         autocompleteServiceRef.current =
           new mapsApi.places.AutocompleteService();
         placesServiceRef.current = new mapsApi.places.PlacesService(
-          document.createElement("div")
+          document.createElement("div"),
         );
         setMapsReady(true);
       })
@@ -256,13 +263,15 @@ export function HeroSection() {
           return;
         }
 
-        const mapped: PlaceSuggestion[] = predictions.slice(0, 6).map((prediction) => ({
-          description: prediction.description,
-          placeId: prediction.place_id,
-        }));
+        const mapped: PlaceSuggestion[] = predictions
+          .slice(0, 6)
+          .map((prediction) => ({
+            description: prediction.description,
+            placeId: prediction.place_id,
+          }));
 
         setSuggestions(mapped);
-      }
+      },
     );
   };
 
@@ -270,7 +279,9 @@ export function HeroSection() {
     setSearchValue(suggestion.description);
     setSelectedSuggestion(suggestion);
 
-    const inferredMarket = inferPropertySearchMarketFromInput(suggestion.description);
+    const inferredMarket = inferPropertySearchMarketFromInput(
+      suggestion.description,
+    );
     if (inferredMarket && inferredMarket !== locationFilter) {
       setLocationFilter(inferredMarket);
     }
@@ -283,12 +294,12 @@ export function HeroSection() {
 
   return (
     <>
-      {/* Explicit preload hint for the LCP image. Without this, both real
-          browsers and Lighthouse's simulated network model can discover
-          this image later than necessary (after other head resources),
-          which inflates measured "resource load delay" for the LCP metric.
-          React/Next.js hoists this <link> into the document <head>. */}
-      <link rel="preload" as="image" href="/hero-home.webp" fetchPriority="high" />
+      <link
+        rel="preload"
+        as="image"
+        href="/hero-home.webp"
+        fetchPriority="high"
+      />
       <section className="relative w-full overflow-hidden bg-[var(--sandstone-navy)]">
         <div className="relative w-full">
           <div className="relative min-h-[520px] w-full lg:min-h-[680px]">
@@ -306,197 +317,221 @@ export function HeroSection() {
               />
             </picture>
             <div
-              className="absolute inset-0 bg-gradient-to-t from-[var(--sandstone-navy)]/80 via-[var(--sandstone-navy)]/60 to-[var(--sandstone-navy)]/40"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to bottom, rgba(11, 21, 51, 0.78) 0%, rgba(11, 21, 51, 0.68) 45%, rgba(11, 21, 51, 0.25) 100%)",
+              }}
               aria-hidden
             />
 
-            {/* Darkens only the main-menu band at the top of the hero so the
-                nav links stay legible without a per-letter text shadow. */}
             <div
               className="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-[#0b1533]/80 to-transparent"
               aria-hidden
             />
 
-            <div className="relative z-10 mx-auto w-full max-w-5xl px-5 pb-28 pt-28 text-center sm:px-8 lg:pb-14 lg:pt-[180px]">
-              <h1 className="sr-only">El Paso Homes &amp; Real Estate</h1>
+            <div className="relative z-10 mx-auto w-full max-w-5xl px-5 pb-28 pt-28 text-center sm:px-8 lg:pb-14 lg:pt-[240px]">
+              <p
+                className="mx-auto mt-5 max-w-2xl text-lg font-medium leading-relaxed text-white sm:text-xl"
+                style={{ textShadow: "0 2px 8px rgba(0, 0, 0, 0.5)" }}
+              >
+                Local guidance for buying, selling, and relocating.
+              </p>
 
-            <form
-              onSubmit={handleSearchSubmit}
-              className="mx-auto mt-8 hidden w-full max-w-[760px] lg:block"
-            >
-              <div className="flex flex-col items-center">
-                <div className="relative w-full max-w-[670px]">
-                  <div className="rounded-[999px] bg-white p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)]">
-                    <div className="relative">
-                      <input
-                        type="search"
-                        name="search"
-                        value={searchValue}
-                        onChange={handleInputChange}
-                        onFocus={loadGoogleMaps}
-                        placeholder={SEARCH_PLACEHOLDER}
-                        className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-14 font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
-                        aria-label="Search by address or ZIP code"
-                        autoComplete="off"
-                      />
+              <form
+                onSubmit={handleSearchSubmit}
+                className="mx-auto mt-8 hidden w-full max-w-[760px] lg:block"
+              >
+                <div className="flex flex-col items-center">
+                  <div className="relative w-full max-w-[670px]">
+                    <div className="rounded-[999px] bg-white p-1.5 shadow-[0_22px_52px_-34px_rgba(0,0,0,0.68)]">
+                      <div className="relative">
+                        <input
+                          type="search"
+                          name="search"
+                          value={searchValue}
+                          onChange={handleInputChange}
+                          onFocus={loadGoogleMaps}
+                          placeholder={SEARCH_PLACEHOLDER}
+                          className="h-[54px] w-full rounded-full border border-white bg-white pl-7 pr-14 font-heading text-[0.92rem] font-medium tracking-[0.01em] text-[var(--sandstone-charcoal)] placeholder:font-sans placeholder:text-[0.88rem] placeholder:font-normal placeholder:text-[var(--sandstone-charcoal)]/38 focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/28"
+                          aria-label="Search by address or ZIP code"
+                          autoComplete="off"
+                        />
 
+                        <button
+                          type="submit"
+                          className="absolute right-2 top-1/2 flex h-[40px] w-[40px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_12px_24px_-18px_rgba(37,52,113,0.9)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
+                          aria-label="Search homes near this address"
+                        >
+                          <Search className="h-4.5 w-4.5" strokeWidth={2.2} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {suggestions.length > 0 && (
+                      <ul className="absolute left-0 right-0 top-[calc(100%+0.7rem)] z-20 max-h-64 overflow-y-auto rounded-[1.2rem] border border-[var(--sandstone-charcoal)]/12 bg-white/98 py-1.5 text-[0.84rem] text-[var(--sandstone-charcoal)] shadow-[0_24px_54px_-30px_rgba(0,0,0,0.62)]">
+                        {suggestions.map((suggestion) => (
+                          <li key={suggestion.placeId}>
+                            <button
+                              type="button"
+                              className="block w-full px-4 py-2 text-left transition hover:bg-[var(--sandstone-off-white)]"
+                              onClick={() => handleSuggestionClick(suggestion)}
+                            >
+                              {suggestion.description}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                    <div className="inline-flex items-center rounded-full border border-[var(--sandstone-charcoal)]/18 bg-[var(--sandstone-off-white)] p-1">
                       <button
-                        type="submit"
-                        className="absolute right-2 top-1/2 flex h-[40px] w-[40px] -translate-y-1/2 items-center justify-center rounded-full bg-[var(--sandstone-navy)] text-white shadow-[0_12px_24px_-18px_rgba(37,52,113,0.9)] transition hover:bg-[var(--sandstone-navy-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
-                        aria-label="Search homes near this address"
+                        type="button"
+                        onClick={() =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            listingType: "active",
+                            pricePreset: "any",
+                          }))
+                        }
+                        className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                          filters.listingType === "active"
+                            ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                            : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                        }`}
                       >
-                        <Search className="h-4.5 w-4.5" strokeWidth={2.2} />
+                        Buy
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            listingType: "rental",
+                            pricePreset: "any",
+                          }))
+                        }
+                        className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                          filters.listingType === "rental"
+                            ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
+                            : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
+                        }`}
+                      >
+                        Rent
                       </button>
                     </div>
-                  </div>
 
-                  {suggestions.length > 0 && (
-                    <ul className="absolute left-0 right-0 top-[calc(100%+0.7rem)] z-20 max-h-64 overflow-y-auto rounded-[1.2rem] border border-[var(--sandstone-charcoal)]/12 bg-white/98 py-1.5 text-[0.84rem] text-[var(--sandstone-charcoal)] shadow-[0_24px_54px_-30px_rgba(0,0,0,0.62)]">
-                      {suggestions.map((suggestion) => (
-                        <li key={suggestion.placeId}>
-                          <button
-                            type="button"
-                            className="block w-full px-4 py-2 text-left transition hover:bg-[var(--sandstone-off-white)]"
-                            onClick={() => handleSuggestionClick(suggestion)}
-                          >
-                            {suggestion.description}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-                <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-                  <div className="inline-flex items-center rounded-full border border-[var(--sandstone-charcoal)]/18 bg-[var(--sandstone-off-white)] p-1">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          listingType: "active",
-                          pricePreset: "any",
-                        }))
-                      }
-                      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                        filters.listingType === "active"
-                          ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
-                          : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
-                      }`}
-                    >
-                      Buy
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          listingType: "rental",
-                          pricePreset: "any",
-                        }))
-                      }
-                      className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                        filters.listingType === "rental"
-                          ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
-                          : "text-[var(--sandstone-charcoal)] hover:bg-[var(--sandstone-navy)]/10"
-                      }`}
-                    >
-                      Rent
-                    </button>
-                  </div>
-
-                  <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
-                      <span>{getSelectedOptionLabel(priceOptions, filters.pricePreset)}</span>
-                      <ChevronDown
-                        aria-hidden
-                        className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
-                      />
+                    <div className="relative focus-within:outline-none">
+                      <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                        <span>
+                          {getSelectedOptionLabel(
+                            priceOptions,
+                            filters.pricePreset,
+                          )}
+                        </span>
+                        <ChevronDown
+                          aria-hidden
+                          className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
+                        />
+                      </div>
+                      <select
+                        name="price"
+                        aria-label="Filter by price"
+                        className="absolute inset-0 cursor-pointer opacity-0"
+                        value={filters.pricePreset}
+                        onChange={(e) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            pricePreset: e.target
+                              .value as PropertySearchPresetFilters["pricePreset"],
+                          }))
+                        }
+                      >
+                        {priceOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <select
-                      name="price"
-                      aria-label="Filter by price"
-                      className="absolute inset-0 cursor-pointer opacity-0"
-                      value={filters.pricePreset}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          pricePreset: e.target.value as PropertySearchPresetFilters["pricePreset"],
-                        }))
-                      }
-                    >
-                      {priceOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
 
-                  <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
-                      <span>{getSelectedOptionLabel(PROPERTY_SEARCH_BED_OPTIONS, filters.bedsPreset)}</span>
-                      <ChevronDown
-                        aria-hidden
-                        className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
-                      />
+                    <div className="relative focus-within:outline-none">
+                      <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                        <span>
+                          {getSelectedOptionLabel(
+                            PROPERTY_SEARCH_BED_OPTIONS,
+                            filters.bedsPreset,
+                          )}
+                        </span>
+                        <ChevronDown
+                          aria-hidden
+                          className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
+                        />
+                      </div>
+                      <select
+                        name="beds"
+                        aria-label="Filter by bedrooms"
+                        className="absolute inset-0 cursor-pointer opacity-0"
+                        value={filters.bedsPreset}
+                        onChange={(e) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            bedsPreset: e.target
+                              .value as PropertySearchPresetFilters["bedsPreset"],
+                          }))
+                        }
+                      >
+                        {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <select
-                      name="beds"
-                      aria-label="Filter by bedrooms"
-                      className="absolute inset-0 cursor-pointer opacity-0"
-                      value={filters.bedsPreset}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          bedsPreset: e.target.value as PropertySearchPresetFilters["bedsPreset"],
-                        }))
-                      }
-                    >
-                      {PROPERTY_SEARCH_BED_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
 
-                  <div className="relative focus-within:outline-none">
-                    <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
-                      <span>{getSelectedOptionLabel(PROPERTY_SEARCH_BATH_OPTIONS, filters.bathsPreset)}</span>
-                      <ChevronDown
-                        aria-hidden
-                        className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
-                      />
+                    <div className="relative focus-within:outline-none">
+                      <div className="inline-flex h-9 items-center gap-0.5 rounded-full border border-[var(--sandstone-charcoal)]/14 bg-white px-4 text-[0.84rem] font-medium text-[var(--sandstone-charcoal)] shadow-[0_14px_30px_-24px_rgba(17,24,61,0.56)] transition focus-within:border-[var(--sandstone-sand-gold)] focus-within:ring-2 focus-within:ring-[var(--sandstone-sand-gold)]/22">
+                        <span>
+                          {getSelectedOptionLabel(
+                            PROPERTY_SEARCH_BATH_OPTIONS,
+                            filters.bathsPreset,
+                          )}
+                        </span>
+                        <ChevronDown
+                          aria-hidden
+                          className="h-3.5 w-3.5 text-[var(--sandstone-charcoal)]/55"
+                        />
+                      </div>
+                      <select
+                        name="baths"
+                        aria-label="Filter by bathrooms"
+                        className="absolute inset-0 cursor-pointer opacity-0"
+                        value={filters.bathsPreset}
+                        onChange={(e) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            bathsPreset: e.target
+                              .value as PropertySearchPresetFilters["bathsPreset"],
+                          }))
+                        }
+                      >
+                        {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <select
-                      name="baths"
-                      aria-label="Filter by bathrooms"
-                      className="absolute inset-0 cursor-pointer opacity-0"
-                      value={filters.bathsPreset}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          bathsPreset: e.target.value as PropertySearchPresetFilters["bathsPreset"],
-                        }))
-                      }
-                    >
-                      {PROPERTY_SEARCH_BATH_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
             </div>
             <div
               className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent via-[var(--sandstone-navy)]/50 via-60% to-[var(--sandstone-navy)] lg:hidden"
               aria-hidden
             />
-
           </div>
         </div>
 
@@ -588,7 +623,10 @@ export function HeroSection() {
                   <span>
                     {filters.pricePreset === "any"
                       ? "Price"
-                      : getSelectedOptionLabel(priceOptions, filters.pricePreset)}
+                      : getSelectedOptionLabel(
+                          priceOptions,
+                          filters.pricePreset,
+                        )}
                   </span>
                   <ChevronDown
                     aria-hidden
@@ -603,7 +641,8 @@ export function HeroSection() {
                   onChange={(e) =>
                     setFilters((prev) => ({
                       ...prev,
-                      pricePreset: e.target.value as PropertySearchPresetFilters["pricePreset"],
+                      pricePreset: e.target
+                        .value as PropertySearchPresetFilters["pricePreset"],
                     }))
                   }
                 >
@@ -620,7 +659,10 @@ export function HeroSection() {
                   <span>
                     {filters.bedsPreset === "any"
                       ? "Beds"
-                      : getSelectedOptionLabel(PROPERTY_SEARCH_BED_OPTIONS, filters.bedsPreset)}
+                      : getSelectedOptionLabel(
+                          PROPERTY_SEARCH_BED_OPTIONS,
+                          filters.bedsPreset,
+                        )}
                   </span>
                   <ChevronDown
                     aria-hidden
@@ -635,7 +677,8 @@ export function HeroSection() {
                   onChange={(e) =>
                     setFilters((prev) => ({
                       ...prev,
-                      bedsPreset: e.target.value as PropertySearchPresetFilters["bedsPreset"],
+                      bedsPreset: e.target
+                        .value as PropertySearchPresetFilters["bedsPreset"],
                     }))
                   }
                 >
@@ -652,7 +695,10 @@ export function HeroSection() {
                   <span>
                     {filters.bathsPreset === "any"
                       ? "Baths"
-                      : getSelectedOptionLabel(PROPERTY_SEARCH_BATH_OPTIONS, filters.bathsPreset)}
+                      : getSelectedOptionLabel(
+                          PROPERTY_SEARCH_BATH_OPTIONS,
+                          filters.bathsPreset,
+                        )}
                   </span>
                   <ChevronDown
                     aria-hidden
@@ -667,7 +713,8 @@ export function HeroSection() {
                   onChange={(e) =>
                     setFilters((prev) => ({
                       ...prev,
-                      bathsPreset: e.target.value as PropertySearchPresetFilters["bathsPreset"],
+                      bathsPreset: e.target
+                        .value as PropertySearchPresetFilters["bathsPreset"],
                     }))
                   }
                 >
@@ -681,7 +728,6 @@ export function HeroSection() {
             </div>
           </form>
         </div>
-
       </section>
 
       {showTransition && (
@@ -695,7 +741,8 @@ export function HeroSection() {
               Opening map search
             </p>
             <p className="mt-1 text-sm text-[var(--sandstone-charcoal)]/74">
-              Loading available homes near {getPropertySearchMarketLabel(locationFilter)}.
+              Loading available homes near{" "}
+              {getPropertySearchMarketLabel(locationFilter)}.
             </p>
           </div>
         </div>
