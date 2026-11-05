@@ -15,11 +15,12 @@ type MobileMenuPortalProps = {
   onClose: () => void;
   navItems: readonly NavItem[];
   areaItems?: readonly NavItem[];
+  resourceItems?: readonly NavItem[];
   contactItems?: readonly NavItem[];
 };
 
 export function MobileMenuPortal({
-  isOpen, onClose, navItems, areaItems = [], contactItems = [],
+  isOpen, onClose, navItems, areaItems = [], resourceItems = [], contactItems = [],
 }: MobileMenuPortalProps) {
   const [mounted, setMounted] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -94,6 +95,7 @@ export function MobileMenuPortal({
             {mobileNavItems.map((item) => <li key={item.href}>{renderLink(item)}</li>)}
           </ul>
           {areaItems.length > 0 && renderGroup("Explore Areas", areaItems, { label: "View all areas", href: "/areas" })}
+          {resourceItems.length > 0 && renderGroup("Resources", resourceItems)}
           {contactItems.length > 0 && renderGroup("Contact & Team", contactItems)}
         </nav>
       </div>

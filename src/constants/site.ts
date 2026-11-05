@@ -4,12 +4,18 @@
  */
 
 export const SITE_NAV = [
-  { label: "Military PCS", href: "/pcs" },
+  { label: "Buy", href: "/listings" },
+  { label: "Sell", href: "/sell" },
   { label: "Areas", href: "/areas" },
+  { label: "Resources", href: "#resources" },
+  { label: "Contact", href: "/#contact" },
+] as const;
+
+export const RESOURCES_NAV_MENU = [
+  { label: "Military PCS", href: "/pcs" },
   { label: "New Builds", href: "/areas/sandstones-new-builds" },
   { label: "Renovations", href: "https://sandstonepros.com/" },
   { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export const AREAS_NAV_MENU = [

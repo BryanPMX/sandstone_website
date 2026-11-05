@@ -4,7 +4,7 @@ import { useEffect, useId, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { AREAS_NAV_MENU, CONTACT_US_MENU, SITE_NAV } from "@/constants/site";
+import { AREAS_NAV_MENU, CONTACT_US_MENU, RESOURCES_NAV_MENU, SITE_NAV } from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { MobileMenuPortal } from "@/components/MobileMenuPortal";
 import { ChevronDown } from "lucide-react";
@@ -32,24 +32,14 @@ export function SiteHeader({
 
   const contactMenuId = useId();
   const areasMenuId = useId();
+  const resourcesMenuId = useId();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
   const [isAreasMenuOpen, setIsAreasMenuOpen] = useState(false);
+  const [isResourcesMenuOpen, setIsResourcesMenuOpen] = useState(false);
 
-  /**
-   * Desktop navigation layout
-   *
-   * Left:
-   * Sell
-   * Military PCS
-   * Midland / Odessa
-   *
-   * Right:
-   * Areas
-   * Blog
-   * Contact
-   */
+  // Keep Buy, Sell, and Areas before the logo; secondary links follow it.
   const desktopLeftNav = SITE_NAV.slice(0, 3);
   const desktopRightNav = SITE_NAV.slice(3);
 
@@ -80,22 +70,25 @@ export function SiteHeader({
     setIsMobileMenuOpen(false);
     setIsContactMenuOpen(false);
     setIsAreasMenuOpen(false);
+    setIsResourcesMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!isContactMenuOpen && !isAreasMenuOpen) {
+    if (!isContactMenuOpen && !isAreasMenuOpen && !isResourcesMenuOpen) {
       return;
     }
 
     const handleClickOutside = () => {
       setIsContactMenuOpen(false);
       setIsAreasMenuOpen(false);
+      setIsResourcesMenuOpen(false);
     };
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsContactMenuOpen(false);
         setIsAreasMenuOpen(false);
+        setIsResourcesMenuOpen(false);
       }
     };
 
@@ -106,7 +99,7 @@ export function SiteHeader({
       window.removeEventListener("click", handleClickOutside);
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [isContactMenuOpen, isAreasMenuOpen]);
+  }, [isContactMenuOpen, isAreasMenuOpen, isResourcesMenuOpen]);
 
   const renderAreasDropdown = () => {
     return (
@@ -128,6 +121,39 @@ export function SiteHeader({
             <li key={link.href}>
               <Link
                 href={link.href}
+                role="menuitem"
+                className="block px-4 py-3 text-sm font-light text-white/90 transition hover:bg-white/10 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const renderResourcesDropdown = () => {
+    return (
+      <div
+        id={resourcesMenuId}
+        role="menu"
+        aria-label="Resources menu"
+        aria-hidden={!isResourcesMenuOpen}
+        className={cn(
+          "absolute right-0 top-[calc(100%+0.75rem)] z-[120] w-56 overflow-hidden rounded-2xl border border-white/18 bg-[var(--sandstone-navy)] shadow-[0_30px_70px_-40px_rgba(0,0,0,0.75)] transition",
+          isResourcesMenuOpen
+            ? "visible pointer-events-auto opacity-100"
+            : "invisible pointer-events-none opacity-0",
+        )}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <ul className="py-2">
+          {RESOURCES_NAV_MENU.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                onClick={() => setIsResourcesMenuOpen(false)}
                 role="menuitem"
                 className="block px-4 py-3 text-sm font-light text-white/90 transition hover:bg-white/10 hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]"
               >
@@ -324,6 +350,7 @@ export function SiteHeader({
                             onClick={(event) => {
                               event.stopPropagation();
                               setIsAreasMenuOpen((previous) => !previous);
+                              setIsResourcesMenuOpen(false);
                               setIsContactMenuOpen(false);
                             }}
                             aria-haspopup="menu"
@@ -380,6 +407,38 @@ export function SiteHeader({
               <nav aria-label="Primary right" className="flex-1">
                 <ul className="flex items-center justify-start gap-1 xl:gap-3">
                   {desktopRightNav.map((item) => {
+                    if (item.href === "#resources") {
+                      return (
+                        <li key={item.href} className="relative">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setIsResourcesMenuOpen((previous) => !previous);
+                              setIsAreasMenuOpen(false);
+                              setIsContactMenuOpen(false);
+                            }}
+                            aria-haspopup="menu"
+                            aria-expanded={isResourcesMenuOpen}
+                            aria-controls={resourcesMenuId}
+                            className="inline-flex items-center gap-1 whitespace-nowrap px-2 py-2 text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--sandstone-sand-gold)] transition hover:text-[var(--sandstone-off-white)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] xl:px-3 xl:text-[13px] xl:tracking-[0.1em]"
+                          >
+                            <span>{item.label}</span>
+
+                            <ChevronDown
+                              aria-hidden
+                              className={cn(
+                                "h-4 w-4 transition-transform",
+                                isResourcesMenuOpen && "rotate-180",
+                              )}
+                            />
+                          </button>
+
+                          {renderResourcesDropdown()}
+                        </li>
+                      );
+                    }
+
                     if (item.href === "/areas") {
                       return (
                         <li key={item.href} className="relative">
@@ -388,6 +447,7 @@ export function SiteHeader({
                             onClick={(event) => {
                               event.stopPropagation();
                               setIsAreasMenuOpen((previous) => !previous);
+                              setIsResourcesMenuOpen(false);
                               setIsContactMenuOpen(false);
                             }}
                             aria-haspopup="menu"
@@ -420,6 +480,7 @@ export function SiteHeader({
                               event.stopPropagation();
                               setIsContactMenuOpen((previous) => !previous);
                               setIsAreasMenuOpen(false);
+                              setIsResourcesMenuOpen(false);
                             }}
                             aria-haspopup="menu"
                             aria-expanded={isContactMenuOpen}
@@ -483,6 +544,7 @@ export function SiteHeader({
                             onClick={(event) => {
                               event.stopPropagation();
                               setIsAreasMenuOpen((previous) => !previous);
+                              setIsResourcesMenuOpen(false);
                               setIsContactMenuOpen(false);
                             }}
                             aria-haspopup="menu"
@@ -610,6 +672,43 @@ export function SiteHeader({
                   )}
                 >
                   {desktopRightNav.map((item) => {
+                    if (item.href === "#resources") {
+                      return (
+                        <li key={item.href} className="relative">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setIsResourcesMenuOpen((previous) => !previous);
+                              setIsAreasMenuOpen(false);
+                              setIsContactMenuOpen(false);
+                            }}
+                            aria-haspopup="menu"
+                            aria-expanded={isResourcesMenuOpen}
+                            aria-controls={resourcesMenuId}
+                            className={cn(
+                              isLeadHeader
+                                ? "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[var(--sandstone-sand-gold)]/45 bg-[var(--sandstone-sand-gold)]/8 px-3 py-2 text-[11px] font-light uppercase tracking-[0.06em] text-[var(--sandstone-sand-gold)] transition hover:border-[var(--sandstone-sand-gold)]/70 hover:bg-[var(--sandstone-sand-gold)]/18 hover:text-white xl:px-4 xl:text-[12px]"
+                                : "inline-flex items-center gap-1 whitespace-nowrap text-[17px] font-medium tracking-[0.01em] text-white transition-all duration-200 hover:text-white/50 hover:underline hover:decoration-white/50 hover:decoration-2 hover:underline-offset-8 xl:text-[18px]",
+                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)]",
+                            )}
+                          >
+                            <span>{item.label}</span>
+
+                            <ChevronDown
+                              aria-hidden
+                              className={cn(
+                                "h-4 w-4 transition-transform",
+                                isResourcesMenuOpen && "rotate-180",
+                              )}
+                            />
+                          </button>
+
+                          {renderResourcesDropdown()}
+                        </li>
+                      );
+                    }
+
                     if (item.href === "/areas") {
                       return (
                         <li key={item.href} className="relative">
@@ -618,6 +717,7 @@ export function SiteHeader({
                             onClick={(event) => {
                               event.stopPropagation();
                               setIsAreasMenuOpen((previous) => !previous);
+                              setIsResourcesMenuOpen(false);
                               setIsContactMenuOpen(false);
                             }}
                             aria-haspopup="menu"
@@ -655,6 +755,7 @@ export function SiteHeader({
                               event.stopPropagation();
                               setIsContactMenuOpen((previous) => !previous);
                               setIsAreasMenuOpen(false);
+                              setIsResourcesMenuOpen(false);
                             }}
                             aria-haspopup="menu"
                             aria-expanded={isContactMenuOpen}
@@ -713,9 +814,10 @@ export function SiteHeader({
         onClose={() => setIsMobileMenuOpen(false)}
         navItems={[
           ...SITE_NAV.filter(
-            (item) => item.href !== "/#contact" && item.href !== "/areas",
+            (item) => item.href !== "/#contact" && item.href !== "/areas" && item.href !== "#resources",
           ),
         ]}
+        resourceItems={RESOURCES_NAV_MENU}
         areaItems={AREAS_NAV_MENU}
         contactItems={CONTACT_US_MENU}
       />
