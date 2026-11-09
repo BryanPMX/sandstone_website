@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Script from "next/script";
 
-import { SiteHeader } from "@/components/SiteHeader";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsSection";
 import { BlogTeaserSection } from "@/components/sections/BlogTeaserSection";
@@ -11,7 +10,8 @@ import { GoogleReviews } from "@/components/GoogleReviews";
 import { SiteFooter } from "@/components/SiteFooter";
 import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 import { FinancingBanner } from "@/components/FinancingBanner";
-import { VeteransDayAnnouncement, VeteransDayTribute } from "@/components/VeteransDayTribute";
+import { VeteransDayTribute } from "@/components/VeteransDayTribute";
+import { VeteransDayHomeHeader, VeteransDayOnly } from "@/components/VeteransDaySchedule";
 
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
@@ -108,11 +108,10 @@ export default async function Home() {
         }}
       />
 
-      <VeteransDayAnnouncement />
-      <SiteHeader />
+      <VeteransDayHomeHeader />
 
       <main className="min-h-screen overflow-x-hidden">
-        <VeteransDayTribute />
+        <VeteransDayOnly><VeteransDayTribute /></VeteransDayOnly>
         <HeroSection />
 
         <section className="w-full overflow-hidden">
