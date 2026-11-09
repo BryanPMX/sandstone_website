@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
-import brave from "./HomeOfTheBrave.module.css";
+import salute from "./SaluteRefined.module.css";
 import {
   LISTINGS_MAP_PATH,
   DEFAULT_PROPERTY_SEARCH_MARKET,
@@ -295,32 +295,33 @@ export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) 
 
   if (veteransDay) {
     return (
-      <section className={brave.hero} aria-labelledby="home-of-the-brave-heading">
-        <div className={brave.scene}>
-          <img src="/campaigns/veterans-day/southwest-dusk.webp" alt="Illustrative Southwestern home at dusk with an American flag" className={brave.background} fetchPriority="high" width={1536} height={1024} />
-          <div className={brave.heroInner}>
-            <p className={brave.eyebrow}>Honoring veterans <span aria-hidden="true">·</span> November 11</p>
-            <h1 id="home-of-the-brave-heading" className={brave.heading}>
-              <span>For those who served.</span> For the place you call home.
+      <section className={salute.hero} aria-labelledby="salute-refined-heading">
+        <div className={salute.scene}>
+          <img src="/campaigns/veterans-day/flag-refined.webp" alt="American flag with flowing folds against a deep navy backdrop" className={salute.background} fetchPriority="high" width={1536} height={1024} />
+          <div className={salute.heroInner}>
+            <p className={salute.eyebrow}>With honor. With gratitude.</p>
+            <h1 id="salute-refined-heading" className={salute.heading}>
+              To all who <span>served.</span>
             </h1>
-            <p className={brave.intro}>With gratitude for your service, today and every day.</p>
+            <p className={salute.intro}>For your courage, your commitment, and all you have given. <strong>Thank you.</strong></p>
+            <div className={salute.stars} aria-hidden="true">★ ★ ★</div>
           </div>
         </div>
-        <div className={brave.searchCard}>
-          <h2>Find your next home.</h2>
-          <form onSubmit={handleSearchSubmit} className={brave.searchForm} aria-busy={showTransition}>
-            <div className={brave.field}>
-              <Search className={brave.fieldIcon} aria-hidden="true" />
-              <input type="search" name="search" placeholder="City, neighborhood or ZIP" aria-label="Search by city, neighborhood, address or ZIP code" className={brave.input} value={searchValue} onChange={handleInputChange} onFocus={loadGoogleMaps} autoComplete="off" />
+        <div className={salute.searchCard}>
+          <h2>Your next chapter starts here.</h2>
+          <form onSubmit={handleSearchSubmit} className={salute.searchForm} aria-busy={showTransition}>
+            <div className={salute.field}>
+              <Search className={salute.fieldIcon} aria-hidden="true" />
+              <input type="search" name="search" placeholder="City, neighborhood or ZIP" aria-label="Search by city, neighborhood, address or ZIP code" className={salute.input} value={searchValue} onChange={handleInputChange} onFocus={loadGoogleMaps} autoComplete="off" />
               {suggestions.length > 0 ? (
-                <ul className={brave.suggestions} aria-label="Suggested addresses">
+                <ul className={salute.suggestions} aria-label="Suggested addresses">
                   {suggestions.map((suggestion) => (
                     <li key={suggestion.placeId}><button type="button" onClick={() => handleSuggestionClick(suggestion)}>{suggestion.description}</button></li>
                   ))}
                 </ul>
               ) : null}
             </div>
-            <button type="submit" className={brave.submit} disabled={showTransition}>
+            <button type="submit" className={salute.submit} disabled={showTransition}>
               {showTransition ? "Finding homes…" : "Find a home"}<span aria-hidden="true">→</span>
             </button>
           </form>

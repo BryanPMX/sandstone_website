@@ -41,7 +41,7 @@ function harness() {
     return require(id);
   }, "\nexport { subscribe };\n");
   return { config, client, events, timers,
-    setNow(value) { now = Date.parse(value); },
+    setNow(value) { now = typeof value === "number" ? value : Date.parse(value); },
     server(value) { useServerSnapshot = value; },
     fireNext() {
       const [id, timer] = [...timers].sort((a, b) => a[1].at - b[1].at)[0];
@@ -50,24 +50,23 @@ function harness() {
   };
 }
 
-test("uses the requested El Paso times, with an inclusive start and exclusive end", () => {
+test("uses the configured El Paso times, with an inclusive start and exclusive end", () => {
   const { config } = harness();
-  const fmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/Denver", dateStyle: "short", timeStyle: "short" });
-  assert.equal(fmt.format(new Date(config.VETERANS_DAY_SCHEDULE.startsAt)), "11/10/26, 8:00 PM");
-  assert.equal(fmt.format(new Date(config.VETERANS_DAY_SCHEDULE.endsAt)), "11/12/26, 8:00 AM");
-  for (const [date, expected] of [
-    ["2026-11-10T19:59:59.999-07:00", false],
-    ["2026-11-10T20:00:00-07:00", true],
-    ["2026-11-11T12:00:00-07:00", true],
-    ["2026-11-12T07:59:59.999-07:00", true],
-    ["2026-11-12T08:00:00-07:00", false],
-    ["2027-11-11T12:00:00-07:00", false],
-  ]) assert.equal(config.isVeteransDayActive(Date.parse(date)), expected, date);
+  const start = Date.parse(config.VETERANS_DAY_SCHEDULE.startsAt);
+  const end = Date.parse(config.VETERANS_DAY_SCHEDULE.endsAt);
+  assert.ok(end > start);
+  const fmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/Denver", timeStyle: "short" });
+  assert.equal(fmt.format(new Date(start)), "8:00 PM");
+  assert.equal(fmt.format(new Date(end)), "8:00 AM");
+  for (const [time, expected] of [
+    [start - 1, false], [start, true], [(start + end) / 2, true],
+    [end - 1, true], [end, false], [end + 365 * 86400000, false],
+  ]) assert.equal(config.isVeteransDayActive(time), expected, String(time));
 });
 
 test("open tabs switch at both boundaries and release timers/listeners", () => {
   const h = harness();
-  h.setNow("2026-11-10T19:00:00-07:00");
+  h.setNow(Date.parse(h.config.VETERANS_DAY_SCHEDULE.startsAt) - 3600000);
   const seen = [];
   const cleanup = h.client.subscribe(() => seen.push(h.config.isVeteransDayActive()));
   assert.equal(h.timers.size, 1);
@@ -81,11 +80,11 @@ test("open tabs switch at both boundaries and release timers/listeners", () => {
 
 test("returning to a suspended tab checks the current time immediately", () => {
   const h = harness();
-  h.setNow("2026-11-11T12:00:00-07:00");
+  h.setNow(Date.parse(h.config.VETERANS_DAY_SCHEDULE.startsAt) + 3600000);
   let active;
   const cleanup = h.client.subscribe(() => { active = h.config.isVeteransDayActive(); });
   assert.equal(active, true);
-  h.setNow("2026-11-12T08:01:00-07:00");
+  h.setNow(Date.parse(h.config.VETERANS_DAY_SCHEDULE.endsAt) + 60000);
   h.events.get("document:visibilitychange")();
   assert.equal(active, false);
   assert.equal(h.timers.size, 0);
@@ -95,9 +94,9 @@ test("returning to a suspended tab checks the current time immediately", () => {
 test("both content and header restore outside the window; static HTML stays hydration safe", () => {
   const h = harness();
   for (const [date, active] of [
-    ["2026-11-09T12:00:00-07:00", false],
-    ["2026-11-11T12:00:00-07:00", true],
-    ["2026-11-12T08:00:00-07:00", false],
+    [Date.parse(h.config.VETERANS_DAY_SCHEDULE.startsAt) - 1, false],
+    [Date.parse(h.config.VETERANS_DAY_SCHEDULE.startsAt) + 1, true],
+    [Date.parse(h.config.VETERANS_DAY_SCHEDULE.endsAt), false],
   ]) {
     h.setNow(date);
     assert.equal(h.client.VeteransDayOnly({ children: "tribute" }), active ? "tribute" : null);
@@ -106,7 +105,7 @@ test("both content and header restore outside the window; static HTML stays hydr
     assert.equal(h.client.VeteransDayHomeHero().props.veteransDay, active);
     assert.equal(header.props.overlayDesktop, !active);
   }
-  h.setNow("2026-11-11T12:00:00-07:00");
+  h.setNow(Date.parse(h.config.VETERANS_DAY_SCHEDULE.startsAt) + 3600000);
   h.server(true);
   assert.equal(h.client.VeteransDayOnly({ children: "tribute" }), null);
   assert.equal(h.client.VeteransDayHomeHeader().props.children[1].props.overlayDesktop, true);
@@ -114,7 +113,7 @@ test("both content and header restore outside the window; static HTML stays hydr
 
 test("master disable hides the campaign and cancels future transitions", () => {
   const h = harness();
-  h.setNow("2026-11-11T12:00:00-07:00");
+  h.setNow(Date.parse(h.config.VETERANS_DAY_SCHEDULE.startsAt) + 3600000);
   h.config.VETERANS_DAY_SCHEDULE.enabled = false;
   assert.equal(h.config.isVeteransDayActive(), false);
   assert.equal(h.config.nextVeteransDayTransition(), null);

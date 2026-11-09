@@ -9,8 +9,7 @@ import { GoogleReviews } from "@/components/GoogleReviews";
 import { SiteFooter } from "@/components/SiteFooter";
 import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 import { FinancingBanner } from "@/components/FinancingBanner";
-import { VeteransDayTribute } from "@/components/VeteransDayTribute";
-import { VeteransDayHomeHeader, VeteransDayHomeHero, VeteransDayOnly } from "@/components/VeteransDaySchedule";
+import { VeteransDayHomeHeader, VeteransDayHomeHero } from "@/components/VeteransDaySchedule";
 
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
@@ -111,7 +110,6 @@ export default async function Home() {
 
       <main className="min-h-screen overflow-x-hidden">
         <VeteransDayHomeHero />
-        <VeteransDayOnly><VeteransDayTribute /></VeteransDayOnly>
 
         <section className="w-full overflow-hidden">
           <Link

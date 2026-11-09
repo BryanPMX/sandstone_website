@@ -70,8 +70,8 @@ test("the original hero and image return when the campaign is inactive", () => {
   const active = h.render(true);
   assert.equal(elements(active, (node) => node.type === "h1").length, 1);
   assert.equal(elements(active, (node) => node.type === "input").length, 1);
-  assert.ok(elements(active, (node) => node.type === "img").some((node) => node.props.src.endsWith("southwest-dusk.webp")));
+  assert.ok(elements(active, (node) => node.type === "img").some((node) => node.props.src.endsWith("flag-refined.webp")));
   const inactive = h.render(false);
   assert.ok(elements(inactive, (node) => node.type === "img").some((node) => node.props.src === "/hero-home.webp"));
-  assert.equal(elements(inactive, (node) => node.type === "img").some((node) => node.props.src.includes("southwest-dusk")), false);
+  assert.equal(elements(inactive, (node) => node.type === "img").some((node) => node.props.src.includes("flag-refined")), false);
 });

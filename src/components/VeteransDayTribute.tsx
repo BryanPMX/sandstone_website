@@ -1,7 +1,4 @@
-import Link from "next/link";
 import styles from "./VeteransDayTribute.module.css";
-import brave from "./HomeOfTheBrave.module.css";
-import { getAgentBySlug } from "@/data/agents";
 
 /** Shared decorative backdrop; the tribute remains real, accessible text. */
 function TributeFlag() {
@@ -28,30 +25,6 @@ export function VeteransDayAnnouncement() {
       <p>November 11 <span className={styles.separator}>·</span> Honoring all who served</p>
       <span aria-hidden="true">★</span>
     </div>
-  );
-}
-
-export function VeteransDayTribute() {
-  const alejandro = getAgentBySlug("alejandro-gamboa");
-  if (!alejandro) return null;
-
-  return (
-    <section className={brave.service} aria-labelledby="service-beyond-uniform-heading">
-      <h2 id="service-beyond-uniform-heading">Service that goes beyond the uniform.</h2>
-      <div className={brave.divider} aria-hidden="true">
-        <img src="/mobile-header-logo.webp" alt="" width={32} height={36} />
-      </div>
-      <div className={brave.agent}>
-        <img src={alejandro.image} alt={alejandro.name} width={400} height={400} className={brave.portrait} loading="lazy" />
-        <div className={brave.agentCopy}>
-          <h3>{alejandro.name}</h3>
-          <p className={brave.credentials}>U.S. Navy Veteran <span aria-hidden="true">·</span> REALTOR®</p>
-          <p className={brave.description}>Serving military families, veterans and the El Paso community.</p>
-          <Link href={`/agents/${alejandro.slug}`} className={brave.agentLink}>Meet Alejandro <span aria-hidden="true">→</span></Link>
-        </div>
-      </div>
-      <p className={brave.motto}>Luxury. Lifestyle. Legacy.</p>
-    </section>
   );
 }
 
