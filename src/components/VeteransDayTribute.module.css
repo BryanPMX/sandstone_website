@@ -1,0 +1,52 @@
+.home { --tribute-gold: #e5c58b; color: #f7f1e5; }
+.announcement { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: .75rem 1.25rem; background: #a33230; color: #fff5e6; text-align: center; }
+.announcement p { margin: 0; font-size: .7rem; line-height: 1.7; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+.separator { padding: 0 .8rem; }
+.hero { position: relative; overflow: hidden; isolation: isolate; background: #102439; }
+.flag { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; color: #b5c4d0; opacity: .12; pointer-events: none; }
+.hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(110deg, #10243966, #10243999); }
+.heroInner { position: relative; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 4rem; align-items: center; max-width: 1280px; margin: auto; padding: 4.5rem 2rem; }
+.eyebrow, .redEyebrow { margin: 0; font-size: .8rem; line-height: 1.8; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.eyebrow { color: var(--tribute-gold, #e5c58b); }
+.salute { margin: 1.5rem 0 0; font-size: clamp(3rem, 7.2vw, 6.5rem); line-height: .98; font-weight: 700; letter-spacing: -.055em; text-transform: uppercase; }
+.salute span { display: block; color: var(--tribute-gold); }
+.thanks { border-left: 1px solid #e5c58b88; padding-left: 2.5rem; font-size: clamp(1rem, 1.65vw, 1.35rem); line-height: 1.8; }
+.thankYou { margin: 1rem 0 0; color: var(--tribute-gold); font-size: 1.5rem; font-weight: 700; }
+.gratitude { padding: 2.5rem 2rem 1.5rem; background: #f7f3ec; color: #211f1c; text-align: center; }
+.redEyebrow { color: #9e302e; }
+.gratitude h2 { margin: .8rem 0 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.25rem, 4.4vw, 4rem); line-height: 1.1; letter-spacing: -.035em; }
+.message { max-width: 1050px; margin: 1.25rem auto 2rem; font-size: 1rem; line-height: 1.8; }
+.profileLink { max-width: 1216px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.5rem 1.75rem; border: 1px solid #bd9a58; box-shadow: inset 0 0 0 3px #ffffff09; background: #102439; color: #f7f1e5; text-align: left; }
+.profileLink h3 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1.2; }
+.profileLink p { max-width: 25rem; font-size: .9rem; line-height: 1.7; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 1rem; flex-shrink: 0; min-height: 48px; padding: .65rem 1.25rem; border: 1px solid #e5c58b; color: #fff5e6; font-size: .9rem; font-weight: 600; transition: background .15s, color .15s; }
+.button:hover { background: #e5c58b; color: #102439; }
+.button:focus-visible { outline: 3px solid #e5c58b; outline-offset: 4px; }
+.motto { margin: 1.75rem 0 0; color: #7e6035; font-size: .75rem; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; }
+.profile { position: relative; isolation: isolate; overflow: hidden; margin-top: 1.75rem; border: 2px solid #bd9a58; background: #102439; color: #f7f1e5; }
+.profile .flag { opacity: .07; }
+.profileInner { padding: clamp(1.25rem, 2.5vw, 2rem); }
+.profile .eyebrow { font-size: .65rem; letter-spacing: .15em; }
+.stars { margin: 1rem 0; color: #e5c58b; font-size: 1.1rem; letter-spacing: .3em; }
+.profile h2 { margin: 0 0 1rem; font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.9rem, 3vw, 2.75rem); line-height: 1.08; letter-spacing: -.035em; }
+.profileInner > p:not(.eyebrow):not(.stars):not(.profileThankYou) { font-size: 1rem; line-height: 1.75; }
+.profileThankYou { margin-top: 1rem; font-family: Georgia, "Times New Roman", serif; font-size: 1.25rem; font-style: italic; font-weight: 700; color: #e5c58b; }
+@media (max-width: 900px) {
+  .heroInner { gap: 2rem; }
+  .profileLink { flex-wrap: wrap; }
+  .profileLink h3 { flex-basis: 100%; }
+}
+@media (max-width: 600px) {
+  .announcement { gap: .5rem; padding: .65rem .75rem; }
+  .announcement p { font-size: .6rem; letter-spacing: .1em; }
+  .separator { padding: 0 .25rem; }
+  .heroInner { grid-template-columns: 1fr; padding: 2.5rem 1.25rem; gap: 2rem; }
+  .eyebrow, .redEyebrow { font-size: .65rem; letter-spacing: .15em; }
+  .salute { font-size: clamp(2.8rem, 12.5vw, 4.5rem); }
+  .thanks { padding-left: 1.25rem; line-height: 1.7; }
+  .thankYou { font-size: 1.2rem; }
+  .gratitude { padding: 2rem 1.25rem 1.5rem; }
+  .profileLink { display: grid; gap: 1rem; padding: 1.5rem; }
+  .profileLink .button { width: 100%; }
+  .motto { font-size: .6rem; letter-spacing: .16em; }
+}

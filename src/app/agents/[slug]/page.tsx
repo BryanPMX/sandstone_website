@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getTurnstileSiteKey } from "@/config";
 import { agents, getAgentBySlug } from "@/data/agents";
+import { AlejandroVeteransTribute } from "@/components/VeteransDayTribute";
 
 type AgentPageProps = {
   params: Promise<{ slug: string }>;
@@ -85,6 +86,8 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
                   </p>
                 ) : null}
 
+                {agent.slug === "alejandro-gamboa" ? <AlejandroVeteransTribute /> : null}
+
                 {agent.email || agent.phone ? (
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                     {agent.email ? (
@@ -109,9 +112,21 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
 
                 <div className="mt-7 h-px w-20 bg-[#b89b72]" />
 
+                {agent.slug === "alejandro-gamboa" ? (
+                  <h2 className="mt-6 font-serif text-3xl leading-tight tracking-tight">
+                    Serving those who serve.
+                  </h2>
+                ) : null}
+
                 <p className="mt-6 max-w-2xl text-base leading-8 sm:text-lg sm:leading-9 text-black/70">
                   {agent.bio}
                 </p>
+
+                {agent.slug === "alejandro-gamboa" ? (
+                  <a href="#agent-contact" className="mt-6 inline-flex min-h-12 items-center justify-center border border-[#9b7b56] px-5 py-3 text-sm font-semibold text-[#705231] transition hover:bg-[#102439] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9b7b56]">
+                    Connect with Alejandro
+                  </a>
+                ) : null}
 
                 {agent.specialties?.length ? (
                   <div className="mt-8">

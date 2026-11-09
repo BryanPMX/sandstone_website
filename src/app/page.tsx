@@ -11,6 +11,7 @@ import { GoogleReviews } from "@/components/GoogleReviews";
 import { SiteFooter } from "@/components/SiteFooter";
 import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 import { FinancingBanner } from "@/components/FinancingBanner";
+import { VeteransDayAnnouncement, VeteransDayTribute } from "@/components/VeteransDayTribute";
 
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
@@ -107,9 +108,11 @@ export default async function Home() {
         }}
       />
 
-      <SiteHeader overlayDesktop />
+      <VeteransDayAnnouncement />
+      <SiteHeader />
 
       <main className="min-h-screen overflow-x-hidden">
+        <VeteransDayTribute />
         <HeroSection />
 
         <section className="w-full overflow-hidden">
