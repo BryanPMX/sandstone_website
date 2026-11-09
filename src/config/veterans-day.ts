@@ -1,7 +1,7 @@
 /** 2026 campaign window, in El Paso / America/Denver time (MST, UTC-07:00). */
 export const VETERANS_DAY_SCHEDULE = {
   enabled: true, // Set false to disable both tributes immediately after redeploying.
-  startsAt: "2026-11-10T20:00:00-07:00",
+  startsAt: "2026-11-08T20:00:00-07:00",
   endsAt: "2026-11-12T08:00:00-07:00",
 };
 
