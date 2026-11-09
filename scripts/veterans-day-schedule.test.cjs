@@ -36,6 +36,7 @@ function harness() {
     if (id === "@/config/veterans-day") return config;
     if (id === "react") return { useSyncExternalStore: (_subscribe, snapshot, serverSnapshot) => useServerSnapshot ? serverSnapshot() : snapshot() };
     if (id === "@/components/SiteHeader") return { SiteHeader: component };
+    if (id === "@/components/HeroSection") return { HeroSection: component };
     if (id === "@/components/VeteransDayTribute") return { VeteransDayAnnouncement: component };
     return require(id);
   }, "\nexport { subscribe };\n");
@@ -102,6 +103,7 @@ test("both content and header restore outside the window; static HTML stays hydr
     assert.equal(h.client.VeteransDayOnly({ children: "tribute" }), active ? "tribute" : null);
     const [announcement, header] = h.client.VeteransDayHomeHeader().props.children;
     assert.equal(!!announcement, active);
+    assert.equal(h.client.VeteransDayHomeHero().props.veteransDay, active);
     assert.equal(header.props.overlayDesktop, !active);
   }
   h.setNow("2026-11-11T12:00:00-07:00");

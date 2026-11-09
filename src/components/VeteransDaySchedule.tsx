@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore, type ReactNode } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
+import { HeroSection } from "@/components/HeroSection";
 import { VeteransDayAnnouncement } from "@/components/VeteransDayTribute";
 import { isVeteransDayActive, nextVeteransDayTransition } from "@/config/veterans-day";
 
@@ -41,6 +42,10 @@ function useVeteransDayActive() {
 
 export function VeteransDayOnly({ children }: { children: ReactNode }) {
   return useVeteransDayActive() ? children : null;
+}
+
+export function VeteransDayHomeHero() {
+  return <HeroSection veteransDay={useVeteransDayActive()} />;
 }
 
 export function VeteransDayHomeHeader() {

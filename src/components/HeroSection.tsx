@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
+import brave from "./HomeOfTheBrave.module.css";
 import {
   LISTINGS_MAP_PATH,
   DEFAULT_PROPERTY_SEARCH_MARKET,
@@ -86,7 +87,7 @@ function getSelectedOptionLabel<T extends string>(
   );
 }
 
-export function HeroSection() {
+export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) {
   const router = useRouter();
   const [isNavigatingToMap, setIsNavigatingToMap] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -291,6 +292,42 @@ export function HeroSection() {
 
   const showTransition = isNavigatingToMap || isPending;
   const priceOptions = getPropertySearchPriceOptions(filters.listingType);
+
+  if (veteransDay) {
+    return (
+      <section className={brave.hero} aria-labelledby="home-of-the-brave-heading">
+        <div className={brave.scene}>
+          <img src="/campaigns/veterans-day/southwest-dusk.webp" alt="Illustrative Southwestern home at dusk with an American flag" className={brave.background} fetchPriority="high" width={1536} height={1024} />
+          <div className={brave.heroInner}>
+            <p className={brave.eyebrow}>Honoring veterans <span aria-hidden="true">·</span> November 11</p>
+            <h1 id="home-of-the-brave-heading" className={brave.heading}>
+              <span>For those who served.</span> For the place you call home.
+            </h1>
+            <p className={brave.intro}>With gratitude for your service, today and every day.</p>
+          </div>
+        </div>
+        <div className={brave.searchCard}>
+          <h2>Find your next home.</h2>
+          <form onSubmit={handleSearchSubmit} className={brave.searchForm} aria-busy={showTransition}>
+            <div className={brave.field}>
+              <Search className={brave.fieldIcon} aria-hidden="true" />
+              <input type="search" name="search" placeholder="City, neighborhood or ZIP" aria-label="Search by city, neighborhood, address or ZIP code" className={brave.input} value={searchValue} onChange={handleInputChange} onFocus={loadGoogleMaps} autoComplete="off" />
+              {suggestions.length > 0 ? (
+                <ul className={brave.suggestions} aria-label="Suggested addresses">
+                  {suggestions.map((suggestion) => (
+                    <li key={suggestion.placeId}><button type="button" onClick={() => handleSuggestionClick(suggestion)}>{suggestion.description}</button></li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+            <button type="submit" className={brave.submit} disabled={showTransition}>
+              {showTransition ? "Finding homes…" : "Find a home"}<span aria-hidden="true">→</span>
+            </button>
+          </form>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <>

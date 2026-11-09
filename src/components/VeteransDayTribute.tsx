@@ -1,5 +1,7 @@
 import Link from "next/link";
 import styles from "./VeteransDayTribute.module.css";
+import brave from "./HomeOfTheBrave.module.css";
+import { getAgentBySlug } from "@/data/agents";
 
 /** Shared decorative backdrop; the tribute remains real, accessible text. */
 function TributeFlag() {
@@ -30,34 +32,25 @@ export function VeteransDayAnnouncement() {
 }
 
 export function VeteransDayTribute() {
+  const alejandro = getAgentBySlug("alejandro-gamboa");
+  if (!alejandro) return null;
+
   return (
-    <section aria-labelledby="veterans-tribute-heading" className={styles.home}>
-      <div className={styles.hero}>
-        <TributeFlag />
-        <div className={styles.heroInner}>
-          <div>
-            <p className={styles.eyebrow}>Sandstone salutes you</p>
-            <h1 id="veterans-tribute-heading" className={styles.salute}>
-              To all who <span>served.</span>
-            </h1>
-          </div>
-          <div className={styles.thanks}>
-            <p>For your courage.<br />For your commitment.<br />For all you have given.</p>
-            <p className={styles.thankYou}>Thank you.</p>
-          </div>
+    <section className={brave.service} aria-labelledby="service-beyond-uniform-heading">
+      <h2 id="service-beyond-uniform-heading">Service that goes beyond the uniform.</h2>
+      <div className={brave.divider} aria-hidden="true">
+        <img src="/mobile-header-logo.webp" alt="" width={32} height={36} />
+      </div>
+      <div className={brave.agent}>
+        <img src={alejandro.image} alt={alejandro.name} width={400} height={400} className={brave.portrait} loading="lazy" />
+        <div className={brave.agentCopy}>
+          <h3>{alejandro.name}</h3>
+          <p className={brave.credentials}>U.S. Navy Veteran <span aria-hidden="true">·</span> REALTOR®</p>
+          <p className={brave.description}>Serving military families, veterans and the El Paso community.</p>
+          <Link href={`/agents/${alejandro.slug}`} className={brave.agentLink}>Meet Alejandro <span aria-hidden="true">→</span></Link>
         </div>
       </div>
-      <div className={styles.gratitude}>
-        <p className={styles.redEyebrow}>To our veterans &amp; their families</p>
-        <h2>Your service. Our gratitude.</h2>
-        <p className={styles.message}>This Veterans Day, we honor the men and women who served our country and the families who stood beside them.</p>
-        <div className={styles.profileLink}>
-          <h3>Service that continues at home.</h3>
-          <p>Meet Alejandro Gamboa <span aria-hidden="true">·</span> U.S. Navy Veteran</p>
-          <Link href="/agents/alejandro-gamboa" className={styles.button}>Meet Alejandro <span aria-hidden="true">↗</span></Link>
-        </div>
-        <p className={styles.motto}>Luxury. Lifestyle. Legacy.</p>
-      </div>
+      <p className={brave.motto}>Luxury. Lifestyle. Legacy.</p>
     </section>
   );
 }
