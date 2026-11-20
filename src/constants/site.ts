@@ -9,6 +9,7 @@ export const SITE_NAV = [
   { label: "Areas", href: "/areas" },
   { label: "Resources", href: "#resources" },
   { label: "Contact", href: "/#contact" },
+  { label: "Commercial Properties", href: "/commercial-properties" },
 ] as const;
 
 export const RESOURCES_NAV_MENU = [
@@ -94,11 +95,9 @@ export const TERMS_AND_CONDITIONS_LABEL = "Terms and Conditions";
 export const FORM_PHONE_SMS_NOTICE =
   "Entering your phone number alone does not authorize text messages. Use the SMS options below to opt in.";
 
-export const FORM_TRANSACTIONAL_SMS_COPY =
-  `I agree to receive transactional text messages from ${SMS_DISCLOSURE_BRAND} at the phone number provided, including inquiry follow-ups, appointment reminders, and service updates. Message frequency may vary. Message & data rates may apply. Reply HELP for help or STOP to opt out.`;
+export const FORM_TRANSACTIONAL_SMS_COPY = `I agree to receive transactional text messages from ${SMS_DISCLOSURE_BRAND} at the phone number provided, including inquiry follow-ups, appointment reminders, and service updates. Message frequency may vary. Message & data rates may apply. Reply HELP for help or STOP to opt out.`;
 
-export const FORM_MARKETING_SMS_COPY =
-  `I agree to receive marketing and promotional text messages from ${SMS_DISCLOSURE_BRAND} at the phone number provided. Message frequency may vary. Message & data rates may apply. Reply HELP for help or STOP to opt out.`;
+export const FORM_MARKETING_SMS_COPY = `I agree to receive marketing and promotional text messages from ${SMS_DISCLOSURE_BRAND} at the phone number provided. Message frequency may vary. Message & data rates may apply. Reply HELP for help or STOP to opt out.`;
 
 export const FOOTER_BRAND = SITE_BRAND;
 export const FOOTER_TAGLINE = "Luxury. Lifestyle. Legacy.";
@@ -140,8 +139,7 @@ export const HOME_FAQ_ES = [
       "Un Real Estate Group en El Paso ofrece servicios como análisis de mercado comparativo (CMA) basado en ventas recientes en la ciudad, marketing inmobiliario con fotografía profesional y tours virtuales, publicación en el MLS y portales como Zillow o Realtor.com, negociación de ofertas, gestión de trámites legales, inspecciones y tasaciones, así como asesoría en inversión inmobiliaria en zonas de alto crecimiento dentro de El Paso.",
   },
   {
-    question:
-      "¿Cómo elegir la mejor empresa de Real Estate Group en El Paso?",
+    question: "¿Cómo elegir la mejor empresa de Real Estate Group en El Paso?",
     answer:
       "Para elegir la mejor empresa inmobiliaria en El Paso, es importante considerar su experiencia en vecindarios específicos como West El Paso, Eastside o Horizon City, revisar opiniones en Google, Zillow o Yelp, evaluar las herramientas tecnológicas que utilizan para marketing y búsqueda de propiedades, verificar su especialización (residencial o comercial) y asegurarse de que tengan una comunicación rápida y efectiva en un mercado competitivo.",
   },
@@ -174,7 +172,7 @@ const toFaqMainEntity = (
   items: ReadonlyArray<{
     question: string;
     answer: string;
-  }>
+  }>,
 ) =>
   items.map((item) => ({
     "@type": "Question",

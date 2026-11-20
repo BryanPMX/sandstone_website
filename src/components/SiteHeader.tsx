@@ -4,7 +4,12 @@ import { useEffect, useId, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { AREAS_NAV_MENU, CONTACT_US_MENU, RESOURCES_NAV_MENU, SITE_NAV } from "@/constants/site";
+import {
+  AREAS_NAV_MENU,
+  CONTACT_US_MENU,
+  RESOURCES_NAV_MENU,
+  SITE_NAV,
+} from "@/constants/site";
 import { cn } from "@/lib/utils";
 import { MobileMenuPortal } from "@/components/MobileMenuPortal";
 import { ChevronDown } from "lucide-react";
@@ -39,9 +44,17 @@ export function SiteHeader({
   const [isAreasMenuOpen, setIsAreasMenuOpen] = useState(false);
   const [isResourcesMenuOpen, setIsResourcesMenuOpen] = useState(false);
 
-  // Keep Buy, Sell, and Areas before the logo; secondary links follow it.
-  const desktopLeftNav = SITE_NAV.slice(0, 3);
-  const desktopRightNav = SITE_NAV.slice(3);
+  const desktopLeftPaths = new Set([
+    "/listings",
+    "/sell",
+    "/commercial-properties",
+  ]);
+  const desktopLeftNav = SITE_NAV.filter((item) =>
+    desktopLeftPaths.has(item.href),
+  );
+  const desktopRightNav = SITE_NAV.filter(
+    (item) => !desktopLeftPaths.has(item.href),
+  );
 
   const isHeroHeader = overlayDesktop;
   const isLeadHeader = !overlayDesktop && variant === "lead";
@@ -333,7 +346,7 @@ export function SiteHeader({
 
         <div
           className={cn(
-            "hidden w-full lg:grid lg:grid-cols-[1fr_auto_1fr]",
+            "hidden w-full lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]",
             isHeroHeader ? "items-start" : "items-center",
           )}
         >
@@ -814,7 +827,10 @@ export function SiteHeader({
         onClose={() => setIsMobileMenuOpen(false)}
         navItems={[
           ...SITE_NAV.filter(
-            (item) => item.href !== "/#contact" && item.href !== "/areas" && item.href !== "#resources",
+            (item) =>
+              item.href !== "/#contact" &&
+              item.href !== "/areas" &&
+              item.href !== "#resources",
           ),
         ]}
         resourceItems={RESOURCES_NAV_MENU}
