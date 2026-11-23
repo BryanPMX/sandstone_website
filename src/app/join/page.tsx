@@ -2,34 +2,33 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LeadCaptureSection } from "@/components/LeadCaptureSection";
-import { AgentsCarousel } from "@/components/AgentsCarousel";
 import { getTurnstileSiteKey } from "@/config";
 import { agents } from "@/data/agents";
 
 export const metadata = {
-  title: "About the Team | Sandstone Real Estate Group",
+  title: "Meet Our Team | Sandstone Real Estate Group",
   description:
-    "Explore career opportunities with Sandstone Real Estate Group and connect with a team focused on growth, service, and elevating lifestyles.",
+    "Meet the dedicated real estate professionals behind Sandstone Real Estate Group, serving El Paso and the Southwest with local expertise and exceptional service.",
+  alternates: {
+    canonical: "/join",
+  },
 };
 
 const benefits = [
   {
     number: "01",
-    eyebrow: "Brand",
     title: "A Brand Built to Stand Out",
     description:
       "Build your business with polished marketing, modern technology, and a recognizable local brand.",
   },
   {
     number: "02",
-    eyebrow: "Growth",
     title: "Support That Moves You Forward",
     description:
       "Get practical guidance, useful resources, and hands-on support designed around your goals.",
   },
   {
     number: "03",
-    eyebrow: "Culture",
     title: "A Team That Wins Together",
     description:
       "Work alongside people who value communication, shared success, and exceptional client service.",
@@ -64,146 +63,273 @@ export default function JoinPage() {
     <>
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
 
-      <main className="min-h-screen overflow-hidden bg-[var(--sandstone-off-white)]">
-        {/* Hero */}
-        <section className="relative isolate min-h-[650px] overflow-hidden bg-[#111a16] text-white lg:min-h-[700px]">
+      <main className="min-h-screen overflow-hidden bg-[#f7f3ec] text-[#17211d]">
+        {/* ========================================= */}
+        {/* HERO SECTION */}
+        {/* ========================================= */}
+
+        <section className="relative isolate flex min-h-[520px] items-center overflow-hidden bg-[#111a16] text-white lg:min-h-[620px]">
           <div
-            className="absolute inset-0 -z-30 bg-cover bg-top scale-[1.02]"
+            className="absolute inset-0 -z-30 bg-cover bg-center"
             style={{
               backgroundImage: "url('/uploads/real_estate_el_paso.webp')",
             }}
           />
-          <div className="absolute inset-0 -z-20 bg-gradient-to-r from-[#0d1511]/95 via-[#0d1511]/72 to-[#0d1511]/25" />
-          <div className="absolute inset-0 -z-20 bg-gradient-to-t from-[#0d1511] via-transparent to-black/20" />
-          <div className="absolute -right-32 top-20 -z-10 h-96 w-96 rounded-full bg-[#d8c3a5]/10 blur-3xl" />
 
-          <div className="mx-auto flex min-h-[650px] max-w-7xl items-start px-6 pb-12 pt-32 sm:pt-40 lg:min-h-[700px] lg:px-8">
-            <div className="max-w-4xl">
-              <div className="mb-7 flex items-center gap-4">
-                <span className="h-px w-12 bg-[#d8c3a5]" />
-                <p className="text-xs font-semibold tracking-[0.32em] text-[#e2ceb0] sm:text-sm">
-                  ABOUT SANDSTONE
-                </p>
-              </div>
+          <div className="absolute inset-0 -z-20 bg-[#102439]/80" />
 
-              <h1 className="max-w-4xl font-serif text-5xl leading-[0.98] tracking-[-0.035em] sm:text-6xl md:text-7xl lg:text-[5.4rem]">
-                Build a career
-                <span className="block text-white">Create a legacy</span>
-              </h1>
+          <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/45 via-transparent to-black/10" />
 
-              <p className="mt-8 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
-                Join a real estate team where local expertise, thoughtful
-                service, modern marketing, and meaningful growth come together.
+          <div className="mx-auto w-full max-w-7xl px-6 py-24 text-center lg:px-8">
+            <div className="flex items-center justify-center gap-4">
+              <span className="h-px w-10 bg-[#d8c3a5]" />
+
+              <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-[#e2ceb0] sm:text-xs">
+                Sandstone Real Estate Group
               </p>
 
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <a
-                  href="#grow-with-sandstone"
-                  className="group inline-flex min-h-14 items-center justify-center gap-3 bg-[#d8c3a5] px-8 py-4 text-xs font-bold tracking-[0.2em] text-[#17211d] transition duration-300 hover:-translate-y-0.5 hover:bg-white"
-                >
-                  DISCOVER OUR TEAM
-                  <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">
-                    →
-                  </span>
-                </a>
+              <span className="h-px w-10 bg-[#d8c3a5]" />
+            </div>
 
-                <a
-                  href="#meet-the-agents"
-                  className="inline-flex min-h-14 items-center justify-center border border-white/35 bg-white/5 px-8 py-4 text-xs font-bold tracking-[0.2em] text-white backdrop-blur-sm transition duration-300 hover:border-white hover:bg-white hover:text-[#17211d]"
-                >
-                  MEET THE TEAM
-                </a>
-              </div>
+            <h1 className="mt-8 font-serif text-6xl leading-[0.98] tracking-[-0.04em] sm:text-7xl lg:text-[6.5rem]">
+              Exceptional People.
+              <span className="mt-2 block text-[#e2ceb0]">
+                Exceptional Real Estate.
+              </span>
+            </h1>
 
+            <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
+              Local knowledge. Meaningful relationships. A shared commitment to
+              delivering an exceptional real estate experience throughout El
+              Paso and the Southwest.
+            </p>
+
+            <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+              <a
+                href="#meet-the-agents"
+                className="inline-flex min-h-14 items-center justify-center bg-[#d8c3a5] px-9 py-4 text-xs font-bold uppercase tracking-[0.18em] text-[#17211d] transition duration-300 hover:bg-white"
+              >
+                Meet Our Team
+                <span className="ml-4" aria-hidden="true">
+                  →
+                </span>
+              </a>
+
+              <a
+                href="#grow-with-sandstone"
+                className="inline-flex min-h-14 items-center justify-center border border-white/40 px-9 py-4 text-xs font-bold uppercase tracking-[0.18em] text-white transition duration-300 hover:bg-white hover:text-[#17211d]"
+              >
+                Join Our Brokerage
+              </a>
             </div>
           </div>
-
         </section>
 
-        {/* Intro */}
+        {/* ========================================= */}
+        {/* COMPANY INTRODUCTION */}
+        {/* ========================================= */}
+
+        <section className="border-b border-[#17211d]/10 bg-[#f7f3ec] px-6 py-16 sm:py-20 lg:px-8">
+          <div className="mx-auto max-w-5xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9b7b56]">
+              More Than Real Estate
+            </p>
+
+            <h2 className="mt-5 font-serif text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              Built on trust.
+              <span className="block">Driven by relationships.</span>
+            </h2>
+
+            <div className="mx-auto mt-7 h-px w-20 bg-[#b89b72]" />
+
+            <p className="mx-auto mt-7 max-w-3xl text-base leading-8 text-[#5b625e] sm:text-lg">
+              At Sandstone Real Estate Group, we believe real estate is about
+              more than buying and selling properties. It is about understanding
+              people, building lasting relationships, and helping every client
+              move forward with confidence.
+            </p>
+          </div>
+        </section>
+
+        {/* ========================================= */}
+        {/* LUXURY AGENT DIRECTORY */}
+        {/* ========================================= */}
+
         <section
-          id="grow-with-sandstone"
-          className="relative overflow-hidden bg-[#f8f5ef] px-6 py-20 sm:py-24 lg:px-8 lg:py-28"
+          id="meet-the-agents"
+          className="scroll-mt-24 bg-[#f7f3ec] px-6 py-20 sm:py-24 lg:px-8 lg:py-28"
         >
-          <div className="absolute left-0 top-0 h-full w-px bg-[#17211d]/5 lg:left-[8%]" />
-          <div className="absolute right-0 top-0 h-full w-px bg-[#17211d]/5 lg:right-[8%]" />
+          <div className="mx-auto max-w-7xl">
+            {/* Directory Heading */}
 
-          <div className="relative mx-auto max-w-7xl">
-            <div className="grid gap-10 border-b border-[#17211d]/10 pb-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:gap-20">
-              <div>
-                <div className="flex items-center gap-4">
-                  <span className="h-px w-10 bg-[#b89b72]" />
-                  <p className="text-xs font-semibold tracking-[0.3em] text-[#9b7b56]">
-                    GROW WITH SANDSTONE
-                  </p>
-                </div>
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9b7b56]">
+                The People Behind Sandstone
+              </p>
 
-                <h2 className="mt-6 max-w-3xl font-serif text-4xl leading-[1.03] tracking-[-0.03em] text-[#17211d] sm:text-5xl lg:text-6xl">
-                  Build your business with a team invested in your future.
-                </h2>
-              </div>
+              <h2 className="mt-5 font-serif text-5xl leading-tight tracking-[-0.035em] sm:text-6xl lg:text-7xl">
+                Meet Our Team
+              </h2>
 
-              <div className="lg:pb-2">
-                <p className="text-xl leading-9 text-[#33403a] sm:text-2xl sm:leading-10">
-                  Great agents deserve more than a place to hang their license.
-                </p>
+              <div className="mx-auto mt-7 h-px w-20 bg-[#b89b72]" />
 
-                <p className="mt-5 max-w-xl text-base leading-8 text-[#5b625e] sm:text-lg">
-                  Sandstone combines local leadership, intentional branding,
-                  practical tools, and a collaborative culture designed to help
-                  you grow with confidence.
-                </p>
-
-                <a
-                  href="#join-lead"
-                  className="group mt-8 inline-flex items-center gap-3 text-xs font-bold tracking-[0.2em] text-[#8b7355] transition hover:text-[#17211d]"
-                >
-                  START A CONVERSATION
-                  <span
-                    className="transition-transform duration-300 group-hover:translate-x-1"
-                    aria-hidden="true"
-                  >
-                    →
-                  </span>
-                </a>
-              </div>
+              <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-[#5b625e] sm:text-lg">
+                Meet the dedicated professionals who bring local expertise,
+                integrity, and personalized service to every client
+                relationship.
+              </p>
             </div>
 
-            <div className="grid divide-y divide-[#17211d]/10 md:grid-cols-3 md:divide-x md:divide-y-0">
+            {/* Agent Count */}
+
+            <div className="mt-14 flex items-center justify-between border-b border-[#17211d]/15 pb-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9b7b56]">
+                Our Professionals
+              </p>
+
+              <p className="text-sm text-[#5b625e]">
+                {agents.length} Team Members
+              </p>
+            </div>
+
+            {/* Agent Grid */}
+
+            <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+              {agents.map((agent) => (
+                <article key={agent.slug} className="group flex flex-col">
+                  {/* Agent Portrait */}
+
+                  <Link
+                    href={`/agents/${agent.slug}`}
+                    aria-label={`View ${agent.name}'s profile`}
+                    className="relative block aspect-[4/5] overflow-hidden bg-[#e7dfd2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9b7b56]"
+                  >
+                    <img
+                      src={agent.image}
+                      alt={agent.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover object-top transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#17211d]/35 via-transparent to-transparent" />
+
+                    <div className="absolute inset-4 border border-white/0 transition duration-500 group-hover:border-white/40" />
+
+                    <div className="absolute bottom-5 right-5 flex h-12 w-12 items-center justify-center rounded-full border border-white/50 bg-white/15 text-xl text-white backdrop-blur-sm transition duration-300 group-hover:bg-white group-hover:text-[#17211d]">
+                      <span aria-hidden="true">↗</span>
+                    </div>
+                  </Link>
+
+                  {/* Agent Information */}
+
+                  <div className="flex flex-1 flex-col border-b border-[#17211d]/15 pb-7 pt-6">
+                    <p className="min-h-[32px] text-[10px] font-semibold uppercase leading-4 tracking-[0.16em] text-[#9b7b56]">
+                      {agent.role}
+                    </p>
+
+                    <h3 className="mt-2 font-serif text-3xl leading-tight tracking-tight text-[#17211d] sm:text-4xl">
+                      {agent.name}
+                    </h3>
+
+                    {/* Agent Specialties */}
+
+                    {agent.specialties?.length ? (
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {agent.specialties.slice(0, 3).map((specialty) => (
+                          <span
+                            key={specialty}
+                            className="border border-[#b89b72]/35 px-3 py-1.5 text-[11px] text-[#5b625e]"
+                          >
+                            {specialty}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {/* Agent Actions */}
+
+                    <div className="mt-auto flex flex-wrap items-center gap-5 pt-7">
+                      <Link
+                        href={`/agents/${agent.slug}`}
+                        className="inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#17211d] transition hover:text-[#9b7b56]"
+                      >
+                        View Profile
+                        <span
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                          aria-hidden="true"
+                        >
+                          →
+                        </span>
+                      </Link>
+
+                      <Link
+                        href={`/agents/${agent.slug}#agent-contact`}
+                        className="border-l border-[#17211d]/20 pl-5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#8b7355] transition hover:text-[#17211d]"
+                      >
+                        Contact
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================= */}
+        {/* COMPANY VALUES */}
+        {/* ========================================= */}
+
+        <section className="bg-[#102439] px-6 py-20 text-white sm:py-24 lg:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#d8c3a5]">
+                The Sandstone Difference
+              </p>
+
+              <h2 className="mt-5 font-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">
+                Real Estate. Elevated.
+              </h2>
+
+              <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-white/70">
+                Our approach is built around the principles that matter most to
+                our clients and our community.
+              </p>
+            </div>
+
+            <div className="mt-14 grid divide-y divide-white/15 border-y border-white/15 md:grid-cols-3 md:divide-x md:divide-y-0">
               {[
                 {
                   number: "01",
-                  title: "Local Leadership",
-                  text: "Guidance from people who understand the El Paso market and the work it takes to succeed here.",
+                  title: "Local Expertise",
+                  description:
+                    "A deep understanding of El Paso, surrounding communities, and the Southwest real estate market.",
                 },
                 {
                   number: "02",
-                  title: "Modern Support",
-                  text: "Thoughtful marketing, useful technology, and practical resources that strengthen your business.",
+                  title: "Personalized Service",
+                  description:
+                    "Thoughtful guidance tailored to the individual needs and goals of every client.",
                 },
                 {
                   number: "03",
-                  title: "Shared Growth",
-                  text: "A collaborative team culture centered on integrity, service, and long-term professional growth.",
+                  title: "Lasting Relationships",
+                  description:
+                    "A commitment to integrity, communication, and service beyond the transaction.",
                 },
-              ].map((item) => (
+              ].map((value) => (
                 <article
-                  key={item.number}
-                  className="group px-0 py-9 first:pl-0 md:px-8 md:py-10 md:first:pl-0 md:last:pr-0"
+                  key={value.number}
+                  className="px-4 py-10 text-center sm:px-8"
                 >
-                  <div className="flex items-center gap-4">
-                    <span className="font-serif text-3xl text-[#b89b72]/55">
-                      {item.number}
-                    </span>
-                    <span className="h-px flex-1 bg-[#17211d]/10 transition-colors duration-300 group-hover:bg-[#b89b72]/60" />
-                  </div>
+                  <p className="font-serif text-4xl text-[#d8c3a5]">
+                    {value.number}
+                  </p>
 
-                  <h3 className="mt-7 font-serif text-2xl text-[#17211d]">
-                    {item.title}
-                  </h3>
+                  <h3 className="mt-5 font-serif text-3xl">{value.title}</h3>
 
-                  <p className="mt-4 text-sm leading-7 text-[#5b625e]">
-                    {item.text}
+                  <p className="mx-auto mt-4 max-w-sm text-sm leading-7 text-white/70">
+                    {value.description}
                   </p>
                 </article>
               ))}
@@ -211,67 +337,138 @@ export default function JoinPage() {
           </div>
         </section>
 
-        {/* Team */}
+        {/* ========================================= */}
+        {/* RECRUITMENT SECTION */}
+        {/* ========================================= */}
+
         <section
-          id="meet-the-agents"
-          className="scroll-mt-24 bg-[#f4efe7] px-6 py-16 text-[#17211d] sm:py-20 lg:px-8 lg:py-24"
+          id="grow-with-sandstone"
+          className="scroll-mt-24 bg-white px-6 py-20 sm:py-24 lg:px-8 lg:py-28"
         >
           <div className="mx-auto max-w-7xl">
-            <div className="grid gap-8 lg:grid-cols-[1fr_0.78fr] lg:items-end lg:gap-20">
-              <div className="max-w-3xl">
-                <p className="text-xs font-semibold tracking-[0.3em] text-[#9b7b56]">
-                MEET THE TEAM BEHIND SANDSTONE
-                </p>
+            <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
+              {/* Recruitment Image */}
 
-                <h2 className="mt-4 font-serif text-4xl leading-[1.03] tracking-[-0.03em] sm:text-5xl lg:text-6xl">
-                  Local expertise. Shared purpose.
-                </h2>
+              <div className="relative min-h-[380px] overflow-hidden bg-[#17211d] lg:min-h-[500px]">
+                <img
+                  src="/uploads/real_estate_el_paso.webp"
+                  alt="El Paso real estate"
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-[#102439]/85 via-transparent to-transparent" />
+
+                <div className="absolute inset-5 border border-white/35" />
+
+                <div className="absolute bottom-10 left-10 right-10">
+                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#d8c3a5]">
+                    Your Next Chapter
+                  </p>
+
+                  <p className="mt-3 font-serif text-4xl text-white">
+                    Build a career.
+                    <span className="block">Create a legacy.</span>
+                  </p>
+                </div>
               </div>
 
-              <p className="max-w-xl text-base leading-8 text-[#5b625e] lg:justify-self-end">
-                Meet the professionals who bring deep market knowledge, creative
-                thinking, and thoughtful service to every client relationship.
-              </p>
+              {/* Recruitment Content */}
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9b7b56]">
+                  Grow With Sandstone
+                </p>
+
+                <h2 className="mt-6 font-serif text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+                  Your Future Starts Here.
+                </h2>
+
+                <div className="mt-7 h-px w-20 bg-[#b89b72]" />
+
+                <p className="mt-7 text-lg leading-8 text-[#33403a]">
+                  Great agents deserve more than a place to hang their license.
+                </p>
+
+                <p className="mt-5 text-base leading-8 text-[#5b625e]">
+                  Sandstone combines local leadership, intentional branding,
+                  practical tools, and a collaborative culture designed to help
+                  you grow with confidence.
+                </p>
+
+                <a
+                  href="#join-lead"
+                  className="mt-8 inline-flex min-h-14 items-center justify-center gap-4 bg-[#102439] px-9 py-4 text-xs font-bold uppercase tracking-[0.18em] text-white transition hover:bg-[#17211d]"
+                >
+                  Join Our Team
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
             </div>
 
-            <AgentsCarousel agents={agents} />
-            <ul className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3" aria-label="Team profiles">
-              {agents.map(agent => <li key={agent.slug}><Link href={`/agents/${agent.slug}`} className="underline underline-offset-4">{agent.name}</Link></li>)}
-            </ul>
+            {/* Recruitment Benefits */}
+
+            <div className="mt-20 grid gap-6 md:grid-cols-3">
+              {benefits.map((benefit) => (
+                <article
+                  key={benefit.number}
+                  className="border border-[#17211d]/10 bg-[#f7f3ec] p-8 transition duration-300 hover:border-[#b89b72] hover:shadow-lg"
+                >
+                  <p className="font-serif text-4xl text-[#b89b72]">
+                    {benefit.number}
+                  </p>
+
+                  <div className="mt-5 h-px w-12 bg-[#b89b72]" />
+
+                  <h3 className="mt-6 font-serif text-3xl leading-tight">
+                    {benefit.title}
+                  </h3>
+
+                  <p className="mt-5 text-sm leading-7 text-[#5b625e]">
+                    {benefit.description}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Process */}
-        <section className="bg-white px-6 py-16 sm:py-20 lg:px-8 lg:py-24">
+        {/* ========================================= */}
+        {/* RECRUITMENT PROCESS */}
+        {/* ========================================= */}
+
+        <section className="border-t border-[#17211d]/10 bg-[#f7f3ec] px-6 py-20 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
-              <p className="text-xs font-semibold tracking-[0.28em] text-[#b89b72]">
-                WHAT TO EXPECT
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9b7b56]">
+                What To Expect
               </p>
-              <h2 className="mt-4 font-serif text-4xl leading-[1.05] tracking-[-0.02em] text-[#17211d] sm:text-5xl">
-                A simple path forward.
+
+              <h2 className="mt-5 font-serif text-4xl leading-tight tracking-tight sm:text-5xl">
+                A Simple Path Forward.
               </h2>
-              <p className="mx-auto mt-4 max-w-xl leading-7 text-[#5b625e]">
-                No pressure and no complicated process—just a real conversation
-                about where you want to go next.
+
+              <p className="mx-auto mt-5 max-w-xl leading-8 text-[#5b625e]">
+                No pressure and no complicated process — just a real
+                conversation about where you want to go next.
               </p>
             </div>
 
-            <div className="relative mt-10 grid gap-5 md:grid-cols-3">
-              <div className="absolute left-[16.66%] right-[16.66%] top-8 hidden border-t border-dashed border-[#9b7b56]/40 md:block" />
+            <div className="relative mt-14 grid gap-6 md:grid-cols-3">
+              <div className="absolute left-[16.66%] right-[16.66%] top-10 hidden border-t border-dashed border-[#9b7b56]/40 md:block" />
 
               {steps.map((step) => (
                 <article
                   key={step.number}
-                  className="relative min-h-[245px] rounded-sm border border-[#17211d]/10 bg-[#fbf9f5] px-7 py-7 text-center transition duration-300 hover:-translate-y-1 hover:border-[#9b7b56]/45 hover:shadow-[0_20px_50px_rgba(23,33,29,0.08)] sm:px-8"
+                  className="relative border border-[#17211d]/10 bg-white px-8 py-9 text-center transition duration-300 hover:border-[#b89b72]/60 hover:shadow-lg"
                 >
-                  <div className="relative z-10 mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#9b7b56]/45 bg-white font-serif text-xl text-[#8b7355] shadow-sm">
+                  <div className="relative z-10 mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#b89b72]/60 bg-[#f7f3ec] font-serif text-2xl text-[#9b7b56]">
                     {step.number}
                   </div>
-                  <h3 className="mt-5 font-serif text-2xl text-[#17211d]">
-                    {step.title}
-                  </h3>
-                  <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[#5b625e]">
+
+                  <h3 className="mt-7 font-serif text-3xl">{step.title}</h3>
+
+                  <p className="mx-auto mt-4 max-w-sm text-sm leading-7 text-[#5b625e]">
                     {step.description}
                   </p>
                 </article>
@@ -280,7 +477,10 @@ export default function JoinPage() {
           </div>
         </section>
 
-        {/* Application Form */}
+        {/* ========================================= */}
+        {/* EXISTING APPLICATION FORM */}
+        {/* ========================================= */}
+
         <section className="relative border-t border-[#17211d]/10 bg-[#17211d]">
           <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/10 to-transparent" />
 
