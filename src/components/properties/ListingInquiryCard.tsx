@@ -30,29 +30,49 @@ export function ListingInquiryCard({
 }: ListingInquiryCardProps) {
   const [state, formAction, isPending] = useActionState(
     submitListingInquiry,
-    initialState
+    initialState,
   );
 
   useEffect(() => {
     if (!state) return;
-    const w = window as typeof window & { gtag?: (...args: unknown[]) => void };
+
+    const w = window as typeof window & {
+      gtag?: (...args: unknown[]) => void;
+    };
+
     w.gtag?.("event", state.success ? "generate_lead" : "lead_form_error", {
       form_type: "listing_inquiry",
-      ...(state.success ? {} : { error_type: state.fieldErrors ? "validation" : "delivery" }),
+      ...(state.success
+        ? {}
+        : {
+            error_type: state.fieldErrors ? "validation" : "delivery",
+          }),
     });
   }, [state]);
 
   return (
-    <aside className="rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/70 p-5">
+    <aside
+      id="property-inquiry"
+      className="rounded-2xl border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/70 p-5 shadow-sm"
+    >
       <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
-        Contact Agent
+        Interested in This Property?
       </h2>
 
-      <form action={formAction} className="mt-4 space-y-3">
+      <p className="mt-2 text-sm leading-relaxed text-[var(--sandstone-charcoal)]/70">
+        Have questions or want to schedule a showing? Our team is here to help.
+      </p>
+
+      <form action={formAction} className="mt-5 space-y-4">
+        {/* Property information */}
         <input type="hidden" name="listingTitle" value={listingTitle} />
         <input type="hidden" name="listingRouteId" value={listingRouteId} />
         <input type="hidden" name="listingNumber" value={listingNumber ?? ""} />
-        <input type="hidden" name="listingSparkId" value={listingSparkId ?? ""} />
+        <input
+          type="hidden"
+          name="listingSparkId"
+          value={listingSparkId ?? ""}
+        />
         <input type="hidden" name="listingPath" value={listingPath} />
         <input type="hidden" name="listingPrice" value={listingPrice} />
         <input
@@ -61,78 +81,165 @@ export function ListingInquiryCard({
           value={listingAgentName ?? ""}
         />
 
+        {/* Submission messages */}
         {state?.success === true && (
-          <p className="rounded-lg bg-green-100 px-3 py-2 text-sm text-green-800">
+          <p
+            role="status"
+            className="rounded-lg bg-green-100 px-3 py-3 text-sm text-green-800"
+          >
             {state.message}
           </p>
         )}
+
         {state?.success === false && state.error && (
-          <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+          <p
+            role="alert"
+            className="rounded-lg bg-red-50 px-3 py-3 text-sm text-red-800"
+          >
             {state.error}
           </p>
         )}
 
-        <div className="space-y-1">
+        {/* Inquiry selection */}
+        <div className="space-y-2">
+          <Label htmlFor="inquiry-type">How Can We Help?</Label>
+
+          <select
+            id="inquiry-type"
+            name="inquiryType"
+            required
+            disabled={isPending}
+            defaultValue="information"
+            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-[var(--sandstone-charcoal)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
+          >
+            <option value="information">Request More Information</option>
+            <option value="tour">Schedule a Property Tour</option>
+            <option value="question">Ask a Question</option>
+          </select>
+
+          {state?.success === false && state.fieldErrors?.inquiryType && (
+            <p className="text-xs text-red-600">
+              {state.fieldErrors.inquiryType[0]}
+            </p>
+          )}
+        </div>
+
+        {/* Full name */}
+        <div className="space-y-2">
           <Label htmlFor="listing-full-name">Full Name</Label>
+
           <Input
             id="listing-full-name"
             name="fullName"
             placeholder="Jane Smith"
+            autoComplete="name"
             required
             disabled={isPending}
-            className={state?.success === false && state.fieldErrors?.fullName ? "border-red-500" : ""}
+            className={
+              state?.success === false && state.fieldErrors?.fullName
+                ? "border-red-500"
+                : ""
+            }
           />
+
           {state?.success === false && state.fieldErrors?.fullName && (
-            <p className="text-xs text-red-600">{state.fieldErrors.fullName[0]}</p>
+            <p className="text-xs text-red-600">
+              {state.fieldErrors.fullName[0]}
+            </p>
           )}
         </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="listing-email">Email</Label>
+        {/* Email */}
+        <div className="space-y-2">
+          <Label htmlFor="listing-email">Email Address</Label>
+
           <Input
             id="listing-email"
             name="email"
             type="email"
             placeholder="jane@example.com"
+            autoComplete="email"
             required
             disabled={isPending}
-            className={state?.success === false && state.fieldErrors?.email ? "border-red-500" : ""}
+            className={
+              state?.success === false && state.fieldErrors?.email
+                ? "border-red-500"
+                : ""
+            }
           />
+
           {state?.success === false && state.fieldErrors?.email && (
             <p className="text-xs text-red-600">{state.fieldErrors.email[0]}</p>
           )}
         </div>
 
-        <div className="space-y-1">
+        {/* Phone */}
+        <div className="space-y-2">
           <Label htmlFor="listing-phone">Phone Number</Label>
+
           <Input
             id="listing-phone"
             name="phone"
             type="tel"
-            placeholder="(555) 123-4567"
+            placeholder="(915) 555-0123"
+            autoComplete="tel"
             required
             disabled={isPending}
-            className={state?.success === false && state.fieldErrors?.phone ? "border-red-500" : ""}
+            className={
+              state?.success === false && state.fieldErrors?.phone
+                ? "border-red-500"
+                : ""
+            }
           />
+
           {state?.success === false && state.fieldErrors?.phone && (
             <p className="text-xs text-red-600">{state.fieldErrors.phone[0]}</p>
           )}
         </div>
 
+        {/* Optional message */}
+        <div className="space-y-2">
+          <Label htmlFor="listing-message">Your Message (Optional)</Label>
+
+          <textarea
+            id="listing-message"
+            name="message"
+            rows={4}
+            maxLength={2000}
+            disabled={isPending}
+            placeholder="Tell us what you'd like to know about this property..."
+            className="w-full resize-none rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-[var(--sandstone-charcoal)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]"
+          />
+
+          {state?.success === false && state.fieldErrors?.message && (
+            <p className="text-xs text-red-600">
+              {state.fieldErrors.message[0]}
+            </p>
+          )}
+        </div>
+
+        {/* Submit */}
         <Button
           type="submit"
-          className="mt-1 w-full rounded-lg bg-[var(--sandstone-navy)] py-2.5 text-base font-semibold text-white hover:opacity-95"
+          className="mt-2 w-full rounded-lg bg-[var(--sandstone-navy)] py-3 text-base font-semibold text-white transition hover:opacity-95"
           disabled={isPending}
         >
-          {isPending ? "Submitting..." : "REQUEST PROPERTY DETAILS"}
+          {isPending ? "Submitting..." : "CONTACT OUR TEAM"}
         </Button>
 
-        <p className="text-center text-xs text-[var(--sandstone-charcoal)]/65">
-          Listing Agent:{" "}
-          <span className="font-semibold text-[var(--sandstone-charcoal)]/80">
-            {listingAgentName || "Not available"}
-          </span>
+        <p className="text-center text-xs leading-relaxed text-[var(--sandstone-charcoal)]/65">
+          Our team will review your inquiry and follow up.
         </p>
+
+        {/* Listing agent */}
+        <div className="border-t border-[var(--sandstone-navy)]/10 pt-4">
+          <p className="text-center text-xs text-[var(--sandstone-charcoal)]/65">
+            Listing Agent:{" "}
+            <span className="font-semibold text-[var(--sandstone-charcoal)]/80">
+              {listingAgentName || "Not available"}
+            </span>
+          </p>
+        </div>
       </form>
     </aside>
   );

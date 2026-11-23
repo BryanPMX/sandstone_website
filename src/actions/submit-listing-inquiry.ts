@@ -6,9 +6,16 @@ import { leadSubmissionService } from "@/services";
 import type { SubmitLeadState } from "@/types";
 
 const ListingInquirySchema = z.object({
-  fullName: z.string().min(1, "Full name is required").max(140),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(1, "Phone is required").max(30),
+  fullName: z.string().trim().min(1, "Full name is required").max(140),
+
+  email: z.string().trim().email("Invalid email address"),
+
+  phone: z.string().trim().min(1, "Phone is required").max(30),
+
+  inquiryType: z.enum(["information", "tour", "question"]),
+
+  message: z.string().trim().max(2000).optional().default(""),
+
   listingTitle: z.string().max(220).optional().default(""),
   listingRouteId: z.string().max(120).optional().default(""),
   listingNumber: z.string().max(80).optional().default(""),
@@ -18,7 +25,16 @@ const ListingInquirySchema = z.object({
   listingAgentName: z.string().max(140).optional().default(""),
 });
 
-function splitFullName(fullName: string): { firstName: string; lastName: string } {
+const inquiryLabels = {
+  information: "Request More Information",
+  tour: "Schedule a Property Tour",
+  question: "Ask a Question",
+} as const;
+
+function splitFullName(fullName: string): {
+  firstName: string;
+  lastName: string;
+} {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
 
   if (parts.length === 0) {
@@ -37,12 +53,16 @@ function splitFullName(fullName: string): { firstName: string; lastName: string 
 
 export async function submitListingInquiry(
   _prevState: SubmitLeadState | null,
-  formData: FormData
+  formData: FormData,
 ): Promise<SubmitLeadState> {
   const parsed = ListingInquirySchema.safeParse({
     fullName: String(formData.get("fullName") ?? ""),
     email: String(formData.get("email") ?? ""),
     phone: String(formData.get("phone") ?? ""),
+
+    inquiryType: String(formData.get("inquiryType") ?? ""),
+    message: String(formData.get("message") ?? ""),
+
     listingTitle: String(formData.get("listingTitle") ?? ""),
     listingRouteId: String(formData.get("listingRouteId") ?? ""),
     listingNumber: String(formData.get("listingNumber") ?? ""),
@@ -69,35 +89,52 @@ export async function submitListingInquiry(
     };
   }
 
-  const { firstName, lastName } = splitFullName(parsed.data.fullName);
+  const data = parsed.data;
+
+  const { firstName, lastName } = splitFullName(data.fullName);
+
+  const inquiryLabel = inquiryLabels[data.inquiryType];
+
   const detailParts = [
-    parsed.data.listingTitle ? `Listing: ${parsed.data.listingTitle}` : null,
-    parsed.data.listingRouteId ? `Listing Route ID: ${parsed.data.listingRouteId}` : null,
-    parsed.data.listingNumber ? `MLS Number: ${parsed.data.listingNumber}` : null,
-    parsed.data.listingSparkId ? `Spark ID: ${parsed.data.listingSparkId}` : null,
-    parsed.data.listingPrice ? `List Price: ${parsed.data.listingPrice}` : null,
-    parsed.data.listingPath ? `Listing Path: ${parsed.data.listingPath}` : null,
-    parsed.data.listingAgentName ? `Flex MLS Agent: ${parsed.data.listingAgentName}` : null,
+    `Inquiry Type: ${inquiryLabel}`,
+
+    data.message ? `Visitor Message: ${data.message}` : null,
+
+    data.listingTitle ? `Listing: ${data.listingTitle}` : null,
+
+    data.listingRouteId ? `Listing Route ID: ${data.listingRouteId}` : null,
+
+    data.listingNumber ? `MLS Number: ${data.listingNumber}` : null,
+
+    data.listingSparkId ? `Spark ID: ${data.listingSparkId}` : null,
+
+    data.listingPrice ? `List Price: ${data.listingPrice}` : null,
+
+    data.listingPath ? `Listing Path: ${data.listingPath}` : null,
+
+    data.listingAgentName ? `Flex MLS Agent: ${data.listingAgentName}` : null,
   ].filter((item): item is string => Boolean(item));
 
-  const message = detailParts.length > 0
-    ? `Listing inquiry submitted from property detail page. ${detailParts.join(" | ")}`
-    : "Listing inquiry submitted from property detail page.";
+  const message = [
+    "Listing inquiry submitted from property detail page.",
+    ...detailParts,
+  ].join("\n");
 
   const result = await leadSubmissionService.submit(
     {
       formType: "contact",
       firstName,
       lastName,
-      email: parsed.data.email.trim(),
-      phone: parsed.data.phone.trim(),
+      email: data.email,
+      phone: data.phone,
+
       acceptTransactionalSms: false,
       acceptMarketingSms: false,
+
       message,
-      
-      listingTitle: parsed.data.listingTitle,
+      listingTitle: data.listingTitle,
     },
-    webhookUrl
+    webhookUrl,
   );
 
   if (!result.ok) {
@@ -109,6 +146,6 @@ export async function submitListingInquiry(
 
   return {
     success: true,
-    message: "Thanks. We received your inquiry and will contact you shortly.",
+    message: "Thanks! We received your inquiry and will contact you shortly.",
   };
 }

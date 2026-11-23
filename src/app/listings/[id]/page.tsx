@@ -5,7 +5,10 @@ import Script from "next/script";
 import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { ListingDetailGallery, ListingInquiryCard } from "@/components/properties";
+import {
+  ListingDetailGallery,
+  ListingInquiryCard,
+} from "@/components/properties";
 import { ListingBackLink } from "@/components/properties/ListingBackLink.client";
 import { ListingShareActions } from "@/components/properties/ListingShareActions.client";
 import { FinancingBanner } from "@/components/FinancingBanner";
@@ -32,17 +35,19 @@ interface PageProps {
 }
 
 function resolveDetailSourceHint(
-  value: string | undefined
+  value: string | undefined,
 ): "active" | "my" | undefined {
   return value === "active" || value === "my" ? value : undefined;
 }
 
-function resolveListingTypeForMap(value: string | undefined): "active" | "rental" {
+function resolveListingTypeForMap(
+  value: string | undefined,
+): "active" | "rental" {
   return value === "rental" ? "rental" : "active";
 }
 
 function resolveMapPricePreset(
-  value: string | undefined
+  value: string | undefined,
 ): PropertySearchPresetFilters["pricePreset"] | undefined {
   const allowed: Array<PropertySearchPresetFilters["pricePreset"]> = [
     "under-150",
@@ -62,7 +67,7 @@ function resolveMapPricePreset(
 }
 
 function resolveMapCountPreset(
-  value: string | undefined
+  value: string | undefined,
 ): PropertySearchPresetFilters["bedsPreset"] | undefined {
   if (value === "1" || value === "2" || value === "3" || value === "4") {
     return value;
@@ -72,7 +77,9 @@ function resolveMapCountPreset(
 }
 
 function formatFactNumber(value: number): string {
-  return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
+  return Number.isInteger(value)
+    ? String(value)
+    : value.toFixed(1).replace(/\.0$/, "");
 }
 
 function buildMapUrls(input: {
@@ -82,9 +89,11 @@ function buildMapUrls(input: {
   fallbackQuery: string;
 }): { embed: string; details: string } {
   const hasCoordinates = input.latitude != null && input.longitude != null;
+
   const query = hasCoordinates
     ? `${input.latitude},${input.longitude}`
     : input.mapAddress?.trim() || input.fallbackQuery;
+
   const encodedQuery = encodeURIComponent(query);
 
   return {
@@ -95,15 +104,16 @@ function buildMapUrls(input: {
 
 async function getSiteBaseUrl(): Promise<string> {
   const envBaseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-    process.env.SITE_URL?.trim();
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || process.env.SITE_URL?.trim();
 
   if (envBaseUrl) {
     return envBaseUrl.replace(/\/+$/, "");
   }
 
   const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host");
+  const host =
+    requestHeaders.get("x-forwarded-host") || requestHeaders.get("host");
+
   const protocol = requestHeaders.get("x-forwarded-proto") || "https";
 
   if (host) {
@@ -115,11 +125,8 @@ async function getSiteBaseUrl(): Promise<string> {
 
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params;
-  const property = await fetchPropertyDetailById(
-    id,
-    undefined,
-    undefined
-  );
+
+  const property = await fetchPropertyDetailById(id, undefined, undefined);
 
   if (!property) {
     return {
@@ -131,11 +138,16 @@ export async function generateMetadata({ params }: PageProps) {
   const stats = [
     property.beds && `${property.beds} bed`,
     property.baths && `${property.baths} bath`,
-    property.sqft && `${property.sqft} sq ft`
-  ].filter(Boolean).join(', ');
+    property.sqft && `${property.sqft} sq ft`,
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   const title = `${property.title} | ${property.price} | ${property.location}`;
-  const description = `${stats} home in ${property.location}. ${property.title}. Listed by Sandstone Real Estate Group in El Paso.`;
+
+  const description =
+    `${stats} home in ${property.location}. ` +
+    `${property.title}. Listed by Sandstone Real Estate Group in El Paso.`;
 
   return {
     title,
@@ -143,14 +155,17 @@ export async function generateMetadata({ params }: PageProps) {
     openGraph: {
       title,
       description,
-      images: property.image ? [{ url: property.image, alt: property.title }] : [],
-      type: 'website',
+      images: property.image
+        ? [{ url: property.image, alt: property.title }]
+        : [],
+      type: "website",
     },
   };
 }
 
 export async function generateStaticParams() {
   const properties = await fetchMyPropertyCards();
+
   return properties.slice(0, 100).map((p) => ({ id: p.routeId }));
 }
 
@@ -159,10 +174,11 @@ export const revalidate = 3600;
 export default async function ListingPage({ params, searchParams }: PageProps) {
   const { id } = await params;
   const query = await searchParams;
+
   const property = await fetchPropertyDetailById(
     id,
     query.sparkId?.trim() || undefined,
-    resolveDetailSourceHint(query.src)
+    resolveDetailSourceHint(query.src),
   );
 
   if (!property) {
@@ -170,25 +186,32 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
   }
 
   const uniqueImages = Array.from(
-    new Set([property.image, ...property.images].filter(Boolean))
+    new Set([property.image, ...property.images].filter(Boolean)),
   );
+
   const primaryStats = [
     property.beds != null ? `${formatFactNumber(property.beds)} Beds` : null,
     property.baths != null ? `${formatFactNumber(property.baths)} Baths` : null,
     property.sqft ? `${property.sqft} SF` : null,
   ].filter((item): item is string => Boolean(item));
+
   const interiorFeatures = property.specs.interiorFeatures.slice(0, 8);
+
   const nearbySchools = property.specs.nearbySchools.slice(0, 5);
+
   const heading = property.title.includes(property.location)
     ? property.title
     : `${property.title}, ${property.location}`;
+
   const mapUrls = buildMapUrls({
     latitude: property.specs.latitude,
     longitude: property.specs.longitude,
     mapAddress: property.specs.mapAddress,
     fallbackQuery: heading,
   });
+
   const agentName = property.specs.listingAgentName;
+
   const listingPath = (() => {
     const params = new URLSearchParams();
 
@@ -205,24 +228,31 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
 
     return queryString ? `${basePath}?${queryString}` : basePath;
   })();
-  const mapBackHref = query.from === "map"
-    ? buildListingsMapHref({
-        search: query.search?.trim() || undefined,
-        market: resolvePropertySearchMarket(query.market),
-        listingType: resolveListingTypeForMap(query.listingType),
-        filterPresets: {
-          pricePreset: resolveMapPricePreset(query.price),
-          bedsPreset: resolveMapCountPreset(query.beds),
-          bathsPreset: resolveMapCountPreset(query.baths),
-        },
-      })
-    : null;
+
+  const mapBackHref =
+    query.from === "map"
+      ? buildListingsMapHref({
+          search: query.search?.trim() || undefined,
+          market: resolvePropertySearchMarket(query.market),
+          listingType: resolveListingTypeForMap(query.listingType),
+          filterPresets: {
+            pricePreset: resolveMapPricePreset(query.price),
+            bedsPreset: resolveMapCountPreset(query.beds),
+            bathsPreset: resolveMapCountPreset(query.baths),
+          },
+        })
+      : null;
+
   const listingShareUrl = `${await getSiteBaseUrl()}${listingPath}`;
-  const facebookShareHref = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(listingShareUrl)}`;
+
+  const facebookShareHref =
+    `https://www.facebook.com/sharer/sharer.php?u=` +
+    encodeURIComponent(listingShareUrl);
+
   const emailShareHref = `mailto:?subject=${encodeURIComponent(
-    `Check out this property: ${property.title}`
+    `Check out this property: ${property.title}`,
   )}&body=${encodeURIComponent(
-    `I thought you might like this listing:\n\n${property.title}\n${listingShareUrl}`
+    `I thought you might like this listing:\n\n${property.title}\n${listingShareUrl}`,
   )}`;
 
   return (
@@ -235,53 +265,80 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "RealEstateListing",
-            "name": property.title,
-            "description": `${primaryStats.join(', ')} home in ${property.location}`,
-            "address": {
+            name: property.title,
+            description: `${primaryStats.join(", ")} home in ${property.location}`,
+            address: {
               "@type": "PostalAddress",
-              "addressLocality": "El Paso",
-              "addressRegion": "TX",
-              "addressCountry": "US"
+              addressLocality: "El Paso",
+              addressRegion: "TX",
+              addressCountry: "US",
             },
-            "geo": property.latitude && property.longitude ? {
-              "@type": "GeoCoordinates",
-              "latitude": property.latitude,
-              "longitude": property.longitude
-            } : undefined,
-            "offers": {
+            geo:
+              property.latitude && property.longitude
+                ? {
+                    "@type": "GeoCoordinates",
+                    latitude: property.latitude,
+                    longitude: property.longitude,
+                  }
+                : undefined,
+            offers: {
               "@type": "Offer",
-              "price": property.price.replace(/[^0-9.]/g, ''),
-              "priceCurrency": "USD"
+              price: property.price.replace(/[^0-9.]/g, ""),
+              priceCurrency: "USD",
             },
-            "numberOfRooms": property.beds,
-            "floorSize": property.sqft ? {
-              "@type": "QuantitativeValue",
-              "value": property.sqft
-            } : undefined,
-            "provider": {
+            numberOfRooms: property.beds,
+            floorSize: property.sqft
+              ? {
+                  "@type": "QuantitativeValue",
+                  value: property.sqft,
+                }
+              : undefined,
+            provider: {
               "@type": "RealEstateAgent",
-              "name": "Sandstone Real Estate Group",
-              "address": {
+              name: "Sandstone Real Estate Group",
+              address: {
                 "@type": "PostalAddress",
-                "addressLocality": "El Paso",
-                "addressRegion": "TX"
-              }
-            }
-          })
+                addressLocality: "El Paso",
+                addressRegion: "TX",
+              },
+            },
+          }),
         }}
       />
+
       <SiteHeader variant="lead" showDesktopCenterLogo={false} />
-      <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-20">
+
+      <main className="min-h-screen bg-[var(--sandstone-off-white)] pb-28 lg:pb-20">
         <div className="container mx-auto max-w-6xl px-4 pt-8">
           <ListingBackLink mapBackHref={mapBackHref} fallbackHref="/listings" />
 
           <nav aria-label="Breadcrumb" className="mt-4">
-            <ol className="flex items-center space-x-2 text-sm">
-              <li><Link href="/" className="text-[var(--sandstone-sand-gold)] hover:underline">Home</Link></li>
+            <ol className="flex flex-wrap items-center gap-2 text-sm">
+              <li>
+                <Link
+                  href="/"
+                  className="text-[var(--sandstone-sand-gold)] hover:underline"
+                >
+                  Home
+                </Link>
+              </li>
+
               <li className="text-[var(--sandstone-charcoal)]/50">/</li>
-              <li><Link href="/listings" className="text-[var(--sandstone-sand-gold)] hover:underline">Listings</Link></li>
+
+              <li>
+                <Link
+                  href="/listings"
+                  className="text-[var(--sandstone-sand-gold)] hover:underline"
+                >
+                  Listings
+                </Link>
+              </li>
+
               <li className="text-[var(--sandstone-charcoal)]/50">/</li>
-              <li className="text-[var(--sandstone-charcoal)]">{property.title}</li>
+
+              <li className="text-[var(--sandstone-charcoal)]">
+                {property.title}
+              </li>
             </ol>
           </nav>
 
@@ -290,18 +347,25 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
               {heading}
             </h1>
 
-            <ListingDetailGallery images={uniqueImages} title={property.title} />
+            <ListingDetailGallery
+              images={uniqueImages}
+              title={property.title}
+            />
 
             <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 md:gap-x-8">
               <p className="font-heading text-4xl font-bold text-[var(--sandstone-navy)]">
                 {property.price}
               </p>
+
               {primaryStats.map((item) => (
                 <p
                   key={item}
                   className="flex items-center gap-3 text-xl text-[var(--sandstone-charcoal)]/86"
                 >
-                  <span aria-hidden className="text-[var(--sandstone-charcoal)]/35">
+                  <span
+                    aria-hidden
+                    className="text-[var(--sandstone-charcoal)]/35"
+                  >
                     |
                   </span>
                   {item}
@@ -314,6 +378,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 listingShareUrl={listingShareUrl}
               />
             </div>
+
             <div className="mt-4 border-t border-[var(--sandstone-navy)]/20" />
 
             <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.65fr)_minmax(280px,1fr)]">
@@ -321,7 +386,9 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
                   Interior Features
                 </h2>
+
                 <div className="mt-3 border-t border-[var(--sandstone-navy)]/18" />
+
                 {interiorFeatures.length > 0 ? (
                   <ul className="mt-4 space-y-2.5 text-base text-[var(--sandstone-charcoal)]/85">
                     {interiorFeatures.map((feature) => (
@@ -343,7 +410,9 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                   <h2 className="font-heading text-2xl font-bold text-[var(--sandstone-navy)]">
                     School & Location
                   </h2>
+
                   <div className="mt-3 border-t border-[var(--sandstone-navy)]/18" />
+
                   <div className="mt-4 overflow-hidden rounded-xl border border-[var(--sandstone-navy)]/12">
                     <iframe
                       title={`Map for ${property.title}`}
@@ -353,10 +422,12 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                       className="h-44 w-full"
                     />
                   </div>
+
                   <div className="mt-4">
                     <p className="text-base font-semibold text-[var(--sandstone-navy)]">
                       Nearby Schools:
                     </p>
+
                     {nearbySchools.length > 0 ? (
                       <ul className="mt-2 space-y-1.5 text-base text-[var(--sandstone-charcoal)]/85">
                         {nearbySchools.map((school) => (
@@ -373,6 +444,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                     )}
                   </div>
                 </div>
+
                 <div className="border-t border-[var(--sandstone-navy)]/12 bg-white/70 px-5 py-3">
                   <Link
                     href={mapUrls.details}
@@ -399,9 +471,21 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
           </section>
 
           <div className="mt-6 overflow-hidden rounded-[1.5rem] shadow-[0_20px_50px_-30px_rgba(37,52,113,0.4)]">
-          <FinancingBanner rounded /></div>
+            <FinancingBanner rounded />
+          </div>
         </div>
       </main>
+
+      {/* Mobile-only sticky Contact Agent button */}
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-200 bg-white/95 px-4 py-3 shadow-lg backdrop-blur-sm lg:hidden">
+        <a
+          href="#property-inquiry"
+          className="flex w-full items-center justify-center rounded-xl bg-[var(--sandstone-navy)] px-5 py-3.5 text-base font-semibold text-white transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--sandstone-sand-gold)]"
+        >
+          Schedule a Tour / Contact Agent
+        </a>
+      </div>
+
       <SiteFooter />
     </>
   );
