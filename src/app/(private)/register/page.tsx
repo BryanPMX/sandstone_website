@@ -53,6 +53,7 @@ export default function RegisterPage() {
             src="/hero-home.webp"
             alt="Beautiful residential property"
             fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
             priority
             className="object-cover"
           />
@@ -217,7 +218,7 @@ export default function RegisterPage() {
               {/* REAL ESTATE INTEREST */}
               <div>
                 <label htmlFor="interest" className={labelClass}>
-                  I'm interested in
+                  I&apos;m interested in
                 </label>
 
                 <select
@@ -353,7 +354,7 @@ export default function RegisterPage() {
                 />
 
                 <div className="text-xs leading-relaxed text-gray-500">
-                  <label htmlFor="terms">I agree to Sandstone's</label>{" "}
+                  <label htmlFor="terms">I agree to Sandstone&apos;s</label>{" "}
                   <Link
                     href="/terms-and-conditions"
                     target="_blank"

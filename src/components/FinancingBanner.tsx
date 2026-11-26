@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ export function FinancingBanner({ rounded = false }: FinancingBannerProps) {
         className="group relative block w-full"
         aria-label="VA and PCS Financing in El Paso — Start your pre-approval"
       >
+        {/* eslint-disable-next-line @next/next/no-img-element -- Preserve existing financing banner image delivery and sizing behavior. */}
         <img
           src="/uploads/apmortgage-financing-banner.webp"
           alt="VA and PCS Financing in El Paso — Start your pre-approval"

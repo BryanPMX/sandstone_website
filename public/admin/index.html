@@ -1,134 +1,223 @@
+
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="no-referrer" />
     <title>Sandstone CMS</title>
+
     <script>
       window.CMS_MANUAL_INIT = true;
-      if (typeof crypto !== 'undefined' && !crypto.randomUUID) {
-        crypto.randomUUID = function () {
-          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (Math.random() * 16) | 0;
-            var v = c === 'x' ? r : (r & 0x3) | 0x8;
-            return v.toString(16);
-          });
-        };
-      }
     </script>
   </head>
+
   <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script
+      src="https://unpkg.com/decap-cms@3.18.0/dist/decap-cms.js"
+      integrity="sha256-/zJFJGW7bRhVe1PTNF2kx50T4OT6vHSXHnLhFSvaOE4="
+      crossorigin="anonymous"
+    ></script>
+
     <script>
-      var SeoCounterControl = createClass({
-        handleChange: function(e){
-          this.props.onChange(e.target.value);
-        },
-        render: function(){
-          var value = this.props.value || '';
-          var length = value.length;
-          var fieldName = this.props.field.get('name');
-
-          //constraints
-          var min = (fieldName === 'seoTitle') ? 40 : 120;
-          var max = (fieldName === 'seoTitle') ? 60 : 155;
-
-          var borderColor = (length<min || length > max ? '#eab308' : '#22c55e');
-
-          var hintText = length + " characters. ";
-          if(length === 0){
-            hintText += "Start typing...";
-          }else if(length<min){
-            hintText += "Under range, try typing more.";
-          }else if(length <= max){
-            hintText += "Perfect Range!";
-          }else{
-            hintText += "Over range, Google will truncate this.";
-          }
-          
-          return h('div', null,
-            h('input',{
-              type: 'text',
-              value: value,
-              onChange: this.handleChange,
-              className: this.props.classNameWrapper,
-              style:{border: '2px solid ' + borderColor }
-            }),
-            h('div', {style : {marginTop: '5px', fontSize: '12px', color: borderColor}}, hintText)
-          );
-        }
-      });
-
-      CMS.registerWidget('seo-counter', SeoCounterControl);
-
-      const cmsBaseUrl = window.location.hostname === "localhost"
-        ? window.location.origin
-        : "https://www.sandstone.homes";
-
-    
-      window.addEventListener("message", function (event) {
-        if (typeof event.data === "string" && event.data.indexOf("authorization:github:") === 0) {
-          console.log("[Decap OAuth] message received", {
-            origin: event.origin,
-            dataPrefix: event.data.split(":").slice(0, 3).join(":"),
-          });
-        }
-      });
-
-      // Initialize the CMS
-      CMS.init({
-        config: {
-          backend: {
-            name: "github",
-            repo: "BryanPMX/sandstone_website",
-            branch: "main",
-            base_url: cmsBaseUrl,
-            auth_endpoint: "/api/decap/auth",
+      if (
+        !window.isSecureContext ||
+        typeof window.crypto?.randomUUID !== "function"
+      ) {
+        document.body.textContent =
+          "The Sandstone CMS requires a secure connection and a supported browser.";
+      } else if (
+        typeof CMS === "undefined" ||
+        typeof createClass === "undefined" ||
+        typeof h === "undefined"
+      ) {
+        document.body.textContent =
+          "Unable to load the Sandstone CMS. Please refresh the page or contact the administrator.";
+      } else if (
+        window.location.origin !== "https://www.sandstone.homes" &&
+        window.location.origin !== "http://localhost:3000"
+      ) {
+        document.body.textContent =
+          "The Sandstone CMS is not available on this domain.";
+      } else {
+        var SeoCounterControl = createClass({
+          handleChange: function (e) {
+            this.props.onChange(e.target.value);
           },
-          publish_mode: "editorial_workflow",
-          media_folder: "public/uploads",
-          public_folder: "/uploads",
-          collections: [
-            {
-              name: "blog",
-              label: "Blog",
-              folder: "content/blog",
-              create: true,
-              slug: "{{slug}}",
-              extension: "md",
-              format: "frontmatter",
-              fields: [
-                { label: "Title", name: "title", widget: "string" },
-                { label: "Card Title", name: "cardTitle", widget: "string", required: false, hint: "Optional short title for article cards. The full title remains on the article." },
-                { label: "Date", name: "date", widget: "datetime" },
-                { label: "Excerpt", name: "excerpt", widget: "text" },
-                { label: "SEO Title", name: "seoTitle", widget: "seo-counter"},
-                { label: "Meta Description", name: "metaDescription", widget: "seo-counter"},
-                { label: "Cover Image", name: "coverImage", widget: "image" },
-                { label: "Image Alt Text", name: "coverImageAlt", widget: "string", hint: "Describe the image for screen readers and SEO. "},
-                { label: "Keywords", name: "keywords", widget: "list"},
-                {
-                  label: "Topic",
-                  name: "area",
-                  widget: "select",
-                  hint: "Choose the topic that best describes this article.",
-                  options: [
-                    { label: "Military PCS", value: "military-pcs" },
-                    { label: "VA Loans", value: "va-loans" },
-                    { label: "Buying a Home", value: "buying-a-home" },
-                    { label: "Homeownership Costs", value: "homeownership-costs" },
-                    { label: "Selling a Home", value: "selling-a-home" },
-                    { label: "El Paso Neighborhoods", value: "el-paso-neighborhoods" },
-                    { label: "Things to Do in El Paso", value: "things-to-do-in-el-paso" },
-                  ],
+
+          render: function () {
+            var value = this.props.value || "";
+            var length = value.length;
+            var fieldName = this.props.field.get("name");
+
+            var min = fieldName === "seoTitle" ? 40 : 120;
+            var max = fieldName === "seoTitle" ? 60 : 155;
+
+            var borderColor =
+              length < min || length > max ? "#eab308" : "#22c55e";
+
+            var hintText = length + " characters. ";
+
+            if (length === 0) {
+              hintText += "Start typing...";
+            } else if (length < min) {
+              hintText += "Under range, try typing more.";
+            } else if (length <= max) {
+              hintText += "Perfect Range!";
+            } else {
+              hintText += "Over range, Google will truncate this.";
+            }
+
+            return h(
+              "div",
+              null,
+              h("input", {
+                type: "text",
+                value: value,
+                onChange: this.handleChange,
+                className: this.props.classNameWrapper,
+                style: {
+                  border: "2px solid " + borderColor,
                 },
-                { label: "Body", name: "body", widget: "markdown" },
-               
-              ],
+              }),
+              h(
+                "div",
+                {
+                  style: {
+                    marginTop: "5px",
+                    fontSize: "12px",
+                    color: borderColor,
+                  },
+                },
+                hintText,
+              ),
+            );
+          },
+        });
+
+        CMS.registerWidget("seo-counter", SeoCounterControl);
+
+        CMS.init({
+          config: {
+            backend: {
+              name: "github",
+              repo: "BryanPMX/sandstone_website",
+              branch: "main",
+              base_url: window.location.origin,
+              auth_endpoint: "/api/decap/auth",
             },
-          ],
-        },
-      });
+
+            publish_mode: "editorial_workflow",
+            media_folder: "public/uploads",
+            public_folder: "/uploads",
+
+            collections: [
+              {
+                name: "blog",
+                label: "Blog",
+                folder: "content/blog",
+                create: true,
+                slug: "{{slug}}",
+                extension: "md",
+                format: "frontmatter",
+
+                fields: [
+                  {
+                    label: "Title",
+                    name: "title",
+                    widget: "string",
+                  },
+                  {
+                    label: "Card Title",
+                    name: "cardTitle",
+                    widget: "string",
+                    required: false,
+                    hint: "Optional short title for article cards. The full title remains on the article.",
+                  },
+                  {
+                    label: "Date",
+                    name: "date",
+                    widget: "datetime",
+                  },
+                  {
+                    label: "Excerpt",
+                    name: "excerpt",
+                    widget: "text",
+                  },
+                  {
+                    label: "SEO Title",
+                    name: "seoTitle",
+                    widget: "seo-counter",
+                  },
+                  {
+                    label: "Meta Description",
+                    name: "metaDescription",
+                    widget: "seo-counter",
+                  },
+                  {
+                    label: "Cover Image",
+                    name: "coverImage",
+                    widget: "image",
+                  },
+                  {
+                    label: "Image Alt Text",
+                    name: "coverImageAlt",
+                    widget: "string",
+                    hint: "Describe the image for screen readers and SEO. ",
+                  },
+                  {
+                    label: "Keywords",
+                    name: "keywords",
+                    widget: "list",
+                  },
+                  {
+                    label: "Topic",
+                    name: "area",
+                    widget: "select",
+                    hint: "Choose the topic that best describes this article.",
+                    options: [
+                      {
+                        label: "Military PCS",
+                        value: "military-pcs",
+                      },
+                      {
+                        label: "VA Loans",
+                        value: "va-loans",
+                      },
+                      {
+                        label: "Buying a Home",
+                        value: "buying-a-home",
+                      },
+                      {
+                        label: "Homeownership Costs",
+                        value: "homeownership-costs",
+                      },
+                      {
+                        label: "Selling a Home",
+                        value: "selling-a-home",
+                      },
+                      {
+                        label: "El Paso Neighborhoods",
+                        value: "el-paso-neighborhoods",
+                      },
+                      {
+                        label: "Things to Do in El Paso",
+                        value: "things-to-do-in-el-paso",
+                      },
+                    ],
+                  },
+                  {
+                    label: "Body",
+                    name: "body",
+                    widget: "markdown",
+                  },
+                ],
+              },
+            ],
+          },
+        });
+      }
     </script>
   </body>
 </html>

@@ -15,7 +15,8 @@ export default async function BlogSection() {
             Real estate insights for your next move
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-base text-white/75">
-            Discover the latest stories, market trends, and expert advice from our team.
+            Discover the latest stories, market trends, and expert advice from
+            our team.
           </p>
         </div>
 
@@ -32,6 +33,7 @@ export default async function BlogSection() {
               >
                 {post.imageUrl ? (
                   <div className="relative h-52 overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- Preserve existing blog image delivery and lazy-loading behavior. */}
                     <img
                       src={post.imageUrl}
                       alt={post.title}

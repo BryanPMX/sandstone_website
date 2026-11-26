@@ -21,47 +21,74 @@ type ListingType = "active" | "rental";
 
 export function ZipListings({ zip }: { zip: string }) {
   const [allListings, setAllListings] = useState<PropertyCard[]>([]);
-  const [loading, setLoading]         = useState(true);
+  const [loading, setLoading] = useState(true);
   const [listingType, setListingType] = useState<ListingType>("active");
-  const [price, setPrice]             = useState<PropertySearchPricePreset>("any");
-  const [beds,  setBeds]              = useState<PropertySearchCountPreset>("any");
-  const [baths, setBaths]             = useState<PropertySearchCountPreset>("any");
-  const [page,  setPage]              = useState(1);
+  const [price, setPrice] = useState<PropertySearchPricePreset>("any");
+  const [beds, setBeds] = useState<PropertySearchCountPreset>("any");
+  const [baths, setBaths] = useState<PropertySearchCountPreset>("any");
+  const [page, setPage] = useState(1);
+
+  const [previousZip, setPreviousZip] = useState(zip);
+
+  if (previousZip !== zip) {
+    setPreviousZip(zip);
+    setLoading(true);
+    setAllListings([]);
+  }
 
   useEffect(() => {
-    setLoading(true);
+    let active = true;
     fetch(`/api/listings/zip?zip=${zip}`)
-      .then(r => r.json())
+      .then((r) => r.json())
       .then((data) => {
+        if (!active) return;
         if (Array.isArray(data)) {
           setAllListings(data);
         } else {
           setAllListings([]);
         }
       })
-      .catch(() => setAllListings([]))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        if (active) setAllListings([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [zip]);
 
-  const priceOptions = useMemo(() => getPropertySearchPriceOptions(listingType), [listingType]);
+  const priceOptions = useMemo(
+    () => getPropertySearchPriceOptions(listingType),
+    [listingType],
+  );
 
   const filtered = useMemo(() => {
-    const { minPrice, maxPrice, minBeds, minBaths } = resolvePresetFiltersToNumeric({
-      pricePreset: price,
-      bedsPreset:  beds,
-      bathsPreset: baths,
-    });
+    const { minPrice, maxPrice, minBeds, minBaths } =
+      resolvePresetFiltersToNumeric({
+        pricePreset: price,
+        bedsPreset: beds,
+        bathsPreset: baths,
+      });
     return filterPropertyCardsWithFilters(allListings, {
-      minPrice, maxPrice, minBeds, minBaths,
+      minPrice,
+      maxPrice,
+      minBeds,
+      minBaths,
       listingType,
     });
   }, [allListings, price, beds, baths, listingType]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const safePage   = Math.min(page, totalPages);
-  const visible    = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
-  const startIdx   = filtered.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
-  const endIdx     = Math.min(safePage * PAGE_SIZE, filtered.length);
+  const safePage = Math.min(page, totalPages);
+  const visible = filtered.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
+  const startIdx = filtered.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
+  const endIdx = Math.min(safePage * PAGE_SIZE, filtered.length);
 
   function handleFilterChange<T>(setter: (v: T) => void, value: T) {
     setter(value);
@@ -94,12 +121,34 @@ export function ZipListings({ zip }: { zip: string }) {
           ))}
         </div>
         <div className="relative">
-          <select value={price} onChange={e => handleFilterChange(setPrice, e.target.value as PropertySearchPricePreset)} className={SELECT_CLS}>
-            {priceOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+          <select
+            value={price}
+            onChange={(e) =>
+              handleFilterChange(
+                setPrice,
+                e.target.value as PropertySearchPricePreset,
+              )
+            }
+            className={SELECT_CLS}
+          >
+            {priceOptions.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
           </select>
         </div>
         <div className="relative">
-          <select value={beds} onChange={e => handleFilterChange(setBeds, e.target.value as PropertySearchCountPreset)} className={SELECT_CLS}>
+          <select
+            value={beds}
+            onChange={(e) =>
+              handleFilterChange(
+                setBeds,
+                e.target.value as PropertySearchCountPreset,
+              )
+            }
+            className={SELECT_CLS}
+          >
             <option value="any">Beds</option>
             <option value="1">1+ Beds</option>
             <option value="2">2+ Beds</option>
@@ -108,7 +157,16 @@ export function ZipListings({ zip }: { zip: string }) {
           </select>
         </div>
         <div className="relative">
-          <select value={baths} onChange={e => handleFilterChange(setBaths, e.target.value as PropertySearchCountPreset)} className={SELECT_CLS}>
+          <select
+            value={baths}
+            onChange={(e) =>
+              handleFilterChange(
+                setBaths,
+                e.target.value as PropertySearchCountPreset,
+              )
+            }
+            className={SELECT_CLS}
+          >
             <option value="any">Baths</option>
             <option value="1">1+ Baths</option>
             <option value="2">2+ Baths</option>
@@ -142,13 +200,20 @@ export function ZipListings({ zip }: { zip: string }) {
           {loading ? (
             <div className="grid grid-cols-2 gap-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="animate-pulse rounded-2xl bg-[var(--sandstone-navy)]/6 aspect-[3/4]" />
+                <div
+                  key={i}
+                  className="animate-pulse rounded-2xl bg-[var(--sandstone-navy)]/6 aspect-[3/4]"
+                />
               ))}
             </div>
           ) : visible.length > 0 ? (
             <div className="grid grid-cols-2 gap-4">
               {visible.map((listing, i) => (
-                <ListingCard key={listing.id} property={listing} priority={i < 4} />
+                <ListingCard
+                  key={listing.id}
+                  property={listing}
+                  priority={i < 4}
+                />
               ))}
             </div>
           ) : (
@@ -157,7 +222,13 @@ export function ZipListings({ zip }: { zip: string }) {
                 No listings match your filters
               </p>
               <button
-                onClick={() => { setPrice("any"); setBeds("any"); setBaths("any"); setListingType("active"); setPage(1); }}
+                onClick={() => {
+                  setPrice("any");
+                  setBeds("any");
+                  setBaths("any");
+                  setListingType("active");
+                  setPage(1);
+                }}
                 className="mt-3 text-sm font-semibold text-[var(--sandstone-sand-gold)] underline underline-offset-2"
               >
                 Clear filters
@@ -168,7 +239,7 @@ export function ZipListings({ zip }: { zip: string }) {
           {!loading && totalPages > 1 && (
             <div className="mt-5 flex items-center justify-center gap-2">
               <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={safePage <= 1}
                 className="rounded-full border border-[var(--sandstone-navy)]/15 px-4 py-2 text-sm font-semibold text-[var(--sandstone-charcoal)] hover:border-[var(--sandstone-sand-gold)]/50 disabled:opacity-30"
               >
@@ -176,15 +247,24 @@ export function ZipListings({ zip }: { zip: string }) {
               </button>
 
               {Array.from({ length: totalPages }, (_, k) => k + 1)
-                .filter(n => n === 1 || n === totalPages || Math.abs(n - safePage) <= 1)
+                .filter(
+                  (n) =>
+                    n === 1 || n === totalPages || Math.abs(n - safePage) <= 1,
+                )
                 .reduce<(number | "…")[]>((acc, n, idx, arr) => {
-                  if (idx > 0 && n - (arr[idx - 1] as number) > 1) acc.push("…");
+                  if (idx > 0 && n - (arr[idx - 1] as number) > 1)
+                    acc.push("…");
                   acc.push(n);
                   return acc;
                 }, [])
                 .map((item, idx) =>
                   item === "…" ? (
-                    <span key={`ellipsis-${idx}`} className="px-1 text-sm text-[var(--sandstone-charcoal)]/40">…</span>
+                    <span
+                      key={`ellipsis-${idx}`}
+                      className="px-1 text-sm text-[var(--sandstone-charcoal)]/40"
+                    >
+                      …
+                    </span>
                   ) : (
                     <button
                       key={item}
@@ -197,11 +277,11 @@ export function ZipListings({ zip }: { zip: string }) {
                     >
                       {item}
                     </button>
-                  )
+                  ),
                 )}
 
               <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={safePage >= totalPages}
                 className="rounded-full border border-[var(--sandstone-navy)]/15 px-4 py-2 text-sm font-semibold text-[var(--sandstone-charcoal)] hover:border-[var(--sandstone-sand-gold)]/50 disabled:opacity-30"
               >

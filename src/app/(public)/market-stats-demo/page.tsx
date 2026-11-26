@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 export const dynamic = "force-dynamic";
 
 const TOKEN = process.env.SPARK_ACCESS_TOKEN ?? "";
@@ -158,6 +160,10 @@ function AreaCard({ area }: { area: any }) {
 }
 
 export default async function MarketStatsDemoPage() {
+  if (process.env.NODE_ENV !== "development") {
+    notFound();
+  }
+
   const { city, areas } = await getAllStats();
 
   const latestDate = city.price?.Dates?.[0] ? fmtMonth(city.price.Dates[0]).replace("/", " 20") : "—";

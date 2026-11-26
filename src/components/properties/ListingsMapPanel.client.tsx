@@ -57,9 +57,10 @@ function sanitizeExternalImageUrl(url: string): string | null {
   }
 
   try {
-    const baseOrigin = typeof window !== "undefined"
-      ? window.location.origin
-      : "https://sandstone.local";
+    const baseOrigin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "https://sandstone.local";
     const parsed = new URL(trimmed, baseOrigin);
 
     if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
@@ -73,7 +74,9 @@ function sanitizeExternalImageUrl(url: string): string | null {
 }
 
 function createPriceMarkerIcon(price: string): DivIcon {
-  const text = escapeHtml(price.length > 14 ? `${price.slice(0, 13)}...` : price);
+  const text = escapeHtml(
+    price.length > 14 ? `${price.slice(0, 13)}...` : price,
+  );
   const width = Math.max(78, text.length * 8 + 22);
 
   const markerHtml = [
@@ -113,7 +116,9 @@ interface MapViewportControllerProps {
   }) => void;
 }
 
-function MapViewportController({ onViewportChange }: MapViewportControllerProps) {
+function MapViewportController({
+  onViewportChange,
+}: MapViewportControllerProps) {
   const map = useMap();
   const hasInitializedViewRef = useRef(false);
 
@@ -162,10 +167,13 @@ function SafeTileLayer() {
         return;
       }
 
-      tileLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      });
+      tileLayer = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        },
+      );
 
       tileLayer.addTo(map);
     };
@@ -189,7 +197,10 @@ interface ClusteredMarkersProps {
   mapContextQuery?: Record<string, string | undefined>;
 }
 
-function ClusteredMarkers({ mappableProperties, mapContextQuery }: ClusteredMarkersProps) {
+function ClusteredMarkers({
+  mappableProperties,
+  mapContextQuery,
+}: ClusteredMarkersProps) {
   const map = useMap();
   const { items, getClusterExpansionZoom } = useSuperclusterMarkers({
     map,
@@ -212,7 +223,17 @@ function ClusteredMarkers({ mappableProperties, mapContextQuery }: ClusteredMark
     return iconByPrice;
   }, [mappableProperties]);
 
-  const clusterIconByCount = useMemo(() => new Map<number, DivIcon>(), []);
+  const clusterIconByCount = useMemo(() => {
+    const icons = new Map<number, DivIcon>();
+
+    for (const item of items) {
+      if (item.type === "cluster" && !icons.has(item.pointCount)) {
+        icons.set(item.pointCount, createClusterIcon(item.pointCount));
+      }
+    }
+
+    return icons;
+  }, [items]);
 
   return (
     <>
@@ -220,12 +241,8 @@ function ClusteredMarkers({ mappableProperties, mapContextQuery }: ClusteredMark
         if (item.type === "cluster") {
           const count = item.pointCount;
           const clusterId = item.id;
-          let icon = clusterIconByCount.get(count);
-
-          if (!icon) {
-            icon = createClusterIcon(count);
-            clusterIconByCount.set(count, icon);
-          }
+          const icon =
+            clusterIconByCount.get(count) ?? createClusterIcon(count);
 
           return (
             <Marker
@@ -235,9 +252,13 @@ function ClusteredMarkers({ mappableProperties, mapContextQuery }: ClusteredMark
               eventHandlers={{
                 click: () => {
                   const expansionZoom = getClusterExpansionZoom(clusterId);
-                  map.setView([item.latitude, item.longitude], Math.min(expansionZoom, 17), {
-                    animate: true,
-                  });
+                  map.setView(
+                    [item.latitude, item.longitude],
+                    Math.min(expansionZoom, 17),
+                    {
+                      animate: true,
+                    },
+                  );
                 },
               }}
             />
@@ -252,7 +273,10 @@ function ClusteredMarkers({ mappableProperties, mapContextQuery }: ClusteredMark
         }
 
         const detailUrl = (() => {
-          const baseUrl = new URL(buildDetailHref(property), "https://sandstone.local");
+          const baseUrl = new URL(
+            buildDetailHref(property),
+            "https://sandstone.local",
+          );
 
           if (mapContextQuery) {
             Object.entries(mapContextQuery).forEach(([key, value]) => {
@@ -283,9 +307,15 @@ function ClusteredMarkers({ mappableProperties, mapContextQuery }: ClusteredMark
                     loading="lazy"
                   />
                 ) : null}
-                <p className="text-sm font-semibold text-[var(--sandstone-sand-gold)]">{property.price}</p>
-                <p className="line-clamp-2 text-sm font-semibold text-[var(--sandstone-charcoal)]">{property.title}</p>
-                <p className="line-clamp-1 text-xs text-[var(--sandstone-charcoal)]/75">{property.location}</p>
+                <p className="text-sm font-semibold text-[var(--sandstone-sand-gold)]">
+                  {property.price}
+                </p>
+                <p className="line-clamp-2 text-sm font-semibold text-[var(--sandstone-charcoal)]">
+                  {property.title}
+                </p>
+                <p className="line-clamp-1 text-xs text-[var(--sandstone-charcoal)]/75">
+                  {property.location}
+                </p>
                 <Link
                   href={detailUrl}
                   className="text-sm font-semibold text-[var(--sandstone-sand-gold)] underline"
@@ -326,9 +356,10 @@ export function ListingsMapPanelClient({
     () =>
       properties.filter(
         (property): property is MappableProperty =>
-          Number.isFinite(property.latitude) && Number.isFinite(property.longitude)
+          Number.isFinite(property.latitude) &&
+          Number.isFinite(property.longitude),
       ),
-    [properties]
+    [properties],
   );
 
   return (

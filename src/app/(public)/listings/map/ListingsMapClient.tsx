@@ -48,9 +48,9 @@ const DEFAULT_VIEWPORT: MapViewport = {
   zoom: DEFAULT_MAP_ZOOM,
 };
 
-function dedupeProperties<T extends { id: string; routeId: string; sparkId?: string }>(
-  properties: T[]
-): T[] {
+function dedupeProperties<
+  T extends { id: string; routeId: string; sparkId?: string },
+>(properties: T[]): T[] {
   const seen = new Set<string>();
 
   return properties.filter((property) => {
@@ -73,11 +73,18 @@ class ListingsRequestError extends Error {
 
 async function fetchLatestMapProperties(
   listingType: ListingType,
-  signal: AbortSignal
-): Promise<{ properties: PropertyCard[]; partial: boolean; retryAfterMs: number }> {
-  const response = await fetch(`/api/listings/map?listingType=${listingType}`, { signal });
+  signal: AbortSignal,
+): Promise<{
+  properties: PropertyCard[];
+  partial: boolean;
+  retryAfterMs: number;
+}> {
+  const response = await fetch(`/api/listings/map?listingType=${listingType}`, {
+    signal,
+  });
   const seconds = Number(response.headers.get("Retry-After"));
-  const retryAfterMs = Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 60_000;
+  const retryAfterMs =
+    Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 60_000;
   if (!response.ok) throw new ListingsRequestError(retryAfterMs);
   const payload: unknown = await response.json();
   if (!Array.isArray(payload)) throw new ListingsRequestError(retryAfterMs);
@@ -120,7 +127,7 @@ function resolveListingTypeParam(value: string | null): ListingType {
 }
 
 function resolvePricePresetParam(
-  value: string | null
+  value: string | null,
 ): PropertySearchPresetFilters["pricePreset"] {
   if (
     value === "under-150" ||
@@ -139,7 +146,9 @@ function resolvePricePresetParam(
   return "any";
 }
 
-function isRentalPricePreset(value: PropertySearchPresetFilters["pricePreset"]): boolean {
+function isRentalPricePreset(
+  value: PropertySearchPresetFilters["pricePreset"],
+): boolean {
   return (
     value === "rent-under-1000" ||
     value === "rent-1000-2500" ||
@@ -150,7 +159,7 @@ function isRentalPricePreset(value: PropertySearchPresetFilters["pricePreset"]):
 
 function normalizePricePresetForListingType(
   listingType: ListingType,
-  pricePreset: PropertySearchPresetFilters["pricePreset"]
+  pricePreset: PropertySearchPresetFilters["pricePreset"],
 ): PropertySearchPresetFilters["pricePreset"] {
   if (listingType === "rental") {
     return isRentalPricePreset(pricePreset) || pricePreset === "any"
@@ -162,7 +171,7 @@ function normalizePricePresetForListingType(
 }
 
 function resolveCountPresetParam(
-  value: string | null
+  value: string | null,
 ): PropertySearchPresetFilters["bedsPreset"] {
   if (value === "1" || value === "2" || value === "3" || value === "4") {
     return value;
@@ -181,7 +190,11 @@ function parseOptionalNumber(value: string | null): number | undefined {
 }
 
 function resolveInitialZoomFromRadius(radiusMiles?: number): number {
-  if (typeof radiusMiles !== "number" || !Number.isFinite(radiusMiles) || radiusMiles <= 0) {
+  if (
+    typeof radiusMiles !== "number" ||
+    !Number.isFinite(radiusMiles) ||
+    radiusMiles <= 0
+  ) {
     return SINGLE_MARKER_ZOOM;
   }
 
@@ -225,7 +238,10 @@ function extractZipTokens(value: string): string[] {
   return matches ?? [];
 }
 
-function matchesAddressOrZip(property: PropertyCard, searchQuery: string): boolean {
+function matchesAddressOrZip(
+  property: PropertyCard,
+  searchQuery: string,
+): boolean {
   const normalizedQuery = normalizeMapSearchQuery(searchQuery).toLowerCase();
 
   if (!normalizedQuery) {
@@ -233,7 +249,10 @@ function matchesAddressOrZip(property: PropertyCard, searchQuery: string): boole
   }
 
   const searchableAddress = [property.location, property.mapAddress]
-    .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+    .filter(
+      (value): value is string =>
+        typeof value === "string" && value.trim().length > 0,
+    )
     .join(" ")
     .toLowerCase();
 
@@ -249,7 +268,10 @@ function matchesAddressOrZip(property: PropertyCard, searchQuery: string): boole
   return zipTokens.some((zip) => zip.toLowerCase().includes(normalizedQuery));
 }
 
-function isWithinViewportBounds(property: PropertyCard, viewport: MapViewport): boolean {
+function isWithinViewportBounds(
+  property: PropertyCard,
+  viewport: MapViewport,
+): boolean {
   if (
     typeof property.latitude !== "number" ||
     !Number.isFinite(property.latitude) ||
@@ -281,15 +303,28 @@ export function ListingsMapClient() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchParamsString = searchParams?.toString() ?? "";
-  const [inventory, setInventory] = useState<Partial<Record<ListingType, PropertyCard[]>>>({});
+  const [inventory, setInventory] = useState<
+    Partial<Record<ListingType, PropertyCard[]>>
+  >({});
   const [loadError, setLoadError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
-  const searchQuery = normalizeMapSearchQuery(searchParams?.get("search") ?? "");
+  const searchQuery = normalizeMapSearchQuery(
+    searchParams?.get("search") ?? "",
+  );
   const [searchInput, setSearchInput] = useState(searchQuery);
-  const initialCenterLat = parseOptionalNumber(searchParams?.get("lat") ?? null);
-  const initialCenterLng = parseOptionalNumber(searchParams?.get("lng") ?? null);
-  const initialRadiusMiles = parseOptionalNumber(searchParams?.get("radiusMiles") ?? null);
-  const market = resolvePropertySearchMarket(searchParams?.get("market") ?? null);
+  const [previousSearchQuery, setPreviousSearchQuery] = useState(searchQuery);
+  const initialCenterLat = parseOptionalNumber(
+    searchParams?.get("lat") ?? null,
+  );
+  const initialCenterLng = parseOptionalNumber(
+    searchParams?.get("lng") ?? null,
+  );
+  const initialRadiusMiles = parseOptionalNumber(
+    searchParams?.get("radiusMiles") ?? null,
+  );
+  const market = resolvePropertySearchMarket(
+    searchParams?.get("market") ?? null,
+  );
   const initialMapCenter =
     typeof initialCenterLat === "number" && typeof initialCenterLng === "number"
       ? ([initialCenterLat, initialCenterLng] as [number, number])
@@ -298,13 +333,19 @@ export function ListingsMapClient() {
     ? resolveInitialZoomFromRadius(initialRadiusMiles)
     : DEFAULT_MAP_ZOOM;
 
-  const initialListingType = resolveListingTypeParam(searchParams?.get("listingType") ?? null);
+  const initialListingType = resolveListingTypeParam(
+    searchParams?.get("listingType") ?? null,
+  );
   const initialPricePreset = normalizePricePresetForListingType(
     initialListingType,
-    resolvePricePresetParam(searchParams?.get("price") ?? null)
+    resolvePricePresetParam(searchParams?.get("price") ?? null),
   );
-  const initialBedsPreset = resolveCountPresetParam(searchParams?.get("beds") ?? null);
-  const initialBathsPreset = resolveCountPresetParam(searchParams?.get("baths") ?? null);
+  const initialBedsPreset = resolveCountPresetParam(
+    searchParams?.get("beds") ?? null,
+  );
+  const initialBathsPreset = resolveCountPresetParam(
+    searchParams?.get("baths") ?? null,
+  );
 
   const [filters, setFilters] = useState<{
     listingType: ListingType;
@@ -318,24 +359,32 @@ export function ListingsMapClient() {
     bathsPreset: initialBathsPreset,
   });
   const [viewport, setViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
-  const [debouncedViewport, setDebouncedViewport] = useState<MapViewport>(DEFAULT_VIEWPORT);
+  const [debouncedViewport, setDebouncedViewport] =
+    useState<MapViewport>(DEFAULT_VIEWPORT);
   const [isMapRefreshing, setIsMapRefreshing] = useState(false);
-  const liveProperties = useMemo(() => inventory[filters.listingType] ?? [], [inventory, filters.listingType]);
+  const liveProperties = useMemo(
+    () => inventory[filters.listingType] ?? [],
+    [inventory, filters.listingType],
+  );
   const isLoadingListings = inventory[filters.listingType] == null;
 
   useEffect(() => {
     try {
       const currentPath = pathname ?? "/";
-      const href = searchParamsString ? `${currentPath}?${searchParamsString}` : currentPath;
+      const href = searchParamsString
+        ? `${currentPath}?${searchParamsString}`
+        : currentPath;
       window.sessionStorage.setItem("sandstone:last-map-href", href);
     } catch {
       // Ignore storage failures in constrained browsing modes.
     }
   }, [pathname, searchParamsString]);
 
-  useEffect(() => {
+  // Reset the draft only when the committed URL search changes.
+  if (previousSearchQuery !== searchQuery) {
+    setPreviousSearchQuery(searchQuery);
     setSearchInput(searchQuery);
-  }, [searchQuery]);
+  }
 
   const handleMarketChange = (nextMarket: PropertySearchMarket) => {
     if (nextMarket === market) {
@@ -352,7 +401,10 @@ export function ListingsMapClient() {
     }
 
     const nextQueryString = nextParams.toString();
-    router.replace(nextQueryString ? `${currentPath}?${nextQueryString}` : currentPath, { scroll: false });
+    router.replace(
+      nextQueryString ? `${currentPath}?${nextQueryString}` : currentPath,
+      { scroll: false },
+    );
   };
 
   useEffect(() => {
@@ -374,29 +426,45 @@ export function ListingsMapClient() {
     const listingType = filters.listingType;
 
     const refreshOnce = async () => {
-      if (refreshing || controller.signal.aborted || document.visibilityState === "hidden") return;
+      if (
+        refreshing ||
+        controller.signal.aborted ||
+        document.visibilityState === "hidden"
+      )
+        return;
       window.clearTimeout(retryTimer);
       refreshing = true;
       lastAttemptAt = Date.now();
       setIsMapRefreshing(true);
       let delayMs = MAP_REFRESH_INTERVAL_MS;
       try {
-        const latest = await fetchLatestMapProperties(listingType, controller.signal);
+        const latest = await fetchLatestMapProperties(
+          listingType,
+          controller.signal,
+        );
         if (!controller.signal.aborted) {
           // Preserve a complete inventory when only one upstream feed recovers.
           setInventory((current) => {
             if (latest.partial && current[listingType] != null) return current;
-            return JSON.stringify(current[listingType]) === JSON.stringify(latest.properties)
-              ? current : { ...current, [listingType]: latest.properties };
+            return JSON.stringify(current[listingType]) ===
+              JSON.stringify(latest.properties)
+              ? current
+              : { ...current, [listingType]: latest.properties };
           });
-          setLoadError(latest.partial
-            ? "Some listings are temporarily unavailable. Showing saved listings and retrying automatically."
-            : null);
+          setLoadError(
+            latest.partial
+              ? "Some listings are temporarily unavailable. Showing saved listings and retrying automatically."
+              : null,
+          );
           if (latest.partial) delayMs = latest.retryAfterMs;
         }
       } catch (error) {
-        delayMs = error instanceof ListingsRequestError ? error.retryAfterMs : 60_000;
-        if (!controller.signal.aborted) setLoadError("Listings could not be updated. Saved listings will stay visible. Retrying automatically.");
+        delayMs =
+          error instanceof ListingsRequestError ? error.retryAfterMs : 60_000;
+        if (!controller.signal.aborted)
+          setLoadError(
+            "Listings could not be updated. Saved listings will stay visible. Retrying automatically.",
+          );
       } finally {
         refreshing = false;
         if (!controller.signal.aborted) {
@@ -410,8 +478,11 @@ export function ListingsMapClient() {
     void refreshOnce();
     const handleVisibilityChange = () => {
       // Returning to a tab must not bypass an active upstream cooldown.
-      if (document.visibilityState === "visible" &&
-          Date.now() >= nextAttemptAt && Date.now() - lastAttemptAt >= 60_000) {
+      if (
+        document.visibilityState === "visible" &&
+        Date.now() >= nextAttemptAt &&
+        Date.now() - lastAttemptAt >= 60_000
+      ) {
         void refreshOnce();
       }
     };
@@ -425,7 +496,7 @@ export function ListingsMapClient() {
 
   const elPasoOnlyProperties = useMemo(
     () => liveProperties.filter((property) => isElPasoListing(property)),
-    [liveProperties]
+    [liveProperties],
   );
 
   const filteredProperties = useMemo(() => {
@@ -435,27 +506,34 @@ export function ListingsMapClient() {
       bathsPreset: filters.bathsPreset,
     });
 
-    const numericFiltered = filterPropertyCardsWithFilters(elPasoOnlyProperties, {
-      ...numericFilters,
-      listingType: filters.listingType,
-      search: undefined,
-      centerLat:
-        typeof initialCenterLat === "number" && Number.isFinite(initialCenterLat)
-          ? initialCenterLat
-          : undefined,
-      centerLng:
-        typeof initialCenterLng === "number" && Number.isFinite(initialCenterLng)
-          ? initialCenterLng
-          : undefined,
-      radiusMiles:
-        typeof initialRadiusMiles === "number" && initialRadiusMiles > 0
-          ? initialRadiusMiles
-          : undefined,
-    });
+    const numericFiltered = filterPropertyCardsWithFilters(
+      elPasoOnlyProperties,
+      {
+        ...numericFilters,
+        listingType: filters.listingType,
+        search: undefined,
+        centerLat:
+          typeof initialCenterLat === "number" &&
+          Number.isFinite(initialCenterLat)
+            ? initialCenterLat
+            : undefined,
+        centerLng:
+          typeof initialCenterLng === "number" &&
+          Number.isFinite(initialCenterLng)
+            ? initialCenterLng
+            : undefined,
+        radiusMiles:
+          typeof initialRadiusMiles === "number" && initialRadiusMiles > 0
+            ? initialRadiusMiles
+            : undefined,
+      },
+    );
 
     return numericFiltered
       .filter((property) => matchesAddressOrZip(property, searchQuery))
-      .filter((property) => isWithinViewportBounds(property, debouncedViewport));
+      .filter((property) =>
+        isWithinViewportBounds(property, debouncedViewport),
+      );
   }, [
     debouncedViewport,
     elPasoOnlyProperties,
@@ -468,7 +546,7 @@ export function ListingsMapClient() {
 
   const priceOptions = useMemo(
     () => getPropertySearchPriceOptions(filters.listingType),
-    [filters.listingType]
+    [filters.listingType],
   );
 
   const mapContextQuery = useMemo(
@@ -481,7 +559,7 @@ export function ListingsMapClient() {
       beds: filters.bedsPreset === "any" ? undefined : filters.bedsPreset,
       baths: filters.bathsPreset === "any" ? undefined : filters.bathsPreset,
     }),
-    [filters, market, searchQuery]
+    [filters, market, searchQuery],
   );
 
   const handleMapSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -498,10 +576,15 @@ export function ListingsMapClient() {
     }
 
     const nextQueryString = nextParams.toString();
-    router.replace(nextQueryString ? `${currentPath}?${nextQueryString}` : currentPath, { scroll: false });
+    router.replace(
+      nextQueryString ? `${currentPath}?${nextQueryString}` : currentPath,
+      { scroll: false },
+    );
   };
 
-  const handleMapSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMapSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const nextValue = event.currentTarget.value;
     setSearchInput(nextValue);
 
@@ -533,7 +616,11 @@ export function ListingsMapClient() {
             </div>
             <div className="flex items-center gap-2">
               <p className="text-sm text-[var(--sandstone-charcoal)]/70">
-                {isLoadingListings ? (loadError ? "Listings temporarily unavailable" : "Loading listings…") : `Showing ${totalCount} listing${totalCount === 1 ? "" : "s"} on the map`}
+                {isLoadingListings
+                  ? loadError
+                    ? "Listings temporarily unavailable"
+                    : "Loading listings…"
+                  : `Showing ${totalCount} listing${totalCount === 1 ? "" : "s"} on the map`}
               </p>
               <span className="inline-flex items-center rounded-full border border-[var(--sandstone-sand-gold)]/35 bg-[var(--sandstone-sand-gold)]/12 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.05em] text-[var(--sandstone-charcoal)]/80">
                 {getPropertySearchMarketLabel(market)}
@@ -561,7 +648,9 @@ export function ListingsMapClient() {
 
           {market !== "el-paso" ? (
             <p className="mt-3 max-w-2xl rounded-2xl border border-[var(--sandstone-sand-gold)]/35 bg-[var(--sandstone-sand-gold)]/12 px-4 py-3 text-sm text-[var(--sandstone-charcoal)]/85">
-              {getPropertySearchMarketLabel(market)} inventory is coming soon. Search and filters are saved, and El Paso listings are still shown for now.
+              {getPropertySearchMarketLabel(market)} inventory is coming soon.
+              Search and filters are saved, and El Paso listings are still shown
+              for now.
             </p>
           ) : null}
 
@@ -590,11 +679,13 @@ export function ListingsMapClient() {
               <div className="flex rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] p-1">
                 <button
                   type="button"
-                  onClick={() => setFilters(prev => ({
-                    ...prev,
-                    listingType: "active",
-                    pricePreset: "any",
-                  }))}
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      listingType: "active",
+                      pricePreset: "any",
+                    }))
+                  }
                   className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                     filters.listingType === "active"
                       ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
@@ -605,11 +696,13 @@ export function ListingsMapClient() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFilters(prev => ({
-                    ...prev,
-                    listingType: "rental",
-                    pricePreset: "any",
-                  }))}
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      listingType: "rental",
+                      pricePreset: "any",
+                    }))
+                  }
                   className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                     filters.listingType === "rental"
                       ? "bg-[var(--sandstone-navy)] text-white shadow-[0_2px_8px_-2px_rgba(37,52,113,0.5)]"
@@ -622,7 +715,13 @@ export function ListingsMapClient() {
 
               <select
                 value={filters.pricePreset}
-                onChange={(e) => setFilters(prev => ({ ...prev, pricePreset: e.target.value as PropertySearchPresetFilters["pricePreset"] }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    pricePreset: e.target
+                      .value as PropertySearchPresetFilters["pricePreset"],
+                  }))
+                }
                 className="h-12 min-w-[156px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
                 style={{
                   backgroundImage: `url(\"data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E\")`,
@@ -639,7 +738,13 @@ export function ListingsMapClient() {
 
               <select
                 value={filters.bedsPreset}
-                onChange={(e) => setFilters(prev => ({ ...prev, bedsPreset: e.target.value as PropertySearchPresetFilters["bedsPreset"] }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    bedsPreset: e.target
+                      .value as PropertySearchPresetFilters["bedsPreset"],
+                  }))
+                }
                 className="h-12 min-w-[132px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
                 style={{
                   backgroundImage: `url(\"data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E\")`,
@@ -656,7 +761,13 @@ export function ListingsMapClient() {
 
               <select
                 value={filters.bathsPreset}
-                onChange={(e) => setFilters(prev => ({ ...prev, bathsPreset: e.target.value as PropertySearchPresetFilters["bathsPreset"] }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    bathsPreset: e.target
+                      .value as PropertySearchPresetFilters["bathsPreset"],
+                  }))
+                }
                 className="h-12 min-w-[132px] rounded-full border border-[var(--sandstone-navy)]/18 bg-[var(--sandstone-off-white)] pl-4 pr-8 text-sm font-medium text-[var(--sandstone-charcoal)] focus:border-[var(--sandstone-sand-gold)] focus:outline-none focus:ring-2 focus:ring-[var(--sandstone-sand-gold)]/20 appearance-none bg-no-repeat"
                 style={{
                   backgroundImage: `url(\"data:image/svg+xml;utf8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2712%27 height=%2712%27 viewBox=%270 0 12 12%27%3E%3Cpath fill=%22%23111c3d%22 opacity=%220.55%22 d=%22M2 4l4 4 4-4z%22/%3E%3C/svg%3E\")`,
@@ -680,14 +791,22 @@ export function ListingsMapClient() {
                 bedsPreset={filters.bedsPreset}
                 bathsPreset={filters.bathsPreset}
                 onMarketChange={handleMarketChange}
-                onListingTypeChange={(type) => setFilters(prev => ({
-                  ...prev,
-                  listingType: type,
-                  pricePreset: "any",
-                }))}
-                onPriceChange={(price) => setFilters(prev => ({ ...prev, pricePreset: price }))}
-                onBedsChange={(beds) => setFilters(prev => ({ ...prev, bedsPreset: beds }))}
-                onBathsChange={(baths) => setFilters(prev => ({ ...prev, bathsPreset: baths }))}
+                onListingTypeChange={(type) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    listingType: type,
+                    pricePreset: "any",
+                  }))
+                }
+                onPriceChange={(price) =>
+                  setFilters((prev) => ({ ...prev, pricePreset: price }))
+                }
+                onBedsChange={(beds) =>
+                  setFilters((prev) => ({ ...prev, bedsPreset: beds }))
+                }
+                onBathsChange={(baths) =>
+                  setFilters((prev) => ({ ...prev, bathsPreset: baths }))
+                }
               />
             </div>
           </div>
@@ -695,9 +814,18 @@ export function ListingsMapClient() {
 
         <section className="container mx-auto max-w-[1360px] px-4 pb-3 lg:px-6">
           {loadError ? (
-            <p role="alert" className="mb-4 rounded-xl bg-white p-4 text-sm text-[var(--sandstone-navy)]">
+            <p
+              role="alert"
+              className="mb-4 rounded-xl bg-white p-4 text-sm text-[var(--sandstone-navy)]"
+            >
               {loadError}{" "}
-              <button type="button" className="font-semibold underline" onClick={() => setRetryCount((count) => count + 1)}>Retry</button>
+              <button
+                type="button"
+                className="font-semibold underline"
+                onClick={() => setRetryCount((count) => count + 1)}
+              >
+                Retry
+              </button>
             </p>
           ) : null}
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(340px,0.95fr)]">

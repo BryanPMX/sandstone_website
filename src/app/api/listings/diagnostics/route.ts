@@ -16,6 +16,17 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
+  if (process.env.NODE_ENV !== "development") {
+    return NextResponse.json(
+      { error: "Not found." },
+      {
+        status: 404,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  }
   const [my, active, rental] = await Promise.all([
     inspectListingsTarget("my"),
     inspectListingsTarget("active"),

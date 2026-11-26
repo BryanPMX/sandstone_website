@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Script from "next/script";
 
 import { FeaturedListingsSection } from "@/components/sections/FeaturedListingsSection";
 import { BlogTeaserSection } from "@/components/sections/BlogTeaserSection";
@@ -9,14 +8,14 @@ import { GoogleReviews } from "@/components/GoogleReviews";
 import { SiteFooter } from "@/components/SiteFooter";
 import ExploreNearbyAreas from "@/components/ExploreNearbyAreas";
 import { FinancingBanner } from "@/components/FinancingBanner";
-import { VeteransDayHomeHeader, VeteransDayHomeHero } from "@/components/VeteransDaySchedule";
+import {
+  VeteransDayHomeHeader,
+  VeteransDayHomeHero,
+} from "@/components/VeteransDaySchedule";
 
 import { fetchMyPropertyCards, getSortedPosts } from "@/services";
 import { isAlejandroListing } from "@/lib";
-import {
-  HOME_FAQ_SCHEMA_EN,
-  HOME_FAQ_SCHEMA_ES,
-} from "@/constants/site";
+import { HOME_FAQ_SCHEMA_EN, HOME_FAQ_SCHEMA_ES } from "@/constants/site";
 
 export const revalidate = 600;
 
@@ -39,16 +38,15 @@ export default async function Home() {
   const alejandroSparkProperties = properties
     .filter(
       (property) =>
-        Boolean(property.sparkSource) && isAlejandroListing(property)
+        Boolean(property.sparkSource) && isAlejandroListing(property),
     )
     .slice(0, 12);
 
   return (
     <>
-      <Script
+      <script
         id="local-business-structured-data"
         type="application/ld+json"
-        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -84,25 +82,23 @@ export default async function Home() {
               "Luxury Homes",
               "Home Selling",
             ],
-          }),
+          }).replace(/</g, "\\u003c"),
         }}
       />
 
-      <Script
+      <script
         id="home-faq-schema-es"
         type="application/ld+json"
-        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(HOME_FAQ_SCHEMA_ES),
+          __html: JSON.stringify(HOME_FAQ_SCHEMA_ES).replace(/</g, "\\u003c"),
         }}
       />
 
-      <Script
+      <script
         id="home-faq-schema-en"
         type="application/ld+json"
-        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(HOME_FAQ_SCHEMA_EN),
+          __html: JSON.stringify(HOME_FAQ_SCHEMA_EN).replace(/</g, "\\u003c"),
         }}
       />
 
@@ -138,6 +134,7 @@ export default async function Home() {
               className="block w-full"
               aria-label="Explore luxury homes with Sandstone Real Estate Team"
             >
+              {/* eslint-disable-next-line @next/next/no-img-element -- Preserve existing image delivery; optimization is intentionally disabled. */}
               <img
                 src="/uploads/luxury_banner.png"
                 alt="Luxury Homes — exclusive properties and exceptional lifestyles"

@@ -1,4 +1,9 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+
+import {
+  createHmac,
+  randomBytes,
+  timingSafeEqual,
+} from "node:crypto";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -12,179 +17,118 @@ type OAuthStatePayload = {
 type GitHubTokenResponse = {
   access_token?: string;
   error?: string;
-  error_description?: string;
 };
 
 const STATE_COOKIE_NAME = "decap_oauth_state";
+const STATE_COOKIE_PATH = "/api/decap";
 const STATE_MAX_AGE_MS = 10 * 60 * 1000;
 
-function getRequiredEnv(name: string): string {
-  const value = process.env[name]?.trim();
+const PRODUCTION_ORIGIN = "https://www.sandstone.homes";
+const DEVELOPMENT_ORIGIN = "http://localhost:3000";
 
-  if (!value) {
-    throw new Error(`[DecapAuth] Missing required env var: ${name}`);
+function normalizeOrigin(value: string): string | null {
+  try {
+    const url = new URL(value);
+
+    if (
+      !["http:", "https:"].includes(url.protocol) ||
+      url.username ||
+      url.password ||
+      url.pathname !== "/" ||
+      url.search ||
+      url.hash
+    ) {
+      return null;
+    }
+
+    return url.origin;
+  } catch {
+    return null;
+  }
+}
+
+function getAllowedOrigins(): Set<string> {
+  const origins = new Set<string>([PRODUCTION_ORIGIN]);
+
+  if (process.env.NODE_ENV === "development") {
+    origins.add(DEVELOPMENT_ORIGIN);
   }
 
-  return value;
+  const configuredOrigin =
+    process.env.CMS_ALLOWED_ORIGIN?.trim();
+
+  if (configuredOrigin) {
+    const normalized = normalizeOrigin(configuredOrigin);
+
+    if (!normalized || !origins.has(normalized)) {
+      throw new Error("Invalid CMS allowed origin configuration");
+    }
+
+    return new Set([normalized]);
+  }
+
+  return origins;
 }
 
-function getStateSigningSecret(): string {
-  return process.env.CMS_OAUTH_STATE_SECRET?.trim() || getRequiredEnv("GITHUB_CLIENT_SECRET");
+function securityHeaders() {
+  return {
+    "Cache-Control": "no-store",
+    "Referrer-Policy": "no-referrer",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-Robots-Tag": "noindex, nofollow, noarchive",
+  };
 }
 
-function signStatePayload(payload: {
-  nonce: string;
-  origin: string;
-  issuedAt: number;
-}): string {
-  return createHmac("sha256", getStateSigningSecret())
-    .update(`${payload.nonce}.${payload.origin}.${payload.issuedAt}`)
-    .digest("hex");
+function errorResponse(message: string, status: number) {
+  return NextResponse.json(
+    { error: message },
+    {
+      status,
+      headers: securityHeaders(),
+    },
+  );
 }
 
-function buildCallbackHtml(options: {
-  targetOrigins: string[];
-  status: "success" | "error";
-  payload: Record<string, string>;
-}): string {
-  const serializedPayload = JSON.stringify(options.payload);
-  const messagePrefix =
-    options.status === "success"
-      ? "authorization:github:success:"
-      : "authorization:github:error:";
-
-  return `<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sandstone CMS Auth</title>
-    <style>
-      body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; line-height: 1.5; }
-      .ok { color: #166534; }
-      .err { color: #991b1b; }
-      code { background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
-    </style>
-  </head>
-  <body>
-    <h1 id="title">Completing login...</h1>
-    <p id="detail">Sending authorization result back to the CMS window.</p>
-    <script>
-      (function () {
-        var targetOrigins = ${JSON.stringify(options.targetOrigins)};
-        var message = ${JSON.stringify(messagePrefix)} + ${JSON.stringify(serializedPayload)};
-        var hasOpener = window.opener && typeof window.opener.postMessage === "function";
-        var isSuccess = ${JSON.stringify(options.status)} === "success";
-        var title = document.getElementById("title");
-        var detail = document.getElementById("detail");
-
-        function postToTargets(payload) {
-          if (!hasOpener) {
-            return false;
-          }
-
-          var didPost = false;
-
-          for (var i = 0; i < targetOrigins.length; i++) {
-            var targetOrigin = targetOrigins[i];
-
-            try {
-              window.opener.postMessage(payload, targetOrigin);
-              didPost = true;
-            } catch (error) {
-              // Ignore and continue trying other expected origins.
-            }
-          }
-
-          try {
-            window.opener.postMessage(payload, "*");
-            didPost = true;
-          } catch (error) {
-            // Ignore wildcard fallback failure.
-          }
-
-          return didPost;
-        }
-
-        function renderStatus(text, className, detailText) {
-          if (!title || !detail) {
-            return;
-          }
-
-          title.textContent = text;
-          title.className = className;
-          detail.textContent = detailText;
-        }
-
-        function sendAuthorizationResult() {
-          var sent = postToTargets(message);
-          if (sent) {
-            renderStatus(
-              isSuccess ? "Login complete" : "Login failed",
-              isSuccess ? "ok" : "err",
-              isSuccess
-                ? "Authorization was sent to the CMS window."
-                : "Authorization error sent to CMS."
-            );
-          }
-          return sent;
-        }
-
-        if (!hasOpener) {
-          renderStatus("Login failed", "err", "No opener window found. Return to /admin and retry login.");
-          return;
-        }
-
-        var receivedHandshake = false;
-
-        function receiveMessage() {
-          receivedHandshake = true;
-          sendAuthorizationResult();
-          window.removeEventListener("message", receiveMessage, false);
-        }
-
-        window.addEventListener("message", receiveMessage, false);
-        postToTargets("authorizing:github");
-
-        // Fallback in case the opener misses or skips the handshake response.
-        setTimeout(function () {
-          if (!receivedHandshake) {
-            sendAuthorizationResult();
-          }
-        }, 1000);
-
-        renderStatus("Completing login...", "", "Waiting for CMS handshake...");
-      })();
-    </script>
-  </body>
-</html>`;
-}
-
-function uniqueOrigins(values: Array<string | undefined>): string[] {
-  const origins = values
-    .filter((value): value is string => Boolean(value))
-    .map((value) => {
-      try {
-        return new URL(value).origin;
-      } catch {
-        return null;
-      }
-    })
-    .filter((value): value is string => value !== null);
-
-  return Array.from(new Set(origins));
+function safeScriptJson(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
 }
 
 function decodeState(state: string): OAuthStatePayload | null {
   try {
-    const decoded = Buffer.from(state, "base64url").toString("utf8");
-    const parsed = JSON.parse(decoded) as Partial<OAuthStatePayload>;
+    if (
+      state.length > 4096 ||
+      !/^[A-Za-z0-9_-]+$/.test(state)
+    ) {
+      return null;
+    }
+
+    const decoded = Buffer.from(
+      state,
+      "base64url",
+    ).toString("utf8");
+
+    const parsed = JSON.parse(
+      decoded,
+    ) as Partial<OAuthStatePayload>;
 
     if (
-      !parsed.origin ||
-      !parsed.nonce ||
+      !parsed ||
+      typeof parsed.nonce !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        parsed.nonce,
+      ) ||
+      typeof parsed.origin !== "string" ||
+      normalizeOrigin(parsed.origin) !== parsed.origin ||
       typeof parsed.issuedAt !== "number" ||
-      !parsed.signature
+      !Number.isSafeInteger(parsed.issuedAt) ||
+      typeof parsed.signature !== "string" ||
+      !/^[a-f0-9]{64}$/.test(parsed.signature)
     ) {
       return null;
     }
@@ -200,147 +144,413 @@ function decodeState(state: string): OAuthStatePayload | null {
   }
 }
 
-function isValidState(parsedState: OAuthStatePayload): boolean {
-  const age = Date.now() - parsedState.issuedAt;
+function isValidState(
+  state: OAuthStatePayload,
+  signingSecret: string,
+): boolean {
+  const age = Date.now() - state.issuedAt;
 
   if (age < 0 || age > STATE_MAX_AGE_MS) {
     return false;
   }
 
-  const expectedSignature = signStatePayload({
-    nonce: parsedState.nonce,
-    origin: parsedState.origin,
-    issuedAt: parsedState.issuedAt,
-  });
+  const expectedSignature = createHmac(
+    "sha256",
+    signingSecret,
+  )
+    .update(
+      `${state.nonce}.${state.origin}.${state.issuedAt}`,
+    )
+    .digest("hex");
 
-  const expected = Buffer.from(expectedSignature, "utf8");
-  const actual = Buffer.from(parsedState.signature, "utf8");
+  const expected = Buffer.from(
+    expectedSignature,
+    "hex",
+  );
 
-  if (expected.length !== actual.length) {
-    return false;
-  }
+  const actual = Buffer.from(
+    state.signature,
+    "hex",
+  );
 
-  return timingSafeEqual(actual, expected);
+  return (
+    expected.length === actual.length &&
+    timingSafeEqual(expected, actual)
+  );
 }
 
-export async function GET(request: Request): Promise<Response> {
-  const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get("code")?.trim();
-  const state = requestUrl.searchParams.get("state")?.trim();
-  const fallbackOrigin = new URL(
-    process.env.CMS_ALLOWED_ORIGIN?.trim() || requestUrl.origin
-  ).origin;
+function statesMatch(
+  storedState: string,
+  receivedState: string,
+): boolean {
+  const stored = Buffer.from(storedState, "utf8");
+  const received = Buffer.from(receivedState, "utf8");
 
-  if (!code || !state) {
-    const targetOrigins = uniqueOrigins([fallbackOrigin]);
+  return (
+    stored.length === received.length &&
+    timingSafeEqual(stored, received)
+  );
+}
 
-    return new NextResponse(
-      buildCallbackHtml({
-        targetOrigins,
-        status: "error",
-        payload: { error: "Missing code or state" },
-      }),
-      {
-        status: 400,
-        headers: { "Content-Type": "text/html; charset=utf-8" },
+function buildCallbackHtml(options: {
+  targetOrigin: string;
+  status: "success" | "error";
+  payload: Record<string, string>;
+  scriptNonce: string;
+}): string {
+  const message =
+    `authorization:github:${options.status}:` +
+    JSON.stringify(options.payload);
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <title>Sandstone CMS Auth</title>
+    <style nonce="${options.scriptNonce}">
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 24px;
+        line-height: 1.5;
       }
+      .ok { color: #166534; }
+      .err { color: #991b1b; }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">Completing login...</h1>
+    <p id="detail">Connecting to the CMS window.</p>
+
+    <script nonce="${options.scriptNonce}">
+      (function () {
+        var targetOrigin = ${safeScriptJson(options.targetOrigin)};
+        var message = ${safeScriptJson(message)};
+        var isSuccess = ${safeScriptJson(options.status === "success")};
+
+        var openerWindow = window.opener;
+        var title = document.getElementById("title");
+        var detail = document.getElementById("detail");
+        var completed = false;
+        var timeoutId;
+
+        function renderStatus(text, className, detailText) {
+          title.textContent = text;
+          title.className = className;
+          detail.textContent = detailText;
+        }
+
+        function cleanup() {
+          window.removeEventListener("message", receiveMessage);
+          window.clearTimeout(timeoutId);
+        }
+
+        function sendAuthorizationResult() {
+          if (completed) {
+            return;
+          }
+
+          completed = true;
+          cleanup();
+
+          try {
+            openerWindow.postMessage(message, targetOrigin);
+
+            renderStatus(
+              isSuccess ? "Login response sent" : "Login failed",
+              isSuccess ? "ok" : "err",
+              "Return to the CMS window to continue."
+            );
+          } catch {
+            renderStatus(
+              "Login failed",
+              "err",
+              "Unable to communicate with the CMS window."
+            );
+          }
+        }
+
+        function receiveMessage(event) {
+          if (
+            event.origin !== targetOrigin ||
+            event.source !== openerWindow ||
+            event.data !== "authorizing:github"
+          ) {
+            return;
+          }
+
+          sendAuthorizationResult();
+        }
+
+        if (!openerWindow || openerWindow.closed) {
+          renderStatus(
+            "Login failed",
+            "err",
+            "No CMS window found. Return to the admin page and retry."
+          );
+          return;
+        }
+
+        window.addEventListener("message", receiveMessage);
+
+        timeoutId = window.setTimeout(function () {
+          completed = true;
+          cleanup();
+
+          renderStatus(
+            "Login timed out",
+            "err",
+            "Return to the CMS window and retry login."
+          );
+        }, 10000);
+
+        try {
+          openerWindow.postMessage(
+            "authorizing:github",
+            targetOrigin
+          );
+        } catch {
+          completed = true;
+          cleanup();
+
+          renderStatus(
+            "Login failed",
+            "err",
+            "Unable to connect to the CMS window."
+          );
+        }
+      })();
+    </script>
+  </body>
+</html>`;
+}
+
+function callbackResponse(options: {
+  targetOrigin: string;
+  status: "success" | "error";
+  payload: Record<string, string>;
+  httpStatus: number;
+  clearStateCookie?: boolean;
+}): NextResponse {
+  const scriptNonce = randomBytes(24).toString("base64");
+
+  const response = new NextResponse(
+    buildCallbackHtml({
+      targetOrigin: options.targetOrigin,
+      status: options.status,
+      payload: options.payload,
+      scriptNonce,
+    }),
+    {
+      status: options.httpStatus,
+      headers: {
+        ...securityHeaders(),
+        "Content-Type": "text/html; charset=utf-8",
+        "Content-Security-Policy": [
+          "default-src 'none'",
+          `script-src 'nonce-${scriptNonce}'`,
+          `style-src 'nonce-${scriptNonce}'`,
+          "base-uri 'none'",
+          "form-action 'none'",
+          "frame-ancestors 'none'",
+        ].join("; "),
+      },
+    },
+  );
+
+  if (options.clearStateCookie) {
+    response.cookies.set({
+      name: STATE_COOKIE_NAME,
+      value: "",
+      httpOnly: true,
+      secure: options.targetOrigin.startsWith("https:"),
+      sameSite: "lax",
+      maxAge: 0,
+      path: STATE_COOKIE_PATH,
+    });
+  }
+
+  return response;
+}
+
+export async function GET(
+  request: Request,
+): Promise<Response> {
+  const requestUrl = new URL(request.url);
+
+  let allowedOrigins: Set<string>;
+
+  try {
+    allowedOrigins = getAllowedOrigins();
+  } catch {
+    return errorResponse(
+      "OAuth configuration is invalid.",
+      503,
     );
+  }
+
+  if (!allowedOrigins.has(requestUrl.origin)) {
+    return errorResponse("Invalid origin", 400);
+  }
+
+  const targetOrigin = requestUrl.origin;
+
+  const codeParameters =
+    requestUrl.searchParams.getAll("code");
+
+  const stateParameters =
+    requestUrl.searchParams.getAll("state");
+
+  const errorParameters =
+    requestUrl.searchParams.getAll("error");
+
+  function fail(
+    message: string,
+    httpStatus = 400,
+    clearStateCookie = false,
+  ) {
+    return callbackResponse({
+      targetOrigin,
+      status: "error",
+      payload: { message },
+      httpStatus,
+      clearStateCookie,
+    });
+  }
+
+  if (
+    codeParameters.length > 1 ||
+    stateParameters.length !== 1 ||
+    errorParameters.length > 1
+  ) {
+    return fail("Invalid OAuth callback parameters.");
+  }
+
+  const state = stateParameters[0];
+  const code = codeParameters[0]?.trim();
+
+  if (!state) {
+    return fail("Missing OAuth state.");
   }
 
   const parsedState = decodeState(state);
 
-  if (!parsedState || !isValidState(parsedState)) {
-    const targetOrigins = uniqueOrigins([fallbackOrigin]);
-
-    return new NextResponse(
-      buildCallbackHtml({
-        targetOrigins,
-        status: "error",
-        payload: { error: "State validation failed" },
-      }),
-      {
-        status: 400,
-        headers: { "Content-Type": "text/html; charset=utf-8" },
-      }
-    );
+  if (
+    !parsedState ||
+    parsedState.origin !== targetOrigin ||
+    !allowedOrigins.has(parsedState.origin)
+  ) {
+    return fail("State validation failed.");
   }
-
-  const targetOrigin = parsedState?.origin || fallbackOrigin;
-  const targetOrigins = uniqueOrigins([
-    targetOrigin,
-    fallbackOrigin,
-    requestUrl.origin,
-    process.env.CMS_ALLOWED_ORIGIN?.trim(),
-  ]);
 
   const cookieStore = await cookies();
-  const storedState = cookieStore.get(STATE_COOKIE_NAME)?.value;
 
-  if (storedState && storedState !== state) {
-    const response = new NextResponse(
-      buildCallbackHtml({
-        targetOrigins,
-        status: "error",
-        payload: { error: "State mismatch" },
-      }),
-      {
-        status: 400,
-        headers: { "Content-Type": "text/html; charset=utf-8" },
-      }
-    );
+  const storedState =
+    cookieStore.get(STATE_COOKIE_NAME)?.value;
 
-    response.cookies.delete(STATE_COOKIE_NAME);
-    return response;
+  if (!storedState) {
+    return fail("Missing OAuth state cookie.");
   }
 
-  const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      client_id: getRequiredEnv("GITHUB_CLIENT_ID"),
-      client_secret: getRequiredEnv("GITHUB_CLIENT_SECRET"),
-      code,
-      state,
-      redirect_uri: `${requestUrl.origin}/api/decap/callback`,
-    }),
-  });
-
-  const tokenData = (await tokenRes.json()) as GitHubTokenResponse;
-
-  if (!tokenRes.ok || !tokenData.access_token) {
-    const errorMessage =
-      tokenData.error_description || tokenData.error || "OAuth token exchange failed";
-
-    const response = new NextResponse(
-      buildCallbackHtml({
-        targetOrigins,
-        status: "error",
-        payload: { error: errorMessage },
-      }),
-      {
-        status: 400,
-        headers: { "Content-Type": "text/html; charset=utf-8" },
-      }
-    );
-
-    response.cookies.delete(STATE_COOKIE_NAME);
-    return response;
+  if (!statesMatch(storedState, state)) {
+    return fail("State mismatch.");
   }
 
-  const response = new NextResponse(
-    buildCallbackHtml({
-      targetOrigins,
-      status: "success",
-      payload: { token: tokenData.access_token, provider: "github" },
-    }),
-    {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
+  const clientId =
+    process.env.GITHUB_CLIENT_ID?.trim();
+
+  const clientSecret =
+    process.env.GITHUB_CLIENT_SECRET?.trim();
+
+  const signingSecret =
+    process.env.CMS_OAUTH_STATE_SECRET?.trim() ||
+    clientSecret;
+
+  if (!clientId || !clientSecret || !signingSecret) {
+    return fail(
+      "GitHub authentication is not configured.",
+      503,
+      true,
+    );
+  }
+
+  if (!isValidState(parsedState, signingSecret)) {
+    return fail("State validation failed.", 400, true);
+  }
+
+  if (errorParameters.length === 1) {
+    return fail(
+      "GitHub authorization was denied or cancelled.",
+      400,
+      true,
+    );
+  }
+
+  if (!code || code.length > 2048) {
+    return fail(
+      "Missing or invalid authorization code.",
+      400,
+      true,
+    );
+  }
+
+  try {
+    const tokenResponse = await fetch(
+      "https://github.com/login/oauth/access_token",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type":
+            "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          client_id: clientId,
+          client_secret: clientSecret,
+          code,
+          state,
+          redirect_uri:
+            `${targetOrigin}/api/decap/callback`,
+        }),
+        cache: "no-store",
+        redirect: "error",
+        signal: AbortSignal.timeout(10000),
+      },
+    );
+
+    const tokenData =
+      (await tokenResponse.json()) as GitHubTokenResponse;
+
+    if (
+      !tokenResponse.ok ||
+      !tokenData ||
+      tokenData.error ||
+      typeof tokenData.access_token !== "string" ||
+      !tokenData.access_token.trim()
+    ) {
+      return fail(
+        "GitHub token exchange failed.",
+        400,
+        true,
+      );
     }
-  );
 
-  response.cookies.delete(STATE_COOKIE_NAME);
-  return response;
+    return callbackResponse({
+      targetOrigin,
+      status: "success",
+      payload: {
+        token: tokenData.access_token,
+        provider: "github",
+      },
+      httpStatus: 200,
+      clearStateCookie: true,
+    });
+  } catch {
+    return fail(
+      "Unable to complete GitHub authentication.",
+      502,
+      true,
+    );
+  }
 }

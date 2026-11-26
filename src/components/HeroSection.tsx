@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChevronDown, Search } from "lucide-react";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import salute from "./SaluteRefined.module.css";
 import {
   LISTINGS_MAP_PATH,
@@ -87,10 +88,13 @@ function getSelectedOptionLabel<T extends string>(
   );
 }
 
-export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) {
+export function HeroSection({
+  veteransDay = false,
+}: {
+  veteransDay?: boolean;
+}) {
   const router = useRouter();
   const [isNavigatingToMap, setIsNavigatingToMap] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const hasTriggeredRedirectRef = useRef(false);
   const [searchValue, setSearchValue] = useState("");
   const [locationFilter, setLocationFilter] = useState<PropertySearchMarket>(
@@ -103,8 +107,6 @@ export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) 
     listingType: "active",
   });
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
-  const [selectedSuggestion, setSelectedSuggestion] =
-    useState<PlaceSuggestion | null>(null);
   const [mapsReady, setMapsReady] = useState(false);
   const autocompleteServiceRef = useRef<GooglePlacesAutocompleteService | null>(
     null,
@@ -189,7 +191,7 @@ export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) 
   };
 
   useEffect(() => {
-    if (!(isNavigatingToMap || isPending)) {
+    if (!isNavigatingToMap) {
       return;
     }
 
@@ -201,7 +203,7 @@ export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) 
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [isNavigatingToMap, isPending]);
+  }, [isNavigatingToMap]);
 
   const navigateToMap = (params: {
     search?: string;
@@ -239,7 +241,6 @@ export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
     setSearchValue(value);
-    setSelectedSuggestion(null);
 
     const inferredMarket = inferPropertySearchMarketFromInput(value);
     if (inferredMarket && inferredMarket !== locationFilter) {
@@ -278,7 +279,6 @@ export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) 
 
   const handleSuggestionClick = (suggestion: PlaceSuggestion) => {
     setSearchValue(suggestion.description);
-    setSelectedSuggestion(suggestion);
 
     const inferredMarket = inferPropertySearchMarketFromInput(
       suggestion.description,
@@ -290,39 +290,82 @@ export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) 
     setSuggestions([]);
   };
 
-  const showTransition = isNavigatingToMap || isPending;
+  const showTransition = isNavigatingToMap;
   const priceOptions = getPropertySearchPriceOptions(filters.listingType);
 
   if (veteransDay) {
     return (
       <section className={salute.hero} aria-labelledby="salute-refined-heading">
         <div className={salute.scene}>
-          <img src="/campaigns/veterans-day/flag-refined.webp" alt="American flag with flowing folds against a deep navy backdrop" className={salute.background} fetchPriority="high" width={1536} height={1024} />
+          <Image
+            unoptimized
+            loading="eager"
+            src="/campaigns/veterans-day/flag-refined.webp"
+            alt="American flag with flowing folds against a deep navy backdrop"
+            className={salute.background}
+            fetchPriority="high"
+            width={1536}
+            height={1024}
+          />
           <div className={salute.heroInner}>
             <p className={salute.eyebrow}>With honor. With gratitude.</p>
             <h1 id="salute-refined-heading" className={salute.heading}>
               To all who <span>served.</span>
             </h1>
-            <p className={salute.intro}>For your courage, your commitment, and all you have given. <strong>Thank you.</strong></p>
-            <div className={salute.stars} aria-hidden="true">★ ★ ★</div>
+            <p className={salute.intro}>
+              For your courage, your commitment, and all you have given.{" "}
+              <strong>Thank you.</strong>
+            </p>
+            <div className={salute.stars} aria-hidden="true">
+              ★ ★ ★
+            </div>
           </div>
         </div>
         <div className={salute.searchCard}>
           <h2>Your next chapter starts here.</h2>
-          <form onSubmit={handleSearchSubmit} className={salute.searchForm} aria-busy={showTransition}>
+          <form
+            onSubmit={handleSearchSubmit}
+            className={salute.searchForm}
+            aria-busy={showTransition}
+          >
             <div className={salute.field}>
               <Search className={salute.fieldIcon} aria-hidden="true" />
-              <input type="search" name="search" placeholder="City, neighborhood or ZIP" aria-label="Search by city, neighborhood, address or ZIP code" className={salute.input} value={searchValue} onChange={handleInputChange} onFocus={loadGoogleMaps} autoComplete="off" />
+              <input
+                type="search"
+                name="search"
+                placeholder="City, neighborhood or ZIP"
+                aria-label="Search by city, neighborhood, address or ZIP code"
+                className={salute.input}
+                value={searchValue}
+                onChange={handleInputChange}
+                onFocus={loadGoogleMaps}
+                autoComplete="off"
+              />
               {suggestions.length > 0 ? (
-                <ul className={salute.suggestions} aria-label="Suggested addresses">
+                <ul
+                  className={salute.suggestions}
+                  aria-label="Suggested addresses"
+                >
                   {suggestions.map((suggestion) => (
-                    <li key={suggestion.placeId}><button type="button" onClick={() => handleSuggestionClick(suggestion)}>{suggestion.description}</button></li>
+                    <li key={suggestion.placeId}>
+                      <button
+                        type="button"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                      >
+                        {suggestion.description}
+                      </button>
+                    </li>
                   ))}
                 </ul>
               ) : null}
             </div>
-            <button type="submit" className={salute.submit} disabled={showTransition}>
-              {showTransition ? "Finding homes…" : "Find a home"}<span aria-hidden="true">→</span>
+            <button
+              type="submit"
+              className={salute.submit}
+              disabled={showTransition}
+            >
+              {showTransition ? "Finding homes…" : "Find a home"}
+              <span aria-hidden="true">→</span>
             </button>
           </form>
         </div>
@@ -347,7 +390,10 @@ export function HeroSection({ veteransDay = false }: { veteransDay?: boolean }) 
                 srcSet="/hero-home.webp"
                 type="image/webp"
               />
-              <img
+              <Image
+                fill
+                unoptimized
+                loading="eager"
                 src="/hero-home.webp"
                 alt="Luxury modern home in El Paso listed by Sandstone Real Estate"
                 className="h-full w-full object-cover object-[center_45%] lg:object-[center_40%]"

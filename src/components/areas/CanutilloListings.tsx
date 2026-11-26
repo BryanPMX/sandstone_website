@@ -57,8 +57,6 @@ export function CanutilloListings() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    setLoading(true);
-
     fetch("/api/listings/canutillo-tx")
       .then((r) => r.json())
       .then((data: unknown) => setAllListings(normalizeListingsResponse(data)))
@@ -68,7 +66,7 @@ export function CanutilloListings() {
 
   const priceOptions = useMemo(
     () => getPropertySearchPriceOptions(listingType),
-    [listingType]
+    [listingType],
   );
 
   const filtered = useMemo(() => {
@@ -92,7 +90,7 @@ export function CanutilloListings() {
   const safePage = Math.min(page, totalPages);
   const visible = filtered.slice(
     (safePage - 1) * PAGE_SIZE,
-    safePage * PAGE_SIZE
+    safePage * PAGE_SIZE,
   );
   const startIdx = filtered.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
   const endIdx = Math.min(safePage * PAGE_SIZE, filtered.length);
@@ -133,7 +131,7 @@ export function CanutilloListings() {
           onChange={(e) =>
             handleFilterChange(
               setPrice,
-              e.target.value as PropertySearchPricePreset
+              e.target.value as PropertySearchPricePreset,
             )
           }
           className={SELECT_CLS}
@@ -150,7 +148,7 @@ export function CanutilloListings() {
           onChange={(e) =>
             handleFilterChange(
               setBeds,
-              e.target.value as PropertySearchCountPreset
+              e.target.value as PropertySearchCountPreset,
             )
           }
           className={SELECT_CLS}
@@ -167,7 +165,7 @@ export function CanutilloListings() {
           onChange={(e) =>
             handleFilterChange(
               setBaths,
-              e.target.value as PropertySearchCountPreset
+              e.target.value as PropertySearchCountPreset,
             )
           }
           className={SELECT_CLS}
@@ -256,7 +254,7 @@ export function CanutilloListings() {
               {Array.from({ length: totalPages }, (_, k) => k + 1)
                 .filter(
                   (n) =>
-                    n === 1 || n === totalPages || Math.abs(n - safePage) <= 1
+                    n === 1 || n === totalPages || Math.abs(n - safePage) <= 1,
                 )
                 .reduce<(number | "...")[]>((acc, n, idx, arr) => {
                   if (idx > 0 && n - (arr[idx - 1] as number) > 1) {
@@ -285,7 +283,7 @@ export function CanutilloListings() {
                     >
                       {item}
                     </button>
-                  )
+                  ),
                 )}
 
               <button

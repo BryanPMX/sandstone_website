@@ -6,7 +6,8 @@ import { PcsHeader } from "../pcs/PcsHeader.client";
 import SearchForm from "./SearchForm";
 
 export const metadata: Metadata = {
-  title: "BAH Rates Fort Bliss 2026 | Buy vs. Rent Guide for El Paso | Sandstone",
+  title:
+    "BAH Rates Fort Bliss 2026 | Buy vs. Rent Guide for El Paso | Sandstone",
   description:
     "Review Fort Bliss BAH rates for 2026, compare buying vs. renting in El Paso, and see what your VA loan budget may afford near Fort Bliss.",
 };
@@ -230,9 +231,7 @@ function BahRateCard({ rate }: { rate: BahRate }) {
   return (
     <div
       className={`relative flex min-h-[235px] items-center rounded-md bg-white px-8 py-8 shadow-[0_5px_16px_rgba(15,23,42,0.12)] ${
-        rate.featured
-          ? "border border-[#d5a94c]"
-          : "border border-slate-200"
+        rate.featured ? "border border-[#d5a94c]" : "border border-slate-200"
       }`}
     >
       {rate.featured && (
@@ -301,7 +300,7 @@ function MortgageCard({
       </div>
 
       <div className="mt-8">
-        {mortgageMath.map((row, index) => {
+        {mortgageMath.map((row) => {
           const isTotal = row.cost === "Estimated total payment";
 
           return (
@@ -431,7 +430,10 @@ export default function FortBlissBahPage() {
       <main className="min-h-screen bg-white text-slate-900">
         <section className="bg-white px-6 py-20 md:py-24">
           <div className="mx-auto max-w-5xl text-center">
-            <SectionHeading headingTag="h1" title="Understanding Fort Bliss BAH in 2026" />
+            <SectionHeading
+              headingTag="h1"
+              title="Understanding Fort Bliss BAH in 2026"
+            />
 
             <p className="mx-auto mt-8 max-w-4xl text-lg leading-relaxed text-[#405b8d] md:text-xl">
               Your BAH is one of the biggest factors in deciding whether to rent
@@ -488,8 +490,8 @@ export default function FortBlissBahPage() {
 
             <div className="mt-8 border-l-4 border-[#d5a94c] bg-white px-8 py-6 shadow-sm">
               <p className="text-[#334b7a]">
-                BAH without dependents is lower. Confirm your exact amount by ZIP
-                code, rank, and dependency status using the official DoD BAH
+                BAH without dependents is lower. Confirm your exact amount by
+                ZIP code, rank, and dependency status using the official DoD BAH
                 calculator.
               </p>
             </div>

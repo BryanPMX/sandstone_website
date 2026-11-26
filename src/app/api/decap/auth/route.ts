@@ -11,72 +11,159 @@ type OAuthStatePayload = {
 const STATE_COOKIE_NAME = "decap_oauth_state";
 const STATE_COOKIE_MAX_AGE_SECONDS = 60 * 10;
 
-function getRequiredEnv(name: string): string {
-  const value = process.env[name]?.trim();
+const PRODUCTION_ORIGIN = "https://www.sandstone.homes";
+const DEVELOPMENT_ORIGIN = "http://localhost:3000";
 
-  if (!value) {
-    throw new Error(`[DecapAuth] Missing required env var: ${name}`);
+function normalizeOrigin(value: string): string | null {
+  try {
+    const url = new URL(value);
+
+    if (
+      !["http:", "https:"].includes(url.protocol) ||
+      url.username ||
+      url.password ||
+      url.pathname !== "/" ||
+      url.search ||
+      url.hash
+    ) {
+      return null;
+    }
+
+    return url.origin;
+  } catch {
+    return null;
+  }
+}
+
+function getAllowedOrigins(): Set<string> {
+  const origins = new Set<string>([PRODUCTION_ORIGIN]);
+
+  if (process.env.NODE_ENV === "development") {
+    origins.add(DEVELOPMENT_ORIGIN);
   }
 
-  return value;
+  const configuredOrigin =
+    process.env.CMS_ALLOWED_ORIGIN?.trim();
+
+  if (configuredOrigin) {
+    const normalized = normalizeOrigin(configuredOrigin);
+
+    if (!normalized || !origins.has(normalized)) {
+      throw new Error("Invalid CMS allowed origin configuration");
+    }
+
+    return new Set([normalized]);
+  }
+
+  return origins;
 }
 
-function getStateSigningSecret(): string {
-  return process.env.CMS_OAUTH_STATE_SECRET?.trim() || getRequiredEnv("GITHUB_CLIENT_SECRET");
-}
-
-function signStatePayload(payload: {
-  nonce: string;
-  origin: string;
-  issuedAt: number;
-}): string {
-  return createHmac("sha256", getStateSigningSecret())
-    .update(`${payload.nonce}.${payload.origin}.${payload.issuedAt}`)
-    .digest("hex");
+function errorResponse(message: string, status: number) {
+  return NextResponse.json(
+    { error: message },
+    {
+      status,
+      headers: {
+        "Cache-Control": "no-store",
+        "Referrer-Policy": "no-referrer",
+      },
+    },
+  );
 }
 
 export async function GET(request: Request): Promise<Response> {
   const requestUrl = new URL(request.url);
-  const allowedOrigin = process.env.CMS_ALLOWED_ORIGIN?.trim();
-  const requestedOrigin = requestUrl.searchParams.get("origin")?.trim();
 
-  const targetOrigin = new URL(
-    requestedOrigin || allowedOrigin || requestUrl.origin
-  ).origin;
+  let allowedOrigins: Set<string>;
 
-  if (allowedOrigin) {
-    const normalizedAllowedOrigin = new URL(allowedOrigin).origin;
-
-    if (new URL(targetOrigin).origin !== normalizedAllowedOrigin) {
-      return NextResponse.json(
-        { error: "Invalid origin" },
-        { status: 400 }
-      );
-    }
+  try {
+    allowedOrigins = getAllowedOrigins();
+  } catch {
+    return errorResponse(
+      "OAuth configuration is invalid.",
+      503,
+    );
   }
 
-  const issuedAt = Date.now();
+  const originParameters =
+    requestUrl.searchParams.getAll("origin");
+
+  if (originParameters.length > 1) {
+    return errorResponse("Invalid origin", 400);
+  }
+
+  const requestedOrigin =
+    originParameters[0] ?? requestUrl.origin;
+
+  const targetOrigin = normalizeOrigin(requestedOrigin);
+
+  if (
+    !targetOrigin ||
+    !allowedOrigins.has(targetOrigin) ||
+    !allowedOrigins.has(requestUrl.origin) ||
+    targetOrigin !== requestUrl.origin
+  ) {
+    return errorResponse("Invalid origin", 400);
+  }
+
+  const clientId = process.env.GITHUB_CLIENT_ID?.trim();
+  const clientSecret = process.env.GITHUB_CLIENT_SECRET?.trim();
+
+  const signingSecret =
+    process.env.CMS_OAUTH_STATE_SECRET?.trim() ||
+    clientSecret;
+
+  if (!clientId || !clientSecret || !signingSecret) {
+    return errorResponse(
+      "GitHub authentication is not configured.",
+      503,
+    );
+  }
+
   const unsignedStatePayload = {
     nonce: randomUUID(),
     origin: targetOrigin,
-    issuedAt,
+    issuedAt: Date.now(),
   };
+
+  const signature = createHmac("sha256", signingSecret)
+    .update(
+      `${unsignedStatePayload.nonce}.${unsignedStatePayload.origin}.${unsignedStatePayload.issuedAt}`,
+    )
+    .digest("hex");
+
   const statePayload: OAuthStatePayload = {
     ...unsignedStatePayload,
-    signature: signStatePayload(unsignedStatePayload),
+    signature,
   };
-  const encodedState = Buffer.from(JSON.stringify(statePayload)).toString("base64url");
 
-  const authUrl = new URL("https://github.com/login/oauth/authorize");
-  authUrl.searchParams.set("client_id", getRequiredEnv("GITHUB_CLIENT_ID"));
-  authUrl.searchParams.set("redirect_uri", `${requestUrl.origin}/api/decap/callback`);
+  const encodedState = Buffer.from(
+    JSON.stringify(statePayload),
+  ).toString("base64url");
+
+  const authUrl = new URL(
+    "https://github.com/login/oauth/authorize",
+  );
+
+  authUrl.searchParams.set("client_id", clientId);
+
+  authUrl.searchParams.set(
+    "redirect_uri",
+    `${targetOrigin}/api/decap/callback`,
+  );
+
   authUrl.searchParams.set(
     "scope",
-    process.env.CMS_OAUTH_SCOPES?.trim() || "repo,user:email"
+    process.env.CMS_OAUTH_SCOPES?.trim() || "repo,user:email",
   );
+
   authUrl.searchParams.set("state", encodedState);
 
   const response = NextResponse.redirect(authUrl);
+
+  response.headers.set("Cache-Control", "no-store");
+  response.headers.set("Referrer-Policy", "no-referrer");
+
   response.cookies.set({
     name: STATE_COOKIE_NAME,
     value: encodedState,

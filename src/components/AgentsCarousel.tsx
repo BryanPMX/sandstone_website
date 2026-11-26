@@ -26,7 +26,7 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
 
     const visibleCards = Math.max(
       1,
-      Math.round((carousel.clientWidth + gap) / singleCardStep)
+      Math.round((carousel.clientWidth + gap) / singleCardStep),
     );
 
     return singleCardStep * visibleCards;
@@ -61,7 +61,7 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
         });
       }
     },
-    [agents.length, getCarouselStep]
+    [agents.length, getCarouselStep],
   );
 
   useEffect(() => {
@@ -124,6 +124,7 @@ export function AgentsCarousel({ agents }: AgentsCarouselProps) {
               className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#17211d]"
             >
               <div className="relative aspect-[4/4.7] overflow-hidden bg-[#17211d] shadow-[0_18px_45px_rgba(23,33,29,0.12)]">
+                {/* eslint-disable-next-line @next/next/no-img-element -- Preserve existing agent image delivery and loading behavior. */}
                 <img
                   src={agent.image}
                   alt={agent.name}

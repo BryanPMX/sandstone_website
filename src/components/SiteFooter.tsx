@@ -28,6 +28,7 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
     "/bah-fort-bliss-2026",
     "/pcs-el-paso-checklist",
   ]);
+
   const navGroups = [
     {
       title: "Explore",
@@ -38,6 +39,7 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
       items: FOOTER_NAV.filter((item) => militaryHrefs.has(item.href)),
     },
   ];
+
   const linkClassName =
     "inline-flex min-h-11 items-center text-sm text-white/85 transition hover:text-[var(--sandstone-sand-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sandstone-sand-gold)] focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--sandstone-navy)]";
 
@@ -50,9 +52,7 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
         <div
           className={cn(
             "grid gap-8 lg:gap-12",
-            showNav
-              ? "lg:grid-cols-[1.1fr_1.3fr]"
-              : "grid-cols-1"
+            showNav ? "lg:grid-cols-[1.1fr_1.3fr]" : "grid-cols-1",
           )}
         >
           <div className="text-left">
@@ -101,7 +101,10 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
           </div>
 
           {showNav ? (
-            <nav aria-label="Footer" className="grid gap-8 sm:grid-cols-[1.3fr_1fr]">
+            <nav
+              aria-label="Footer"
+              className="grid gap-8 sm:grid-cols-[1.3fr_1fr]"
+            >
               {navGroups.map((group) => (
                 <div key={group.title}>
                   <h2 className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--sandstone-sand-gold)]">
@@ -143,6 +146,7 @@ export function SiteFooter({ showNav = true }: SiteFooterProps) {
                   src={img.src}
                   alt={img.alt}
                   fill
+                  sizes={isMLS ? "112px" : "96px"}
                   className={`object-contain object-center ${
                     isMLS ? "[filter:invert(1)_brightness(1.5)]" : ""
                   }`}

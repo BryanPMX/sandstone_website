@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { submitListingInquiry } from "@/actions/submit-listing-inquiry";
 import { Button } from "@/components/ui/button";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { SubmitLeadState } from "@/types";
@@ -17,6 +18,7 @@ interface ListingInquiryCardProps {
   listingPath: string;
   listingPrice: string;
   listingAgentName?: string;
+  turnstileSiteKey?: string;
 }
 
 export function ListingInquiryCard({
@@ -27,11 +29,23 @@ export function ListingInquiryCard({
   listingPath,
   listingPrice,
   listingAgentName,
+  turnstileSiteKey = "",
 }: ListingInquiryCardProps) {
   const [state, formAction, isPending] = useActionState(
     submitListingInquiry,
     initialState,
   );
+
+  const [captchaVersion, setCaptchaVersion] = useState(0);
+  const [previousResult, setPreviousResult] = useState(state);
+
+  if (previousResult !== state) {
+    setPreviousResult(state);
+
+    if (state) {
+      setCaptchaVersion((version) => version + 1);
+    }
+  }
 
   useEffect(() => {
     if (!state) return;
@@ -45,7 +59,11 @@ export function ListingInquiryCard({
       ...(state.success
         ? {}
         : {
-            error_type: state.fieldErrors ? "validation" : "delivery",
+            error_type: state.fieldErrors?.captcha
+              ? "captcha"
+              : state.fieldErrors
+                ? "validation"
+                : "delivery",
           }),
     });
   }, [state]);
@@ -218,11 +236,36 @@ export function ListingInquiryCard({
           )}
         </div>
 
+        <div className="space-y-2 rounded-lg border border-[var(--sandstone-navy)]/10 bg-white p-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--sandstone-navy)]">
+            Security Check
+          </p>
+
+          {state?.success === false && state.fieldErrors?.captcha && (
+            <p role="alert" className="text-xs text-red-600">
+              {state.fieldErrors.captcha[0]}
+            </p>
+          )}
+
+          {turnstileSiteKey ? (
+            <TurnstileWidget
+              key={`listing-inquiry-${captchaVersion}`}
+              siteKey={turnstileSiteKey}
+              formType="listing_inquiry"
+            />
+          ) : (
+            <p role="alert" className="text-xs text-red-600">
+              Security verification is temporarily unavailable.
+              Please contact our team directly.
+            </p>
+          )}
+        </div>
+
         {/* Submit */}
         <Button
           type="submit"
           className="mt-2 w-full rounded-lg bg-[var(--sandstone-navy)] py-3 text-base font-semibold text-white transition hover:opacity-95"
-          disabled={isPending}
+          disabled={isPending || !turnstileSiteKey}
         >
           {isPending ? "Submitting..." : "CONTACT OUR TEAM"}
         </Button>

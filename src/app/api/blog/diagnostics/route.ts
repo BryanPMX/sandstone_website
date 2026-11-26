@@ -61,6 +61,17 @@ async function inspectDirectory(directory: string) {
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  if (process.env.NODE_ENV !== "development") {
+    return NextResponse.json(
+      { error: "Not found." },
+      {
+        status: 404,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  }
   const directories = await Promise.all(CANDIDATE_DIRS.map(inspectDirectory));
 
   return NextResponse.json({

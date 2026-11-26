@@ -1,14 +1,10 @@
-/**
- * Result of verifying a CAPTCHA token with an external provider.
- */
+import "server-only";
+
 export interface CaptchaVerificationResult {
   ok: boolean;
   error?: string;
 }
 
-/**
- * Abstraction for CAPTCHA verification (Turnstile, reCAPTCHA, hCaptcha).
- */
 export interface ICaptchaVerificationService {
   verify(token: string, secretKey: string): Promise<CaptchaVerificationResult>;
 }
@@ -20,8 +16,22 @@ type TurnstileVerifyResponse = {
 
 async function verifyTurnstileToken(
   token: string,
-  secretKey: string
+  secretKey: string,
 ): Promise<CaptchaVerificationResult> {
+  if (typeof token !== "string" || !token.trim() || token.length > 2048) {
+    return {
+      ok: false,
+      error: "Please complete the captcha and try again.",
+    };
+  }
+
+  if (!secretKey.trim()) {
+    return {
+      ok: false,
+      error: "Security verification is temporarily unavailable.",
+    };
+  }
+
   try {
     const response = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
@@ -34,12 +44,17 @@ async function verifyTurnstileToken(
           secret: secretKey,
           response: token,
         }),
-      }
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000),
+      },
     );
 
     if (!response.ok) {
-      const text = await response.text();
-      console.error("[CaptchaService] verification HTTP error:", response.status, text);
+      console.error(
+        "[CaptchaService] Verification HTTP error:",
+        response.status,
+      );
+
       return {
         ok: false,
         error: "Captcha verification failed. Please try again.",
@@ -48,8 +63,7 @@ async function verifyTurnstileToken(
 
     const data = (await response.json()) as TurnstileVerifyResponse;
 
-    if (!data.success) {
-      console.warn("[CaptchaService] Turnstile rejected token:", data["error-codes"]);
+    if (data.success !== true) {
       return {
         ok: false,
         error: "Please complete the captcha and try again.",
@@ -57,11 +71,12 @@ async function verifyTurnstileToken(
     }
 
     return { ok: true };
-  } catch (error) {
-    console.error("[CaptchaService] verification request failed:", error);
+  } catch {
+    console.error("[CaptchaService] Verification request failed.");
+
     return {
       ok: false,
-      error: "Captcha verification failed. Please try again.",
+      error: "Security verification failed. Please try again.",
     };
   }
 }

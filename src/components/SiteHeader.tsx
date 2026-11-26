@@ -43,6 +43,7 @@ export function SiteHeader({
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
   const [isAreasMenuOpen, setIsAreasMenuOpen] = useState(false);
   const [isResourcesMenuOpen, setIsResourcesMenuOpen] = useState(false);
+  const [previousPathname, setPreviousPathname] = useState(pathname);
 
   const desktopLeftPaths = new Set([
     "/listings",
@@ -79,12 +80,14 @@ export function SiteHeader({
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  useEffect(() => {
+  // Close all navigation menus when the pathname changes.
+  if (previousPathname !== pathname) {
+    setPreviousPathname(pathname);
     setIsMobileMenuOpen(false);
     setIsContactMenuOpen(false);
     setIsAreasMenuOpen(false);
     setIsResourcesMenuOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!isContactMenuOpen && !isAreasMenuOpen && !isResourcesMenuOpen) {

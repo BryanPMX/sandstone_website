@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useId, useState } from "react";
@@ -23,11 +24,14 @@ export function PcsHeader() {
   const contactMenuId = useId();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState(false);
+  const [previousPathname, setPreviousPathname] = useState(pathname);
 
-  useEffect(() => {
+  // Close navigation menus when the pathname changes.
+  if (previousPathname !== pathname) {
+    setPreviousPathname(pathname);
     setIsMobileMenuOpen(false);
     setIsContactMenuOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!isContactMenuOpen) return;
@@ -152,4 +156,3 @@ export function PcsHeader() {
     </header>
   );
 }
-

@@ -9,7 +9,10 @@ const MAX_VISIBLE_PAGE_BUTTONS = 5;
 const INITIAL_RENDERED_CARDS = 6;
 const CARD_RENDER_BATCH_SIZE = 3;
 
-function buildVisiblePageWindow(currentPage: number, totalPages: number): number[] {
+function buildVisiblePageWindow(
+  currentPage: number,
+  totalPages: number,
+): number[] {
   if (totalPages <= MAX_VISIBLE_PAGE_BUTTONS) {
     return Array.from({ length: totalPages }, (_, index) => index + 1);
   }
@@ -35,88 +38,130 @@ export function ListingsMapSidebar({
   properties,
   mapContextQuery,
 }: ListingsMapSidebarProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [renderedCardCount, setRenderedCardCount] = useState(SIDEBAR_PAGE_SIZE);
+  const [requestedPage, setCurrentPage] = useState(1);
+  const [renderedCardCount, setRenderedCardCount] = useState(
+    INITIAL_RENDERED_CARDS,
+  );
   const containerRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+
   useEffect(() => {
     const container = containerRef.current;
+
     if (!container) return;
-    if (!("IntersectionObserver" in window)) {
-      setIsVisible(true);
-      return;
+
+    if (typeof IntersectionObserver !== "function") {
+      const frame = window.requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
+
+      return () => window.cancelAnimationFrame(frame);
     }
+
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting)) {
         setIsVisible(true);
         observer.disconnect();
       }
     });
+
     observer.observe(container);
+
     return () => observer.disconnect();
   }, []);
+
   const deferredProperties = useDeferredValue(properties);
-  const totalPages = Math.max(1, Math.ceil(deferredProperties.length / SIDEBAR_PAGE_SIZE));
 
-  useEffect(() => {
+  const [previousProperties, setPreviousProperties] =
+    useState(deferredProperties);
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(deferredProperties.length / SIDEBAR_PAGE_SIZE),
+  );
+
+  // Reset pagination when the deferred property collection changes.
+  if (previousProperties !== deferredProperties) {
+    setPreviousProperties(deferredProperties);
     setCurrentPage(1);
-  }, [deferredProperties]);
+  }
 
-  useEffect(() => {
-    setCurrentPage((previousPage) => Math.min(previousPage, totalPages));
-  }, [totalPages]);
+  const currentPage =
+    previousProperties !== deferredProperties
+      ? 1
+      : Math.min(requestedPage, totalPages);
 
   const firstVisibleIndex = (currentPage - 1) * SIDEBAR_PAGE_SIZE;
+
   const visibleProperties = useMemo(
-    () => deferredProperties.slice(firstVisibleIndex, firstVisibleIndex + SIDEBAR_PAGE_SIZE),
-    [deferredProperties, firstVisibleIndex]
+    () =>
+      deferredProperties.slice(
+        firstVisibleIndex,
+        firstVisibleIndex + SIDEBAR_PAGE_SIZE,
+      ),
+    [deferredProperties, firstVisibleIndex],
   );
+
+  const [previousVisibleProperties, setPreviousVisibleProperties] =
+    useState(visibleProperties);
+
+  // Reset progressive rendering whenever the visible page changes.
+  if (previousVisibleProperties !== visibleProperties) {
+    setPreviousVisibleProperties(visibleProperties);
+    setRenderedCardCount(
+      Math.min(INITIAL_RENDERED_CARDS, visibleProperties.length),
+    );
+  }
 
   useEffect(() => {
     const totalVisible = visibleProperties.length;
 
     if (totalVisible <= INITIAL_RENDERED_CARDS) {
-      setRenderedCardCount(totalVisible);
       return;
     }
 
-    setRenderedCardCount(INITIAL_RENDERED_CARDS);
-
     let cancelled = false;
+    let timeoutId: number | undefined;
+    let nextCount = INITIAL_RENDERED_CARDS;
 
     const paintNextBatch = () => {
       if (cancelled) {
         return;
       }
 
-      setRenderedCardCount((previous) => {
-        const next = Math.min(previous + CARD_RENDER_BATCH_SIZE, totalVisible);
+      nextCount = Math.min(nextCount + CARD_RENDER_BATCH_SIZE, totalVisible);
 
-        if (next < totalVisible) {
-          window.setTimeout(paintNextBatch, 28);
-        }
+      setRenderedCardCount(nextCount);
 
-        return next;
-      });
+      if (nextCount < totalVisible) {
+        timeoutId = window.setTimeout(paintNextBatch, 28);
+      }
     };
 
-    window.setTimeout(paintNextBatch, 18);
+    timeoutId = window.setTimeout(paintNextBatch, 18);
 
     return () => {
       cancelled = true;
+
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId);
+      }
     };
   }, [visibleProperties]);
 
   const renderedProperties = useMemo(
     () => visibleProperties.slice(0, renderedCardCount),
-    [renderedCardCount, visibleProperties]
+    [renderedCardCount, visibleProperties],
   );
 
   const visiblePageButtons = useMemo(
     () => buildVisiblePageWindow(currentPage, totalPages),
-    [currentPage, totalPages]
+    [currentPage, totalPages],
   );
-  const visibleStart = deferredProperties.length === 0 ? 0 : firstVisibleIndex + 1;
+
+  const visibleStart =
+    deferredProperties.length === 0 ? 0 : firstVisibleIndex + 1;
+
   const visibleEnd = firstVisibleIndex + visibleProperties.length;
 
   const handlePageChange = (page: number) => {
@@ -127,7 +172,10 @@ export function ListingsMapSidebar({
     setCurrentPage(page);
 
     if (containerRef.current) {
-      containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      containerRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -143,18 +191,22 @@ export function ListingsMapSidebar({
         >
           Showing {visibleStart}-{visibleEnd} of {deferredProperties.length}
         </p>
-        <p className="text-xs text-[var(--sandstone-charcoal)]/65">Page {currentPage} of {totalPages}</p>
+
+        <p className="text-xs text-[var(--sandstone-charcoal)]/65">
+          Page {currentPage} of {totalPages}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2">
-        {isVisible && renderedProperties.map((property) => (
-          <ListingCard
-            key={property.id}
-            property={property}
-            priority={false}
-            extraQueryParams={mapContextQuery}
-          />
-        ))}
+        {isVisible &&
+          renderedProperties.map((property) => (
+            <ListingCard
+              key={property.id}
+              property={property}
+              priority={false}
+              extraQueryParams={mapContextQuery}
+            />
+          ))}
       </div>
 
       {renderedCardCount < visibleProperties.length && (
@@ -164,7 +216,10 @@ export function ListingsMapSidebar({
       )}
 
       {totalPages > 1 && (
-        <nav className="mt-5 flex flex-wrap items-center justify-center gap-2" aria-label="Listing pages">
+        <nav
+          className="mt-5 flex flex-wrap items-center justify-center gap-2"
+          aria-label="Listing pages"
+        >
           <button
             type="button"
             onClick={() => handlePageChange(currentPage - 1)}

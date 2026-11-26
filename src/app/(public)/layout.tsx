@@ -36,16 +36,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={montserrat.variable}>
+    <html
+      lang="en"
+      className={montserrat.variable}
+      data-scroll-behavior="smooth"
+    >
       <head>
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://connect.facebook.net" />
         <link rel="preconnect" href="https://maps.googleapis.com" />
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-JEJNFNHWV3"
-        ></script>
-        <script
+      </head>
+
+      <body
+        suppressHydrationWarning
+        className="min-h-screen font-sans antialiased"
+      >
+        <Script
+          id="google-analytics-init"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
@@ -56,12 +64,13 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
 
-      <body
-        suppressHydrationWarning
-        className="min-h-screen font-sans antialiased"
-      >
+        <Script
+          id="google-analytics-script"
+          src="https://www.googletagmanager.com/gtag/js?id=G-JEJNFNHWV3"
+          strategy="afterInteractive"
+        />
+
         <Script
           id="meta-pixel-script"
           dangerouslySetInnerHTML={{
@@ -70,8 +79,8 @@ export default function RootLayout({
           }}
         />
 
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <noscript>
+          {/* eslint-disable-next-line @next/next/no-img-element -- Meta Pixel requires a native tracking image for the no-JavaScript fallback. */}
           <img
             height="1"
             width="1"

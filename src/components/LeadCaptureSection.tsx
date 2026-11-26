@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Script from "next/script";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,90 +23,6 @@ import {
 } from "@/constants/site";
 
 const initialState: SubmitLeadState | null = null;
-
-type TurnstileApi = {
-  render: (
-    container: HTMLElement,
-    options: Record<string, string | boolean>
-  ) => string;
-  remove?: (widgetId: string) => void;
-};
-
-declare global {
-  interface Window {
-    turnstile?: TurnstileApi;
-  }
-}
-
-function TurnstileWidget({
-  siteKey,
-  formType,
-}: {
-  siteKey: string;
-  formType: LeadFormType;
-}) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const widgetIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    let isCancelled = false;
-    let pollId: number | null = null;
-
-    const renderWidget = () => {
-      if (isCancelled || widgetIdRef.current || !containerRef.current) {
-        return;
-      }
-
-      if (!window.turnstile?.render) {
-        return;
-      }
-
-      containerRef.current.innerHTML = "";
-      widgetIdRef.current = window.turnstile.render(containerRef.current, {
-        sitekey: siteKey,
-        theme: "light",
-      });
-
-      if (pollId !== null) {
-        window.clearInterval(pollId);
-        pollId = null;
-      }
-    };
-
-    const handleReady = () => {
-      renderWidget();
-    };
-
-    renderWidget();
-    window.addEventListener("turnstile-ready", handleReady);
-
-    if (!widgetIdRef.current) {
-      pollId = window.setInterval(renderWidget, 250);
-    }
-
-    return () => {
-      isCancelled = true;
-      window.removeEventListener("turnstile-ready", handleReady);
-
-      if (pollId !== null) {
-        window.clearInterval(pollId);
-      }
-
-      if (widgetIdRef.current && window.turnstile?.remove) {
-        window.turnstile.remove(widgetIdRef.current);
-        widgetIdRef.current = null;
-      }
-    };
-  }, [formType, siteKey]);
-
-  return (
-    <div
-      ref={containerRef}
-      data-turnstile-form={formType}
-      className="min-h-[65px]"
-    />
-  );
-}
 
 export interface LeadCaptureSectionProps {
   formType: LeadFormType;
@@ -166,6 +82,15 @@ export function LeadCaptureSection({
   const [smsExpanded, setSmsExpanded] = useState(false);
   const startedRef = useRef(false);
   const [captchaVersion, setCaptchaVersion] = useState(0);
+  const [previousResult, setPreviousResult] = useState({ state, formType });
+
+  // Reset Turnstile when a failed submission result changes.
+  if (previousResult.state !== state || previousResult.formType !== formType) {
+    setPreviousResult({ state, formType });
+    if (state && !state.success) {
+      setCaptchaVersion((version) => version + 1);
+    }
+  }
   const track = (event: string, extra: Record<string, string> = {}) => {
     const w = window as typeof window & { gtag?: (...args: unknown[]) => void };
     w.gtag?.("event", event, { form_type: formType, ...extra });
@@ -175,11 +100,18 @@ export function LeadCaptureSection({
   const id = (field: string) => `${formType}-${field}`;
   useEffect(() => {
     if (!state) return;
-    if (!state.success) setCaptchaVersion((version) => version + 1);
     const w = window as typeof window & { gtag?: (...args: unknown[]) => void };
     w.gtag?.("event", state.success ? "generate_lead" : "lead_form_error", {
       form_type: formType,
-      ...(state.success ? {} : { error_type: state.fieldErrors?.captcha ? "captcha" : state.fieldErrors ? "validation" : "delivery" }),
+      ...(state.success
+        ? {}
+        : {
+            error_type: state.fieldErrors?.captcha
+              ? "captcha"
+              : state.fieldErrors
+                ? "validation"
+                : "delivery",
+          }),
     });
   }, [state, formType]);
   const requiresAddress = formType === "sell" || formType === "rent";
@@ -190,9 +122,7 @@ export function LeadCaptureSection({
   const HeadingTag = headingTag;
 
   const formCard = (
-    <div
-      className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6"
-    >
+    <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-[0_20px_40px_-26px_rgba(37,52,113,0.45)] ring-1 ring-white/70 backdrop-blur-sm sm:p-5 md:p-6">
       <form
         action={formAction}
         className={`[&_input:not([type=checkbox])]:min-h-12 [&_input:not([type=checkbox])]:text-base [&_input]:placeholder:text-slate-600 [&_textarea]:text-base [&_textarea]:placeholder:text-slate-600 ${isHero ? "space-y-3.5" : "space-y-4"}`}
@@ -206,8 +136,16 @@ export function LeadCaptureSection({
       >
         {mappingReference ? (
           <>
-            <input type="hidden" name="mappingReference" value={mappingReference} />
-            <input type="hidden" name="mapping_reference" value={mappingReference} />
+            <input
+              type="hidden"
+              name="mappingReference"
+              value={mappingReference}
+            />
+            <input
+              type="hidden"
+              name="mapping_reference"
+              value={mappingReference}
+            />
           </>
         ) : null}
         {state?.success === true && (
@@ -224,7 +162,12 @@ export function LeadCaptureSection({
 
         <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="space-y-1">
-            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("firstName")}>First Name</Label>
+            <Label
+              className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]"
+              htmlFor={id("firstName")}
+            >
+              First Name
+            </Label>
             <Input
               id={id("firstName")}
               name="firstName"
@@ -246,7 +189,12 @@ export function LeadCaptureSection({
           </div>
 
           <div className="space-y-1">
-            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("lastName")}>Last Name{formType === "contact" ? " (optional)" : ""}</Label>
+            <Label
+              className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]"
+              htmlFor={id("lastName")}
+            >
+              Last Name{formType === "contact" ? " (optional)" : ""}
+            </Label>
             <Input
               id={id("lastName")}
               name="lastName"
@@ -270,7 +218,12 @@ export function LeadCaptureSection({
 
         <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="space-y-1">
-            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("email")}>Email</Label>
+            <Label
+              className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]"
+              htmlFor={id("email")}
+            >
+              Email
+            </Label>
             <Input
               id={id("email")}
               name="email"
@@ -293,7 +246,10 @@ export function LeadCaptureSection({
           </div>
 
           <div className="space-y-1">
-            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("phone")}>
+            <Label
+              className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]"
+              htmlFor={id("phone")}
+            >
               {formType === "join" ? "Phone Number" : "Phone"}
             </Label>
             <Input
@@ -323,7 +279,12 @@ export function LeadCaptureSection({
 
         {requiresAddress ? (
           <div className="space-y-1">
-            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("address")}>Address</Label>
+            <Label
+              className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]"
+              htmlFor={id("address")}
+            >
+              Address
+            </Label>
             <Input
               id={id("address")}
               name="address"
@@ -346,7 +307,12 @@ export function LeadCaptureSection({
 
         {showMessageField ? (
           <div className={`space-y-1 ${hideMessageField ? "hidden" : ""}`}>
-            <Label className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]" htmlFor={id("message")}>Message</Label>
+            <Label
+              className="text-sm font-semibold leading-5 text-[var(--sandstone-navy)]"
+              htmlFor={id("message")}
+            >
+              Message
+            </Label>
             <Textarea
               id={id("message")}
               name="message"
@@ -354,13 +320,11 @@ export function LeadCaptureSection({
               rows={2}
               disabled={isPending}
               defaultValue=""
-              className={
-                `${
-                  state?.success === false && state.fieldErrors?.message
-                    ? "border-red-500"
-                    : ""
-                } min-h-[88px]`
-              }
+              className={`${
+                state?.success === false && state.fieldErrors?.message
+                  ? "border-red-500"
+                  : ""
+              } min-h-[88px]`}
             />
             {state?.success === false && state.fieldErrors?.message && (
               <p className="text-sm leading-5 text-red-700">
@@ -394,13 +358,16 @@ export function LeadCaptureSection({
               />
             ) : (
               <p className="text-sm leading-5 text-red-700">
-                Security verification is temporarily unavailable. Please contact us directly.
+                Security verification is temporarily unavailable. Please contact
+                us directly.
               </p>
             )}
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2 text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
-            <span>Text updates are optional. Choose your preferences below.</span>
+            <span>
+              Text updates are optional. Choose your preferences below.
+            </span>
             <button
               type="button"
               aria-expanded={smsExpanded}
@@ -408,7 +375,9 @@ export function LeadCaptureSection({
               onClick={() => setSmsExpanded((prev) => !prev)}
               className="inline-flex min-h-11 items-center font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
             >
-              {smsExpanded ? "Hide SMS preferences" : "SMS preferences (optional)"}
+              {smsExpanded
+                ? "Hide SMS preferences"
+                : "SMS preferences (optional)"}
             </button>
           </div>
 
@@ -417,80 +386,80 @@ export function LeadCaptureSection({
             className={!smsExpanded ? "hidden" : ""}
           >
             <fieldset className="space-y-2.5">
-            <legend className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-navy)]">
-              Text Message Preferences
-            </legend>
-            <p className="text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
-              Choose which SMS messages you want from {SMS_DISCLOSURE_BRAND}.
-              Both options are optional and do not block form submission.
-            </p>
+              <legend className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--sandstone-navy)]">
+                Text Message Preferences
+              </legend>
+              <p className="text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
+                Choose which SMS messages you want from {SMS_DISCLOSURE_BRAND}.
+                Both options are optional and do not block form submission.
+              </p>
 
-            <div className="grid gap-2.5 md:grid-cols-2 md:gap-3">
-              <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-sm leading-6 text-[var(--sandstone-charcoal)]">
-                <input
-                  type="checkbox"
-                  name="acceptTransactionalSms"
-                  value="on"
-                  disabled={isPending}
-                  className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                />
-                <span>
-                  <span className="block font-semibold text-[var(--sandstone-navy)]">
-                    Transactional SMS updates
-                  </span>
-                  <span className="mt-1 block">
-                    {FORM_TRANSACTIONAL_SMS_COPY}
-                  </span>
-                </span>
-              </label>
-
-              <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-sm leading-6 text-[var(--sandstone-charcoal)]">
-                <input
-                  type="checkbox"
-                  name="acceptMarketingSms"
-                  value="on"
-                  disabled={isPending}
-                  className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
-                />
-                <span>
-                  <span className="flex flex-wrap items-center gap-2 font-semibold text-[var(--sandstone-navy)]">
-                    <span>Marketing SMS updates</span>
-                    <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-xs uppercase tracking-[0.12em] text-[var(--sandstone-navy)]">
-                      Optional
+              <div className="grid gap-2.5 md:grid-cols-2 md:gap-3">
+                <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-sm leading-6 text-[var(--sandstone-charcoal)]">
+                  <input
+                    type="checkbox"
+                    name="acceptTransactionalSms"
+                    value="on"
+                    disabled={isPending}
+                    className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
+                  />
+                  <span>
+                    <span className="block font-semibold text-[var(--sandstone-navy)]">
+                      Transactional SMS updates
+                    </span>
+                    <span className="mt-1 block">
+                      {FORM_TRANSACTIONAL_SMS_COPY}
                     </span>
                   </span>
-                  <span className="mt-1 block">
-                    {FORM_MARKETING_SMS_COPY}
-                  </span>
-                </span>
-              </label>
-            </div>
+                </label>
 
-            <p className="text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
-              Review our{" "}
-              <Link
-                href={PRIVACY_POLICY_HREF}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
-              >
-                {PRIVACY_POLICY_LABEL}
-              </Link>
-              {" "}and{" "}
-              <Link
-                href={TERMS_AND_CONDITIONS_HREF}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
-              >
-                {TERMS_AND_CONDITIONS_LABEL}
-              </Link>
-              . Mobile opt-in data is not shared with third parties for
-              marketing purposes.
-            </p>
-          </fieldset>
+                <label className="flex h-full cursor-pointer items-start gap-3 rounded-lg border border-[var(--sandstone-navy)]/10 bg-[var(--sandstone-off-white)]/75 p-3 text-sm leading-6 text-[var(--sandstone-charcoal)]">
+                  <input
+                    type="checkbox"
+                    name="acceptMarketingSms"
+                    value="on"
+                    disabled={isPending}
+                    className="mt-0.5 h-4 w-4 rounded border-sandstone-brown/50 text-sandstone-navy focus:ring-sandstone-bronze"
+                  />
+                  <span>
+                    <span className="flex flex-wrap items-center gap-2 font-semibold text-[var(--sandstone-navy)]">
+                      <span>Marketing SMS updates</span>
+                      <span className="rounded-full bg-[var(--sandstone-sand-gold)]/15 px-2 py-0.5 text-xs uppercase tracking-[0.12em] text-[var(--sandstone-navy)]">
+                        Optional
+                      </span>
+                    </span>
+                    <span className="mt-1 block">
+                      {FORM_MARKETING_SMS_COPY}
+                    </span>
+                  </span>
+                </label>
+              </div>
+
+              <p className="text-sm leading-6 text-[var(--sandstone-charcoal)]/90">
+                Review our{" "}
+                <Link
+                  href={PRIVACY_POLICY_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
+                >
+                  {PRIVACY_POLICY_LABEL}
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href={TERMS_AND_CONDITIONS_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-sandstone-navy underline underline-offset-2 hover:text-sandstone-bronze"
+                >
+                  {TERMS_AND_CONDITIONS_LABEL}
+                </Link>
+                . Mobile opt-in data is not shared with third parties for
+                marketing purposes.
+              </p>
+            </fieldset>
+          </div>
         </div>
-      </div>
 
         <Button
           type="submit"
@@ -509,22 +478,12 @@ export function LeadCaptureSection({
   return (
     <section
       id={sectionId}
-      className={
-        `relative scroll-mt-20 ${
-          isHero
-            ? "overflow-hidden py-10 md:py-12 lg:py-16"
-            : "bg-gradient-to-b from-[#f6f2ec] to-white py-14 md:py-16"
-        }`
-      }
+      className={`relative scroll-mt-20 ${
+        isHero
+          ? "overflow-hidden py-10 md:py-12 lg:py-16"
+          : "bg-gradient-to-b from-[#f6f2ec] to-white py-14 md:py-16"
+      }`}
     >
-      <Script
-        id="cloudflare-turnstile-api"
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-        strategy="afterInteractive"
-        onReady={() => {
-          window.dispatchEvent(new Event("turnstile-ready"));
-        }}
-      />
 
       {isHero ? (
         <>
@@ -676,4 +635,3 @@ export function LeadCaptureSection({
     </section>
   );
 }
-

@@ -15,12 +15,14 @@ function parseFrontMatter(content: string) {
     return {} as Record<string, string>;
   }
 
-  return match[1].split("\n").reduce<Record<string, string>>((metadata, line) => {
-    const [key, ...rest] = line.split(":");
-    if (!key) return metadata;
-    metadata[key.trim()] = rest.join(":").trim();
-    return metadata;
-  }, {});
+  return match[1]
+    .split("\n")
+    .reduce<Record<string, string>>((metadata, line) => {
+      const [key, ...rest] = line.split(":");
+      if (!key) return metadata;
+      metadata[key.trim()] = rest.join(":").trim();
+      return metadata;
+    }, {});
 }
 
 function stripFrontMatter(content: string) {
@@ -33,11 +35,7 @@ function getPostDescription(frontMatter: Record<string, string>, body: string) {
     return frontMatter.description;
   }
 
-  return body
-    .replace(/\n+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 140);
+  return body.replace(/\n+/g, " ").replace(/\s+/g, " ").trim().slice(0, 140);
 }
 
 export async function getBlogPosts(): Promise<BlogPostMeta[]> {
@@ -61,10 +59,16 @@ export async function getBlogPosts(): Promise<BlogPostMeta[]> {
         body: body.trim(),
         updatedAt: statResult.mtime.getTime(),
       } as BlogPostMeta & { updatedAt: number };
-    })
+    }),
   );
 
   return posts
     .sort((a, b) => b.updatedAt - a.updatedAt)
-    .map(({ updatedAt, ...post }) => post);
+    .map((post) => ({
+      filename: post.filename,
+      title: post.title,
+      description: post.description,
+      imageUrl: post.imageUrl,
+      body: post.body,
+    }));
 }

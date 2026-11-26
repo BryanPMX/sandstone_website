@@ -4,6 +4,17 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET() {
+  if (process.env.NODE_ENV !== "development") {
+    return NextResponse.json(
+      { error: "Not found." },
+      {
+        status: 404,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  }
   const baseUrl = process.env.SPARK_API_BASE_URL ?? "https://replication.sparkapi.com";
   const token = process.env.SPARK_ACCESS_TOKEN ?? "";
 

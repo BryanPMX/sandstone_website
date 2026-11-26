@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -204,9 +205,11 @@ export default function JoinPage() {
                     aria-label={`View ${agent.name}'s profile`}
                     className="relative block aspect-[4/5] overflow-hidden bg-[#e7dfd2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9b7b56]"
                   >
-                    <img
+                    <Image
                       src={agent.image}
                       alt={agent.name}
+                      fill
+                      unoptimized
                       loading="lazy"
                       className="h-full w-full object-cover object-top transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
                     />
@@ -350,9 +353,11 @@ export default function JoinPage() {
               {/* Recruitment Image */}
 
               <div className="relative min-h-[380px] overflow-hidden bg-[#17211d] lg:min-h-[500px]">
-                <img
+                <Image
                   src="/uploads/real_estate_el_paso.webp"
                   alt="El Paso real estate"
+                  fill
+                  unoptimized
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover"
                 />

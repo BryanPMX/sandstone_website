@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -104,9 +105,12 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
               {/* Agent Portrait */}
               <div>
                 <div className="group relative aspect-[4/5] overflow-hidden bg-[#e7dfd2]">
-                  <img
+                  <Image
                     src={agent.image}
                     alt={agent.name}
+                    fill
+                    unoptimized
+                    loading="eager"
                     fetchPriority="high"
                     className="h-full w-full object-cover object-top transition-transform duration-700 motion-safe:group-hover:scale-105"
                   />
@@ -368,9 +372,11 @@ export default async function AgentBioPage({ params }: AgentPageProps) {
                       className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9b7b56]"
                     >
                       <div className="relative aspect-[4/5] overflow-hidden bg-[#e7dfd2]">
-                        <img
+                        <Image
                           src={member.image}
                           alt={member.name}
+                          fill
+                          unoptimized
                           loading="lazy"
                           className="h-full w-full object-cover object-top transition-transform duration-700 motion-safe:group-hover:scale-105"
                         />

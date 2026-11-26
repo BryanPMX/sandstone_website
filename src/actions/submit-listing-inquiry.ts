@@ -1,14 +1,14 @@
 "use server";
 
 import { z } from "zod";
-import { getListingInquiryWebhookUrl } from "@/config";
-import { leadSubmissionService } from "@/services";
+import { getListingInquiryWebhookUrl, getTurnstileSecretKey } from "@/config";
+import { captchaVerificationService, leadSubmissionService } from "@/services";
 import type { SubmitLeadState } from "@/types";
 
 const ListingInquirySchema = z.object({
   fullName: z.string().trim().min(1, "Full name is required").max(140),
 
-  email: z.string().trim().email("Invalid email address"),
+  email: z.string().trim().email("Invalid email address").max(254),
 
   phone: z.string().trim().min(1, "Phone is required").max(30),
 
@@ -77,6 +77,51 @@ export async function submitListingInquiry(
       success: false,
       error: "Please fix the errors below.",
       fieldErrors: parsed.error.flatten().fieldErrors,
+    };
+  }
+
+  const captchaToken = formData.get("cf-turnstile-response");
+  const secretKey = getTurnstileSecretKey();
+
+  if (
+    typeof captchaToken !== "string" ||
+    !captchaToken.trim() ||
+    captchaToken.length > 2048
+  ) {
+    return {
+      success: false,
+      error: "Please complete the security check.",
+      fieldErrors: {
+        captcha: ["Please complete the security check."],
+      },
+    };
+  }
+
+  if (!secretKey) {
+    return {
+      success: false,
+      error: "Security verification is temporarily unavailable.",
+      fieldErrors: {
+        captcha: ["Please try again later."],
+      },
+    };
+  }
+
+  const captchaResult = await captchaVerificationService.verify(
+    captchaToken,
+    secretKey,
+  );
+
+  if (!captchaResult.ok) {
+    const error =
+      captchaResult.error ?? "Security verification failed.";
+
+    return {
+      success: false,
+      error,
+      fieldErrors: {
+        captcha: [error],
+      },
     };
   }
 

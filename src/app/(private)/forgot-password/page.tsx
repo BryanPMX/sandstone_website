@@ -21,6 +21,7 @@ export default function ForgotPasswordPage() {
             src="/hero-home.webp"
             alt="Beautiful residential property"
             fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
             priority
             className="object-cover"
           />
@@ -48,12 +49,12 @@ export default function ForgotPasswordPage() {
             </p>
 
             <h1 className="max-w-xl text-4xl font-bold leading-tight text-white xl:text-6xl">
-              Let's get you back on track.
+              Let&apos;s get you back on track.
             </h1>
 
             <p className="mt-6 max-w-md text-base leading-relaxed text-white/80">
-              Your real estate journey doesn't have to wait. Recover access to
-              your Sandstone account and pick up right where you left off.
+              Your real estate journey doesn&apos;t have to wait. Recover access
+              to your Sandstone account and pick up right where you left off.
             </p>
 
             <div className="mt-10 space-y-5">

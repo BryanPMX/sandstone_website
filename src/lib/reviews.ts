@@ -15,12 +15,14 @@ function parseFrontMatter(content: string) {
     return {} as Record<string, string>;
   }
 
-  return match[1].split("\n").reduce<Record<string, string>>((metadata, line) => {
-    const [key, ...rest] = line.split(":");
-    if (!key) return metadata;
-    metadata[key.trim()] = rest.join(":").trim();
-    return metadata;
-  }, {});
+  return match[1]
+    .split("\n")
+    .reduce<Record<string, string>>((metadata, line) => {
+      const [key, ...rest] = line.split(":");
+      if (!key) return metadata;
+      metadata[key.trim()] = rest.join(":").trim();
+      return metadata;
+    }, {});
 }
 
 function stripFrontMatter(content: string) {
@@ -33,7 +35,7 @@ export async function getReviews(): Promise<ReviewMeta[]> {
   let files: string[] = [];
   try {
     files = await readdir(postsDir);
-  } catch (_e) {
+  } catch {
     return [];
   }
 
@@ -55,10 +57,16 @@ export async function getReviews(): Promise<ReviewMeta[]> {
         body,
         updatedAt: statResult.mtime.getTime(),
       } as ReviewMeta & { updatedAt: number };
-    })
+    }),
   );
 
   return reviews
     .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
-    .map(({ updatedAt: _updatedAt, ...rest }) => rest as ReviewMeta);
+    .map((review) => ({
+      filename: review.filename,
+      title: review.title,
+      author: review.author,
+      rating: review.rating,
+      body: review.body,
+    }));
 }

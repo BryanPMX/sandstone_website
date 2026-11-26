@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
 import Script from "next/script";
+import { getTurnstileSiteKey } from "@/config";
 import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -466,6 +467,7 @@ export default async function ListingPage({ params, searchParams }: PageProps) {
                 listingPath={listingPath}
                 listingPrice={property.price}
                 listingAgentName={agentName}
+                turnstileSiteKey={getTurnstileSiteKey() ?? ""}
               />
             </div>
           </section>

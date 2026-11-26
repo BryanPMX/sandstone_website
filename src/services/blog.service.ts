@@ -28,7 +28,10 @@ async function readBlogFiles(): Promise<BlogFileEntry[]> {
   await Promise.all(
     BLOG_CONTENT_DIRS.map(async (directory) => {
       try {
-        const entries = await fs.readdir(directory, { withFileTypes: true });
+        const entries = await fs.readdir(
+          /* turbopackIgnore: true */ directory,
+          { withFileTypes: true },
+        );
 
         for (const entry of entries) {
           if (!entry.isFile() || !entry.name.endsWith(".md")) {
@@ -37,7 +40,10 @@ async function readBlogFiles(): Promise<BlogFileEntry[]> {
 
           files.push({
             filename: entry.name,
-            fullPath: path.join(directory, entry.name),
+            fullPath: path.join(
+              /* turbopackIgnore: true */ directory,
+              entry.name,
+            ),
           });
         }
       } catch (error) {
@@ -113,7 +119,10 @@ async function getSortedPostsImpl(): Promise<BlogPostListItem[]> {
   await Promise.all(
     files.map(async ({ filename, fullPath }) => {
       const slug = filename.replace(/\.md$/, "");
-      const raw = await fs.readFile(fullPath, "utf8");
+      const raw = await fs.readFile(
+        /* turbopackIgnore: true */ fullPath,
+        "utf8",
+      );
       const parsed = matter(raw);
       const frontmatter = BlogSchema.safeParse(parsed.data);
 
@@ -146,7 +155,10 @@ async function getPostBySlugImpl(slug: string): Promise<BlogPost | null> {
 
   for (const fullPath of candidatePaths) {
     try {
-      const raw = await fs.readFile(fullPath, "utf8");
+      const raw = await fs.readFile(
+        /* turbopackIgnore: true */ fullPath,
+        "utf8",
+      );
       const parsed = matter(raw);
       const frontmatter = BlogSchema.safeParse(parsed.data);
 

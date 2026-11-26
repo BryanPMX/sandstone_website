@@ -1,10 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-
   images: {
     remotePatterns: [
       {
@@ -27,7 +23,7 @@ const nextConfig: NextConfig = {
   },
 
   outputFileTracingIncludes: {
-    "/*": ["./content/blog/**/*"],
+    "/*": ["./content/blog/**/*", "./content/posts/**/*"],
   },
 
   onDemandEntries: {
@@ -52,7 +48,11 @@ const nextConfig: NextConfig = {
         destination: "/blog/category/military-pcs",
         permanent: true,
       },
-      { source: "/renovations", destination: "https://www.sandstonepros.com/", permanent: true },
+      {
+        source: "/renovations",
+        destination: "https://www.sandstonepros.com/",
+        permanent: true,
+      },
     ];
   },
 };

@@ -127,6 +127,7 @@ export default function PortalPage() {
           src="/hero-home.webp"
           alt=""
           fill
+          sizes="100vw"
           className="object-cover object-center"
           priority
         />

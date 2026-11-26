@@ -16,6 +16,22 @@ export async function submitLeadForForm(
   _prevState: SubmitLeadState | null,
   formData: FormData
 ): Promise<SubmitLeadState> {
+  const allowedFormTypes: readonly string[] = [
+    "contact",
+    "sell",
+    "rent",
+    "join",
+    "giveaway",
+    "pcs",
+  ];
+
+  if (!allowedFormTypes.includes(formType)) {
+    return {
+      success: false,
+      error: "Invalid form type.",
+    };
+  }
+
   const raw = {
     firstName: formData.get("firstName") ?? "",
     lastName: formType === "contact"
@@ -30,7 +46,7 @@ export async function submitLeadForForm(
     acceptTransactionalSms: formData.get("acceptTransactionalSms") === "on",
     acceptMarketingSms: formData.get("acceptMarketingSms") === "on",
   };
-  const captchaToken = String(formData.get("cf-turnstile-response") ?? "");
+  const captchaToken = formData.get("cf-turnstile-response");
 
   const parsed = LeadSchema.safeParse(raw);
 
@@ -53,7 +69,11 @@ export async function submitLeadForForm(
     };
   }
 
-  if (!captchaToken) {
+  if (
+    typeof captchaToken !== "string" ||
+    !captchaToken.trim() ||
+    captchaToken.length > 2048
+  ) {
     return {
       success: false,
       error: "Please complete the captcha before submitting.",
