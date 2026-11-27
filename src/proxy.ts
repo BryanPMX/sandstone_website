@@ -1,10 +1,11 @@
-
 import { NextRequest, NextResponse } from "next/server";
+import { updateSession } from "@/lib/supabase/proxy";
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   let changed = false;
 
+  // Canonical domain redirect
   if (request.headers.get("host")?.split(":")[0] === "sandstone.homes") {
     url.hostname = "www.sandstone.homes";
     url.port = "";
@@ -12,6 +13,7 @@ export function proxy(request: NextRequest) {
     changed = true;
   }
 
+  // Remove unnecessary page=1 parameter
   if (
     url.pathname === "/listings" &&
     url.searchParams.getAll("page").length === 1 &&
@@ -25,23 +27,15 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  // Temporarily restrict administrator application routes
-  // until server-side administrator authorization is implemented.
-  // Preserve the independent GitHub-powered Decap Blog Editor.
   const pathname = url.pathname.replace(/\/+$/, "").toLowerCase();
 
-  const isAdminRoute =
-    pathname === "/admin" ||
-    pathname.startsWith("/admin/");
+  // Restrict administrator application routes.
+  // Preserve the independent Decap Blog Editor.
+  const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
 
-  const isBlogEditor =
-    pathname === "/admin/index.html";
+  const isBlogEditor = pathname === "/admin/index.html";
 
-  if (
-    process.env.NODE_ENV !== "development" &&
-    isAdminRoute &&
-    !isBlogEditor
-  ) {
+  if (process.env.NODE_ENV !== "development" && isAdminRoute && !isBlogEditor) {
     return new NextResponse(
       "Administrator access is temporarily unavailable.",
       {
@@ -53,11 +47,12 @@ export function proxy(request: NextRequest) {
           "Referrer-Policy": "no-referrer",
           "X-Content-Type-Options": "nosniff",
         },
-      }
+      },
     );
   }
 
-  // Restrict experimental market statistics to local development.
+  // Restrict experimental market statistics
+  // to local development.
   if (
     process.env.NODE_ENV !== "development" &&
     pathname === "/market-stats-demo"
@@ -73,7 +68,42 @@ export function proxy(request: NextRequest) {
     });
   }
 
-  return NextResponse.next();
+  // Only refresh Supabase sessions on account-related routes.
+  const requiresSessionRefresh =
+    pathname === "/portal" ||
+    pathname.startsWith("/portal/") ||
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password";
+
+  // Public routes and authentication callbacks do not
+  // require proxy-based session refresh.
+  if (!requiresSessionRefresh) {
+    return NextResponse.next();
+  }
+
+  try {
+    const response = await updateSession(request);
+
+    response.headers.set("Cache-Control", "private, no-store, max-age=0");
+
+    return response;
+  } catch {
+    return new NextResponse(
+      "Account services are temporarily unavailable. Please try again later.",
+      {
+        status: 503,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          "Cache-Control": "private, no-store",
+          "Retry-After": "60",
+          "X-Robots-Tag": "noindex, nofollow, noarchive",
+          "X-Content-Type-Options": "nosniff",
+        },
+      },
+    );
+  }
 }
 
 export const config = {

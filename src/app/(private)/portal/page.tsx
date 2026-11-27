@@ -1,52 +1,42 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getPortalProfile } from "@/lib/supabase/profile";
 import {
   ArrowRight,
   Heart,
   CalendarDays,
   MessageSquare,
   Search,
-  Check,
-  Clock,
-  MapPin,
   UserRound,
   FolderClosed,
   Bell,
-  ChevronRight,
-  Home,
-  BedDouble,
-  Bath,
-  Maximize,
+  AlertCircle,
 } from "lucide-react";
 
 const stats = [
   {
     label: "Saved Properties",
-    value: "6",
-    description: "Your favorite homes",
+    description: "Property saving coming soon",
     icon: Heart,
   },
   {
     label: "Upcoming Showings",
-    value: "2",
-    description: "Scheduled appointments",
+    description: "Showing management coming soon",
     icon: CalendarDays,
   },
   {
     label: "Unread Messages",
-    value: "1",
-    description: "From your Sandstone agent",
+    description: "Messaging coming soon",
     icon: MessageSquare,
   },
   {
     label: "Shared Documents",
-    value: "3",
-    description: "Your real estate documents",
+    description: "Document sharing coming soon",
     icon: FolderClosed,
   },
 ];
 
-const journeySteps = [
+const buyingSteps = [
   "Consultation",
   "Home Search",
   "Make an Offer",
@@ -54,34 +44,12 @@ const journeySteps = [
   "Closing",
 ];
 
-const properties = [
-  {
-    id: 1,
-    price: "$425,000",
-    address: "123 Example Drive",
-    location: "El Paso, TX",
-    beds: 4,
-    baths: 3,
-    sqft: "2,450",
-  },
-  {
-    id: 2,
-    price: "$365,000",
-    address: "456 Sample Avenue",
-    location: "El Paso, TX",
-    beds: 3,
-    baths: 2,
-    sqft: "1,980",
-  },
-  {
-    id: 3,
-    price: "$510,000",
-    address: "789 Preview Lane",
-    location: "El Paso, TX",
-    beds: 4,
-    baths: 3,
-    sqft: "2,850",
-  },
+const sellingSteps = [
+  "Consultation",
+  "Prepare Home",
+  "List Property",
+  "Under Contract",
+  "Closing",
 ];
 
 const quickActions = [
@@ -93,31 +61,89 @@ const quickActions = [
   },
   {
     label: "Request a Showing",
-    description: "Schedule a property visit",
+    description: "Coming soon",
     icon: CalendarDays,
   },
   {
     label: "Contact Your Agent",
-    description: "We're here to help",
+    description: "Coming soon",
     icon: MessageSquare,
   },
   {
     label: "View Documents",
-    description: "Access your shared files",
+    description: "Coming soon",
     icon: FolderClosed,
   },
 ];
 
-export default function PortalPage() {
+function EmptyState({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: typeof Heart;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="flex flex-col items-center rounded-xl border border-dashed border-gray-200 bg-gray-50/50 px-6 py-10 text-center">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f3ebe2]">
+        <Icon aria-hidden="true" className="h-7 w-7 text-sandstone-bronze" />
+      </div>
+
+      <h3 className="mt-4 text-sm font-bold text-sandstone-navy">{title}</h3>
+
+      <p className="mt-2 max-w-sm text-xs leading-relaxed text-gray-500">
+        {description}
+      </p>
+    </div>
+  );
+}
+
+export default async function PortalPage() {
+  const profile = await getPortalProfile();
+
+  const selling = profile.interest === "selling";
+
+  const journeySteps = selling ? sellingSteps : buyingSteps;
+
+  const journeyTitle = selling
+    ? "Your Selling Journey"
+    : profile.interest === "buying"
+      ? "Your Buying Journey"
+      : "Your Real Estate Journey";
+
+  const welcomeMessage = profile.firstName
+    ? `Welcome back, ${profile.firstName}.`
+    : "Welcome back.";
+
   return (
     <div className="space-y-7">
-      {/* PREVIEW NOTICE */}
+      {/* PROFILE AVAILABILITY */}
+      {!profile.profileAvailable && (
+        <div
+          role="status"
+          className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3"
+        >
+          <AlertCircle
+            aria-hidden="true"
+            className="mt-0.5 h-4 w-4 shrink-0 text-amber-700"
+          />
+
+          <p className="text-xs leading-relaxed text-amber-800">
+            Your account is authenticated, but your profile details are
+            temporarily unavailable. Please refresh the page or try again later.
+          </p>
+        </div>
+      )}
+
+      {/* DEVELOPMENT NOTICE */}
       <div className="flex items-center gap-3 rounded-xl border border-sandstone-gold/30 bg-[#f3ebe2] px-4 py-3">
         <span className="h-2 w-2 shrink-0 rounded-full bg-sandstone-bronze" />
 
         <p className="text-xs leading-relaxed text-sandstone-bronze">
-          Development preview — all client information, appointments, and
-          properties shown are fictional.
+          Your account is active. Additional client portal features are
+          currently under development.
         </p>
       </div>
 
@@ -141,13 +167,13 @@ export default function PortalPage() {
             Your real estate journey
           </p>
 
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl xl:text-5xl">
-            Welcome back, Jordan.
+          <h2 className="break-words text-3xl font-bold tracking-tight sm:text-4xl xl:text-5xl">
+            {welcomeMessage}
           </h2>
 
           <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base">
-            Your next chapter starts here. Discover properties, manage your
-            appointments, and stay connected with your Sandstone agent.
+            Your next chapter starts here. Explore properties and prepare for
+            your personalized Sandstone real estate experience.
           </p>
 
           <Link
@@ -162,7 +188,7 @@ export default function PortalPage() {
 
       {/* ACCOUNT STATISTICS */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map(({ label, value, description, icon: Icon }) => (
+        {stats.map(({ label, description, icon: Icon }) => (
           <div
             key={label}
             className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
@@ -175,8 +201,11 @@ export default function PortalPage() {
               </div>
             </div>
 
-            <p className="mt-3 text-4xl font-bold text-sandstone-navy">
-              {value}
+            <p
+              aria-label="Not available yet"
+              className="mt-3 text-4xl font-bold text-sandstone-navy"
+            >
+              &mdash;
             </p>
 
             <p className="mt-2 text-xs text-gray-500">{description}</p>
@@ -186,44 +215,40 @@ export default function PortalPage() {
 
       {/* JOURNEY AND AGENT */}
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
-        {/* BUYING JOURNEY */}
+        {/* REAL ESTATE JOURNEY */}
         <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm xl:col-span-2">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-bold text-sandstone-navy">
-                Your Buying Journey
+                {journeyTitle}
               </h2>
 
               <p className="mt-2 text-xs text-gray-500">
-                Follow your progress toward your new home.
+                Follow the steps of your real estate experience.
               </p>
             </div>
 
             <span className="rounded-full bg-[#f3ebe2] px-3 py-1.5 text-xs font-semibold text-sandstone-bronze">
-              Home Search
+              Coming soon
             </span>
           </div>
 
-          {/* PROGRESS BAR */}
+          {/* JOURNEY STATUS */}
           <div className="mt-7">
             <div className="mb-2 flex justify-between text-xs">
               <span className="font-medium text-gray-500">
                 Overall progress
               </span>
 
-              <span className="font-bold text-sandstone-navy">40%</span>
+              <span className="font-semibold text-gray-500">
+                Not available yet
+              </span>
             </div>
 
             <div
-              role="progressbar"
-              aria-label="Buying journey progress"
-              aria-valuenow={40}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              className="h-2.5 overflow-hidden rounded-full bg-gray-100"
-            >
-              <div className="h-full w-[40%] rounded-full bg-sandstone-gold" />
-            </div>
+              aria-hidden="true"
+              className="h-2.5 rounded-full bg-gray-100"
+            />
           </div>
 
           {/* JOURNEY STEPS */}
@@ -233,23 +258,11 @@ export default function PortalPage() {
                 key={step}
                 className="flex flex-col items-center gap-3 text-center"
               >
-                <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
-                    index === 0
-                      ? "bg-sandstone-navy text-white"
-                      : index === 1
-                        ? "bg-sandstone-gold text-[#1d2858]"
-                        : "bg-gray-100 text-gray-400"
-                  }`}
-                >
-                  {index === 0 ? <Check className="h-5 w-5" /> : index + 1}
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-400">
+                  {index + 1}
                 </div>
 
-                <span
-                  className={`text-[11px] font-medium ${
-                    index <= 1 ? "text-sandstone-navy" : "text-gray-400"
-                  }`}
-                >
+                <span className="text-[11px] font-medium text-gray-500">
                   {step}
                 </span>
               </div>
@@ -257,14 +270,10 @@ export default function PortalPage() {
           </div>
 
           <div className="mt-7 border-t border-gray-100 pt-5">
-            <button
-              type="button"
-              disabled
-              className="inline-flex cursor-not-allowed items-center gap-2 text-xs font-semibold text-gray-400"
-            >
-              View full journey
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <p className="text-xs leading-relaxed text-gray-500">
+              Personalized journey tracking will become available in a future
+              update.
+            </p>
           </div>
         </section>
 
@@ -284,22 +293,20 @@ export default function PortalPage() {
             </div>
 
             <h3 className="mt-4 text-base font-bold text-sandstone-navy">
-              Assigned Agent
+              Agent assignment coming soon
             </h3>
 
-            <p className="mt-1 text-xs text-gray-500">
-              Sandstone Real Estate Group
+            <p className="mt-2 text-xs leading-relaxed text-gray-500">
+              Your assigned agent&apos;s information will appear here when this
+              feature becomes available.
             </p>
-
-            <span className="mt-3 text-xs text-sandstone-bronze">
-              Preview agent profile
-            </span>
           </div>
 
           <button
             type="button"
             disabled
-            className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-sandstone-navy px-4 py-3 text-sm font-semibold text-white opacity-70"
+            title="Messaging coming soon"
+            className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-sandstone-navy px-4 py-3 text-sm font-semibold text-white opacity-60"
           >
             <MessageSquare className="h-4 w-4" />
             Send a Message
@@ -309,88 +316,21 @@ export default function PortalPage() {
 
       {/* UPCOMING SHOWINGS */}
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-bold text-sandstone-navy">
-              Upcoming Showings
-            </h2>
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-sandstone-navy">
+            Upcoming Showings
+          </h2>
 
-            <p className="mt-2 text-xs text-gray-500">
-              Keep track of your scheduled property visits.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            disabled
-            className="flex cursor-not-allowed items-center gap-2 text-xs font-semibold text-gray-400"
-          >
-            View all
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          <p className="mt-2 text-xs text-gray-500">
+            Keep track of your scheduled property visits.
+          </p>
         </div>
 
-        <div className="space-y-3">
-          {[
-            {
-              month: "DEC",
-              day: "02",
-              title: "Private Property Showing",
-              address: "123 Example Drive, El Paso, TX",
-              time: "10:00 AM",
-              status: "Confirmed",
-            },
-            {
-              month: "DEC",
-              day: "05",
-              title: "Residential Property Tour",
-              address: "456 Sample Avenue, El Paso, TX",
-              time: "2:30 PM",
-              status: "Pending",
-            },
-          ].map((showing) => (
-            <div
-              key={showing.address}
-              className="flex flex-wrap items-center gap-4 rounded-xl border border-gray-100 bg-gray-50/60 p-4"
-            >
-              <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl bg-[#f3ebe2]">
-                <span className="text-[10px] font-bold tracking-widest text-sandstone-bronze">
-                  {showing.month}
-                </span>
-
-                <span className="text-2xl font-bold text-sandstone-navy">
-                  {showing.day}
-                </span>
-              </div>
-
-              <div className="min-w-[180px] flex-1">
-                <h3 className="text-sm font-bold text-sandstone-navy">
-                  {showing.title}
-                </h3>
-
-                <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
-                  <MapPin className="h-3.5 w-3.5 shrink-0" />
-                  {showing.address}
-                </div>
-
-                <div className="mt-1 flex items-center gap-2 text-xs text-gray-500">
-                  <Clock className="h-3.5 w-3.5" />
-                  {showing.time}
-                </div>
-              </div>
-
-              <span
-                className={`rounded-full px-3 py-1.5 text-[11px] font-semibold ${
-                  showing.status === "Confirmed"
-                    ? "bg-green-50 text-green-700"
-                    : "bg-amber-50 text-amber-700"
-                }`}
-              >
-                {showing.status}
-              </span>
-            </div>
-          ))}
-        </div>
+        <EmptyState
+          icon={CalendarDays}
+          title="Showing management coming soon"
+          description="Your scheduled property visits will appear here once showing management is available."
+        />
       </section>
 
       {/* SAVED PROPERTIES */}
@@ -415,63 +355,22 @@ export default function PortalPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {properties.map((property) => (
-            <article
-              key={property.id}
-              className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <EmptyState
+            icon={Heart}
+            title="Property saving coming soon"
+            description="Your favorite properties will appear here once property saving becomes available."
+          />
+
+          <div className="mt-5 flex justify-center">
+            <Link
+              href="/listings"
+              className="inline-flex items-center gap-2 rounded-xl bg-sandstone-navy px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
             >
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src="/hero-home.webp"
-                  alt="Illustrative residential property"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover"
-                />
-
-                <span className="absolute left-3 top-3 rounded-lg bg-white px-3 py-1.5 text-[10px] font-semibold text-sandstone-navy">
-                  Sample Property
-                </span>
-
-                <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow">
-                  <Heart className="h-4 w-4 fill-sandstone-gold text-sandstone-gold" />
-                </div>
-              </div>
-
-              <div className="p-5">
-                <p className="text-xl font-bold text-sandstone-navy">
-                  {property.price}
-                </p>
-
-                <h3 className="mt-2 text-sm font-semibold text-sandstone-charcoal">
-                  {property.address}
-                </h3>
-
-                <p className="mt-1 flex items-center gap-1.5 text-xs text-gray-500">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {property.location}
-                </p>
-
-                <div className="mt-5 flex flex-wrap gap-4 border-t border-gray-100 pt-4 text-xs text-gray-500">
-                  <span className="flex items-center gap-1.5">
-                    <BedDouble className="h-4 w-4" />
-                    {property.beds} Beds
-                  </span>
-
-                  <span className="flex items-center gap-1.5">
-                    <Bath className="h-4 w-4" />
-                    {property.baths} Baths
-                  </span>
-
-                  <span className="flex items-center gap-1.5">
-                    <Maximize className="h-4 w-4" />
-                    {property.sqft} sqft
-                  </span>
-                </div>
-              </div>
-            </article>
-          ))}
+              Explore Properties
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -508,6 +407,7 @@ export default function PortalPage() {
                 key={label}
                 type="button"
                 disabled
+                title="Coming soon"
                 className="cursor-not-allowed rounded-2xl border border-gray-200 bg-white p-5 text-left opacity-70"
               >
                 {content}
@@ -527,43 +427,12 @@ export default function PortalPage() {
           Stay updated throughout your real estate journey.
         </p>
 
-        <div className="mt-5 divide-y divide-gray-100">
-          {[
-            {
-              icon: Bell,
-              title: "New property recommendation",
-              description: "A property matches your preferences.",
-              time: "Today",
-            },
-            {
-              icon: CalendarDays,
-              title: "Showing confirmed",
-              description: "Your upcoming property visit is confirmed.",
-              time: "Yesterday",
-            },
-            {
-              icon: Home,
-              title: "Property saved",
-              description: "A home was added to your favorites.",
-              time: "2 days ago",
-            },
-          ].map(({ icon: Icon, title, description, time }) => (
-            <div key={title} className="flex items-center gap-4 py-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f3ebe2]">
-                <Icon className="h-5 w-5 text-sandstone-bronze" />
-              </div>
-
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-sandstone-navy">
-                  {title}
-                </p>
-
-                <p className="mt-1 text-xs text-gray-500">{description}</p>
-              </div>
-
-              <span className="text-[10px] text-gray-400">{time}</span>
-            </div>
-          ))}
+        <div className="mt-5">
+          <EmptyState
+            icon={Bell}
+            title="Activity tracking coming soon"
+            description="Updates about your properties, appointments, and real estate journey will appear here in a future update."
+          />
         </div>
       </section>
     </div>

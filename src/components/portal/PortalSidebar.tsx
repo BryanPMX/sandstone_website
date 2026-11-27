@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
+import { logoutAction } from "@/actions/auth";
 import {
   LayoutDashboard,
   Heart,
@@ -17,6 +19,7 @@ import {
   LogOut,
   Menu,
   X,
+  LoaderCircle,
 } from "lucide-react";
 
 const navigation = [
@@ -30,6 +33,30 @@ const navigation = [
   { label: "Notifications", icon: Bell },
   { label: "Settings", icon: Settings },
 ];
+
+function SignOutButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      aria-busy={pending}
+      className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm text-white/70 transition hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {pending ? (
+        <LoaderCircle
+          aria-hidden="true"
+          className="h-[18px] w-[18px] animate-spin"
+        />
+      ) : (
+        <LogOut aria-hidden="true" className="h-[18px] w-[18px]" />
+      )}
+
+      {pending ? "Signing out..." : "Sign out"}
+    </button>
+  );
+}
 
 export default function PortalSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -147,15 +174,9 @@ export default function PortalSidebar() {
             Back to website
           </Link>
 
-          <button
-            type="button"
-            disabled
-            title="Authentication is not enabled yet"
-            className="flex w-full cursor-not-allowed items-center gap-3 rounded-lg px-4 py-3 text-sm text-white/50"
-          >
-            <LogOut className="h-[18px] w-[18px]" />
-            Sign out
-          </button>
+          <form action={logoutAction}>
+            <SignOutButton />
+          </form>
 
           <p className="px-4 pb-2 pt-3 text-[10px] leading-relaxed text-white/40">
             © {new Date().getFullYear()} Sandstone Real Estate Group
